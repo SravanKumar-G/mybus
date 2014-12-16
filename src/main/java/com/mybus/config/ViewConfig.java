@@ -1,4 +1,4 @@
-package com.javahash.config;
+package com.mybus.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

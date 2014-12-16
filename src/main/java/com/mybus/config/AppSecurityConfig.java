@@ -1,4 +1,4 @@
-package com.javahash.config;
+package com.mybus.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
