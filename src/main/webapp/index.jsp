@@ -11,8 +11,15 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        <c:out value="Hi there ${pageContext.request.userPrincipal.name} "/>${pageContext.request.userPrincipal.name} 
+    <c:if test="${pageContext.request.userPrincipal == null}">
+        <c:redirect url="/login"/>
+    </c:if>
+    <c:if test="${pageContext.request.userPrincipal != null}">
+        <c:redirect url="/home"/>
+    </c:if>
+
+    <h1>Hello World!</h1>
+        <c:out value="Hi there ${pageContext.request.userPrincipal.name} "/>
         
         <a href="<c:url value="/logout" />" > Logout</a>
  
