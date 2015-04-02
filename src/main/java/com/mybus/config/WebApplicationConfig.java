@@ -2,6 +2,7 @@ package com.mybus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
+import com.mybus.interceptors.AuthenticationInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
@@ -52,6 +54,7 @@ import static com.mybus.SystemProperties.SysProps;
 
 @Configuration
 @EnableWebMvc
+
 @EnableScheduling
 @ComponentScan(basePackages = "com.mybus")
 @Import({CoreAppConfig.class })
@@ -207,5 +210,14 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         return null;
     }
 
-
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(authenticationInterceptor())
+                .addPathPatterns("/**");
+    }
+    @Bean
+    public AuthenticationInterceptor authenticationInterceptor(){
+        return new AuthenticationInterceptor();
+        
+    }
 }

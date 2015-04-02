@@ -32,7 +32,7 @@ public class UserController {
     @ResponseBody
     @ApiResponseObject
     public User getUserInfo(HttpServletRequest request) {
-        User account = (User)userDAO.findOneByUserName(request.getUserPrincipal().getName());
+        User account = (User)userDAO.findOneByUsername(request.getUserPrincipal().getName());
         return account;
     }
     @ResponseStatus(value = HttpStatus.OK)

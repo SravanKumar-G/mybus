@@ -1,8 +1,5 @@
 package com.mybus.config;
 
-import com.stormpath.sdk.api.ApiKeys;
-import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.client.Clients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

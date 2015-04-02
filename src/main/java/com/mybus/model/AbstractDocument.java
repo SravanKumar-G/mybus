@@ -46,6 +46,16 @@ public abstract class AbstractDocument {
 
     @Getter
     @Setter
+    @ApiObjectField(description = "User who created the object")
+    private String createdBy;
+
+    @Getter
+    @Setter
+    @ApiObjectField(description = "User who updated the object")
+    private String updatedBy;
+
+    @Getter
+    @Setter
     @ApiObjectField(description = "Additional Fields on the Object")
     @JsonProperty(KEY_ATTRIBUTES)
     @Field(KEY_ATTRIBUTES)

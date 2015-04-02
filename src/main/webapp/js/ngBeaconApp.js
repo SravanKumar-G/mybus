@@ -11,7 +11,8 @@ var beaconApp = angular.module('beaconApp', [
   'ui.bootstrap',
   'unsavedChanges',
   'angularSpinner', 
-    'beaconApp.citiesModules'/*,
+  'beaconApp.citiesModules',
+  'beaconApp.expensesModules'/*,
   'beaconApp.homeModule',
   'beaconApp.conditionModule',
   'beaconApp.procedureModule',
@@ -138,6 +139,10 @@ beaconApp.config(['$routeProvider',
       when('/cities', {
         templateUrl: 'partials/cities-list.tpl.html',
         controller: 'CitiesController'
+      }).
+      when('/expenses', {
+        templateUrl: 'partials/expenses-list.tpl.html',
+        controller: 'ExpensesController'
       }).
       when('/cities/:id', {
         templateUrl: 'partials/neighborhoods-list.tpl.html',

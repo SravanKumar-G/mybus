@@ -22,9 +22,11 @@
     <script src="lib/async.js"></script>
     <script src="js/ngBeaconApp.js"></script>
     <script src="js/controllers/citiesController.js"></script>
+    <script src="js/controllers/expensesController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/citiesManager.js"></script>
+    <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/filters/unsafeFilter.js"></script>
@@ -78,11 +80,13 @@
             <ul class="nav navbar-nav">
                 <li data-match-route="/$"><a href="#">Home</a></li>
                 <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
-                <li data-match-route="/conditions" ng-if="appConfigManager.areConditionsEnabled()"><a href="#/conditions">Conditions</a></li>
+                <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
+                <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
+            <%--<li data-match-route="/conditions" ng-if="appConfigManager.areConditionsEnabled()"><a href="#/conditions">Conditions</a></li>
                 <li data-match-route="/procedures" ng-if="appConfigManager.areProceduresEnabled()"><a href="#/procedures">Procedures</a></li>
                 <li data-match-route="/categories" ng-if="userManager.isAdmin()"><a href="#/categories">Categories</a></li>
                 <li data-match-route="/neighborhoods" ng-if="userManager.isAdmin()"><a href="#/cities">Cities</a></li>
-                <%--<li data-match-route="/businesses" ng-if="userManager.canViewBusinesses()" class="dropdown">
+                <li data-match-route="/businesses" ng-if="userManager.canViewBusinesses()" class="dropdown">
                     <a href="#/businesses" class="dropdown-toggle" data-toggle="dropdown">Businesses <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="#/businesses" ng-if="userManager.canViewBusinesses()">View All</a></li>
@@ -103,7 +107,7 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().userName}}</b> Logout</a></li>
+                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

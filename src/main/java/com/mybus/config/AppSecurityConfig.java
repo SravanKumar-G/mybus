@@ -19,11 +19,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvcSecurity
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private LoginService loginService;
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("tom").password("123456").roles("USER");
-		auth.inMemoryAuthentication().withUser("bill").password("123456").roles("ADMIN");
-		auth.inMemoryAuthentication().withUser("james").password("123456").roles("SUPERADMIN");
+		/*auth.inMemoryAuthentication().withUser("tom").password("123").roles("USER");
+		auth.inMemoryAuthentication().withUser("bill").password("123").roles("ADMIN");
+		auth.inMemoryAuthentication().withUser("james").password("123").roles("SUPERADMIN");*/
+        auth.userDetailsService( loginService );
 	}
 
 	@Override
