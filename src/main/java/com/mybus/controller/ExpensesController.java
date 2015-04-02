@@ -33,7 +33,7 @@ public class ExpensesController {
     public Iterable<Expense> getUserInfo(HttpServletRequest request) {
         return expenseDAO.findAll();
     }
-    
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "expense", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
