@@ -45,4 +45,12 @@ public class CityController {
         return cityDAO.save(city);
     }
 
+    @RequestMapping(value = "city/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiResponseObject
+    public City getCity(HttpServletRequest request, @PathVariable final String id) {
+        logger.debug("get city called");
+        return cityDAO.findOne(id);
+    }
+
 }

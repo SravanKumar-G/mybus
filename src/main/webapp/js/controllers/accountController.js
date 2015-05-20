@@ -1,7 +1,7 @@
 'use strict';
 /*global angular,_*/
 
-angular.module('beaconApp.accountModule', [])
+angular.module('myBus.accountModule', [])
   .controller('AccountController', function($scope, $log, $http, userManager) {
     $scope.headline = "Account";
 

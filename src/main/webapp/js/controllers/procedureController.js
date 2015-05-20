@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('beaconApp.procedureModule', [])
+angular.module('myBus.procedureModule', [])
   .controller('ProcedureController', function($scope, $rootScope, $http, $log, ngTableParams, $location, $routeParams) {
     $scope.headline = "Edit Procedure";
 

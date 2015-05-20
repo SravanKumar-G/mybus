@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('beaconApp.beaconModule', [])
+angular.module('myBus.beaconModule', [])
   .controller('BeaconController', function($scope, $rootScope, $http, $log, ngTableParams, $location, $routeParams) {
     $scope.headline = "Edit Beacon";
 

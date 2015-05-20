@@ -11,8 +11,8 @@
 
 <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
     <tr ng-repeat="city in currentPageOfCities">
-        <td data-title="'State'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.state }}</td>
         <td data-title="'City'" sortable="'city'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.name }}</td>
+        <td data-title="'State'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.state }}</td>
     </tr>
     <tr ng-if="!currentPageOfCities || currentPageOfCities.length === 0">
         <td colspan="4">No cities exist.  Please add some.</td>

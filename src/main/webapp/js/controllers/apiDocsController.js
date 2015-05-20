@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('beaconApp.apiDocsModule', [])
+angular.module('myBus.apiDocsModule', [])
   .controller('APIDocsController', function ($scope, $log) {
     $log.info("Getting API Docs");
     $scope.headline = "REST API Docs";

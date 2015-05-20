@@ -1,7 +1,7 @@
 "use strict";
 /*global angular,_*/
 
-var portalApp = angular.module('beaconApp');
+var portalApp = angular.module('myBus');
 
 portalApp.factory('appConfigManager', function ($http, $log) {
 

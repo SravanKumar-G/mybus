@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('beaconApp.expensesModules', ['ngTable', 'ui.bootstrap'])
+angular.module('myBus.expensesModules', ['ngTable', 'ui.bootstrap'])
 
   // ==================================================================================================================
   // ====================================    ExpensesController   ================================================

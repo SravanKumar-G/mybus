@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('beaconApp.citiesModules', ['ngTable', 'ui.bootstrap'])
+angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
 
   // ==================================================================================================================
   // ====================================    CitiesController   ================================================
@@ -126,7 +126,7 @@ angular.module('beaconApp.citiesModules', ['ngTable', 'ui.bootstrap'])
     // =================================     NeighborhoodsListController    =============================================
     // ==================================================================================================================
 
-    .controller('BoardingPointsListController', function ($scope, $routeParams, $http, $location, $log, ngTableParams, $modal, $filter, citiesManager) {
+    .controller('NeighborhoodsListController', function ($scope, $routeParams, $http, $location, $log, ngTableParams, $modal, $filter, citiesManager) {
 
         //$log.debug('NeighborhoodsListController loading');
 
