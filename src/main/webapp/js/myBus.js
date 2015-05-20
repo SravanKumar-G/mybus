@@ -2,7 +2,7 @@
 
 /* App Module */
 
-var beaconApp = angular.module('beaconApp', [
+var myBus = angular.module('myBus', [
   'ngRoute',
   'ngAnimate',
   'ngTouch',
@@ -11,22 +11,24 @@ var beaconApp = angular.module('beaconApp', [
   'ui.bootstrap',
   'unsavedChanges',
   'angularSpinner', 
-  'beaconApp.citiesModules',
-  'beaconApp.expensesModules'/*,
-  'beaconApp.homeModule',
-  'beaconApp.conditionModule',
-  'beaconApp.procedureModule',
-  'beaconApp.neighborhoodsModule',
-  'beaconApp.beaconModule',
-  'beaconApp.businessModule',
-  'beaconApp.classificationModule',
-  'beaconApp.apiDocsModule',
-  'beaconApp.accountModule',
-  'beaconApp.userModule'*/
+  'myBus.citiesModules',
+  'myBus.expensesModules',
+  'myBus.boardingPointModule'
+  /*,
+  'myBus.homeModule',
+  'myBus.conditionModule',
+  'myBus.procedureModule',
+  'myBus.neighborhoodsModule',
+  'myBus.beaconModule',
+  'myBus.businessModule',
+  'myBus.classificationModule',
+  'myBus.apiDocsModule',
+  'myBus.accountModule',
+  'myBus.userModule'*/
 ]);
 
 
-beaconApp.config(['$routeProvider',
+myBus.config(['$routeProvider',
   function ($routeProvider) {
     console.log("configuring routes");
     $routeProvider.
@@ -34,6 +36,18 @@ beaconApp.config(['$routeProvider',
         templateUrl: 'partials/home.tpl.html',
         controller: 'HomeController'
       }).
+        when('/cities', {
+          templateUrl: 'partials/cities-list.tpl.html',
+          controller: 'CitiesController'
+        }).
+        when('/expenses', {
+          templateUrl: 'partials/expenses-list.tpl.html',
+          controller: 'ExpensesController'
+        }).
+        when('/cities/:id', {
+          templateUrl: 'partials/boardingpoints-list.tpl.html',
+          controller: 'BoardingPointsListController'
+        }).
       when('/beacons', {
         templateUrl: 'partials/beacons.tpl.html',
         controller: 'BeaconsController'
@@ -135,18 +149,6 @@ beaconApp.config(['$routeProvider',
       when('/account', {
         templateUrl: 'partials/account.tpl.html',
         controller: 'AccountController'
-      }).
-      when('/cities', {
-        templateUrl: 'partials/cities-list.tpl.html',
-        controller: 'CitiesController'
-      }).
-      when('/expenses', {
-        templateUrl: 'partials/expenses-list.tpl.html',
-        controller: 'ExpensesController'
-      }).
-      when('/cities/:id', {
-        templateUrl: 'partials/neighborhoods-list.tpl.html',
-        controller: 'BoardingPointsListController'
       })
         .otherwise({
         redirectTo: '/'
@@ -155,7 +157,7 @@ beaconApp.config(['$routeProvider',
 
 
 
-beaconApp.run(function ($rootScope, $location, appConfigManager, userManager) {
+myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   appConfigManager.fetchAppSettings(function (err, cfg) {
     $rootScope.appConfigManager = appConfigManager;
   }, true);

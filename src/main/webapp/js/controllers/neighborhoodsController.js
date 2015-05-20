@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('beaconApp.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
+angular.module('myBus.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
 
   // ==================================================================================================================
   // ====================================    NeighborhoodsController   ================================================

@@ -1,7 +1,7 @@
 'use strict';
 /*global angular, _*/
 
-var portalApp = angular.module('beaconApp');
+var portalApp = angular.module('myBus');
 
 portalApp.factory('googlePlaces', function ($log) {
   var manhattan = new google.maps.LatLng(40.7903, -73.9597)

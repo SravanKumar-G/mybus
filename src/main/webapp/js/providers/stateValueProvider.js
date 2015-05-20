@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('beaconApp')
+angular.module('myBus')
   .value('states',
     function (rawStates) {
       return _.map(rawStates, function (name, abbreviation) {

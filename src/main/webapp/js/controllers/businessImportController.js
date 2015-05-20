@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('beaconApp.businessModule')
+angular.module('myBus.businessModule')
 
   //
   // ============================= Modal - Neighborhood Selection ===============================

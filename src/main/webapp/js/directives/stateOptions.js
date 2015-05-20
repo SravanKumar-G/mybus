@@ -1,6 +1,6 @@
 // https://coderwall.com/p/fyuxhg
 
-angular.module('beaconApp')
+angular.module('myBus')
   .directive('stateOptions', function (states) { //states value injected into directive context
     return {
       restrict: 'E',

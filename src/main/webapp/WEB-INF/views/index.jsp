@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="beaconApp">
+<html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
     <title>Reports </title>
@@ -20,9 +20,10 @@
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="lib/async.js"></script>
-    <script src="js/ngBeaconApp.js"></script>
+    <script src="js/myBus.js"></script>
     <script src="js/controllers/citiesController.js"></script>
     <script src="js/controllers/expensesController.js"></script>
+    <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/citiesManager.js"></script>

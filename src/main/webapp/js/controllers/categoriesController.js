@@ -1,7 +1,7 @@
 'use strict';
 /*global angular, _*/
 
-angular.module('beaconApp.classificationModule', [])
+angular.module('myBus.classificationModule', [])
 
   // ==================================================================================================================
   //         Categories (List view)

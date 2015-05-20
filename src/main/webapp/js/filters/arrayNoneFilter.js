@@ -1,4 +1,4 @@
-var app = angular.module('beaconApp');
+var app = angular.module('myBus');
 
 /**
  * The 'arrayNone' filter will format the array as a comma-separated list of values, or else 'None' if it is empty.

@@ -1,6 +1,6 @@
 "use strict";
 
-var portalApp = angular.module('beaconApp');
+var portalApp = angular.module('myBus');
 
 portalApp.service('businessNavHelper', function ($log, $location, $window, $http) {
   return {

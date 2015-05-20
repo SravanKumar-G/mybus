@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('beaconApp.userModule', ['ngTable', 'ui.bootstrap'])
+angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
 
 
   //

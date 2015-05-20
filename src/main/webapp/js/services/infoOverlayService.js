@@ -1,7 +1,7 @@
 'use strict';
 /*global angular, $*/
 
-var portalApp = angular.module('beaconApp');
+var portalApp = angular.module('myBus');
 
 portalApp.factory('infoOverlay', function () {
   var hideOverlay, displayOverlay;
