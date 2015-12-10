@@ -1,5 +1,7 @@
 /target/
 .idea
 .idea/*
+.idea/**
 .settings
 .settings/*
+ .idea/workspace.xml
