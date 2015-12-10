@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" name="mybus:war">
     <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="mybus-2015-05-13-23-08.war">
+    <root id="archive" name="mybus-2015-12-10-06-50.war">
       <element id="artifact" artifact-name="mybus:war exploded" />
     </root>
   </artifact>
