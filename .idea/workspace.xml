@@ -1,31 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7dbd9ae-803a-4e9d-b3e0-81bafc2667f7" name="Default" comment="" />
-    <list id="bfd7fc79-be8a-47ec-9a11-e4184b9fbc11" name="Failed commit: Default" comment="adding more changes" />
-    <list id="cd0918d4-7718-4986-92b3-8f9cce250fa1" name=".idea" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_2.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongo_java_driver_2_10_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_commons_1_6_2_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_mongodb_1_3_2_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_aop_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_expression_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jdbc_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_orm_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_test_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_tx_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_web_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_webmvc_4_1_3_RELEASE.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mybus.iml" afterPath="$PROJECT_DIR$/mybus.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/mybus_war.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/mybus_war.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/mybus_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/mybus_war_exploded.xml" />
+    <list default="true" id="d7dbd9ae-803a-4e9d-b3e0-81bafc2667f7" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
+    <list id="bfd7fc79-be8a-47ec-9a11-e4184b9fbc11" name="Failed commit: Default" comment="adding more changes" />
     <ignored path="mybus.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/src/main/webapp/WEB-INF/classes/" />
@@ -1093,7 +1072,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="d7dbd9ae-803a-4e9d-b3e0-81bafc2667f7" name="Default" comment="" />
-      <changelist id="cd0918d4-7718-4986-92b3-8f9cce250fa1" name=".idea" comment="" />
+      <changelist id="" name=".idea" comment="" />
       <created>1427445358083</created>
       <option name="number" value="Default" />
       <updated>1427445358083</updated>
@@ -1104,7 +1083,7 @@
       <workItem from="1432091059784" duration="2615000" />
       <workItem from="1433211431789" duration="4284000" />
       <workItem from="1449635368444" duration="5124000" />
-      <workItem from="1449729168976" duration="2267000" />
+      <workItem from="1449729168976" duration="2310000" />
     </task>
     <task id="LOCAL-00001" summary="adding more changes">
       <created>1427952315347</created>
@@ -1136,11 +1115,17 @@
       <option name="project" value="LOCAL" />
       <updated>1449770758745</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="changes to .idea">
+      <created>1449770890372</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1449770890372</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47880000" />
+    <option name="totallyTimeSpent" value="47923000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="815" extended-state="6" />
@@ -1226,7 +1211,8 @@
     <MESSAGE value="Looking up city" />
     <MESSAGE value="Fixing the Spring MVC integration tests" />
     <MESSAGE value="Changes to .gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes to .gitignore" />
+    <MESSAGE value="changes to .idea" />
+    <option name="LAST_COMMIT_MESSAGE" value="changes to .idea" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1440,6 +1426,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
