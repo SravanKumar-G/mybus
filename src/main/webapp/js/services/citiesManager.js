@@ -59,9 +59,16 @@ portalApp.factory('citiesManager', function ($rootScope, $http, $log) {
       return _.first(_.select(cities, function (value) {
         return value.id === id;
       }));
+    },
+    getCity: function (id, callback) {
+      $http.get('/api/v1/city/' + id)
+       .success(function (data) {
+            callback(data);
+       })
+       .error(function (error) {
+              alert("error finding city. " + angular.toJson(error));
+       });
     }
-
-
   };
 });
 

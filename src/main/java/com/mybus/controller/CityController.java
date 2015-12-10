@@ -1,7 +1,9 @@
 package com.mybus.controller;
 
+import com.mybus.CityManager;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
+import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
 import org.jsondoc.core.annotation.ApiResponseObject;
@@ -22,6 +24,9 @@ public class CityController {
 
     @Autowired
     private CityDAO cityDAO;
+
+    @Autowired
+    private CityManager cityManager;
     
     @Autowired
     private SessionManager sessionManager;
@@ -51,6 +56,19 @@ public class CityController {
     public City getCity(HttpServletRequest request, @PathVariable final String id) {
         logger.debug("get city called");
         return cityDAO.findOne(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "city/{cityId}/boardingpoint", method = RequestMethod.POST,
+            produces = ControllerUtils.JSON_UTF8,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiResponseObject
+    public City createCityBoardingpoint(HttpServletRequest request,
+                           @PathVariable final String cityId,
+                           @RequestBody final BoardingPoint bp) {
+        logger.debug("create boardingpoint called");
+        return cityManager.addBoardingPointToCity(cityId, bp);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mybus.dao.CityDAO;
+import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
 import org.joda.time.DateTime;
@@ -27,6 +28,11 @@ public class CityMongoDAO {
     public City update(City city){
         city.setUpdatedAt(new DateTime());
         city.setUpdatedBy(sessionManager.getCurrentUser().getFirstName());
+        return cityDAO.save(city);
+    }
+    public City addBoardingPoint(String cityId, BoardingPoint boardingPoint) {
+        City city = cityDAO.findOne(cityId);
+        city.getBoardingPoints().add(boardingPoint);
         return cityDAO.save(city);
     }
 

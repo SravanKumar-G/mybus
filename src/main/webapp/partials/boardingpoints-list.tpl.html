@@ -9,7 +9,7 @@
 
 
 <div class="toolbar-button-div pull-right">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddNeighborhood()"><span class="glyphicon glyphicon-plus"></span> Add Neighborhood</button>
+    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span class="glyphicon glyphicon-plus"></span> Add Boarding Point</button>
     <button class="btn btn-sm btn-danger" ng-really-click="handleDeleteButtonClicked(currentNeighborhood.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ currentNeighborhood.name }}</button>
 </div>
 
@@ -29,59 +29,34 @@
     </tr>
 </table>
 
-
-
-
-<div ng-if="poiCountEnabled">
-<br/>
-<br/>
-<br/>
-<br/>
-
-    <h3>This is the secret tool for updating POI count for all neighborhoods...</h3>
-
-        <button type="button" class="btn btn-primary" ng-click="recalculatePOICount()">Run</button>
-        <table class="table table-condensed table-bordered">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th># of POIs</th>
-            </tr>
-            </thead>
-            <tr ng-repeat="neighborhood in citiesAndNeighborhoodsManager.getAllData()">
-                <td>{{ $index + 1 }}</td>
-                <td>{{ neighborhood.name }}</td>
-                <td>{{ neighborhood.poiCount }}</td>
-            </tr>
-        </table>
-<br/>
-<br/>
-<br/>
-
-
-<pre class="tiny-debug">
-{{ citiesAndNeighborhoodsManager | json }}
-</pre>
-<br/>
-<br/>
-</div>
-
-
 <!-- modal popup for adding neighborhood to existing city/state/neighborhood -->
 
-<script type="text/ng-template" id="add-neighborhood-to-city-state-modal.html">
+<script type="text/ng-template" id="add-boardingpoint-to-city-state-modal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add Neighborhood to {{ parentNeighborhood.name }}</h3>
+        <h3 class="modal-title">Add Boarding point to {{ city.name }}</h3>
     </div>
     <div class="modal-body">
 
         <!-- ---------------------------------------------------------------------------- -->
-        <form name="addNeighToCityForm" role="form">
+        <form name="addBoardingPointForm" role="form" class="container-fluid">
 
             <div class="form-group">
-                <label for="modalAddNeighInput">Neighborhood</label>
-                <input type="text" id="modalAddNeighInput" class="form-control" ng-model="neighborhood.name">
+                <label for="modalAddNeighInput">Boarding Point</label>
+                <div class="row top-buffer-5">
+                    <div class="col-xs-10">
+                        <input type="text" id="modalAddNeighInput" class="form-control" ng-model="boardingPoint.name" placeholder="name">
+                    </div>
+                </div>
+                <div class="row top-buffer-5">
+                    <div class="col-xs-10">
+                        <input type="text" class="form-control" ng-model="boardingPoint.landmark" placeholder="near by landmark">
+                    </div>
+                </div>
+                <div class="row top-buffer-5">
+                    <div class="col-xs-10">
+                        <input type="text" class="form-control" ng-model="boardingPoint.phone" placeholder="contact number">
+                    </div>
+                </div>
             </div>
         </form>
         <!-- ---------------------------------------------------------------------------- -->

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.web.PageableArgumentResolver;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -86,12 +86,10 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         registry.addResourceHandler("/*").addResourceLocations("/");
         super.addResourceHandlers(registry);
     }
-
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new ServletWebArgumentResolverAdapter(pageableArgumentResolver()));
+        argumentResolvers.add(pageableArgumentResolver());
     }
-
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
@@ -101,11 +99,18 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         return multipartResolver;
     }
 
-    @Bean
-    public PageableArgumentResolver pageableArgumentResolver() {
-        PageableArgumentResolver resolver = new PageableArgumentResolver();
-        resolver.setFallbackPageable(new PageRequest(0, Integer.MAX_VALUE));
+    public static PageableHandlerMethodArgumentResolver getPageableHandlerMethodArgumentResolver() {
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setMaxPageSize(Integer.MAX_VALUE);
+        resolver.setFallbackPageable(new PageRequest(0, Integer.MAX_VALUE, null));
+        resolver.setPrefix("page.");
+        resolver.setOneIndexedParameters(true);
         return resolver;
+    }
+
+    @Bean
+    public PageableHandlerMethodArgumentResolver pageableArgumentResolver() {
+        return getPageableHandlerMethodArgumentResolver();
     }
 
     @Bean

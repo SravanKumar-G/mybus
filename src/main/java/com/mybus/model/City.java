@@ -5,13 +5,16 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jsondoc.core.annotation.ApiObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by skandula on 3/31/15.
  */
 
 @ToString
 @ApiObject(name = "City")
-public class City extends AbstractDocument implements AttributesDocument{
+public class City extends AbstractDocument{
 
     @Getter
     @Setter
@@ -20,9 +23,8 @@ public class City extends AbstractDocument implements AttributesDocument{
     @Setter
     private String state;
 
+    @Getter
+    @Setter
+    private Set<BoardingPoint> boardingPoints = new HashSet<>();
 
-    @Override
-    public boolean containsKey(String attributeName) {
-        return false;
-    }
-}
+ }

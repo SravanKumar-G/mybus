@@ -4,11 +4,8 @@
 <div class="toolbar-button-div pull-right">
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddStateCity()"><span class="glyphicon glyphicon-plus"></span> Add City</button>
 </div>
-
-        <br/>
-        <br/>
-
-
+<br/>
+<br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
     <tr ng-repeat="city in currentPageOfCities">
         <td data-title="'City'" sortable="'city'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.name }}</td>
@@ -18,10 +15,6 @@
         <td colspan="4">No cities exist.  Please add some.</td>
     </tr>
 </table>
-
-
-
-
 
 
 <!-- modal popup for adding city/state -->
