@@ -18,7 +18,8 @@
   command to verify installation 
   >git --version
   
-For development I recommend using IDE i.e. eclipse, intelliJ etc. Download you favorite IDE and get ready to ROCK!!
+For development I recommend using IDE i.e. eclipse, intelliJ etc. Download you favorite IDE. If you plan to use Eclipse run the below command to create eclise related artifacts.
+  >mvn eclipse:eclipse
 
 #Start database
 We will be using mongodb for application database. Start the mongo deamon using the below command in terminal/command prompt
