@@ -2,6 +2,7 @@ package com.mybus.config;
 
 import com.mybus.dao.UserDAO;
 import com.mybus.model.User;
+import com.mybus.service.TestDataCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 
 /**
@@ -19,6 +21,14 @@ public class LoginService implements UserDetailsService {
     
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private TestDataCreator testDataCreator;
+
+    @PostConstruct
+    public void createTestData() {
+        testDataCreator.createTestData();
+    }
     
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
