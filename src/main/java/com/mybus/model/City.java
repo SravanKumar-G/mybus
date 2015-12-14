@@ -1,9 +1,8 @@
 package com.mybus.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.jsondoc.core.annotation.ApiObject;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +13,20 @@ import java.util.Set;
 
 @ToString
 @ApiObject(name = "City")
+@AllArgsConstructor
+@NoArgsConstructor
 public class City extends AbstractDocument{
+    private static final String KEY_NAME = "name";
+    private static final String KEY_STATE = "state";
 
     @Getter
     @Setter
+    @Field(KEY_NAME)
     private String name;
+
     @Getter
     @Setter
+    @Field(KEY_STATE)
     private String state;
 
     @Getter

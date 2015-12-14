@@ -15,7 +15,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -61,6 +63,9 @@ import static com.mybus.SystemProperties.SysProps;
 @Import({CoreAppConfig.class })
 //@PropertySource(name = "redisProperties", value = "classpath:redis-config.properties")
 @EnableAsync
+@EnableMongoAuditing(
+        auditorAwareRef = "springSecurityAuditorAware"
+)
 public class WebApplicationConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer {
 
     private static final int MAX_UPLOAD_SIZE_DEFAULT = 52428800;
@@ -218,11 +223,17 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
-                .addPathPatterns("/**");
+                .addPathPatterns("/api/**");
     }
     @Bean
     public AuthenticationInterceptor authenticationInterceptor(){
         return new AuthenticationInterceptor();
         
     }
+
+    @Bean
+    public SpringSecurityAuditorAware springSecurityAuditorAware() {
+        return (SpringSecurityAuditorAware) applicationContext.getBean("springSecurityAuditorAware");
+    }
+
 }

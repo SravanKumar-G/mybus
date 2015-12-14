@@ -1,8 +1,6 @@
 package com.mybus.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.jsondoc.core.annotation.ApiObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +12,8 @@ import java.util.Collection;
  */
 @ToString
 @ApiObject(name = "User")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends AbstractDocument implements AttributesDocument{
     @Getter
     @Setter

@@ -34,16 +34,6 @@ public abstract class AbstractControllerIntegrationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractControllerIntegrationTest.class);
 
-    public static final String FOLDER_SEQ_1_ID = new ObjectId().toString();
-    public static final String FOLDER_SEQ_2_ID = new ObjectId().toString();
-    public static final String FOLDER_SEQ_3_ID = new ObjectId().toString();
-    public static final String USER_FLDR_SEQ_1_ID = new ObjectId().toString();
-    public static final String USER_FLDR_SEQ_2_ID = new ObjectId().toString();
-    public static final String PRIVATE_FLDR_1_ID = new ObjectId().toString();
-    public static final String PRIVATE_FLDR_2_ID = new ObjectId().toString();
-
-
-
     @Autowired
     @Getter
     private ObjectMapper objectMapper;
