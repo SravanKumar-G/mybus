@@ -83,29 +83,6 @@
                 <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
-            <%--<li data-match-route="/conditions" ng-if="appConfigManager.areConditionsEnabled()"><a href="#/conditions">Conditions</a></li>
-                <li data-match-route="/procedures" ng-if="appConfigManager.areProceduresEnabled()"><a href="#/procedures">Procedures</a></li>
-                <li data-match-route="/categories" ng-if="userManager.isAdmin()"><a href="#/categories">Categories</a></li>
-                <li data-match-route="/neighborhoods" ng-if="userManager.isAdmin()"><a href="#/cities">Cities</a></li>
-                <li data-match-route="/businesses" ng-if="userManager.canViewBusinesses()" class="dropdown">
-                    <a href="#/businesses" class="dropdown-toggle" data-toggle="dropdown">Businesses <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#/businesses" ng-if="userManager.canViewBusinesses()">View All</a></li>
-                        <li><a href="#/businesses-new" ng-if="userManager.isAuthor() || userManager.isPublisher() || userManager.isAdmin()">Add New</a></li>
-                        <li><a href="#/businesses-import-google" ng-if="userManager.isAuthor() || userManager.isPublisher() || userManager.isAdmin()">Google Places - Import</a></li>
-                        <li><a href="#/businesses-missing-fields" ng-if="userManager.isPublisher() || userManager.isAdmin()">Missing Fields Report</a></li>
-                    </ul>
-                </li>
-                <li data-match-route="/resolveBusinesses" ng-if="userManager.canViewBusinesses()">
-                    <a href="#/resolveBusinesses" class="dropdown-toggle" data-toggle="dropdown">Resolve Businesses </a>
-                </li>
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search" ng-model="poiSearchText">
-                    </div>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="searchPOIs()">Submit</button>
-                </form>--%>
-
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>

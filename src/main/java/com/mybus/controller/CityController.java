@@ -6,6 +6,7 @@ import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
+import org.jsondoc.core.annotation.ApiBodyObject;
 import org.jsondoc.core.annotation.ApiResponseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,9 @@ public class CityController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiResponseObject
-    public City createCity(HttpServletRequest request, @RequestBody final City city) {
+    public City createCity(HttpServletRequest request, @ApiBodyObject @RequestBody final City city) {
         logger.debug("post city called");
-        city.setCreatedBy(sessionManager.getCurrentUser().getUsername());
+        //city.setCreatedBy(sessionManager.getCurrentUser().getUsername());
         return cityDAO.save(city);
     }
 

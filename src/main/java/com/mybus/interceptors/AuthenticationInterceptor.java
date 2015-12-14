@@ -47,7 +47,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 logger.trace(this.getClass().toString() + " - handler is an instance of HandlerMethod - "
                         + handler.getClass().getCanonicalName());
             }
-            if (request.getRequestURI().equals("/jsondoc")) {
+            if (request.getRequestURI().equals("/jsondoc") || request.getRequestURI().equals("/login")) {
                 logger.debug("skipping authentication check for /jsondoc");
                 return super.preHandle(request, response, handler);
             }
@@ -60,7 +60,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             }else {
                 logger.debug("No user found in request");
             }
-            //failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request);
+            failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request);
             
         }
         return true;

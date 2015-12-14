@@ -7,9 +7,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.HashMap;
@@ -37,6 +35,9 @@ public abstract class AbstractDocument {
     @ApiObjectField(description = "Time at which Object Was Created")
     private DateTime createdAt;
 
+    @Version
+    private Long version;
+
     @Getter
     @Setter
     @LastModifiedDate
@@ -46,11 +47,13 @@ public abstract class AbstractDocument {
 
     @Getter
     @Setter
+    @CreatedBy
     @ApiObjectField(description = "User who created the object")
     private String createdBy;
 
     @Getter
     @Setter
+    @LastModifiedBy
     @ApiObjectField(description = "User who updated the object")
     private String updatedBy;
 
