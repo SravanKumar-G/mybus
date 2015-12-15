@@ -8,8 +8,8 @@
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
     <tr ng-repeat="city in currentPageOfCities">
-        <td data-title="'City'" sortable="'city'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.name }}</td>
-        <td data-title="'State'" class="clickable-item" ng-click="goToNeighborhoodsList(city.id)">{{ city.state }}</td>
+        <td data-title="'City'" sortable="'city'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
+        <td data-title="'State'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
     </tr>
     <tr ng-if="!currentPageOfCities || currentPageOfCities.length === 0">
         <td colspan="4">No cities exist.  Please add some.</td>
@@ -20,7 +20,7 @@
 <!-- modal popup for adding city/state -->
 
 
-<script type="text/ng-template" id="neighborhood-add-city-state-modal.html">
+<script type="text/ng-template" id="add-city-state-modal.html">
     <div class="modal-header">
         <h3 class="modal-title">Add a New City</h3>
     </div>
@@ -32,7 +32,7 @@
                 <label class="col-sm-3 control-label" for="modalStateInput">State</label>
                 <div class="row">
                     <div class="col-sm-7">
-                        <state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="neighborhood.state" required></state-options>
+                        <state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="city.state" required></state-options>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="cityInput">City</label>
                 <div class="col-sm-7">
-                    <input type="text" id="cityInput" class="form-control" ng-model="neighborhood.name">
+                    <input type="text" id="cityInput" class="form-control" ng-model="city.name">
                 </div>
             </div>
 

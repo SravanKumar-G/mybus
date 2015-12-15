@@ -14,9 +14,13 @@ import org.springframework.stereotype.Service;
 /**
  * Created by skandula on 12/13/15.
  */
-
+/*
+    Module to find the current userId for audit(EnableMongoAuditing) usage.
+ */
 @Service
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
+    @Autowired
+    private UserDAO userDAO;
 
     public String getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -25,7 +29,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
             return null;
         }
         String userName = ((UserDetails) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal()).getUsername();
-        return userName;
-        //return userDAO.findOneByUsername(authentication.getPrincipal().toString());
+        return userDAO.findOneByUsername(userName).getId();
     }
 }

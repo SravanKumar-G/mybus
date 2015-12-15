@@ -6,6 +6,7 @@ import com.mybus.model.City;
 import com.mybus.model.User;
 import org.json.simple.JSONObject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,14 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.name").value("city"));
+    }
 
+    @Test
+    public void testDeleteCity() throws Exception {
+        City city = new City("city", "CA", null);
+        city = cityDAO.save(city);
+        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s", city.getId())), currentUser));
+        actions.andExpect(status().isOk());
+        Assert.assertNull(cityDAO.findOne(city.getId()));
     }
 }

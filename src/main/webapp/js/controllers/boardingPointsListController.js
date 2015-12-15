@@ -6,7 +6,7 @@
 /*global angular,_*/
 
 angular.module('myBus.boardingPointModule', [])
-    .controller('BoardingPointsListController', function($scope,$routeParams, $log, $http, $modal, userManager, citiesManager) {
+    .controller('BoardingPointsListController', function($scope,$routeParams, $log, $modal, userManager, cityManager) {
         $scope.headline = "Boarding Points";
         $scope.user = {};
         $scope.groups = [];
@@ -19,12 +19,14 @@ angular.module('myBus.boardingPointModule', [])
                 alert(errorMsg);
                 return;
             }
-            citiesManager.getCity(id, function(city) {
+            cityManager.getCity(id, function(city) {
                 $scope.city = city;
             });
         };
         $scope.findCity($scope.cityId);
-
+        $scope.handleDeleteButtonClicked = function(id) {
+            cityManager.deleteCity(id, function() {cityManager.fetchAllCities();})
+        }
         $scope.handleClickAddBoardingPoint = function (size) {
              var modalInstance = $modal.open({
                 templateUrl: 'add-boardingpoint-to-city-state-modal.html',
@@ -49,28 +51,18 @@ angular.module('myBus.boardingPointModule', [])
     })// ========================== Modal - Boarding point controller =================================
     //
     .controller('AddBoardingPointController', function ($scope, $modalInstance, $http, $log, city, citiesManager) {
-        $scope.neighborhood = {
+        $scope.boardingPoint = {
             name: null,
             state: null
         };
         $scope.city = city;
         $scope.ok = function () {
-            if ($scope.neighborhood.name === null || $scope.neighborhood.state === null) {
+            if ($scope.boardingPoint.name === null || $scope.boardingPoint.state === null) {
                 $log.error("null city or state.  nothing was added.");
                 $modalInstance.close(null);
             }
 
-            $http.post('/api/v1/city', $scope.neighborhood)
-                .success(function (data) {
-                    $log.info("added new city info: " + angular.toJson($scope.neighborhood));
-                    $modalInstance.close(data);
-                    citiesManager.fetchAllCities();
-                })
-                .error(function (err) {
-                    var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
-                    $log.error(errorMsg);
-                    alert(errorMsg);
-                });
+
         };
 
         $scope.cancel = function () {
@@ -78,8 +70,8 @@ angular.module('myBus.boardingPointModule', [])
         };
 
         $scope.isInputValid = function () {
-            return ($scope.neighborhood.name || '') !== '' &&
-                ($scope.neighborhood.state || '') !== '';
+            return ($scope.boardingPoint.name || '') !== '' &&
+                ($scope.boardingPoint.state || '') !== '';
         };
 
 
