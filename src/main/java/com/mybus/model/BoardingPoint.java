@@ -1,9 +1,6 @@
 package com.mybus.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.jsondoc.core.annotation.ApiObject;
 
 /**
@@ -12,6 +9,8 @@ import org.jsondoc.core.annotation.ApiObject;
 @ToString
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @ApiObject(name = "BoardingPoint")
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardingPoint extends AbstractDocument {
     @Getter
     @Setter

@@ -25,6 +25,14 @@ public class CityManager {
     private CityDAO cityDAO;
 
     public City addBoardingPointToCity(String cityId, BoardingPoint bp) {
+        Preconditions.checkNotNull(cityId, "The city id can not be null");
+        Preconditions.checkNotNull(bp.getName(), "Boarding point name can not be null");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Adding boarding point to city with id" + cityId);
+        }
+        if (cityDAO.findOne(cityId) == null) {
+            throw new RuntimeException("Unknown city id");
+        }
         return cityMongoDAO.addBoardingPoint(cityId, bp);
     }
 
@@ -33,11 +41,10 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting city with id" + id);
         }
-        try {
+        if (cityDAO.findOne(id) != null) {
             cityDAO.delete(id);
-        } catch (Exception e) {
-            logger.error("Error deleting city with id " + id, e);
-            return false;
+        } else {
+            throw new RuntimeException("Unknown city id");
         }
         return true;
     }

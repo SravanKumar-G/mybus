@@ -6,6 +6,7 @@ import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
+import org.json.simple.JSONObject;
 import org.jsondoc.core.annotation.ApiBodyObject;
 import org.jsondoc.core.annotation.ApiResponseObject;
 import org.slf4j.Logger;
@@ -62,9 +63,11 @@ public class CityController {
     @RequestMapping(value = "city/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     @ApiResponseObject
-    public boolean deleteCity(HttpServletRequest request, @PathVariable final String id) {
+    public JSONObject deleteCity(HttpServletRequest request, @PathVariable final String id) {
         logger.debug("get city called");
-        return cityManager.delete(id);
+        JSONObject response = new JSONObject();
+        response.put("deleted", cityManager.delete(id));
+        return response;
     }
 
     @ResponseStatus(value = HttpStatus.OK)

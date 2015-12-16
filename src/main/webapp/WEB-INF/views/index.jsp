@@ -2,7 +2,7 @@
 <html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
-    <title>Reports </title>
+    <title>My Bus </title>
 
     <script src="lib/underscore-min-1.5.2.js"></script>
     <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
@@ -67,7 +67,7 @@
 </head>
 <body>
 <!-- Fixed navbar -->
-<div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" bs-navbar>
+<div class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
