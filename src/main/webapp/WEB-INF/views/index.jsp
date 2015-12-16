@@ -2,7 +2,7 @@
 <html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
-    <title>Reports </title>
+    <title>My Bus </title>
 
     <script src="lib/underscore-min-1.5.2.js"></script>
     <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
@@ -26,7 +26,7 @@
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
-    <script src="js/services/citiesManager.js"></script>
+    <script src="js/services/cityManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
@@ -67,7 +67,7 @@
 </head>
 <body>
 <!-- Fixed navbar -->
-<div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" bs-navbar>
+<div class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -81,6 +81,7 @@
             <ul class="nav navbar-nav">
                 <li data-match-route="/$"><a href="#">Home</a></li>
                 <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
+                <li data-match-route="/cities"><a href="#/states">States</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
             </ul>

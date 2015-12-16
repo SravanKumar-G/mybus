@@ -18,6 +18,7 @@ import java.util.Set;
 public class City extends AbstractDocument{
     private static final String KEY_NAME = "name";
     private static final String KEY_STATE = "state";
+    private static final String KEY_BOARDING_POINTS = "bp";
 
     @Getter
     @Setter
@@ -31,6 +32,7 @@ public class City extends AbstractDocument{
 
     @Getter
     @Setter
+    @Field(KEY_BOARDING_POINTS)
     private Set<BoardingPoint> boardingPoints = new HashSet<>();
 
  }

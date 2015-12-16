@@ -3,7 +3,7 @@
 
 var portalApp = angular.module('myBus');
 
-portalApp.factory('citiesManager', function ($rootScope, $http, $log) {
+portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
 
   var cities = {}
     , rawChildDataWithGeoMap = {};
@@ -29,20 +29,6 @@ portalApp.factory('citiesManager', function ($rootScope, $http, $log) {
         return cities;
     },
 
-    countChildrenById: function (parentId) {
-      if (rawChildDataWithGeoMap[parentId]) {
-        return rawChildDataWithGeoMap[parentId].length;
-      }
-      return _.reduce(rawDataWithGeo, function (sum, val) {
-        if (val) {
-          if (val && val.parentId === parentId) {
-            return sum + 1;
-          }
-          return sum;
-        }
-      }, 0);
-    },
-
     getChildrenByParentId: function (parentId) {
       if (!parentId) {
         return [];
@@ -60,6 +46,18 @@ portalApp.factory('citiesManager', function ($rootScope, $http, $log) {
         return value.id === id;
       }));
     },
+    createCity : function (city, callback) {
+        $http.post('/api/v1/city', city)
+          .success(function (data) {
+            callback(data);
+            this.fetchAllCities();
+          })
+          .error(function (err) {
+            var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
+            $log.error(errorMsg);
+            alert(errorMsg);
+          });
+    },
     getCity: function (id, callback) {
       $http.get('/api/v1/city/' + id)
        .success(function (data) {
@@ -68,6 +66,16 @@ portalApp.factory('citiesManager', function ($rootScope, $http, $log) {
        .error(function (error) {
               alert("error finding city. " + angular.toJson(error));
        });
+    },
+    deleteCity: function(id, callback) {
+      $http.delete('/api/v1/city/' + id)
+        .success(function (data) {
+          callback(data);
+          $window.location = "#/cities";
+        })
+        .error(function (error) {
+          alert("error finding city. " + angular.toJson(error));
+        });
     }
   };
 });
