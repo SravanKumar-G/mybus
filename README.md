@@ -37,6 +37,11 @@ This will clean the previous build artifacts and lauch an embedded tomcat server
 
 Happy coding :)
 
+#Lombok setup
+The project uses lombok(https://projectlombok.org/) for leveraging various features of it. If you are using an IDE for development you need to install respective plugin to have source code compiled successfully. If you are using eclipse please use this link for instructions configuring eclipse.
+http://stackoverflow.com/questions/22310414/how-to-configure-lombok-in-eclipse-luna
+
+If you are using intelliJ install lombok plugin from marketplace.
 
 
 
