@@ -50,6 +50,10 @@ public class CityManager {
     }
 
     public City save(City city) {
+
+        City c = new City();
+        c.setName("Guntur");
+
         Preconditions.checkNotNull(city.getName(), "The city name can not be null");
         Preconditions.checkNotNull(city.getState(), "The city state can not be null");
         return cityDAO.save(city);
