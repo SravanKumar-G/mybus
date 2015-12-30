@@ -18,11 +18,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Date;
+import java.util.HashSet;
 
 import static java.lang.String.format;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -134,4 +136,37 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 .content(objectMapper.writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isInternalServerError());
     }
+
+    @Test
+    public void testUpdateBoardingPoint() throws Exception {
+        City city = new City("TextCity", "TestState", new HashSet<>());
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
+        city.getBoardingPoints().add(bp);
+        city = cityDAO.save(city);
+        bp = city.getBoardingPoints().iterator().next();
+        bp.setName("NewName");
+        ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s/boardingpoint", city.getId()))
+                .content(objectMapper.writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.boardingPoints").exists());
+        actions.andExpect(jsonPath("$.boardingPoints").isArray());
+        actions.andExpect(jsonPath("$.boardingPoints[0].name").value(bp.getName()));
+        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+    }
+
+    @Test
+    public void testDeleteBoardingPoint() throws Exception{
+        City city = new City("TextCity", "TestState", new HashSet<>());
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
+        city.getBoardingPoints().add(bp);
+        city = cityDAO.save(city);
+        bp = city.getBoardingPoints().iterator().next();
+        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s/boardingpoint/%s", city.getId()
+                , bp.getId())), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.boardingPoints").doesNotExist());
+        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+    }
+
+
 }

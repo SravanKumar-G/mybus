@@ -48,7 +48,7 @@ public class CityController {
     @ApiResponseObject
     public City createCity(HttpServletRequest request, @ApiBodyObject @RequestBody final City city) {
         logger.debug("post city called");
-        return cityManager.save(city);
+        return cityManager.saveCity(city);
     }
 
     @RequestMapping(value = "city/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -66,7 +66,7 @@ public class CityController {
     public JSONObject deleteCity(HttpServletRequest request, @PathVariable final String id) {
         logger.debug("get city called");
         JSONObject response = new JSONObject();
-        response.put("deleted", cityManager.delete(id));
+        response.put("deleted", cityManager.deleteCity(id));
         return response;
     }
 
@@ -83,4 +83,27 @@ public class CityController {
         return cityManager.addBoardingPointToCity(cityId, bp);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "city/{cityId}/boardingpoint", method = RequestMethod.PUT,
+            produces = ControllerUtils.JSON_UTF8,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ApiResponseObject
+    public City updateCityBoardingpoint(HttpServletRequest request,
+                                        @PathVariable final String cityId,
+                                        @RequestBody final BoardingPoint bp) {
+        logger.debug("create boardingpoint called");
+        return cityManager.updateBoardingPoint(cityId, bp);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "city/{cityId}/boardingpoint/{id}", method = RequestMethod.DELETE,
+            produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    public City deleteCityBoardingpoint(HttpServletRequest request,
+                                        @PathVariable final String cityId,
+                                        @PathVariable final String id) {
+        logger.debug("create boardingpoint called");
+        return cityManager.deleteBoardingPoint(cityId, id);
+    }
 }
