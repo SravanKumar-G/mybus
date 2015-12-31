@@ -1,7 +1,6 @@
-package com.mybus;
+package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.controller.UserController;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.impl.CityMongoDAO;
 import com.mybus.exception.BadRequestException;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Collectors;
 
 /**

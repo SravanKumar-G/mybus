@@ -1,6 +1,6 @@
 package com.mybus.controller;
 
-import com.mybus.CityManager;
+import com.mybus.service.CityManager;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;

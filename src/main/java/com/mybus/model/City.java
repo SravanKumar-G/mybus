@@ -37,8 +37,4 @@ public class City extends AbstractDocument{
     @Field(KEY_BOARDING_POINTS)
     private Set<BoardingPoint> boardingPoints = new HashSet<>();
 
-
-    public void setName(String name) {
-        this.name = name;
-    }
  }

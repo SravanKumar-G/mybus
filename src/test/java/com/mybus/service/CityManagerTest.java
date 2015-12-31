@@ -1,4 +1,4 @@
-package com.mybus;
+package com.mybus.service;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.CityDAO;
@@ -6,16 +6,14 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
+import com.mybus.service.CityManager;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashSet;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by skandula on 12/27/15.
