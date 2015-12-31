@@ -9,6 +9,8 @@
 .idea/scopes
 .idea/.name
 .idea/*.xml
+.idea/compiler.xml
+.idea/misc.xml
 *.iml
 *.ipr
 *.iws
