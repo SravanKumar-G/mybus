@@ -12,5 +12,4 @@ import java.util.List;
 public interface RouteDAO extends PagingAndSortingRepository<Route, String> {
     Route findByName(String name);
     List<Route> findByActive(boolean active);
-    List<Route> findByDeleted(boolean deleted);
 }
