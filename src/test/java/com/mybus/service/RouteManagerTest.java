@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -57,7 +58,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testSaveRoute() {
-        Route route = new Route("Name", "123", "1234", new ArrayList<>(), false);
+        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid from city id");
         routeManager.saveRoute(route);
@@ -125,7 +126,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     private Route createTestRoute() {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
         City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
-        Route route = new Route("Name", fromCity.getId(), toCity.getId(), new ArrayList<>(), false);
+        Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
         return routeManager.saveRoute(route);
     }
 }
