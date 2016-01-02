@@ -1,6 +1,5 @@
 package com.mybus.service;
 
-import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Preconditions;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.CityDAO;
@@ -9,6 +8,7 @@ import com.mybus.model.City;
 import com.mybus.model.Route;
 import com.mybus.model.User;
 import junit.framework.Assert;
+import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,10 +16,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -57,39 +54,70 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
 
 
     @Test
-    public void testSaveRoute() {
+    public void testSaveRouteWithInvalidFromCityId() {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid from city id");
         routeManager.saveRoute(route);
+    }
+    @Test
+    public void testSaveRouteWithInvalidToCityId() {
+        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
         route.setFromCity(fromCity.getId());
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid to city id");
         routeManager.saveRoute(route);
+    }
+    @Test
+    public void testSaveRoute() {
+        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
+        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        route.setFromCity(fromCity.getId());
+
         City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
-        route.setFromCity(toCity.getId());
+        route.setToCity(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         Preconditions.checkNotNull(savedRoute);
         routeManager.saveRoute(route);
-        List routes = Lists.newArrayList(routeDAO.findAll());
+        List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(1, routes.size());
+    }
+    @Test
+    public void testSaveRouteWithDuplicateName() {
+        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
+        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        route.setFromCity(fromCity.getId());
 
+        City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        route.setToCity(toCity.getId());
+        Route savedRoute = routeManager.saveRoute(route);
         //try saving the route with same name
         savedRoute.setId(null);
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("Route with the same name exits");
         routeManager.saveRoute(savedRoute);
+    }
+    @Test
+    public void testSaveRouteWithNewName() {
+        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), true);
+        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        route.setFromCity(fromCity.getId());
+        City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        route.setToCity(toCity.getId());
+        Route savedRoute = routeManager.saveRoute(route);
+        //try saving the route with same name
+        savedRoute.setId(null);
         //change the name and it should be good
         savedRoute.setName(savedRoute.getName() + "_New");
         routeManager.saveRoute(savedRoute);
-        routes = Lists.newArrayList(routeDAO.findAll());
+        List<Route> routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(2, routes.size());
-        List cities = Lists.newArrayList(cityDAO.findAll());
+        List cities =IteratorUtils.toList(cityDAO.findAll().iterator());
         Assert.assertEquals(2, cities.size());
-        List activeRoutes = Lists.newArrayList(routeDAO.findByActive(true));
+        List activeRoutes = IteratorUtils.toList(routeDAO.findByActive(true).iterator());
         Assert.assertEquals(2, activeRoutes.size());
-        List inActiveRoutes = Lists.newArrayList(routeDAO.findByActive(false));
+        List inActiveRoutes = IteratorUtils.toList(routeDAO.findByActive(false).iterator());
         Assert.assertEquals(0, inActiveRoutes.size());
     }
 
@@ -101,11 +129,11 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         Route route = createTestRoute();
         route = routeManager.deactiveRoute(route.getId());
         Assert.assertEquals("Deactivation failed", false, route.isActive());
-        List routes = Lists.newArrayList(routeDAO.findAll());
+        List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(1, routes.size());
-        List activeRoutes = Lists.newArrayList(routeDAO.findByActive(true));
+        List activeRoutes = IteratorUtils.toList(routeDAO.findByActive(true).iterator());
         Assert.assertEquals(0, activeRoutes.size());
-        List inActiveRoutes = Lists.newArrayList(routeDAO.findByActive(false));
+        List inActiveRoutes = IteratorUtils.toList(routeDAO.findByActive(false).iterator());
         Assert.assertEquals(1, inActiveRoutes.size());
     }
 
@@ -116,8 +144,35 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         routeManager.deleteRoute("123");
         Route route = createTestRoute();
         routeManager.deleteRoute(route.getId());
-        List routes = Lists.newArrayList(routeDAO.findAll());
+        List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(0, routes.size());
+    }
+
+
+    @Test
+    public void createTestRouteWithInvalidViaCities() {
+        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
+        expectedEx.expect(RuntimeException.class);
+        expectedEx.expectMessage("invalid via city is found in via cities");
+        route.getViaCities().add("123");
+        routeManager.saveRoute(route);
+    }
+
+    @Test
+    public void createTestRouteWithValidViaCities() {
+        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        City toCity = cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>()));
+        Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
+        for(int i =0; i<3; i++){
+            route.getViaCities().add(cityManager.saveCity(new City("TestCity", "TestState", new HashSet<>())).getId());
+        }
+        routeManager.saveRoute(route);
+        List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
+        Assert.assertEquals(1, routes.size());
+        List cities = IteratorUtils.toList(cityDAO.findAll().iterator());
+        Assert.assertEquals(5, cities.size());
     }
     /**
      * Create a route for testing

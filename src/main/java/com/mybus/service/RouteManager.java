@@ -33,6 +33,11 @@ public class RouteManager {
         if(StringUtils.isBlank(route.getId()) && routeDAO.findByName(route.getName()) != null) {
             throw new RuntimeException("Route with the same name exits");
         }
+        route.getViaCities().stream().forEach(c -> {
+            if(cityDAO.findOne(c) == null) {
+                throw new RuntimeException("invalid via city is found in via cities");
+            }
+        });
         return routeDAO.save(route);
     }
     public void deleteRoute(String routeId) {
