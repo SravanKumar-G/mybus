@@ -4,6 +4,7 @@
 .settings
 
 # Intellij
+.idea/
 .idea/copyright
 .idea/libraries
 .idea/scopes
@@ -16,7 +17,5 @@
 *.iws
 out/
 .idea_modules/
-.idea
-.idea/*
 .idea/**
  .idea/workspace.xml
