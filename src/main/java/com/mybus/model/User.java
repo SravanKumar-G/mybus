@@ -1,17 +1,13 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.jsondoc.core.annotation.ApiObject;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 /**
  * Created by skandula on 3/31/15.
  */
 @ToString
-@ApiObject(name = "User")
+@ApiModel(value = "User")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends AbstractDocument implements AttributesDocument{

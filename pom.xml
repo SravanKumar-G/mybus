@@ -176,20 +176,14 @@
             <version>1.14.8</version>
         </dependency>
         <dependency>
-            <groupId>org.jsondoc</groupId>
-            <artifactId>jsondoc-core</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsondoc</groupId>
-            <artifactId>jsondoc-springmvc</artifactId>
-            <version>1.1.1</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.2.2</version>
         </dependency>
         <dependency>
-            <groupId>org.jsondoc</groupId>
-            <artifactId>jsondoc-ui</artifactId>
-            <version>1.1.1</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>

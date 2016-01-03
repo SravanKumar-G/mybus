@@ -3,7 +3,6 @@ package com.mybus.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
 import com.mybus.interceptors.AuthenticationInterceptor;
-import com.mybus.service.TestDataCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -41,12 +39,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
 import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.xml.transform.Source;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import static com.mybus.SystemProperties.SysProps;
+import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableWebMvc
@@ -66,6 +69,7 @@ import static com.mybus.SystemProperties.SysProps;
 @EnableMongoAuditing(
         auditorAwareRef = "springSecurityAuditorAware"
 )
+@EnableSwagger2
 public class WebApplicationConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer {
 
     private static final int MAX_UPLOAD_SIZE_DEFAULT = 52428800;
@@ -81,6 +85,32 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Bean
+    public Docket api(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(regex("/api/.*"))
+                .build()
+                .apiInfo(apiInfo());
+    }
+
+    private ApiInfo apiInfo() {
+        /*
+        ApiInfo apiInfo = new ApiInfo("My Project's REST API",
+                "This is a description of your API.",
+                "API TOS",
+                "me@wherever.com",
+                "API License",
+                "API License URL"
+        );
+        */
+        ApiInfo apiInfo = new ApiInfo("MyBus Project's REST API",
+                "Here is the list of REST APIs available",
+                "V1", "SwaggerUI", "Arg5", "", "");
+        return apiInfo;
+    }
+
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/font/**").addResourceLocations("/font/");
@@ -89,6 +119,11 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         registry.addResourceHandler("/js/**").addResourceLocations("/js/");
         registry.addResourceHandler("/bootstrap303/**").addResourceLocations("/bootstrap303/");
         registry.addResourceHandler("/*").addResourceLocations("/");
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
         super.addResourceHandlers(registry);
     }
     @Override
