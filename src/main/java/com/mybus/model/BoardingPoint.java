@@ -1,9 +1,9 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.bson.types.ObjectId;
-import org.jsondoc.core.annotation.ApiObject;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 @ToString
 @EqualsAndHashCode(callSuper = false, of = { "id" })
 @NoArgsConstructor
-@ApiObject(name = "BoardingPoint")
+@ApiModel(value = "BoardingPoint")
 public class BoardingPoint extends AbstractDocument {
     @Getter
     @Setter

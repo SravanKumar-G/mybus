@@ -1,12 +1,12 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
-import org.jsondoc.core.annotation.ApiObject;
-import org.jsondoc.core.annotation.ApiObjectField;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EqualsAndHashCode(of = { "id" })
-@ApiObject(name = "AbstractDocument", show = false)
+@ApiModel(value = "AbstractDocument")
 public abstract class AbstractDocument {
 
     public static final String KEY_ID = "_id";
@@ -25,14 +25,14 @@ public abstract class AbstractDocument {
 
     @Id @Getter @Setter
     @Field(KEY_ID)
-    @ApiObjectField(description = "ID of the Object")
+    @ApiModelProperty(value = "ID of the Object")
     private String id;
 
     @Getter
     @Setter
     @CreatedDate
     @Field(KEY_CREATED_AT)
-    @ApiObjectField(description = "Time at which Object Was Created")
+    @ApiModelProperty(value = "Time at which Object Was Created")
     private DateTime createdAt;
 
     @Version
@@ -42,24 +42,24 @@ public abstract class AbstractDocument {
     @Setter
     @LastModifiedDate
     @Field(KEY_UPDATED_AT)
-    @ApiObjectField(description = "Time at which Object Was Last Updated")
+    @ApiModelProperty(value = "Time at which Object Was Last Updated")
     private DateTime updatedAt;
 
     @Getter
     @Setter
     @CreatedBy
-    @ApiObjectField(description = "User who created the object")
+    @ApiModelProperty(value = "User who created the object")
     private String createdBy;
 
     @Getter
     @Setter
     @LastModifiedBy
-    @ApiObjectField(description = "User who updated the object")
+    @ApiModelProperty(value = "User who updated the object")
     private String updatedBy;
 
     @Getter
     @Setter
-    @ApiObjectField(description = "Additional Fields on the Object")
+    @ApiModelProperty(value = "Additional Fields on the Object")
     @JsonProperty(KEY_ATTRIBUTES)
     @Field(KEY_ATTRIBUTES)
     private Map<String, String> attributes = new HashMap<>();

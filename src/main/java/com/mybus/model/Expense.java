@@ -1,16 +1,16 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.jsondoc.core.annotation.ApiObject;
 
 /**
  * Created by skandula on 3/31/15.
  */
 
 @ToString
-@ApiObject(name = "Expense")
+@ApiModel(value = "Expense")
 public class Expense extends AbstractDocument implements AttributesDocument{
 
     @Getter

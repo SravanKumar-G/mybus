@@ -1,7 +1,8 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.jsondoc.core.annotation.ApiObject;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,7 +14,7 @@ import java.util.Set;
  */
 
 @ToString
-@ApiObject(name = "City")
+@ApiModel(value = "City")
 @AllArgsConstructor
 @NoArgsConstructor
 @Document
@@ -25,16 +26,19 @@ public class City extends AbstractDocument{
     @Getter
     @Setter
     @Field(KEY_NAME)
+    @ApiModelProperty
     private String name;
 
     @Getter
     @Setter
     @Field(KEY_STATE)
+    @ApiModelProperty
     private String state;
 
     @Getter
     @Setter
     @Field(KEY_BOARDING_POINTS)
+    @ApiModelProperty
     private Set<BoardingPoint> boardingPoints = new HashSet<>();
 
  }

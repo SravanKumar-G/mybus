@@ -1,14 +1,14 @@
 package com.mybus.controller;
 
-import com.mybus.service.CityManager;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import com.mybus.service.SessionManager;
+import com.mybus.service.CityManager;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
-import org.jsondoc.core.annotation.ApiBodyObject;
-import org.jsondoc.core.annotation.ApiResponseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
+@Api(value="CityController", description="City and Boarding points management")
 public class CityController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -29,15 +31,13 @@ public class CityController {
 
     @Autowired
     private CityManager cityManager;
-    
-    @Autowired
-    private SessionManager sessionManager;
+
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
-    @ApiResponseObject
-    public Iterable<City> getUserInfo(HttpServletRequest request) {
+    @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
+    public Iterable<City> getCities(HttpServletRequest request) {
         return cityDAO.findAll();
     }
     
@@ -45,16 +45,18 @@ public class CityController {
     @RequestMapping(value = "city", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ApiResponseObject
-    public City createCity(HttpServletRequest request, @ApiBodyObject @RequestBody final City city) {
+    @ApiOperation(value = "Create a city")
+    public City createCity(HttpServletRequest request,
+                           @ApiParam(value = "JSON for City to be created") @RequestBody final City city) {
         logger.debug("post city called");
         return cityManager.saveCity(city);
     }
 
     @RequestMapping(value = "city/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
-    @ApiResponseObject
-    public City getCity(HttpServletRequest request, @PathVariable final String id) {
+    @ApiOperation(value ="Get the City JSON", response = City.class)
+    public City getCity(HttpServletRequest request,
+                        @ApiParam(value = "Id of the City to be found") @PathVariable final String id) {
         logger.debug("get city called");
         return cityDAO.findOne(id);
     }
@@ -62,8 +64,9 @@ public class CityController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    @ApiResponseObject
-    public JSONObject deleteCity(HttpServletRequest request, @PathVariable final String id) {
+    @ApiOperation(value ="Delete a city")
+    public JSONObject deleteCity(HttpServletRequest request,
+                                 @ApiParam(value = "Id of the city to be deleted") @PathVariable final String id) {
         logger.debug("get city called");
         JSONObject response = new JSONObject();
         response.put("deleted", cityManager.deleteCity(id));
@@ -75,10 +78,10 @@ public class CityController {
             produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ApiResponseObject
+    @ApiOperation(value ="Create a new city boarding point", response = City.class)
     public City createCityBoardingpoint(HttpServletRequest request,
-                           @PathVariable final String cityId,
-                           @RequestBody final BoardingPoint bp) {
+               @ApiParam(value = "Id of the city to which boardingpoint to be added") @PathVariable final String cityId,
+               @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
         logger.debug("create boardingpoint called");
         return cityManager.addBoardingPointToCity(cityId, bp);
     }
@@ -88,10 +91,10 @@ public class CityController {
             produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ApiResponseObject
+    @ApiOperation(value ="Update a city boarding point", response = City.class)
     public City updateCityBoardingpoint(HttpServletRequest request,
-                                        @PathVariable final String cityId,
-                                        @RequestBody final BoardingPoint bp) {
+                @ApiParam(value = "Id of the city to which contains boardingpoint ")@PathVariable final String cityId,
+                @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
         logger.debug("create boardingpoint called");
         return cityManager.updateBoardingPoint(cityId, bp);
     }
@@ -100,9 +103,10 @@ public class CityController {
     @RequestMapping(value = "city/{cityId}/boardingpoint/{id}", method = RequestMethod.DELETE,
             produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
+    @ApiOperation(value ="Delete a city boarding point", response = City.class)
     public City deleteCityBoardingpoint(HttpServletRequest request,
-                                        @PathVariable final String cityId,
-                                        @PathVariable final String id) {
+                                        @ApiParam(value = "City Id")  @PathVariable final String cityId,
+                                        @ApiParam(value ="Boardingpoint Id")@PathVariable final String id) {
         logger.debug("create boardingpoint called");
         return cityManager.deleteBoardingPoint(cityId, id);
     }

@@ -1,7 +1,7 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.jsondoc.core.annotation.ApiObject;
 
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by skandula on 12/30/15.
  */
 @ToString
-@ApiObject(name = "Route")
+@ApiModel(value = "BusService")
 @AllArgsConstructor
 @NoArgsConstructor
 public class BusService extends AbstractDocument{
