@@ -26,7 +26,7 @@ public class TestDataCreator {
     private SystemProperties systemProperties;
 
     public void createTestData() {
-        String createTestData = systemProperties.getProperty("create.test.data");
+        /* String createTestData = systemProperties.getProperty("create.test.data");
         if(StringUtils.isNotBlank(createTestData) && Boolean.parseBoolean(createTestData)) {
             User user = userDAO.findOneByUsername("bill");
             if(user == null) {
@@ -43,6 +43,6 @@ public class TestDataCreator {
             }
         } else {
             logger.debug("Skipping test data creation");
-        }
+        }*/
     }
 }
