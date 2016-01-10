@@ -24,15 +24,19 @@
     <script src="js/controllers/citiesController.js"></script>
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
+    <script src="js/controllers/personController.js"></script>
+
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
+    <script src="js/services/personService.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
+
 <%--
     <script src="js/services/categoriesManager.js"></script>
     <script src="js/services/classificationsManager.js"></script>
