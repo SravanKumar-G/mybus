@@ -13,7 +13,8 @@ var myBus = angular.module('myBus', [
   'angularSpinner', 
   'myBus.citiesModules',
   'myBus.expensesModules',
-  'myBus.boardingPointModule'
+  'myBus.boardingPointModule',
+    'myBus.personModules'
   /*,
   'myBus.homeModule',
   'myBus.conditionModule',
@@ -39,6 +40,10 @@ myBus.config(['$routeProvider',
         when('/cities', {
           templateUrl: 'partials/cities-list.tpl.html',
           controller: 'CitiesController'
+        })
+        .when('/persons', {
+          templateUrl: 'partials/person.html',
+          controller: 'PersonController'
         })
         .
         when('/states', {
