@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-@EqualsAndHashCode(of = { "id" })
+@EqualsAndHashCode(of = { "_id" })
 @ApiModel(value = "AbstractDocument")
 public abstract class AbstractDocument {
 

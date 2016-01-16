@@ -20,6 +20,7 @@ import java.util.Set;
 @Document
 public class City extends AbstractDocument{
     private static final String KEY_NAME = "name";
+    private static final String KEY_ACTIVE = "active";
     private static final String KEY_STATE = "state";
     private static final String KEY_BOARDING_POINTS = "bp";
 
@@ -34,6 +35,12 @@ public class City extends AbstractDocument{
     @Field(KEY_STATE)
     @ApiModelProperty
     private String state;
+
+    @Getter
+    @Setter
+    @Field(KEY_ACTIVE)
+    @ApiModelProperty
+    private boolean active;
 
     @Getter
     @Setter
