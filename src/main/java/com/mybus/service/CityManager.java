@@ -48,6 +48,21 @@ public class CityManager {
         }
         return cityDAO.save(city);
     }
+
+    public boolean updateCity(City city) {
+        Preconditions.checkNotNull(city, "The city can not be null");
+        Preconditions.checkNotNull(city.getId(), "The city id can not be null");
+        Preconditions.checkNotNull(city.getName(), "The city name can not be null");
+        Preconditions.checkNotNull(city.getState(), "The city State can not be null");
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Updating city:[{}]" + city);
+        }
+        return cityMongoDAO.updateCity(city);
+    }
+
+
+
     public City addBoardingPointToCity(String cityId, BoardingPoint bp) {
         Preconditions.checkNotNull(cityId, "The city id can not be null");
         Preconditions.checkNotNull(bp.getName(), "Boarding point name can not be null");

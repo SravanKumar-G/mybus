@@ -61,15 +61,15 @@ public class CityController {
         return cityDAO.findOne(id);
     }
 
-    @RequestMapping(value = "city/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
+    @RequestMapping(value = "city/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value ="Update city", response = City.class)
-    public City updateCity(HttpServletRequest request,
+    public boolean updateCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
                         @ApiParam(value = "Person JSON") @RequestBody final City city) {
         logger.debug("get city called");
-        //save City
-        return cityDAO.findOne(id);
+        //save per
+        return cityManager.updateCity(city);
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.DELETE)
