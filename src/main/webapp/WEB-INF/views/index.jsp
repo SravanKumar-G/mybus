@@ -85,7 +85,7 @@
             <ul class="nav navbar-nav">
                 <li data-match-route="/$"><a href="#">Home</a></li>
                 <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
-                <li data-match-route="/cities"><a href="#/states">States</a></li>
+                <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
             </ul>
@@ -99,7 +99,9 @@
 
 <div class="container">
     <div class="view-container">
-        <div ng-view class="view-frame"></div>
+        <div ng-view class="view-frame">
+
+        </div>
     </div>
 </div>
 
