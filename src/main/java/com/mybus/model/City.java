@@ -40,7 +40,7 @@ public class City extends AbstractDocument{
     @Setter
     @Field(KEY_ACTIVE)
     @ApiModelProperty
-    private boolean active;
+    private boolean active = true;
 
     @Getter
     @Setter

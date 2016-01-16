@@ -98,7 +98,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testDeleteCity() throws Exception {
-        City city = new City("city", "CA", null);
+        City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s", city.getId())), currentUser));
         actions.andExpect(status().isOk());
@@ -113,7 +113,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testAddBoardingPoint() throws Exception {
-        City city = new City("city", "CA", null);
+        City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123");
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
@@ -129,7 +129,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testAddBoardingPointNoName() throws Exception {
-        City city = new City("city", "CA", null);
+        City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint(null, "landmark", "123");
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
@@ -139,7 +139,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testUpdateBoardingPoint() throws Exception {
-        City city = new City("TextCity", "TestState", new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new HashSet<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
@@ -156,7 +156,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testDeleteBoardingPoint() throws Exception{
-        City city = new City("TextCity", "TestState", new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new HashSet<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
@@ -168,5 +168,19 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         Assert.assertNotNull(cityDAO.findOne(city.getId()));
     }
 
+    @Test
+    public void testUpdateCity() throws Exception{
+        City city = new City("TestCity", "TestState", true, new HashSet<>());
+        city = cityDAO.save(city);
+        city.setName("NewName");
+        city.setActive(false);
+        ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s", city.getId()))
+                .content(objectMapper.writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        City savedCity = cityDAO.findOne(city.getId());
+        Assert.assertNotNull(savedCity);
+        Assert.assertFalse(savedCity.isActive());
+        Assert.assertEquals(city.getName(), savedCity.getName());
+    }
 
 }

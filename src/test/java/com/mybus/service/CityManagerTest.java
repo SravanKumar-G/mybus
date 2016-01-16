@@ -50,7 +50,7 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testAddBoardingPointToCity() throws Exception {
-        City city = new City("TextCity", "TestState", new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new HashSet<>());
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
         Assert.assertEquals(0, city.getBoardingPoints().size());
@@ -61,7 +61,7 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testUpdateBoardingPoint() throws Exception {
-        City city = new City("TextCity", "TestState", new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new HashSet<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
@@ -77,7 +77,7 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testDeleteBoardingPoint() throws Exception {
-        City city = new City("TextCity", "TestState", new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new HashSet<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
