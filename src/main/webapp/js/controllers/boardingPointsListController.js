@@ -33,9 +33,6 @@ angular.module('myBus.boardingPointModule', [])
                 controller: 'AddBoardingPointController',
                 size: size,
                 resolve: {
-                    neighborhoodId: function () {
-                        return null;
-                    },
                     city: function() {
                         return $scope.city;
                     }
@@ -43,25 +40,25 @@ angular.module('myBus.boardingPointModule', [])
             });
             modalInstance.result.then(function (data) {
                 $log.debug("results from modal: " + angular.toJson(data));
-                citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
+                $scope.findCity($scope.cityId);
             }, function () {
                 $log.debug('Modal dismissed at: ' + new Date());
             });
         };
     })// ========================== Modal - Boarding point controller =================================
     //
-    .controller('AddBoardingPointController', function ($scope, $modalInstance, $http, $log, city, citiesManager) {
+    .controller('AddBoardingPointController', function ($scope, $modalInstance, $http, $log, city, cityManager) {
         $scope.boardingPoint = {
             name: null,
             state: null
         };
         $scope.city = city;
         $scope.ok = function () {
-            if ($scope.boardingPoint.name === null || $scope.boardingPoint.state === null) {
+            if ($scope.boardingPoint.name === null || $scope.boardingPoint.landmark === null
+                || $scope.boardingPoint.phone === null) {
                 $log.error("null city or state.  nothing was added.");
                 $modalInstance.close(null);
             }
-
 
         };
 
@@ -71,8 +68,8 @@ angular.module('myBus.boardingPointModule', [])
 
         $scope.isInputValid = function () {
             return ($scope.boardingPoint.name || '') !== '' &&
-                ($scope.boardingPoint.state || '') !== '';
+                ($scope.boardingPoint.landmark || '') !== '' &&
+                ($scope.boardingPoint.phone || '') !== '';
         };
-
 
     });
