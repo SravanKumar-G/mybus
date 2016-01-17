@@ -32,24 +32,36 @@ public class PersonController {
     }
 
 
-    @RequestMapping(value = "person", method = RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE,
-            produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
-    public Person createPerson(@RequestBody final Person person) {
-        return personDAO.save(person);
-    }
 
+
+     @RequestMapping(value = "person", method = RequestMethod.POST, consumes =  MediaType.APPLICATION_JSON_VALUE,
+            produces = ControllerUtils.JSON_UTF8
+    )
+    @ResponseBody
+    public Person savePersons(@RequestBody final Person person ){
+        return personDAO.save(person);
+
+    }
     @RequestMapping(value = "person/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
     public Person getPerson(@PathVariable final String id) {
-        return personDAO.findOne(id);
+        Person  person = personDAO.findOne(id);
+        return person;
     }
 
+    @RequestMapping(value="person/{id}",method=RequestMethod.DELETE)
+    @ResponseBody
+    public void deletePerson(@PathVariable final String id){
+        personDAO.delete(id);
+
+    }
     @RequestMapping(value = "person/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
     public Iterable<Person> updatePerson(@RequestBody final Person person) {
         personMongoDAO.updatePerson(person);
         return personDAO.findAll();
     }
+  }
 
-}
+
+

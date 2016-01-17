@@ -10,7 +10,8 @@
 
 <div class="toolbar-button-div pull-right">
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span class="glyphicon glyphicon-plus"></span> Add Boarding Point</button>
-    <button class="btn btn-sm btn-danger" ng-really-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>
+    <!--<button class="btn btn-sm btn-danger" ng-really-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>-->
+    <button class="btn btn-sm btn-danger" ng-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>
 </div>
 
 
@@ -66,6 +67,19 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()" ng-disabled="!isInputValid()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!-----------------------------------model popup for deletion--------------------- -->
+
+<script type="text/ng-template" id="delete-boardingPoint-to-city-state-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Delete confirmation </h3>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok(id)" >Delete</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
