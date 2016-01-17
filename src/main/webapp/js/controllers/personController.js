@@ -80,13 +80,28 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
 
     .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$log,personService,fetchId){
         $scope.person = {};
+
+
+        $scope.displayPersons = function(data){
+            $scope.persons = data;
+        };
+
+        $scope.setPersonIntoView = function(fetchId){
+            personService.findByIdPerson(fetchId,$scope.displayPersons);
+
+        };
+        $scope.setPersonIntoView(fetchId);
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
         $scope.getPersonCallback = function(data) {
             $scope.person = data;
         }
         $scope.firstCallBack = function(){
             console.log("executing function1");
         }
-        personService.getPerson(fetchId, $scope.getPersonCallback);
+        //personService.getPerson(fetchId, $scope.getPersonCallback);
 
         $scope.ok = function () {
             if ($scope.person.name === null || $scope.person.age === null || $scope.person.phone == null) {
