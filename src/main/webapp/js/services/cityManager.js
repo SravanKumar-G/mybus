@@ -76,8 +76,14 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
         .error(function (error) {
           alert("error finding city. " + angular.toJson(error));
         });
+    },
+    updateCity: function(city,callback) {
+      $http.put('/api/v1/city/'+city.id,city).success(function (data) {
+        callback(data);
+        $rootScope.$broadcast('updateCityCompleteEvent');
+      });
     }
-  };
+  }
 });
 
 

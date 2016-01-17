@@ -1,24 +1,26 @@
 <legend>{{ headline }}</legend>
-
-
 <div class="toolbar-button-div pull-right">
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddStateCity()"><span class="glyphicon glyphicon-plus"></span> Add City</button>
 </div>
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
-    <tr ng-repeat="city in currentPageOfCities">
-        <td data-title="'City'" sortable="'city'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
+    <tr ng-repeat="city in currentPageOfCities" ng-class="bg-danger"><!-- ng-mouseenter="hoverIn(city)" ng-mouseleave="hoverOut(city)" ng-show="city.show">-->
+        <td data-title="'City'"  sortable="'city'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
         <td data-title="'State'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
+        <td>
+        <md-button>
+            <md-icon type="button" class="btn" ng-click="handleClickUpdateStateCity(city.id)">
+            <span class="glyphicon glyphicon-pencil"></span></md-icon>
+        </md-button>
+        </td>
     </tr>
     <tr ng-if="!currentPageOfCities || currentPageOfCities.length === 0">
         <td colspan="4">No cities exist.  Please add some.</td>
     </tr>
 </table>
 
-
 <!-- modal popup for adding city/state -->
-
 
 <script type="text/ng-template" id="add-city-state-modal.html">
     <div class="modal-header">
@@ -54,6 +56,57 @@
 </script>
 
 
+<!-- modal popup for Updating city/state -->
+
+<script type="text/ng-template" id="update-city-state-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update City</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="cityStateUpdateForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label text-left">Id</label>
+
+                    <div class="col-sm-7">
+                        <input type="text" id="cityIdUpdate" class="form-control" ng-model="city.id" disabled>
+                    </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="cityNameUpdate">Name</label>
+                <div class="col-sm-7">
+                    <input type="text" id="cityNameUpdate" class="form-control" ng-model="city.name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="cityStateUpdate">State</label>
+                <div class="col-sm-7">
+                    <input type="text" id="cityStateUpdate" class="form-control" ng-model="city.state">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
+               <!-- <label class="col-sm-3 control-label" for="activeInactive"><span ng-if="!city.active">InActive</span></label>-->
+                <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="city.active">
+                </div>
+
+            </div>
+
+
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()" ng-disabled="!isInputValid()">Ok</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
 
 
 
