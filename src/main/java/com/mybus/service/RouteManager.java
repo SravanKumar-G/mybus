@@ -53,6 +53,7 @@ public class RouteManager {
         Preconditions.checkNotNull(route, "No route found to update");
         try {
             r.merge(route);
+            routeDAO.save(r);
         } catch (Exception e) {
            logger.error("Error updating the Route ", e);
            throw new RuntimeException(e);
