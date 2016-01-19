@@ -1,6 +1,5 @@
 package com.mybus.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
@@ -17,14 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Date;
 import java.util.HashSet;
 
 import static java.lang.String.format;
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,8 +38,6 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     private User currentUser;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Before
     public void setup() {
@@ -117,7 +110,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123");
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
-                .content(objectMapper.writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
+                .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.boardingPoints").exists());
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
@@ -133,7 +126,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint(null, "landmark", "123");
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
-                .content(objectMapper.writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
+                .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isInternalServerError());
     }
 
@@ -146,7 +139,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         bp = city.getBoardingPoints().iterator().next();
         bp.setName("NewName");
         ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s/boardingpoint", city.getId()))
-                .content(objectMapper.writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
+                .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.boardingPoints").exists());
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
@@ -175,7 +168,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city.setName("NewName");
         city.setActive(false);
         ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s", city.getId()))
-                .content(objectMapper.writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
+                .content(getObjectMapper().writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         City savedCity = cityDAO.findOne(city.getId());
         Assert.assertNotNull(savedCity);
