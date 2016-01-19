@@ -98,24 +98,61 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testCreateRoute() throws Exception {
-        createTestRoute();
-        Iterable<Route> routes = routeDAO.findAll();
-        List routesList = IteratorUtils.toList(cityDAO.findAll().iterator());
-        //Route testRoute =
+        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new HashSet<>());
+        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new HashSet<>());
+
+        cityManager.saveCity(fromCity);
+        cityManager.saveCity(toCity);
+        Route route = new Route("TestRoute"+new ObjectId().toString(), fromCity.getId(),
+                toCity.getId(), new LinkedHashSet<>(), true);
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/route").content(getObjectMapper()
+                .writeValueAsBytes(route)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.name").value(route.getName()));
+        actions.andExpect(jsonPath("$.fromCity").value(route.getFromCity()));
+        actions.andExpect(jsonPath("$.toCity").value(route.getToCity()));
+        List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
+        Assert.assertEquals(1, routeList.size());
     }
 
     @Test
     public void testGet() throws Exception {
-
+        Route route = createTestRoute();
+        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/route/%s", route.getId())), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.name").value(route.getName()));
+        actions.andExpect(jsonPath("$.fromCity").value(route.getFromCity()));
+        actions.andExpect(jsonPath("$.toCity").value(route.getToCity()));
+        actions.andExpect(jsonPath("$.active").value(true));
+        List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
+        Assert.assertEquals(1, routeList.size());
     }
 
     @Test
     public void testUpdate() throws Exception {
-
+        Route route = createTestRoute();
+        route.setName("newName");
+        route.setActive(false);
+        ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/route/%s", route.getId()))
+                .content(getObjectMapper().writeValueAsBytes(route))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").value(true));
+        List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
+        Assert.assertEquals(route.getName(), routeList.get(0).getName());
+        Assert.assertEquals(route.getFromCity(), routeList.get(0).getFromCity());
+        Assert.assertEquals(route.getToCity(), routeList.get(0).getToCity());
+        Assert.assertEquals(1, routeList.size());
     }
 
     @Test
     public void testDelete() throws Exception {
-
+        Route route = createTestRoute();
+        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/route/%s", route.getId()))
+                .content(getObjectMapper().writeValueAsBytes(route))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.deleted").value(true));
+        Assert.assertEquals(false, routeDAO.findAll().iterator().hasNext());
     }
 }
