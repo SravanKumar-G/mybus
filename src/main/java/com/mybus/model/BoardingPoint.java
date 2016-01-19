@@ -32,7 +32,5 @@ public class BoardingPoint extends AbstractDocument {
         this.landmark = landmark;
         this.contact = contact;
     }
-    public void merge(BoardingPoint bp) throws InvocationTargetException, IllegalAccessException {
-        BeanUtils.copyProperties(this, bp);
-    }
+
 }
