@@ -23,7 +23,16 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.deletePersonOnClick = function(personId){
-            personService.deletePerson(personId,$scope.loadPersons);
+            var modalInstance=$modal.open({
+                templateUrl: 'delete-person-modal.html',
+                controller: 'DeletePersonModalController',
+                resolve:{
+                    deleteId:function(){
+                        return personId;
+                    }
+                }
+            })
+
 
         };
 
@@ -59,7 +68,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
                 $log.error("Empty person data.  nothing was added.");
                 $modalInstance.close(null);
             }
-            personService.createPerson($scope.person, function(data){
+            personService.createPersons($scope.person, function(data){
                 $modalInstance.close(data);
             });
         };
@@ -80,10 +89,9 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
 
     .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$log,personService,fetchId){
         $scope.person = {};
-
-
+        $scope.person=fetchId;
         $scope.displayPersons = function(data){
-            $scope.persons = data;
+            $scope.person = data;
         };
 
         $scope.setPersonIntoView = function(fetchId){
@@ -95,20 +103,18 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
-        $scope.getPersonCallback = function(data) {
-            $scope.person = data;
-        }
+
         $scope.firstCallBack = function(){
             console.log("executing function1");
         }
-        //personService.getPerson(fetchId, $scope.getPersonCallback);
 
-        $scope.ok = function () {
+        $scope.ok = function (fetchId) {
             if ($scope.person.name === null || $scope.person.age === null || $scope.person.phone == null) {
                 $log.error("Empty person data.  nothing was added.");
                 $modalInstance.close(null);
             }
-            personService.savePerson($scope.person, function(data){
+                personService.updatePerson($scope.person, function(data){
+                    console.log("we are at OK");
                 $modalInstance.close(data);
             });
         };
@@ -121,5 +127,30 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
                 ($scope.person.age || '') !== '' &&
                 ($scope.person.phone || '') !== '';
         };
-    });
+    })
+//-- -----------------------------for delete model popup-----------------------
+    .controller('DeletePersonModalController',function($scope,$modalInstance,$http,$log,personService,deleteId){
+        $scope.person = {};
+        $scope.displayPersons = function(data){$scope.person = data;
+        };
 
+        $scope.loadPersons = function () {
+            personService.loadPersons($scope.displayPersons)
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.ok = function (personId) {
+
+            personService.deletePerson(deleteId,$scope.loadPersons);
+            $modalInstance.close();
+
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+    });

@@ -144,9 +144,8 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
 
         $scope.isInputValid = function () {
             return ($scope.city.name || '') !== '' &&
-                ($scope.city.state || '') !== '';
+                    ($scope.city.state || '') !== '';
         };
-
 
     });
 

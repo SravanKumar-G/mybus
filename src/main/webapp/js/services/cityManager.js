@@ -88,12 +88,30 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           alert("error finding city. " + angular.toJson(error));
         });
     },
-    updateCity: function(city,callback) {
+    updateCity: function(cityId,callback) {
       $http.put('/api/v1/city/'+city.id,city).success(function (data) {
         callback(data);
         $rootScope.$broadcast('updateCityCompleteEvent');
       });
-    }
+    },
+    //----------------------------------------------------------------------
+    loadBoardingPoints: function (callback) {
+      $http.get('/api/v1/persons')
+          .success(function (data) {
+            callback(data);
+          }).error(function () {
+            alert("Error getting the data from the server");
+          });
+
+    },
+    createBordingPoint: function (cityId,boardingPoint, callback) {
+      $http.post('/api/v1/city/'+cityId+'/boardingpoint', boardingPoint).success(function (data) {
+        callback(data);
+      }).error(function () {
+        alert("Error saving BordingPoint data");
+      });
+    },
+
   }
 });
 
