@@ -105,13 +105,28 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
 
     },
     createBordingPoint: function (cityId,boardingPoint, callback) {
-      $http.post('/api/v1/city/'+cityId+'/boardingpoint', boardingPoint).success(function (data) {
+      $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
       }).error(function () {
         alert("Error saving BordingPoint data");
       });
     },
-
+    deleteBp: function(id,BpId,callback) {
+      $http.delete('/api/v1/city/' + id+'/boardingpoint/'+BpId)
+          .success(function (data) {
+            callback(data);
+            $rootScope.$broadcast('deleteBpCompleteEvent');
+          })
+          .error(function (error) {
+            alert("error finding city and Bp. " + angular.toJson(error));
+          });
+    },
+    updateBp: function(cityId,callback) {
+      $http.put('/api/v1/city/'+cityId+'/boardingpoint/',boardingPoint).success(function (data) {
+        callback(data);
+        $rootScope.$broadcast('updateBpCompleteEvent');
+      });
+    },
   }
 });
 

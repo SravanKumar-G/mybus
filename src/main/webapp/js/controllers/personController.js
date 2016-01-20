@@ -148,7 +148,9 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
             $modalInstance.close();
 
         };
-
+        $scope.$on('loadPersonsEvent', function (e, value) {
+            $scope.loadPersons();
+        });
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
