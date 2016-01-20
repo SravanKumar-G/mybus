@@ -66,7 +66,7 @@ public class CityController {
     @ApiOperation(value ="Update city", response = City.class)
     public boolean updateCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
-                        @ApiParam(value = "Person JSON") @RequestBody final City city) {
+                        @ApiParam(value = "City JSON") @RequestBody final City city) {
         logger.debug("get city called");
         //save per
         return cityManager.updateCity(city);
