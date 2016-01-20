@@ -25,6 +25,10 @@ public class BoardingPoint extends AbstractDocument {
 
     @Getter
     @Setter
+    private boolean active;
+
+    @Getter
+    @Setter
     private String contact;
     public BoardingPoint(String name, String landmark, String contact) {
         setId(new ObjectId().toString());
