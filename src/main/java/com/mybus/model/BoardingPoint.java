@@ -30,11 +30,12 @@ public class BoardingPoint extends AbstractDocument {
     @Getter
     @Setter
     private String contact;
-    public BoardingPoint(String name, String landmark, String contact) {
+    public BoardingPoint(String name, String landmark, String contact, boolean active) {
         setId(new ObjectId().toString());
         this.name = name;
         this.landmark = landmark;
         this.contact = contact;
+        this.active = active;
     }
 
 }

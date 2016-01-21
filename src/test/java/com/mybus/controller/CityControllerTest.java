@@ -108,7 +108,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     public void testAddBoardingPoint() throws Exception {
         City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
-        BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123");
+        BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123", true);
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
@@ -124,7 +124,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     public void testAddBoardingPointNoName() throws Exception {
         City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
-        BoardingPoint bp = new BoardingPoint(null, "landmark", "123");
+        BoardingPoint bp = new BoardingPoint(null, "landmark", "123", true);
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isInternalServerError());
@@ -133,7 +133,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testUpdateBoardingPoint() throws Exception {
         City city = new City("TextCity", "TestState", true, new HashSet<>());
-        BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
         bp = city.getBoardingPoints().iterator().next();
@@ -150,7 +150,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testDeleteBoardingPoint() throws Exception{
         City city = new City("TextCity", "TestState", true, new HashSet<>());
-        BoardingPoint bp = new BoardingPoint("name", "landmark", "123");
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
         bp = city.getBoardingPoints().iterator().next();
