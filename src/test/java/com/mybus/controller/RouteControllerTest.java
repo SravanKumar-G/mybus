@@ -148,11 +148,13 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testDelete() throws Exception {
         Route route = createTestRoute();
-        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/route/%s", route.getId()))
-                .content(getObjectMapper().writeValueAsBytes(route))
-                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        Route route1 = createTestRoute();
+        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/route/%s", route.getId())) ,currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.deleted").value(true));
-        Assert.assertEquals(false, routeDAO.findAll().iterator().hasNext());
+        Assert.assertEquals(true, routeDAO.findAll().iterator().hasNext());
+        List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
+        Assert.assertEquals(1, routeList.size());
+
     }
 }
