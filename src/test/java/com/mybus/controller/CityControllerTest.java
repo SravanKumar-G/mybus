@@ -110,7 +110,11 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     public void testAddBoardingPoint() throws Exception {
         City city = new City("city", "CA", true, null);
         city = cityDAO.save(city);
-        BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123", true);
+        JSONObject bp = new JSONObject();
+        bp.put("name", "BPName");
+        bp.put("landmark", "landmark");
+        bp.put("contact", "123");
+        bp.put("active", true);
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
