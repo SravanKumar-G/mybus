@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-
 
 import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -70,8 +70,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
     }
 
     private Route createTestRoute() {
-        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new HashSet<>());
-        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new HashSet<>());
+        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
+        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
 
         cityManager.saveCity(fromCity);
         cityManager.saveCity(toCity);
@@ -98,8 +98,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testCreateRoute() throws Exception {
-        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new HashSet<>());
-        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new HashSet<>());
+        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
+        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
 
         cityManager.saveCity(fromCity);
         cityManager.saveCity(toCity);

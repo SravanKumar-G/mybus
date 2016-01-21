@@ -104,7 +104,7 @@ public class CityManager {
         Preconditions.checkNotNull(city, "No city found with id:[{}]", cityId);
         if(city.getBoardingPoints().stream().filter(b -> b.getId().equals(id)).count() == 1) {
             city.setBoardingPoints(city.getBoardingPoints().stream()
-                    .filter(b -> !b.getId().equals(id)).collect(Collectors.toSet()));
+                    .filter(b -> !b.getId().equals(id)).collect(Collectors.toList()));
             return cityDAO.save(city);
         } else {
             throw new BadRequestException("Boarding point not found");

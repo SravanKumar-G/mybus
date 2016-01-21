@@ -13,6 +13,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -49,7 +53,9 @@ public class CityMongoDAO {
     }
     public City addBoardingPoint(String cityId, BoardingPoint boardingPoint) {
         City city = cityDAO.findOne(cityId);
-        city.getBoardingPoints().add(boardingPoint);
+        List<BoardingPoint> bps = city.getBoardingPoints();
+        bps.add(boardingPoint);
+        city.setBoardingPoints(bps);
         return cityDAO.save(city);
     }
 

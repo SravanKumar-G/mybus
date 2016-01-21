@@ -5,6 +5,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
+import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static java.lang.String.format;
@@ -110,14 +112,26 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city = cityDAO.save(city);
         BoardingPoint bp = new BoardingPoint("BPName", "landmark", "123", true);
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
-                .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
+                .content(getObjectMapper().writeValueAsBytes(bp))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.boardingPoints").exists());
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
+        actions.andExpect(jsonPath("$.boardingPoints", Matchers.hasSize(1)));
         actions.andExpect(jsonPath("$.boardingPoints[0].name").value("BPName"));
         actions.andExpect(jsonPath("$.boardingPoints[0].landmark").value("landmark"));
         actions.andExpect(jsonPath("$.boardingPoints[0].contact").value("123"));
-        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+        actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
+                .content(getObjectMapper().writeValueAsBytes(bp))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.boardingPoints").exists());
+        actions.andExpect(jsonPath("$.boardingPoints").isArray());
+        City savedCity = cityDAO.findOne(city.getId());
+        Assert.assertEquals(2, savedCity.getBoardingPoints().size());
+        for(BoardingPoint b : savedCity.getBoardingPoints()) {
+            Assert.assertNotNull(b.getId());
+        }
     }
 
     @Test
@@ -132,7 +146,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testUpdateBoardingPoint() throws Exception {
-        City city = new City("TextCity", "TestState", true, new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new ArrayList<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
@@ -149,7 +163,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testDeleteBoardingPoint() throws Exception{
-        City city = new City("TextCity", "TestState", true, new HashSet<>());
+        City city = new City("TextCity", "TestState", true, new ArrayList<>());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
@@ -163,7 +177,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testUpdateCity() throws Exception{
-        City city = new City("TestCity", "TestState", true, new HashSet<>());
+        City city = new City("TestCity", "TestState", true, new ArrayList<>());
         city = cityDAO.save(city);
         city.setName("NewName");
         city.setActive(false);
