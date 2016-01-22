@@ -23,11 +23,15 @@ angular.module('myBus.boardingPointModule', [])
             }
             cityManager.getCity(id, function(city) {
                 $scope.city = city;
+
             });
         };
         $scope.findCity($scope.cityId);
 
-
+        $scope.$on('deleteBpCompleteEvent', function (e, value) {
+            cityManager.fetchAllCities();
+            //loadTableData($scope.cityContentTableParams);
+        });
         $scope.handleDeleteButtonClicked = function(id) {
             console.log("delete clicked "+ id);
             var modalInstance = $modal.open({
@@ -40,19 +44,38 @@ angular.module('myBus.boardingPointModule', [])
                 }
             })
         };
-        $scope. updateBpOnClick = function() {
-            //console.log("delete btn clicked "+ id);
+        $scope. updateBpOnClick = function(id) {
+            //console.log("update BP btn clicked "+ id);
             var modalInstance = $modal.open({
                 templateUrl: 'update-boardingPt.html',
-                controller: 'UpdateBoardingPtController'
+                controller: 'UpdateBoardingPtController',
+                resolve: {
+                    cityId: function () {
+                        return $scope.cityId;
+                    },
+                    BpId:function(){
+                        return id;
+                    },
+                }
 
             })
         },
-        $scope. deleteBpOnClick = function() {
-            //console.log("delete btn clicked "+ id);
+        $scope. deleteBpOnClick = function(id) {
+            console.log("delete btn clicked "+ id);
             var modalInstance = $modal.open({
                 templateUrl: 'delete-boardingPt.html',
-                controller: 'DeleteBpController'
+                controller: 'DeleteBpController',
+                resolve:{
+                    cityId:function() {
+                        return $scope.cityId;
+                    },
+                    BpId:function(){
+                        return id;
+                    },
+                    city: function() {
+                        return $scope.city;
+                    }
+                }
 
             })
         }
@@ -128,30 +151,38 @@ angular.module('myBus.boardingPointModule', [])
 
     //======================Model - DeleteBoardingPointController=============================================
 .controller('DeleteBoardingPointController', function ($scope, $modalInstance, $http, $log, deleteCityId, cityManager) {
-    $scope.id = deleteCityId;
-    $scope.ok = function (id) {
+        $scope.id = deleteCityId;
+        $scope.ok = function (id) {
         cityManager.deleteCity(id, function() {cityManager.fetchAllCities();});
         $modalInstance.close();
     }
-    $scope.cancel = function () {
+         $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
 })
 //======================Model - updateBpController=============================================
-.controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http, $log, cityManager) {
-    $scope.ok = function () {
-        cityManager.updateBp(cityId, function() {cityManager.fetchAllCities();});
-        $modalInstance.close();
-    }
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+.controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http,BpId,cityId, $log, cityManager) {
+                $scope.setBpIntoView = function(cityId,BpId){
+                    cityManager.getBp(cityId,BpId,function(data){
+                            $scope.city=data;
+                        }
+                    )};
+                $scope.setBpIntoView (cityId,BpId);
+                $scope.ok = function (BpId) {
+                    cityManager.updateBp(cityId,BpId)
+                    $modalInstance.close();
+                }
+                $scope.cancel = function () {
+                 $modalInstance.dismiss('cancel');
     };
 })
 //======================Model - DeleteBpController=============================================
-.controller('DeleteBpController', function ($scope, $modalInstance, $http, $log, cityManager) {
+.controller('DeleteBpController', function ($scope, $modalInstance,cityId, $http,BpId,city, $log, cityManager) {
     $scope.ok = function () {
-        cityManager.deleteBp(cityId,BpId, function() {cityManager.fetchAllCities();});
+        console.log("BpId : "+BpId);
+        cityManager.deleteBp(cityId,BpId,function() {cityManager.fetchAllCities();});
         $modalInstance.close();
+
     }
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');

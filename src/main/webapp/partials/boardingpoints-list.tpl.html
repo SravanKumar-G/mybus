@@ -12,12 +12,8 @@
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span class="glyphicon glyphicon-plus"></span> Add Boarding Point</button>
     <!--<button class="btn btn-sm btn-danger" ng-really-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>-->
     <button class="btn btn-sm btn-danger" ng-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>
-    <br/><br/>
+    <br/>
 </div>
-
-
-<br/>
-<br/>
 <!--i class="icon-pencil">-->
 <div class="container">
     <table class="table table-bordered">
@@ -33,13 +29,13 @@
             <td>{{boardingpt.landmark}}</td>
             <td>
                 <md-button>
-                    <md-icon type="button" class="btn" ng-click="deleteBpOnClick()">
+                    <md-icon type="button" class="btn" ng-click="deleteBpOnClick(boardingpt.id)">
                         <span class="glyphicon glyphicon-remove"></span></md-icon>
                 </md-button>
             </td>
             <td>
                 <md-button>
-                    <md-icon type="button" class="btn" ng-click="updateBpOnClick()">
+                    <md-icon type="button" class="btn" ng-click="updateBpOnClick(boardingPoint.id)">
                         <span class="glyphicon glyphicon-pencil"></span></md-icon>
                 </md-button>
 
@@ -117,13 +113,13 @@
         <h3 class="modal-title">Do you want to delete BoardingPoint ? </h3>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()" >Delete</button>
+        <button class="btn btn-primary" ng-click="ok(boardingpt.id)" >Delete</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 
 </script>
 
-<!--modal popup for updating boardingpoint to existing city/state/boardingpoint -->
+<!--modal popup for updating boardingpoint(Bp) to existing city/state/boardingpoint -->
 
 <script type="text/ng-template" id="update-boardingPt.html">
     <div class="modal-header">
@@ -149,12 +145,12 @@
                         <input type="text" class="form-control" ng-model="boardingPoint.contact" placeholder="contact number">
                     </div>
                 </div>
-            </div>
-            <div class="checkbox">
-                <label><input type="checkbox" value="" ng-model="boardingPoint.active">Active</label>
+                <div class="row top-buffer-5">
+                    <label><input type="checkbox" value="" ng-model="boardingPoint.active">Active</label>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok(id)" >Update</button>
+                <button class="btn btn-primary" ng-click="ok(boardingPoint.id)" >Update</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
 

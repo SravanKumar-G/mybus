@@ -78,6 +78,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             alert("error finding city. " + angular.toJson(error));
           });
     },
+
     deleteCity: function(id, callback) {
       $http.delete('/api/v1/city/' + id)
           .success(function (data) {
@@ -95,7 +96,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
       });
     },
     //----------------------------------------------------------------------
-    loadBoardingPoints: function (callback) {
+   /* loadBoardingPoints: function (callback) {
       $http.get('/api/v1/persons')
           .success(function (data) {
             callback(data);
@@ -103,7 +104,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             alert("Error getting the data from the server");
           });
 
-    },
+    },*/
     createBordingPoint: function (cityId,boardingPoint, callback) {
       $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
@@ -119,13 +120,22 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
         alert("Error updating Bp data");
       });
     },
-    deleteBp: function(cityId,BpId,callback) {
-      $http.delete('/api/v1/city/'+cityId+'/boardingpoint'+BpId,boardingPoint).success(function (data) {
+    deleteBp: function(cityId,BpId) {
+      $http.delete('/api/v1/city/'+cityId+'/boardingpoint/'+BpId).success(function (data) {
         callback(data);
         $rootScope.$broadcast('deleteBpCompleteEvent');
       }).error(function () {
         alert("Error deleting Bp data");
       });
+    },
+    getBp: function (id,BpId, callback) {
+      $http.get('/api/v1/city/'+id+'/boardingpoint/'+BpId)
+          .success(function (data) {
+            callback(data);
+          })
+          .error(function (error) {
+            alert("error finding city and Bp. " + angular.toJson(error));
+          });
     },
   }
 });
