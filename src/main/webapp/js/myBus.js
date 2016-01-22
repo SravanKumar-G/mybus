@@ -10,7 +10,8 @@ var myBus = angular.module('myBus', [
   'ngTable',
   'ui.bootstrap',
   'unsavedChanges',
-  'angularSpinner', 
+  'angularSpinner',
+  'myBus.routesModules',
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
@@ -43,6 +44,10 @@ myBus.config(['$routeProvider',
         when('/cities', {
           templateUrl: 'partials/cities-list.tpl.html',
           controller: 'CitiesController'
+        })
+        .when('/routes', {
+          templateUrl: 'partials/routes-list.tpl.html',
+          controller: 'RoutesController'
         })
         .when('/persons', {
           templateUrl: 'partials/person.html',
