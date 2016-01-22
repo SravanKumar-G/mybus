@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.google.common.base.Preconditions;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
@@ -90,10 +91,24 @@ public class CityController {
     @ResponseBody
     @ApiOperation(value ="Create a new city boarding point", response = City.class)
     public City createCityBoardingpoint(HttpServletRequest request,
-               @ApiParam(value = "Id of the city to which boardingpoint to be added") @PathVariable final String cityId,
-               @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
+                                        @ApiParam(value = "Id of the city to which boardingpoint to be added") @PathVariable final String cityId,
+                                        @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
         logger.debug("create boardingpoint called");
         return cityManager.addBoardingPointToCity(cityId, bp);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "city/{cityId}/boardingpoint/{id}", method = RequestMethod.GET,
+            produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value ="Get JSON for a city boardingpoint", response = BoardingPoint.class)
+    public BoardingPoint getgCityBoardingpoint(HttpServletRequest request,
+                                                @ApiParam(value = "cityId") @PathVariable final String cityId,
+                                                @ApiParam(value = "BoardingpointId") @PathVariable final String id) {
+        logger.debug("create boardingpoint called");
+        BoardingPoint bp = cityManager.getBoardingPoint(cityId, id);
+        Preconditions.checkNotNull(bp, "No boardingpoint found");
+        return bp;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
