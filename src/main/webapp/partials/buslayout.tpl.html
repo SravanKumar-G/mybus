@@ -1,0 +1,122 @@
+<!Doctype HTML>
+<html>
+<head>
+
+
+    <style type="text/css">
+        .holder{
+            height:300px;
+            width:750px;
+            background-color:#F5F5F5;
+            border:1px solid #A4A4A4;
+            margin-left:10px;
+        }
+
+        .bigbus{
+            height:400px;
+            width:750px;
+            background-color:#F5F5F5;
+            border:1px solid #A4A4A4;
+            margin-left:10px;
+        }
+
+        table tr td.seat{
+            background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+            height:77px;
+            width:40px;
+        }
+        #place .selectedSeat
+        {
+            background-image:url("images/booked_seat_img.gif");
+        }
+        #place .selectingSeat
+        {
+            background-image:url("images/selected_seat_img.gif");
+        }
+        .seatDescription{
+            padding-left : 5px;
+            font-size : 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div ng-class="'container'">
+    <!--seat arrangement-->
+    <form name="layoutForm">
+        <div class="form-group">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Bus Type:</label>
+                        <select class="form-control" ng-change="busLayoutCtrl.doLayout()" name="busLayout" id="busLayout" ng-model="busLayoutCtrl.busLayouts.busLayout" required>
+                            <option ng-repeat="option in busLayoutCtrl.busLayouts.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                        </select>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Seats:</label>
+                    <select class="form-control" ng-change="busLayoutCtrl.doLayout()" name="busColumns" id="busColumns" ng-model="busLayoutCtrl.busColumns.columns" required>
+                        <option ng-repeat="option in busLayoutCtrl.busColumns.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Rows:</label>
+                    <select class="form-control" ng-change="busLayoutCtrl.doLayout()" name="rows" id="rows" ng-model="busLayoutCtrl.busRows.rows" required>
+                        <option ng-repeat="option in busLayoutCtrl.busRows.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Middle Row:</label>
+                    <select class="form-control" ng-change="busLayoutCtrl.doLayout()" name="middleRow" id="middleRow" ng-model="busLayoutCtrl.middleRow.middleRow" required>
+                        <option ng-repeat="option in busLayoutCtrl.middleRow.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Middle Row Seat:</label>
+                    <select class="form-control" ng-change="busLayoutCtrl.doLayout()" name="middleRowSeat" id="middleRowSeat" ng-model="busLayoutCtrl.middleRowSeats.middleRowSeat" required>
+                        <option ng-repeat="option in busLayoutCtrl.middleRowSeats.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    </select>
+                    <br>
+                </div>
+            </div>
+
+
+        </div>
+        </form>
+
+        <input type="submit" class="btn btn-primary" ng-disabled="layoutForm.$invalid" ng-click="busLayoutCtrl.saveLayout()" value="Save Layout" />
+        <hr>
+
+
+    </div>
+
+    <table class="holder" ng-class="{'bigbus': busLayoutCtrl.busLayout.isBig}">
+        <tr ng-repeat="seats in busLayoutCtrl.busLayout.rows">
+            <td ng-class="{'seat': seat.displayName}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.displayName" data-ng-init="mycol=busLayoutCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        </tr>
+    </table>
+    <span>{{busLayoutCtrl.busLayout.upperHeader}}</span>
+    <table id="holder">
+        <tr ng-repeat="seats in busLayoutCtrl.busLayout.upper">
+            <td class="{{busLayoutCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        </tr>
+    </table>
+    <span>{{busLayoutCtrl.busLayout.lowerHeader}}</span>
+    <table id="holder">
+        <tr ng-repeat="seats in busLayoutCtrl.busLayout.lower">
+            <td class="{{busLayoutCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>  
+ 
