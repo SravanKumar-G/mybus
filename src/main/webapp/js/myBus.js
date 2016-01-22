@@ -14,7 +14,10 @@ var myBus = angular.module('myBus', [
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
-    'myBus.personModules'
+    'myBus.personModules',
+    'myBus.layoutModules',
+    'myBus.homeModule',
+    'myBus.busDetailModule'
   /*,
   'myBus.homeModule',
   'myBus.conditionModule',
@@ -33,7 +36,7 @@ myBus.config(['$routeProvider',
   function ($routeProvider) {
     console.log("configuring routes");
     $routeProvider.
-      when('/home', {
+      when('/dashboard', {
         templateUrl: 'partials/home.tpl.html',
         controller: 'HomeController'
       }).
@@ -58,6 +61,20 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/boardingpoints-list.tpl.html',
           controller: 'BoardingPointsListController'
         }).
+        when('/layouts', {
+          templateUrl: 'partials/buslayout.tpl.html',
+          controller: 'BusLayoutController as busLayoutCtrl'
+        }).
+        when('/layouts/:id', {
+           templateUrl: 'partials/buslayout.tpl.html',
+           controller: 'BusLayoutController'
+         }).
+         when('/busdetails', {
+          templateUrl: 'partials/busdetails.tpl.html',
+          controller: 'BusDetailsController'
+        }).
+
+
 
       when('/users', {
         templateUrl: 'partials/users.tpl.html',
