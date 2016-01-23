@@ -64,25 +64,29 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 	public void teardown() {
 		cleanup();
 	}
-	
+
 	@Test
-	public void testGetLayoutsSuccess() throws Exception {
+	public void testGetAllLayoutsSuccess() throws Exception {
 		String id1 = "Layout001";
 		String layoutName1 = "AC_SEMI_SLEEPER Layout";
 		int totalSeats1 = 44;
-		Layout layout1 = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1, LayoutType.AC_SEMI_SLEEPER, totalSeats1);
+		Layout layout1 = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1,
+				LayoutType.AC_SEMI_SLEEPER, totalSeats1);
 		mockMvc.perform(asUser(
-				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout1)).contentType(MediaType.APPLICATION_JSON), currentUser));
-		
+				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout1)).contentType(
+						MediaType.APPLICATION_JSON), currentUser));
+
 		String id2 = "Layout0012";
 		String layoutName2 = "SEMI_SLEEPER Layout";
 		int totalSeats2 = 40;
-		Layout layout2 = LayoutControllerTestUtils.constructSemiSleeperLayout(id2, layoutName2, LayoutType.NON_AC_SEMI_SLEEPER, totalSeats2);
+		Layout layout2 = LayoutControllerTestUtils.constructSemiSleeperLayout(id2, layoutName2,
+				LayoutType.NON_AC_SEMI_SLEEPER, totalSeats2);
 		mockMvc.perform(asUser(
-				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout2)).contentType(MediaType.APPLICATION_JSON), currentUser));
-		
-		ResultActions actions = mockMvc.perform(asUser(
-				get("/api/v1/layouts").contentType(MediaType.APPLICATION_JSON), currentUser));
+				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout2)).contentType(
+						MediaType.APPLICATION_JSON), currentUser));
+
+		ResultActions actions = mockMvc.perform(asUser(get("/api/v1/layouts").contentType(MediaType.APPLICATION_JSON),
+				currentUser));
 		actions.andExpect(jsonPath("$[0].active").value(true));
 		actions.andExpect(jsonPath("$[0].type").value("AC_SEMI_SLEEPER"));
 		actions.andExpect(jsonPath("$[0].id").value("Layout001"));
@@ -96,79 +100,84 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(jsonPath("$[1].totalSeats").value(40));
 	}
 
-	
-	
 	@Test
 	public void testCreateLayoutSuccess() throws Exception {
 		String id1 = "Layout001";
 		String layoutName1 = "AC_SEMI_SLEEPER Layout";
 		int totalSeats1 = 44;
-		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1, LayoutType.AC_SEMI_SLEEPER, totalSeats1);
+		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1,
+				LayoutType.AC_SEMI_SLEEPER, totalSeats1);
 		ResultActions actions = mockMvc.perform(asUser(
-				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout)).contentType(MediaType.APPLICATION_JSON), currentUser));
+				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout)).contentType(
+						MediaType.APPLICATION_JSON), currentUser));
 		actions.andExpect(status().isOk());
 		LayoutControllerTestUtils.validateResult(actions);
 	}
 
-	
 	@Test
 	public void testGetLayoutSuccess() throws Exception {
 		String id1 = "Layout001";
 		String layoutName1 = "AC_SEMI_SLEEPER Layout";
 		int totalSeats1 = 44;
-		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1, LayoutType.AC_SEMI_SLEEPER, totalSeats1);
+		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1,
+				LayoutType.AC_SEMI_SLEEPER, totalSeats1);
 		mockMvc.perform(asUser(
-				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout)).contentType(MediaType.APPLICATION_JSON), currentUser));
+				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout)).contentType(
+						MediaType.APPLICATION_JSON), currentUser));
 
-		ResultActions actions = mockMvc.perform(asUser(
-				get(String.format("/api/v1/layout/%s","AC_SEMI_SLEEPER Layout")).contentType(MediaType.APPLICATION_JSON), currentUser));
+		ResultActions actions = mockMvc.perform(asUser(get(String.format("/api/v1/layout/%s", "Layout001"))
+				.contentType(MediaType.APPLICATION_JSON), currentUser));
 		actions.andExpect(status().isOk());
 		LayoutControllerTestUtils.validateResult(actions);
 	}
-	
+
 	@Test
-    public void testDeleteLayout() throws Exception{
+	public void testDeleteLayout() throws Exception {
 		String id1 = "Layout001";
 		String layoutName1 = "AC_SEMI_SLEEPER Layout";
 		int totalSeats1 = 44;
-		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1, LayoutType.AC_SEMI_SLEEPER, totalSeats1);
-		
-        Layout layoutSaved = layoutDAO.save(layout);
-        
-        ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/layout/%s", layoutSaved.getName()
-                )), currentUser));
-        actions.andExpect(status().isOk());
-        System.out.println("response :" + actions.andReturn().getResponse().getContentAsString());
-        actions.andExpect(jsonPath("$.deleted").value(true));
-        Assert.assertNotNull(layoutDAO.findOneByName(layoutSaved.getName()));
-    }
-	
+		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1,
+				LayoutType.AC_SEMI_SLEEPER, totalSeats1);
+
+		Layout layoutSaved = layoutDAO.save(layout);
+
+		ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/layout/%s", layoutSaved.getId())),
+				currentUser));
+		actions.andExpect(status().isOk());
+		actions.andExpect(jsonPath("$.deleted").value(true));
+		Assert.assertNull(layoutDAO.findOne(layoutSaved.getId()));
+	}
+
 	@Test
-    public void testUpdateLayout() throws Exception {
+	public void testUpdateLayout() throws Exception {
 		String id1 = "Layout001";
 		String layoutName1 = "AC_SEMI_SLEEPER Layout";
 		int totalSeats1 = 44;
-		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1, LayoutType.AC_SEMI_SLEEPER, totalSeats1);
-		
-        Layout layout4Update = layoutDAO.save(layout);
-        layout4Update.setTotalSeats(15);;
-        layout4Update.setType(LayoutType.NON_AC_SEMI_SLEEPER);
-        Row middleRow = layout4Update.getRows().get(2);
-        Seat lastSeat = middleRow.getSeats().get(SEMI_SLEEPER_DEFAULT_COLUMNS - 1);
-        lastSeat.setDisplay(false);
-        lastSeat.setActive(false);
-		
-        ResultActions actions = mockMvc.perform(asUser(
-				put("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout4Update)).contentType(MediaType.APPLICATION_JSON), currentUser));        actions.andExpect(status().isOk());
-				
-        actions.andExpect(jsonPath("$.totalSeats").value(15));
-        actions.andExpect(jsonPath("$.type").value("NON_AC_SEMI_SLEEPER"));
-        
-        actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
+		Layout layout = LayoutControllerTestUtils.constructSemiSleeperLayout(id1, layoutName1,
+				LayoutType.AC_SEMI_SLEEPER, totalSeats1);
+
+		Layout layout4Update = layoutDAO.save(layout);
+		layout4Update.setTotalSeats(15);
+		;
+		layout4Update.setType(LayoutType.NON_AC_SEMI_SLEEPER);
+		Row middleRow = layout4Update.getRows().get(2);
+		Seat lastSeat = middleRow.getSeats().get(SEMI_SLEEPER_DEFAULT_COLUMNS - 1);
+		lastSeat.setDisplay(false);
+		lastSeat.setActive(false);
+
+		ResultActions actions = mockMvc.perform(asUser(
+				put("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout4Update)).contentType(
+						MediaType.APPLICATION_JSON), currentUser));
+		actions.andExpect(status().isOk());
+
+		actions.andExpect(jsonPath("$.totalSeats").value(15));
+		actions.andExpect(jsonPath("$.type").value("NON_AC_SEMI_SLEEPER"));
+
+		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(false));
-    }
-	
+	}
+
 	@Test
 	public void testGetDefaultLayoutForSemiSleeper() throws Exception {
 		ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/layout/default/%s", "AC_SEMI_SLEEPER"))

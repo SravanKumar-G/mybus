@@ -21,84 +21,83 @@ import com.mybus.model.Seat;
 
 public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest {
 
-	
-    /**
-     * Default layout for Semi-sleeper
-     */
-    public static Layout constructSemiSleeperLayout(String id, String layoutName, LayoutType layoutType, int totalSeats){
-    	Layout layout = new Layout();
-    	layout.setId(id);
-    	layout.setName(layoutName);
-    	layout.setActive(true);
-    	layout.setType(layoutType);
-    	layout.setTotalSeats(totalSeats);
-    	char c = 'D';
-    	List<Row> rows = new ArrayList<Row>();
-    	
-    	// Right side rows..
-    	for (int i = 0; i < SEMI_SLEEPER_DEFAULT_RIGHT_ROWS; i++) {
-    		Row row = new Row();
-    		row.setMiddleRow(false);
-    		List<Seat> seats = new ArrayList<Seat>();
+	/**
+	 * Default layout for Semi-sleeper
+	 */
+	public static Layout constructSemiSleeperLayout(String id, String layoutName, LayoutType layoutType, int totalSeats) {
+		Layout layout = new Layout();
+		layout.setId(id);
+		layout.setName(layoutName);
+		layout.setActive(true);
+		layout.setType(layoutType);
+		layout.setTotalSeats(totalSeats);
+		char c = 'D';
+		List<Row> rows = new ArrayList<Row>();
+
+		// Right side rows..
+		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_RIGHT_ROWS; i++) {
+			Row row = new Row();
+			row.setMiddleRow(false);
+			List<Seat> seats = new ArrayList<Seat>();
 			for (int j = 0, k = i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++, k += 1) {
 				Seat seat = new Seat();
 				seat.setActive(true);
 				seat.setDisplay(true);
-				seat.setDisplayName(j==0? String.valueOf(c--) : "R" + k++);
-				seat.setWindow(i==0);
+				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "R" + k++);
+				seat.setWindow(i == 0);
 				seats.add(seat);
 			}
 			row.setSeats(seats);
 			rows.add(row);
 		}
-    	
-    	// Middle row..
+
+		// Middle row..
 		rows.add(constructMiddleRow());
-		
+
 		// Left side rows..
-    	for (int i = 0; i < SEMI_SLEEPER_DEFAULT_LEFT_ROWS; i++) {
-    		Row row = new Row();
-    		row.setMiddleRow(false);
-    		List<Seat> seats = new ArrayList<Seat>();
-			for (int j = 0, k = SEMI_SLEEPER_DEFAULT_LEFT_ROWS-i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++){
+		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_LEFT_ROWS; i++) {
+			Row row = new Row();
+			row.setMiddleRow(false);
+			List<Seat> seats = new ArrayList<Seat>();
+			for (int j = 0, k = SEMI_SLEEPER_DEFAULT_LEFT_ROWS - i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
 				Seat seat = new Seat();
 				seat.setActive(!(j == 0 && i == 0));
 				seat.setDisplay(!(j == 0 && i == 0));
-				seat.setDisplayName(j==0? String.valueOf(c--) : "L" + k);
-				k += j == 0 ? 0 : 2; 
-				seat.setWindow(i+1==SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
+				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "L" + k);
+				k += j == 0 ? 0 : 2;
+				seat.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
 				seats.add(seat);
 			}
 			row.setSeats(seats);
 			rows.add(row);
 		}
-    	
-    	layout.setRows(rows);
-    	return layout;
-    }
-    
-    private static Row constructMiddleRow() {
-    	Row middleRow = new Row();
-    	middleRow.setMiddleRow(true);
+
+		layout.setRows(rows);
+		return layout;
+	}
+
+	private static Row constructMiddleRow() {
+		Row middleRow = new Row();
+		middleRow.setMiddleRow(true);
 		List<Seat> seats = new ArrayList<Seat>();
-    	for (int j = 1; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
+		for (int j = 1; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
 			Seat seat = new Seat();
 			seat.setActive(false);
 			seat.setDisplay(false);
 			seat.setDisplayName("");
 			seats.add(seat);
 		}
-    	Seat seat = new Seat();
+		Seat seat = new Seat();
 		seat.setActive(true);
 		seat.setDisplay(true);
-		seat.setDisplayName(String.format("M%s",SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1));
+		seat.setDisplayName(String.format("M%s", SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1));
 		seats.add(seat);
 		middleRow.setSeats(seats);
 		return middleRow;
-    }
+	}
 
-	public static void validateResult(ResultActions actions) throws Exception  {
-		
+	public static void validateResult(ResultActions actions) throws Exception {
+
 		actions.andExpect(jsonPath("$.active").value(true));
 		actions.andExpect(jsonPath("$.type").value("AC_SEMI_SLEEPER"));
 
@@ -128,17 +127,18 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 		actions.andExpect(jsonPath("$.rows[4].seats[0].window").value(true));
 		actions.andExpect(jsonPath("$.rows[4].seats[0].active").value(true));
 
-		// validating middle row 
+		// validating middle row
 		actions.andExpect(jsonPath("$.rows[2].seats[0].displayName").value(""));
 		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[0].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[0].active").value(false));
-		
-		actions.andExpect(jsonPath("$.rows[2].seats[10].displayName").value(String.format("M%s",SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1)));
+
+		actions.andExpect(jsonPath("$.rows[2].seats[10].displayName").value(
+				String.format("M%s", SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1)));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(true));
-		
+
 		// validating back seats
 		actions.andExpect(jsonPath("$.rows[0].seats[10].displayName").value("R19"));
 		actions.andExpect(jsonPath("$.rows[0].seats[10].display").value(true));

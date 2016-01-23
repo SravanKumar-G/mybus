@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,24 +12,21 @@ import com.mybus.service.SessionManager;
  */
 @Repository
 public class LayoutMongoDAO {
-    
-    @Autowired
-    private LayoutDAO layoutDAO;
-    
-    @Autowired
-    private SessionManager sessionManager;
 
-    public Layout save(Layout layout){
-    	layout.setCreatedAt(new DateTime());
-        layout.setCreatedBy(sessionManager.getCurrentUser().getFirstName());
-        return layoutDAO.save(layout);
-    }
-    public Layout update(Layout layout) throws Exception {
-        layout.setUpdatedAt(new DateTime());
-        layout.setUpdatedBy(sessionManager.getCurrentUser().getFirstName());
-        Layout dbCopy = layoutDAO.findOneByName(layout.getName());
-        dbCopy.merge(layout);;
-        return layoutDAO.save(dbCopy);
-    }
+	@Autowired
+	private LayoutDAO layoutDAO;
+
+	@Autowired
+	private SessionManager sessionManager;
+
+	public Layout save(Layout layout) {
+		return layoutDAO.save(layout);
+	}
+
+	public Layout update(Layout layout) throws Exception {
+		Layout dbCopy = layoutDAO.findOneByName(layout.getName());
+		dbCopy.merge(layout);
+		return layoutDAO.save(dbCopy);
+	}
 
 }
