@@ -25,10 +25,16 @@
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/personController.js"></script>
+    <script src="js/controllers/busLayoutController.js"></script>
+    <script src="js/controllers/homeController.js"></script>
+    <script src="js/controllers/busDetailsController.js"></script>
+    <script src="js/controllers/routesController.js"></script>
 
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
+    <script src="js/services/busManager.js"></script>
+    <script src="js/services/routesManager.js"></script>
     <script src="js/services/personService.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -83,11 +89,13 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li data-match-route="/$"><a href="#">Home</a></li>
+                <li data-match-route="/dashboard"><a href="#/dashboard">Home</a></li>
                 <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
-                <li data-match-route="/cities"><a href="#/states">States</a></li>
+                <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
+                <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
+                <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
@@ -99,7 +107,9 @@
 
 <div class="container">
     <div class="view-container">
-        <div ng-view class="view-frame"></div>
+        <div ng-view class="view-frame">
+
+        </div>
     </div>
 </div>
 

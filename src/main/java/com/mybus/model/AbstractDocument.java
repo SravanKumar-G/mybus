@@ -5,15 +5,17 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.beanutils.BeanUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-@EqualsAndHashCode(of = { "id" })
+@EqualsAndHashCode(of = { "_id" })
 @ApiModel(value = "AbstractDocument")
 public abstract class AbstractDocument {
 
@@ -63,5 +65,9 @@ public abstract class AbstractDocument {
     @JsonProperty(KEY_ATTRIBUTES)
     @Field(KEY_ATTRIBUTES)
     private Map<String, String> attributes = new HashMap<>();
+
+    public void merge(final Object copy) throws Exception {
+        BeanUtils.copyProperties(this, copy);
+    }
 
 }

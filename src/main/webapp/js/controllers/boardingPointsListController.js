@@ -24,11 +24,25 @@ angular.module('myBus.boardingPointModule', [])
             });
         };
         $scope.findCity($scope.cityId);
+
+        /* $scope.handleDeleteButtonClicked = function(id) {
+         cityManager.deleteCity(id, function() {cityManager.fetchAllCities();})
+         }*/
+
         $scope.handleDeleteButtonClicked = function(id) {
-            cityManager.deleteCity(id, function() {cityManager.fetchAllCities();})
+            console.log("delete clicked "+ id);
+            var modalInstance = $modal.open({
+                templateUrl: 'delete-boardingPoint-to-city-state-modal.html',
+                controller: 'DeleteBoardingPointController',
+                resolve: {
+                    deleteCityId: function () {
+                        return id;
+                    }
+                }
+            })
         }
         $scope.handleClickAddBoardingPoint = function (size) {
-             var modalInstance = $modal.open({
+            var modalInstance = $modal.open({
                 templateUrl: 'add-boardingpoint-to-city-state-modal.html',
                 controller: 'AddBoardingPointController',
                 size: size,
@@ -43,12 +57,13 @@ angular.module('myBus.boardingPointModule', [])
             });
             modalInstance.result.then(function (data) {
                 $log.debug("results from modal: " + angular.toJson(data));
-                citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
+                $scope.findCity($scope.cityId);
             }, function () {
                 $log.debug('Modal dismissed at: ' + new Date());
             });
         };
-    })// ========================== Modal - Boarding point controller =================================
+    })
+    // ========================== Modal - Boarding point controller =================================
     //
     .controller('AddBoardingPointController', function ($scope, $modalInstance, $http, $log, city, citiesManager) {
         $scope.boardingPoint = {
@@ -75,4 +90,16 @@ angular.module('myBus.boardingPointModule', [])
         };
 
 
+    })
+
+    //======================Model - DeleteBoardingPointController=============================================
+    .controller('DeleteBoardingPointController', function ($scope, $modalInstance, $http, $log, deleteCityId, cityManager) {
+        $scope.id = deleteCityId;
+        $scope.ok = function (id) {
+            cityManager.deleteCity(id, function() {cityManager.fetchAllCities();});
+            $modalInstance.close();
+        }
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     });

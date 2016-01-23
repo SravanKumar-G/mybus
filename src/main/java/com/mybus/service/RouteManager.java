@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Created by skandula on 12/30/15.
  */
@@ -24,6 +26,42 @@ public class RouteManager {
     private CityDAO cityDAO;
 
     public Route saveRoute(Route route) {
+        validateRoute(route);
+        return routeDAO.save(route);
+    }
+    public boolean deleteRoute(String routeId) {
+        Preconditions.checkNotNull(routeId);
+        Preconditions.checkNotNull(routeDAO.findOne(routeId), "Invalid Route id");
+        routeDAO.delete(routeId);
+        //TODO: check if there is any active services, if found throw an error.
+
+        return true;
+    }
+
+    public Route deactiveRoute(String routeId) {
+        Preconditions.checkNotNull(routeId);
+        Route route = routeDAO.findOne(routeId);
+        Preconditions.checkNotNull(route, "Invalid Route id");
+        Preconditions.checkArgument(!route.isActive(), "Route is already inactive");
+        route.setActive(false);
+        return routeDAO.save(route);
+    }
+
+    public boolean update(Route route) {
+        validateRoute(route);
+        Route r = routeDAO.findOne(route.getId());
+        Preconditions.checkNotNull(route, "No route found to update");
+        try {
+            r.merge(route);
+            routeDAO.save(r);
+        } catch (Exception e) {
+           logger.error("Error updating the Route ", e);
+           throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    private void validateRoute(final Route route) {
         Preconditions.checkNotNull(route, "route can not be null");
         Preconditions.checkNotNull(route.getName(), "Route name can not be null");
         Preconditions.checkNotNull(route.getFromCity(), "Route from city can not be null");
@@ -38,20 +76,5 @@ public class RouteManager {
                 throw new RuntimeException("invalid via city is found in via cities");
             }
         });
-        return routeDAO.save(route);
-    }
-    public void deleteRoute(String routeId) {
-        Preconditions.checkNotNull(routeId);
-        Preconditions.checkNotNull(routeDAO.findOne(routeId), "Invalid Route id");
-        routeDAO.delete(routeId);
-    }
-
-    public Route deactiveRoute(String routeId) {
-        Preconditions.checkNotNull(routeId);
-        Route route = routeDAO.findOne(routeId);
-        Preconditions.checkNotNull(route, "Invalid Route id");
-        Preconditions.checkArgument(!route.isActive(), "Route is already inactive");
-        route.setActive(false);
-        return routeDAO.save(route);
     }
 }

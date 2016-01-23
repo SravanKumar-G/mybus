@@ -18,22 +18,27 @@ public class Route extends AbstractDocument{
 
     @Getter
     @Setter
+    @ApiModelProperty
     private String name;
 
     @Getter
     @Setter
+    @ApiModelProperty
     private String fromCity;
 
     @Getter
     @Setter
+    @ApiModelProperty
     private String toCity;
 
     @Getter
     @Setter
     @ApiModelProperty(value = "Ordered list of cityIds through which the bus can operate")
-    private Set<String> viaCities = new LinkedHashSet<>();
+    private LinkedHashSet<String> viaCities = new LinkedHashSet<>();
 
     @Getter
     @Setter
+    @ApiModelProperty
     private boolean active = true;
+
 }

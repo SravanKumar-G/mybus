@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +49,21 @@ public class CityManager {
         }
         return cityDAO.save(city);
     }
+
+    public boolean updateCity(City city) {
+        Preconditions.checkNotNull(city, "The city can not be null");
+        Preconditions.checkNotNull(city.getId(), "The city id can not be null");
+        Preconditions.checkNotNull(city.getName(), "The city name can not be null");
+        Preconditions.checkNotNull(city.getState(), "The city State can not be null");
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Updating city:[{}]" + city);
+        }
+        return cityMongoDAO.updateCity(city);
+    }
+
+
+
     public City addBoardingPointToCity(String cityId, BoardingPoint bp) {
         Preconditions.checkNotNull(cityId, "The city id can not be null");
         Preconditions.checkNotNull(bp.getName(), "Boarding point name can not be null");
@@ -89,10 +105,24 @@ public class CityManager {
         Preconditions.checkNotNull(city, "No city found with id:[{}]", cityId);
         if(city.getBoardingPoints().stream().filter(b -> b.getId().equals(id)).count() == 1) {
             city.setBoardingPoints(city.getBoardingPoints().stream()
-                    .filter(b -> !b.getId().equals(id)).collect(Collectors.toSet()));
+                    .filter(b -> !b.getId().equals(id)).collect(Collectors.toList()));
             return cityDAO.save(city);
         } else {
             throw new BadRequestException("Boarding point not found");
         }
+    }
+
+    public BoardingPoint getBoardingPoint(String cityId, String id) {
+        Preconditions.checkNotNull(cityId, "The city id can not be null");
+        Preconditions.checkNotNull(id, "The boarding point id can not be null");
+        if (logger.isDebugEnabled()) {
+            logger.debug("searching for boarding point:[{}] from city:[{}]", id, cityId);
+        }
+        City city = cityDAO.findOne(cityId);
+        Optional<BoardingPoint> bp = city.getBoardingPoints().stream().filter(b -> b.getId().equals(id)).findFirst();
+        if (bp.isPresent()) {
+            return bp.get();
+        }
+        return null;
     }
 }

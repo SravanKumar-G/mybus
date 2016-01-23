@@ -23,6 +23,10 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
       }
       $scope.currentPageOfCities = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
     };
+    $scope.$on('updateCityCompleteEvent', function (e, value) {
+        cityManager.fetchAllCities();
+        //loadTableData($scope.cityContentTableParams);
+    });
 
     $scope.$on('cityAndBoardingPointsInitComplete', function (e, value) {
       loadTableData($scope.cityContentTableParams);
@@ -67,7 +71,55 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
             $log.debug('Modal dismissed at: ' + new Date());
         });
     };
+    $scope.handleClickUpdateStateCity = function(cityId){
+        var modalInstance = $modal.open({
+            templateUrl : 'update-city-state-modal.html',
+            controller : 'UpdateStateCityModalController',
+            resolve : {
+                passId : function(){
+                    return cityId;
+                }
+            }
+        });
+    };
+
   })
+    // ========================== Modal - Update City, State  =================================
+
+    .controller('UpdateStateCityModalController', function ($scope, $modalInstance, $http, $log, cityManager, passId) {
+        console.log("in UpdateStateCityModalController");
+        $scope.city = {};
+
+        $scope.displayCity = function(data){
+            $scope.city = data;
+        };
+
+        $scope.setCityIntoModal = function(passId){
+            cityManager.getCity(passId,$scope.displayCity);
+
+        };
+        $scope.setCityIntoModal(passId);
+
+        $scope.ok = function () {
+            if ($scope.city.id === null || $scope.city.name === null || $scope.city.state === null) {
+                $log.error("null city or state.  nothing was added.");
+                $modalInstance.close(null);
+            }
+            cityManager.updateCity($scope.city, function (data) {
+                $modalInstance.close(data);
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.isInputValid = function () {
+            return ($scope.city.name || '') !== '' &&
+                ($scope.city.state || '') !== '';
+        };
+    })
+
 //
     // ========================== Modal - Add City, State  =================================
     //

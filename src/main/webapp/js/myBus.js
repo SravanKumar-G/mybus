@@ -10,11 +10,15 @@ var myBus = angular.module('myBus', [
   'ngTable',
   'ui.bootstrap',
   'unsavedChanges',
-  'angularSpinner', 
+  'angularSpinner',
+  'myBus.routesModules',
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
-    'myBus.personModules'
+    'myBus.personModules',
+    'myBus.layoutModules',
+    'myBus.homeModule',
+    'myBus.busDetailModule'
   /*,
   'myBus.homeModule',
   'myBus.conditionModule',
@@ -33,13 +37,17 @@ myBus.config(['$routeProvider',
   function ($routeProvider) {
     console.log("configuring routes");
     $routeProvider.
-      when('/home', {
+      when('/dashboard', {
         templateUrl: 'partials/home.tpl.html',
         controller: 'HomeController'
       }).
         when('/cities', {
           templateUrl: 'partials/cities-list.tpl.html',
           controller: 'CitiesController'
+        })
+        .when('/routes', {
+          templateUrl: 'partials/routes-list.tpl.html',
+          controller: 'RoutesController'
         })
         .when('/persons', {
           templateUrl: 'partials/person.html',
@@ -58,6 +66,20 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/boardingpoints-list.tpl.html',
           controller: 'BoardingPointsListController'
         }).
+        when('/layouts', {
+          templateUrl: 'partials/buslayout.tpl.html',
+          controller: 'BusLayoutController as busLayoutCtrl'
+        }).
+        when('/layouts/:id', {
+           templateUrl: 'partials/buslayout.tpl.html',
+           controller: 'BusLayoutController'
+         }).
+         when('/busdetails', {
+          templateUrl: 'partials/busdetails.tpl.html',
+          controller: 'BusDetailsController'
+        }).
+
+
 
       when('/users', {
         templateUrl: 'partials/users.tpl.html',

@@ -41,7 +41,7 @@ public class LayoutManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting layout :[{}]" + name);
         }
-        if (layoutDAO.findOne(name) != null) {
+        if (layoutDAO.findOneByName(name) != null) {
             layoutDAO.delete(name);
         } else {
             throw new RuntimeException("Unknown layout name");
@@ -49,6 +49,22 @@ public class LayoutManager {
         return true;
     }
 
+    public Layout updateLayout(Layout layout){
+        Preconditions.checkNotNull(layout, "The layout can not be null");
+        Preconditions.checkNotNull(layout.getName(), "The layout name can not be null");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Saving layout :[{}]" + layout);
+        }
+        Layout layoutUpdated = null;
+        try {
+        	layoutUpdated = layoutMongoDAO.update(layout);
+		} catch (Exception e) {
+			throw new RuntimeException("error updating layout ", e);
+		}
+        return layoutUpdated;
+    }
+    
+    
     public Layout saveLayout(Layout layout) {
         Preconditions.checkNotNull(layout, "The layout can not be null");
         Preconditions.checkNotNull(layout.getName(), "The layout name can not be null");

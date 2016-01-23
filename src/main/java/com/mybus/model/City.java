@@ -6,8 +6,7 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by skandula on 3/31/15.
@@ -15,11 +14,11 @@ import java.util.Set;
 
 @ToString
 @ApiModel(value = "City")
-@AllArgsConstructor
 @NoArgsConstructor
 @Document
 public class City extends AbstractDocument{
     private static final String KEY_NAME = "name";
+    private static final String KEY_ACTIVE = "active";
     private static final String KEY_STATE = "state";
     private static final String KEY_BOARDING_POINTS = "bp";
 
@@ -37,8 +36,21 @@ public class City extends AbstractDocument{
 
     @Getter
     @Setter
+    @Field(KEY_ACTIVE)
+    @ApiModelProperty
+    private boolean active = true;
+
+    @Getter
+    @Setter
     @Field(KEY_BOARDING_POINTS)
     @ApiModelProperty
-    private Set<BoardingPoint> boardingPoints = new HashSet<>();
+    private List<BoardingPoint> boardingPoints = new ArrayList<>();
+
+    public City(String name, String state, boolean active, List<BoardingPoint> bps) {
+        this.name = name;
+        this.state = state;
+        this.active = active;
+        this.boardingPoints = bps;
+    }
 
  }
