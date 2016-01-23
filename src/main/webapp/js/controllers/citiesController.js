@@ -123,7 +123,7 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
 //
     // ========================== Modal - Add City, State  =================================
     //
-    .controller('AddStateCityModalController', function ($scope, $modalInstance, $http, $log, cityManager) {
+    .controller('AddStateCityModalController', function ($scope, $modalInstance,$route, $http, $log, cityManager) {
         $scope.city = {
             name: null,
             state: null
@@ -134,6 +134,7 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
                 $modalInstance.close(null);
             }
             cityManager.createCity($scope.city, function(data){
+                $route.reload();
                 $modalInstance.close(data);
             });
         };

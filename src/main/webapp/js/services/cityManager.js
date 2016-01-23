@@ -89,41 +89,34 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             alert("error finding city. " + angular.toJson(error));
           });
     },
-    updateCity: function(cityId,callback) {
+    updateCity: function(city,callback) {
       $http.put('/api/v1/city/'+city.id,city).success(function (data) {
         callback(data);
         $rootScope.$broadcast('updateCityCompleteEvent');
-      });
+      }).error(function (error) {
+              alert("error updating city. " + angular.toJson(error));
+          })
     },
     //----------------------------------------------------------------------
-   /* loadBoardingPoints: function (callback) {
-      $http.get('/api/v1/persons')
-          .success(function (data) {
-            callback(data);
-          }).error(function () {
-            alert("Error getting the data from the server");
-          });
-
-    },*/
-    createBordingPoint: function (cityId,boardingPoint, callback) {
+       createBordingPoint: function (cityId,boardingPoint, callback) {
       $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
       }).error(function () {
         alert("Error saving Bp data");
       });
     },
-    updateBp: function(cityId,callback) {
+    updateBp: function(cityId,boardingPoint,callback) {
       $http.put('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
-        $rootScope.$broadcast('updateBpCompleteEvent');
+       // $rootScope.$broadcast('updateBpCompleteEvent');
       }).error(function () {
         alert("Error updating Bp data");
       });
     },
-    deleteBp: function(cityId,BpId) {
+    deleteBp: function(cityId,BpId,callback) {
       $http.delete('/api/v1/city/'+cityId+'/boardingpoint/'+BpId).success(function (data) {
         callback(data);
-        $rootScope.$broadcast('deleteBpCompleteEvent');
+        //$rootScope.$broadcast('deleteBpCompleteEvent');
       }).error(function () {
         alert("Error deleting Bp data");
       });

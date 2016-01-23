@@ -57,7 +57,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
 
     })
 
-    .controller('AddPersonModalController',function($scope,$modalInstance,$http,$log,personService){
+    .controller('AddPersonModalController',function($scope,$modalInstance,$http,$log,$route,personService){
         $scope.person = {
             name: null,
             age: null,
@@ -69,6 +69,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
                 $modalInstance.close(null);
             }
             personService.createPersons($scope.person, function(data){
+                $route.reload();
                 $modalInstance.close(data);
             });
         };
@@ -87,7 +88,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
 
     })
 
-    .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$log,personService,fetchId){
+    .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$route,$log,personService,fetchId){
         $scope.person = {};
         $scope.person=fetchId;
         $scope.displayPersons = function(data){
@@ -115,8 +116,9 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
             }
                 personService.updatePerson($scope.person, function(data){
                     console.log("we are at OK");
+                    $route.reload();
                 $modalInstance.close(data);
-            });
+                });
         };
 
         $scope.cancel = function () {
@@ -129,7 +131,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
         };
     })
 //-- -----------------------------for delete model popup-----------------------
-    .controller('DeletePersonModalController',function($scope,$modalInstance,$http,$log,personService,deleteId){
+    .controller('DeletePersonModalController',function($scope,$modalInstance,$http,$route,$log,personService,deleteId){
         $scope.person = {};
         $scope.displayPersons = function(data){$scope.person = data;
         };
@@ -145,7 +147,9 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
         $scope.ok = function (personId) {
 
             personService.deletePerson(deleteId,$scope.loadPersons);
+            $route.reload();
             $modalInstance.close();
+
 
         };
         $scope.$on('loadPersonsEvent', function (e, value) {

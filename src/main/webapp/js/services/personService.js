@@ -15,7 +15,7 @@ portalApp.factory('personService', function ($http, $log) {
         createPersons: function (person, callback) {
             $http.post('/api/v1/person', person).success(function (data) {
                 callback(data);
-            }).error(function () {
+                }).error(function () {
                 alert("Error saving the data");
             });
 
