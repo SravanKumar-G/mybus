@@ -5,10 +5,10 @@
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
-    <tr ng-repeat="city in currentPageOfCities" ng-class="bg-danger"><!-- ng-mouseenter="hoverIn(city)" ng-mouseleave="hoverOut(city)" ng-show="city.show">-->
-        <td data-title="'City'"  sortable="'city'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
-        <td data-title="'State'" class="clickable-item" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
-        <td>
+    <tr ng-repeat="city in currentPageOfCities" ng-class="city.active?'':'bg-danger'">
+        <td data-title="'City'"  sortable="'city'" class="clickable-item col-md-6" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
+        <td data-title="'State'" class="clickable-item col-md-4" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
+        <td class="col-md-2">
         <md-button>
             <md-icon type="button" class="btn" ng-click="handleClickUpdateStateCity(city.id)">
             <span class="glyphicon glyphicon-pencil"></span></md-icon>
@@ -95,10 +95,7 @@
                 <div class="col-sm-1">
                     <input type="checkbox" id="activeInactive" class="form-control" ng-model="city.active">
                 </div>
-
             </div>
-
-
         </form>
 
     </div>
