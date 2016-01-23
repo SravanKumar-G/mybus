@@ -118,15 +118,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
                 <div class="col-sm-7">
-<!--
 
-                    <select name="modalRouteFromCity" id="modalRouteFromCity"
-                            ng-options="city.name for city in cities track by route.fromCity"
 
-                            ng-model="route.fromCity"></select>
--->
+                  <!-- <select name="modalRouteFromCity" id="modalRouteFromCity"
+                            ng-options="city.name for city in cities track by city.id"
+                            ng-model="route.fromCity"></select>-->
 
-                    <select name="modalRouteFromCity" id="modalRouteFromCity" ng-model="route.fromCity">
+
+                   <select name="modalRouteFromCity" id="modalRouteFromCity" ng-model="route.fromCity">
                         <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
                     </select>
 
@@ -138,11 +137,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
                 <div class="col-sm-7">
-                  <!--  <select name="modalRouteToCity" id="modalRouteToCity"
-                            ng-options="city.name for city in cities track by route.toCity"
-                            ng-model="route"></select>-->
+                  <!-- <select name="modalRouteToCity" id="modalRouteToCity"
+                            ng-options="city as city.name for city in cities track by city.id"
+                            ng-model="route.toCity"></select>-->
 
-                    <select name="modalRouteToCity" id="modalRouteToCity" ng-model="route.toCity">
+                   <select name="modalRouteToCity" id="modalRouteToCity" ng-model="route.toCity">
                         <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
                     </select>
                 </div>

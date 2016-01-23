@@ -141,6 +141,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
         $scope.loadFromCities();
 
        $scope.route = {};
+        //$scope.route.fromCity=$scope.cities[0];
 
         routesManager.getRoute(passId,function(data){
             $scope.route = data;

@@ -25,22 +25,16 @@
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/personController.js"></script>
-<<<<<<< 4189b3f22b34623a996b65f420dc9a7b1c4fbbf0
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/homeController.js"></script>
     <script src="js/controllers/busDetailsController.js"></script>
-=====Are you sure you want to commit changes with unresolved conflicts?
     <script src="js/controllers/routesController.js"></script>
->>>>>>> Added Routes tab and so added related files and made some changes
 
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
-<<<<<<< 4189b3f22b34623a996b65f420dc9a7b1c4fbbf0
     <script src="js/services/busManager.js"></script>
-=======<script src="js/services/routesManager.js"></script>
     <script src="js/services/routesManager.js"></script>
->>>>>>> Added Routes tab and so added related files and made some changes
     <script src="js/services/personService.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
