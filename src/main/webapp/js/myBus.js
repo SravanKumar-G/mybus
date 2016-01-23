@@ -66,8 +66,8 @@ myBus.config(['$routeProvider',
           controller: 'BusLayoutController as busLayoutCtrl'
         }).
         when('/layouts/:id', {
-           templateUrl: 'partials/buslayout.tpl.html',
-           controller: 'BusLayoutController'
+           templateUrl: 'partials/buslayoutedit.tpl.html',
+           controller: 'BusLayoutController as busLayoutCtrl'
          }).
          when('/busdetails', {
           templateUrl: 'partials/busdetails.tpl.html',

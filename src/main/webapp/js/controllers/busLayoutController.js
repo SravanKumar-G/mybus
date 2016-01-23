@@ -8,8 +8,21 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
   // ==================================================================================================================
 
   .controller('BusLayoutController', function ($scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $location) {
-    $log.debug('BusLayoutController loading');
-    var busLayoutCtrl = this;
+        $log.debug('BusLayoutController loading');
+        var busLayoutCtrl = this;
+
+
+        $scope.busdetails = JSON.parse('{"buses":[{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"},{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"},{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"}]}');
+
+        $scope.currentPageOfLayouts = $scope.busdetails.buses.length;
+
+        $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
+
+        $scope.headline = "Bus Details";
+
+        $scope.goToBusLayout = function (name) {
+            $location.url('/layouts/' + name);
+        };
 
 
         busLayoutCtrl.busLayout = {
