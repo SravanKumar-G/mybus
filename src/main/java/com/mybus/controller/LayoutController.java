@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.LayoutDAO;
-import com.mybus.model.BoardingPoint;
-import com.mybus.model.City;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.service.LayoutManager;

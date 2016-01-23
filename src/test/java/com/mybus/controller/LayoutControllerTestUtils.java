@@ -128,6 +128,17 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 		actions.andExpect(jsonPath("$.rows[4].seats[0].window").value(true));
 		actions.andExpect(jsonPath("$.rows[4].seats[0].active").value(true));
 
+		// validating middle row 
+		actions.andExpect(jsonPath("$.rows[2].seats[0].displayName").value(""));
+		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[0].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[0].active").value(false));
+		
+		actions.andExpect(jsonPath("$.rows[2].seats[10].displayName").value(String.format("M%s",SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1)));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(true));
+		
 		// validating back seats
 		actions.andExpect(jsonPath("$.rows[0].seats[10].displayName").value("R19"));
 		actions.andExpect(jsonPath("$.rows[0].seats[10].display").value(true));

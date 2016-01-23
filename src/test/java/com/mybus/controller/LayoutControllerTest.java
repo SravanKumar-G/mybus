@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import static com.mybus.service.LayoutManager.SEMI_SLEEPER_DEFAULT_COLUMNS;
 import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,8 +8,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.HashSet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -23,10 +22,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.BoardingPoint;
-import com.mybus.model.City;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
+import com.mybus.model.Row;
+import com.mybus.model.Seat;
 import com.mybus.model.User;
 
 /**
@@ -154,11 +153,20 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
         Layout layout4Update = layoutDAO.save(layout);
         layout4Update.setTotalSeats(15);;
         layout4Update.setType(LayoutType.NON_AC_SEMI_SLEEPER);
+        Row middleRow = layout4Update.getRows().get(2);
+        Seat lastSeat = middleRow.getSeats().get(SEMI_SLEEPER_DEFAULT_COLUMNS - 1);
+        lastSeat.setDisplay(false);
+        lastSeat.setActive(false);
+		
         ResultActions actions = mockMvc.perform(asUser(
 				put("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout4Update)).contentType(MediaType.APPLICATION_JSON), currentUser));        actions.andExpect(status().isOk());
 				
         actions.andExpect(jsonPath("$.totalSeats").value(15));
         actions.andExpect(jsonPath("$.type").value("NON_AC_SEMI_SLEEPER"));
+        
+        actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(false));
     }
 	
 	@Test
