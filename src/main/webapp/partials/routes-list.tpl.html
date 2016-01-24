@@ -1,0 +1,165 @@
+<legend>{{ headline }}</legend>
+
+<div class="toolbar-button-div pull-right">
+     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddNewRoute()"><span class="glyphicon glyphicon-plus"></span> Add New Route</button>
+</div>
+
+<table class="table table-bordered table-condensed table-hover" ng-table="routeContentTableParams">
+    <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
+        <td data-title="'Name'"  sortable="'city'" class="col-md-6">{{ route.name }}</td>
+        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}</td>
+        <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCity }}</td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="handleClickUpdateRoute(route.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="handleClickDeleteRoute(route.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
+
+    </tr>
+    <tr ng-if="!currentPageOfRoutes || currentPageOfRoutes.length === 0">
+        <td colspan="4">No routes exist.  Please add some.</td>
+    </tr>
+</table>
+
+<!-- Model popup for Adding new Route -->
+
+<script type="text/ng-template" id="add-route-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add a New Route</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="routeAddForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <input name="modalRouteName" type="text" id="routeInput" class="form-control" ng-model="route.name">
+                    </div>
+                </div>
+            </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
+                        <div class="col-sm-7">
+                            <select name="modalRouteFromCity" ng-model="route.fromCity">
+                                <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                              <option value="" ng-if="false"></option>
+                            </select>
+                        </div>
+                </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
+                    <div class="col-sm-7">
+                        <select name="modalRouteToCity" ng-model="route.toCity">
+                            <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                            <option value="" ng-if="false"></option>
+                        </select>
+                    </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label checkbox" for="routeActiveAdd">Active</label>
+                <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="route.active">
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!-- Model popup for Deleting a Route -->
+
+
+<script type="text/ng-template" id="delete-route-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Are you sure you want to Delete</h3>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok(routeId)">Yes</button>
+        <button class="btn btn-warning" ng-click="cancel()">No</button>
+    </div>
+</script>
+
+<!-- Model popup for Updating a Route -->
+
+<script type="text/ng-template" id="update-route-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Route</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="routeAddForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <input name="modalRouteName" type="text" id="routeUpdateInput" class="form-control" ng-model="route.name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
+                <div class="col-sm-7">
+
+
+                  <!-- <select name="modalRouteFromCity" id="modalRouteFromCity"
+                            ng-options="city.name for city in cities track by city.id"
+                            ng-model="route.fromCity"></select>-->
+
+
+                   <select name="modalRouteFromCity" id="modalRouteFromCity" ng-model="route.fromCity">
+                        <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                    </select>
+
+
+                    <!--<input name="modalRouteFromCity" type="text" id="routeUpdateFromCityInput" class="form-control" ng-model="route.fromCity">-->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
+                <div class="col-sm-7">
+                  <!-- <select name="modalRouteToCity" id="modalRouteToCity"
+                            ng-options="city as city.name for city in cities track by city.id"
+                            ng-model="route.toCity"></select>-->
+
+                   <select name="modalRouteToCity" id="modalRouteToCity" ng-model="route.toCity">
+                        <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label checkbox" for="routeActiveAdd">Active</label>
+                <div class="col-sm-1">
+                    <input type="checkbox" id="activeOrInactive" class="form-control" ng-model="route.active">
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Update</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+

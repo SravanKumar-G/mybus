@@ -1,0 +1,165 @@
+package com.mybus.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.base.Preconditions;
+import com.mybus.dao.LayoutDAO;
+import com.mybus.dao.impl.LayoutMongoDAO;
+import com.mybus.model.Layout;
+import com.mybus.model.LayoutType;
+import com.mybus.model.Row;
+import com.mybus.model.Seat;
+
+/**
+ * Created by schanda on 01/15/16.
+ */
+@Service
+public class LayoutManager {
+
+	private static final Logger logger = LoggerFactory.getLogger(LayoutManager.class);
+
+	public static final int SEMI_SLEEPER_DEFAULT_LEFT_ROWS = 2;
+
+	public static final int SEMI_SLEEPER_DEFAULT_RIGHT_ROWS = 2;
+
+	public static final int SEMI_SLEEPER_DEFAULT_COLUMNS = 11;
+
+	@Autowired
+	private LayoutMongoDAO layoutMongoDAO;
+
+	@Autowired
+	private LayoutDAO layoutDAO;
+
+	public boolean deleteLayout(String id) {
+		Preconditions.checkNotNull(id, "The layout id can not be null");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Deleting layout :[{}]" + id);
+		}
+		if (layoutDAO.findOne(id) != null) {
+			layoutDAO.delete(id);
+		} else {
+			throw new RuntimeException("Unknown layout id");
+		}
+		return true;
+	}
+
+	public Layout updateLayout(Layout layout) {
+		Preconditions.checkNotNull(layout, "The layout can not be null");
+		Preconditions.checkNotNull(layout.getName(), "The layout name can not be null");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Saving layout :[{}]" + layout);
+		}
+		Layout layoutUpdated = null;
+		try {
+			layoutUpdated = layoutMongoDAO.update(layout);
+		} catch (Exception e) {
+			throw new RuntimeException("error updating layout ", e);
+		}
+		return layoutUpdated;
+	}
+
+	public Layout saveLayout(Layout layout) {
+		Preconditions.checkNotNull(layout, "The layout can not be null");
+		Preconditions.checkNotNull(layout.getName(), "The layout name can not be null");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Saving layout :[{}]" + layout);
+		}
+		return layoutDAO.save(layout);
+	}
+
+	public Layout getDefaultLayout(LayoutType layoutType) {
+		Layout layout = null;
+		if (LayoutType.SLEEPER.equals(layoutType)) {
+			layout = constructSleeperLayout();
+		} else {
+			layout = constructSemiSleeperLayout();
+		}
+		return layout;
+	}
+
+	/**
+	 * Default layout for Semi-sleeper
+	 */
+	private Layout constructSemiSleeperLayout() {
+		Layout layout = new Layout();
+		layout.setActive(true);
+		layout.setType(LayoutType.AC_SEMI_SLEEPER);
+		char c = 'D';
+		List<Row> rows = new ArrayList<Row>();
+
+		// Right side rows..
+		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_RIGHT_ROWS; i++) {
+			Row row = new Row();
+			row.setMiddleRow(false);
+			List<Seat> seats = new ArrayList<Seat>();
+			for (int j = 0, k = i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++, k += 1) {
+				Seat seat = new Seat();
+				seat.setActive(true);
+				seat.setDisplay(true);
+				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "R" + k++);
+				seat.setWindow(i == 0);
+				seats.add(seat);
+			}
+			row.setSeats(seats);
+			rows.add(row);
+		}
+
+		// Middle row..
+		rows.add(constructMiddleRow());
+
+		// Left side rows..
+		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_LEFT_ROWS; i++) {
+			Row row = new Row();
+			row.setMiddleRow(false);
+			List<Seat> seats = new ArrayList<Seat>();
+			for (int j = 0, k = SEMI_SLEEPER_DEFAULT_LEFT_ROWS - i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
+				Seat seat = new Seat();
+				seat.setActive(!(j == 0 && i == 0));
+				seat.setDisplay(!(j == 0 && i == 0));
+				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "L" + k);
+				k += j == 0 ? 0 : 2;
+				seat.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
+				seats.add(seat);
+			}
+			row.setSeats(seats);
+			rows.add(row);
+		}
+
+		layout.setRows(rows);
+		return layout;
+	}
+
+	private Row constructMiddleRow() {
+		Row middleRow = new Row();
+		middleRow.setMiddleRow(true);
+		List<Seat> seats = new ArrayList<Seat>();
+		for (int j = 1; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
+			Seat seat = new Seat();
+			seat.setActive(false);
+			seat.setDisplay(false);
+			seat.setDisplayName("");
+			seats.add(seat);
+		}
+		Seat seat = new Seat();
+		seat.setActive(true);
+		seat.setDisplay(true);
+		seat.setDisplayName(String.format("M%s", SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1));
+		seats.add(seat);
+		middleRow.setSeats(seats);
+		return middleRow;
+	}
+
+	/**
+	 * Default layout for Sleeper
+	 */
+	private Layout constructSleeperLayout() {
+		return null;
+	}
+
+}

@@ -21,6 +21,17 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           });
     },
 
+    getCities: function (callback) {
+      $log.debug("fetching cities data ...");
+      $http.get('/api/v1/cities')
+          .success(function (data) {
+            callback(data);
+          })
+          .error(function (error) {
+            $log.debug("error retrieving cities");
+          });
+    },
+
     getAllData: function () {
       return cities;
     },
