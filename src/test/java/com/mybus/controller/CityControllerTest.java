@@ -7,10 +7,8 @@ import com.mybus.model.City;
 import com.mybus.model.User;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,6 +38,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     private User currentUser;
 
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
 
     @Before
     public void setup() {
@@ -163,6 +163,24 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
         actions.andExpect(jsonPath("$.boardingPoints[0].name").value(bp.getName()));
         Assert.assertNotNull(cityDAO.findOne(city.getId()));
+    }
+
+    @Test
+    public void testGetBoardingPoint() throws Exception {
+        City city = new City("TextCity", "TestState", true, new ArrayList<>());
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
+        city.getBoardingPoints().add(bp);
+        city = cityDAO.save(city);
+        bp = city.getBoardingPoints().iterator().next();
+        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/city/%s/boardingpoint/%s", city.getId(),
+                bp.getId())), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.name").value(bp.getName()));
+        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+        Assert.assertEquals(1, cityDAO.findOne(city.getId()).getBoardingPoints().size());
+        actions = mockMvc.perform(asUser(get(format("/api/v1/city/%s/boardingpoint/%s", city.getId(),
+                "1234")), currentUser));
+        actions.andExpect(status().isInternalServerError());
     }
 
     @Test
