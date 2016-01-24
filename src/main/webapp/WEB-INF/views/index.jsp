@@ -26,6 +26,7 @@
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
+    <script src="js/controllers/busLayoutEditController.js"></script>
     <script src="js/controllers/homeController.js"></script>
     <script src="js/controllers/busDetailsController.js"></script>
     <script src="js/controllers/routesController.js"></script>
