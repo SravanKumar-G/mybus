@@ -14,7 +14,12 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
           .success(function (data) {
                 layouts = data;
                 $rootScope.$broadcast('layoutsInitComplete');
-                var cache = $cacheFactory($rootScope.id);
+                var cache = null;
+                if($cacheFactory.get($rootScope.id)){
+                    cache = $cacheFactory.get($rootScope.id);
+                }else{
+                    cache = $cacheFactory($rootScope.id);
+                }
                 angular.forEach(layouts, function(layout, key) {
                   cache.put(layout.id, layout);
                 })
@@ -37,6 +42,7 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
           $log.debug("fetching layouts data ...");
           $http.get('/api/v1/layouts')
               .success(function (data) {
+              $rootScope.$broadcast('layoutsCreateComplete');
                 callback(data);
               })
               .error(function (error) {
@@ -51,7 +57,8 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
     createLayout : function (layout, callback) {
         $http.post('/api/v1/layout', layout)
           .success(function (data) {
-            callback(data);
+            $rootScope.$broadcast('layoutsCreateComplete');
+            //callback(data);
           })
           .error(function (err) {
             var errorMsg = "error adding new layout info. " + (err && err.error ? err.error : '');
@@ -61,8 +68,8 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
     },
     updateLayout: function(layout,callback) {
      $http.put('/api/v1/layout',layout).success(function (data) {
-       callback(data);
-       $rootScope.$broadcast('updateLayoutComplete');
+       //callback(data);
+       $rootScope.$broadcast('layoutsCreateComplete');
      });
    }
   };

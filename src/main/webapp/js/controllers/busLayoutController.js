@@ -39,6 +39,10 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
 
         busLayoutManager.fetchAllBusLayouts();
 
+        busLayoutCtrl.addNewBusLayout = function(){
+            $location.url('/layouts/' + '001');
+        }
+
         $scope.layoutContentTableParams = new ngTableParams({
           page: 1,
           count: 50,
