@@ -10,14 +10,56 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
     .controller('BusLayoutController', function ($scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $location) {
         $log.debug('BusLayoutController loading');
         var busLayoutCtrl = this;
-        $scope.busdetails = JSON.parse('{"buses":[{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"},{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"},{"type":"AC_SEMI_SLEEPER","route":"HYD - ONG","seats":42,"layout":"SEMI_SLEEPER"}]}');
-        $scope.currentPageOfLayouts = $scope.busdetails.buses.length;
+
+        $scope.currentPageOfLayouts = [];
+
+
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
+
         $scope.headline = "Bus Details";
-        $scope.goToBusLayout = function (name) {
-            $location.url('/layouts/' + name);
+
+        $scope.goToBusLayout = function (busId) {
+            $location.url('/layouts/' + busId);
         };
-        $scope.busLayout = {
+
+        var loadTableData = function (tableParams, $defer) {
+            var data = busLayoutManager.getAllLayouts();
+            var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+            $scope.busdetails = orderedData;
+            tableParams.total(data.length);
+            if (angular.isDefined($defer)) {
+                $defer.resolve(orderedData);
+            }
+            $scope.currentPageOfLayouts = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+        };
+
+        $scope.$on('layoutsInitComplete', function (e, value) {
+            loadTableData($scope.layoutContentTableParams);
+        });
+
+        busLayoutManager.fetchAllBusLayouts();
+
+        busLayoutCtrl.addNewBusLayout = function(){
+            $location.url('/layouts/' + '001');
+        }
+
+        $scope.layoutContentTableParams = new ngTableParams({
+            page: 1,
+            count: 50,
+            sorting: {
+                state: 'asc',
+                name: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfLayouts.length,
+            getData: function ($defer, params) {
+                $scope.$on('layoutsInitComplete', function (e, value) {
+                    loadTableData(params);
+                });
+            }
+        });
+
+        busLayoutCtrl.busLayout = {
             rows : null,
             type: null,
             upper : null,
@@ -25,6 +67,7 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
             upperHeader : '',
             lowerHeader : ''
         };
+
         busLayoutCtrl.busLayouts = {
             busLayout : null,
             availableOptions: [
@@ -45,6 +88,7 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
                 {id: '15', name: '15'},
                 {id: '16', name: '16'},
                 {id: '17', name: '17'}
+
             ]
         };
 
@@ -55,7 +99,7 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
         }
 
         busLayoutCtrl.getSeatName = function(seat){
-            return seat.displayName;
+            return seat.number;
         }
 
         busLayoutCtrl.busColumns = {
@@ -140,37 +184,60 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
                 if(i === parseInt(middleseatpos)){
                     $log.debug(middleseatpos);
                     for (var j = 1; j <= busLayoutCtrl.busRows.rows; j++){
-                        var displayName = getName(j).name+''+i;
+                        var number = getName(j).name+''+i;
                         if(middleseat === 1 && j === busLayoutCtrl.busRows.rows){
-                            seats.push({displayName : displayName, [displayName] :displayName});
-                        } else {
-                            seats.push({displayName : null, [displayName]: null});
-                        }
-                    }
-                }else{
-                    for (var j = 1; j <= busLayoutCtrl.busRows.rows; j++){
-                        var displayName = getName(j).name+''+i;
-                        seats.push({displayName : displayName, [displayName]: displayName});
-                    }
+                            seats.push({number : number, [number]: number});
+                    }else{
+                        seats.push({number : null, [number]: null});
                 }
-                rows.push({seats :seats})
             }
-            return rows;
+        }else{
+            for (var j = 1; j <= busLayoutCtrl.busRows.rows; j++){
+                var number = getName(j).name+''+i;
+                seats.push({number : number, [number]: number});
         }
+    }
+rows.push({seats :seats})
+}
+return rows;
+}
 
-        busLayoutCtrl.saveLayout = function (){
-            $log.debug(busLayoutCtrl.busLayout);
-            var layoutToSave = {
-                type: busLayoutCtrl.busLayout.type,
-                rows: busLayoutCtrl.busLayout.rows
-            };
-            busLayoutManager.createLayout(layoutToSave);
-        };
+busLayoutCtrl.saveLayout = function (){
 
-        $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
+    var rows = [];
+    angular.forEach(busLayoutCtrl.busLayout.rows, function(row, key) {
+        var seats = [];
+        angular.forEach(row, function(busseats, key) {
+            angular.forEach(busseats, function(busseat, key) {
+                var seat = {
+                    number : null,
+                    displayName : null
+                };
+                seat.number = busseat.number;
+                seat.displayName = busseat[seat.number];
+                seats.push(seat);
+            });
+        });
+        rows.push({seats: seats});
 
-        $scope.headline = "Layouts";
 
-        return busLayoutCtrl;
+    });
+    var layoutToSave = {
+        name : busLayoutCtrl.busLayout.type,
+        type: busLayoutCtrl.busLayout.type,
+        totalSeats : 0,
+        rows: rows,
+        active : true
+    };
 
-});
+    $log.debug(layoutToSave);
+    busLayoutManager.createLayout(layoutToSave);
+};
+
+$scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
+
+$scope.headline = "Layouts";
+
+return busLayoutCtrl;
+
+})

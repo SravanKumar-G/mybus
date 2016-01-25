@@ -1,20 +1,14 @@
-
 <div class="toolbar-button-div pull-right">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddStateCity()"><span class="glyphicon glyphicon-plus"></span> Add Bus</button>
+    <button type="button" class="btn btn-sm btn-primary" ng-click="busLayoutCtrl.addNewBusLayout()"><span class="glyphicon glyphicon-plus"></span> Add Bus</button>
 </div>
 
-<br/>
-<br/>
-
-<table class="table table-bordered table-condensed table-hover" ng-table="expenseContentTableParams">
-    <tr ng-repeat="bus in busdetails.buses">
-        <td data-title="'Bus Type'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.type }}</td>
-        <td data-title="'Seats'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.seats }}</td>
-        <td data-title="'Layout'" class="clickable-item" ng-click="goToBusLayout(bus.type)">{{ bus.layout }}</td>
+<table class="table table-bordered table-condensed table-hover" ng-table="layoutContentTableParams">
+    <tr ng-repeat="bus in busdetails">
+        <td data-title="'Bus Type'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.name }}</td>
+        <td data-title="'Seats'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.totalSeats }}</td>
+        <td data-title="'Layout'" class="clickable-item" ng-click="goToBusLayout(bus.id)">{{ bus.type }}</td>
     </tr>
     <tr ng-if="!currentPageOfLayouts || currentPageOfLayouts.length === 0">
         <td colspan="4">No details exist.</td>
     </tr>
 </table>
-
- 
