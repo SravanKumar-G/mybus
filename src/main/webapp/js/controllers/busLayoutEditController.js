@@ -7,7 +7,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusLayoutController   ================================================
   // ==================================================================================================================
 
-  .controller('BusLayoutEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $routeParams, $cacheFactory) {
+  .controller('BusLayoutEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $routeParams, $location, $cacheFactory) {
         $log.debug('BusLayoutController loading');
         var busLayoutEditCtrl = this;
 
@@ -56,19 +56,32 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
 
       if(layOutId !== ''){
         var cache = $cacheFactory.get($rootScope.id);
-        busLayoutEditCtrl.busLayout = cache.get(layOutId);
-        var rows = [];
-        angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
-            var seats = [];
-            angular.forEach(row, function(busseats, key) {
-                angular.forEach(busseats, function(busseat, key) {
-                    seats.push({number : busseat.number, [busseat.number]: busseat.number});
+        if(cache){
+            busLayoutEditCtrl.busLayout = cache.get(layOutId);
+        }
+        if(busLayoutEditCtrl.busLayout && busLayoutEditCtrl.busLayout.id !== ''){
+            var rows = [];
+            angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
+                var seats = [];
+                angular.forEach(row, function(busseats, key) {
+                    angular.forEach(busseats, function(busseat, key) {
+                        seats.push({number : busseat.number, [busseat.number]: busseat.number});
+                    });
                 });
+                rows.push({seats: seats});
             });
-            rows.push({seats: seats});
-        });
-        busLayoutEditCtrl.busLayout.rows = rows;
-        busLayoutEditCtrl.valid = true;
+            busLayoutEditCtrl.busLayout.rows = rows;
+            busLayoutEditCtrl.valid = true;
+        }else{
+            busLayoutEditCtrl.busLayout = {
+                rows : null,
+                type: null,
+                upper : null,
+                lower : null,
+                upperHeader : '',
+                lowerHeader : ''
+            }
+        }
         $log.debug(busLayoutEditCtrl.busLayout);
       }
 
@@ -181,7 +194,12 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             }
             return rows;
         }
-
+        busLayoutEditCtrl.goToLayouts = function(){
+            $location.url('/layouts');
+        };
+        $scope.$on('layoutsCreateComplete', function (e, value) {
+             busLayoutEditCtrl.goToLayouts();
+        });
         busLayoutEditCtrl.saveLayout = function (){
             var rows = [];
             angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
