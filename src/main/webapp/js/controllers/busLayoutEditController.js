@@ -227,7 +227,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             };
 
             $log.debug(layoutToSave);
-            if(layoutToSave.id !== ''){
+            if(layoutToSave.id && layoutToSave.id !== '001'){
                 busLayoutManager.updateLayout(layoutToSave);
             }else{
                 busLayoutManager.createLayout(layoutToSave);
