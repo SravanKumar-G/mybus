@@ -19,4 +19,8 @@ public class Person extends AbstractDocument{
     @Setter
     private long phone;
 
+    @Setter
+    @Getter
+    private String[] citiesLived;
+
 }

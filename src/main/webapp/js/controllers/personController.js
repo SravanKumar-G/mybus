@@ -88,12 +88,34 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
 
     })
 
-    .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$route,$log,personService,fetchId){
+    .controller('UpdatePersonModalController',function($scope,$modalInstance,$http,$route,$log,personService,fetchId, cityManager){
         $scope.person = {};
-        $scope.person=fetchId;
+        $scope.personId=fetchId;
+        $scope.citySelected = null;
+        $scope.addLivingCity = function(cityId){
+            if($scope.person.citiesLived.indexOf(cityId) == -1) {
+                $scope.person.citiesLived.push(cityId);
+            }else {
+                console.log("city already added");
+            }
+
+        };
+        $scope.removeLivingCity = function(cityId){
+            var index = $scope.person.citiesLived.indexOf(cityId);
+            if(index!= -1) {
+                $scope.person.citiesLived.splice(index, 1);
+            }else {
+                console.log("city already removed");
+            }
+
+        };
         $scope.displayPersons = function(data){
             $scope.person = data;
         };
+        $scope.cities = [];
+        cityManager.getCities(function(data) {
+            $scope.cities = data;
+        });
 
         $scope.setPersonIntoView = function(fetchId){
             personService.findByIdPerson(fetchId,$scope.displayPersons);
@@ -117,7 +139,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
                 personService.updatePerson($scope.person, function(data){
                     console.log("we are at OK");
                     $route.reload();
-                $modalInstance.close(data);
+                    $modalInstance.close(data);
                 });
         };
 
