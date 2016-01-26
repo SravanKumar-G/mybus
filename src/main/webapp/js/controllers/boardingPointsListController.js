@@ -58,7 +58,6 @@ angular.module('myBus.boardingPointModule', [])
                         return $scope.city;
                     }
                 }
-
             })
         },
         $scope. deleteBpOnClick = function(id) {
