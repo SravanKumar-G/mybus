@@ -94,7 +94,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(jsonPath("$[0].totalSeats").value(44));
 
 		actions.andExpect(jsonPath("$[1].active").value(true));
-		actions.andExpect(jsonPath("$[1].type").value("NON_AC_SEMI_SLEEPER"));
+		actions.andExpect(jsonPath("$[1].type").value("SEMI_SLEEPER"));
 		actions.andExpect(jsonPath("$[1].id").value("Layout0012"));
 		actions.andExpect(jsonPath("$[1].name").value("SEMI_SLEEPER Layout"));
 		actions.andExpect(jsonPath("$[1].totalSeats").value(40));
@@ -171,7 +171,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(status().isOk());
 
 		actions.andExpect(jsonPath("$.totalSeats").value(15));
-		actions.andExpect(jsonPath("$.type").value("NON_AC_SEMI_SLEEPER"));
+		actions.andExpect(jsonPath("$.type").value("SEMI_SLEEPER"));
 
 		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
