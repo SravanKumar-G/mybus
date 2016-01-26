@@ -6,15 +6,15 @@ var portalApp = angular.module('myBus');
 portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
 
   var cities = {}
-    , rawChildDataWithGeoMap = {};
+      , rawChildDataWithGeoMap = {};
 
   return {
     fetchAllCities: function () {
-        $log.debug("fetching cities data ...");
-          $http.get('/api/v1/cities')
+      $log.debug("fetching cities data ...");
+      $http.get('/api/v1/cities')
           .success(function (data) {
-                  cities = data;
-                 $rootScope.$broadcast('cityAndBoardingPointsInitComplete');
+            cities = data;
+            $rootScope.$broadcast('cityAndBoardingPointsInitComplete');
           })
           .error(function (error) {
             $log.debug("error retrieving cities");
@@ -37,7 +37,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
     },
 
     getAllCities: function () {
-        return cities;
+      return cities;
     },
 
     getChildrenByParentId: function (parentId) {
@@ -58,7 +58,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
       }));
     },
     createCity : function (city, callback) {
-        $http.post('/api/v1/city', city)
+      $http.post('/api/v1/city', city)
           .success(function (data) {
             callback(data);
             this.fetchAllCities();
@@ -71,29 +71,65 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
     },
     getCity: function (id, callback) {
       $http.get('/api/v1/city/' + id)
-       .success(function (data) {
+          .success(function (data) {
             callback(data);
-       })
-       .error(function (error) {
-              alert("error finding city. " + angular.toJson(error));
-       });
+          })
+          .error(function (error) {
+            alert("error finding city. " + angular.toJson(error));
+          });
     },
+
     deleteCity: function(id, callback) {
       $http.delete('/api/v1/city/' + id)
-        .success(function (data) {
-          callback(data);
-          $window.location = "#/cities";
-        })
-        .error(function (error) {
-          alert("error finding city. " + angular.toJson(error));
-        });
+          .success(function (data) {
+            callback(data);
+            $window.location = "#/cities";
+          })
+          .error(function (error) {
+            alert("error finding city. " + angular.toJson(error));
+          });
     },
     updateCity: function(city,callback) {
       $http.put('/api/v1/city/'+city.id,city).success(function (data) {
         callback(data);
         $rootScope.$broadcast('updateCityCompleteEvent');
+      }).error(function (error) {
+              alert("error updating city. " + angular.toJson(error));
+          })
+    },
+    //----------------------------------------------------------------------
+       createBordingPoint: function (cityId,boardingPoint, callback) {
+      $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
+        callback(data);
+      }).error(function () {
+        alert("Error saving Bp data");
       });
-    }
+    },
+    updateBp: function(cityId,boardingPoint,callback) {
+      $http.put('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
+        callback(data);
+       // $rootScope.$broadcast('updateBpCompleteEvent');
+      }).error(function () {
+        alert("Error updating Bp data");
+      });
+    },
+    deleteBp: function(cityId,BpId,callback) {
+      $http.delete('/api/v1/city/'+cityId+'/boardingpoint/'+BpId).success(function (data) {
+        callback(data);
+        //$rootScope.$broadcast('deleteBpCompleteEvent');
+      }).error(function () {
+        alert("Error deleting Bp data");
+      });
+    },
+    getBp: function (id,BpId, callback) {
+      $http.get('/api/v1/city/'+id+'/boardingpoint/'+BpId)
+          .success(function (data) {
+            callback(data);
+          })
+          .error(function (error) {
+            alert("error finding city and Bp. " + angular.toJson(error));
+          });
+    },
   }
 });
 

@@ -96,7 +96,7 @@
                 <label class="col-sm-3 control-label">Name</label>
                 <div class="row">
                     <div class="col-sm-7">
-                        <input type="text" id="deletePersonNameInput" class="form-control" ng-model="person.name" required ng-valid="person.name != ''">
+                        <input type="text" id="updatePersonNameInput" class="form-control" ng-model="person.name" required ng-valid="person.name != ''">
                         <!--<state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="person.name" required></state-options>-->
                     </div>
                 </div>
@@ -105,14 +105,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Age</label>
                 <div class="col-sm-7">
-                    <input type="text" id="deletePersonAgeInput" class="form-control" ng-model="person.age">
+                    <input type="text" id="updatePersonAgeInput" class="form-control" ng-model="person.age">
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label">Phone</label>
                 <div class="col-sm-7">
-                    <input type="text" id="deletePersonPhoneInput" class="form-control" ng-model="person.phone">
+                    <input type="text" id="updatePersonPhoneInput" class="form-control" ng-model="person.phone">
                 </div>
             </div>
 
@@ -120,23 +120,21 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()" ng-disabled="!isInputValid()">Update</button>
+        <button class="btn btn-primary" ng-click="ok(person.id)" ng-disabled="!isInputValid()">Update</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
 
+<!-------------------------------------Model popup for deleting a person----------------------------------->
+
+<script type="text/ng-template" id="delete-person-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Do You want to delete a Person?</h3>
+    </div>
 
 
-<!--
-Persons JSON
-<br/>
-
-{{persons}}
--->
-<!--Persons JSON
-
-<br/>
-{{persons.id}}
-{{persons.name}}
-{{persons.age}}
-{{persons.phone}}-->
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok(person.id)">Delete</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

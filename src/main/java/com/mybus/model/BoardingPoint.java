@@ -2,10 +2,7 @@ package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;
-import org.apache.commons.beanutils.BeanUtils;
 import org.bson.types.ObjectId;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by skandula on 12/9/15.
