@@ -115,6 +115,24 @@
                     <input type="text" id="updatePersonPhoneInput" class="form-control" ng-model="person.phone">
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Cities Lived</label>
+                <div class="col-sm-7">
+                    <select name="allCities" id="allCities" ng-model="citySelected">
+                        <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                    </select>
+                    <button ng-click="addLivingCity(citySelected)">Add</button>
+                    <br/>
+                    Cities Selected
+                    <div>
+                        <span ng-repeat="cityId in person.citiesLived" ng-click="removeLivingCity(cityId)" class="bg-danger"> {{cityId}} </span>
+                        <br/>
+                        {{person.citiesLived}}
+                    </div>
+                    <br/>
+
+                </div>
+            </div>
 
         </form>
     </div>

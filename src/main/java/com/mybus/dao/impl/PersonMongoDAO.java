@@ -33,9 +33,11 @@ public class PersonMongoDAO {
         updateOp.set("phone", person.getPhone());
         updateOp.set("age", person.getAge());
         updateOp.set("name", person.getName());
+        updateOp.set("citiesLived", person.getCitiesLived());
         final Query query = new Query();
         query.addCriteria(where("_id").is(person.getId()));
         WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Person.class);
         return writeResult.getN() == 1;
     }
+
 }
