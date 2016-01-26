@@ -24,7 +24,7 @@ public class LayoutMongoDAO {
 	}
 
 	public Layout update(Layout layout) throws Exception {
-		Layout dbCopy = layoutDAO.findOneByName(layout.getName());
+		Layout dbCopy = layoutDAO.findOne(layout.getId());
 		dbCopy.merge(layout);
 		return layoutDAO.save(dbCopy);
 	}

@@ -80,7 +80,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		String layoutName2 = "SEMI_SLEEPER Layout";
 		int totalSeats2 = 40;
 		Layout layout2 = LayoutControllerTestUtils.constructSemiSleeperLayout(id2, layoutName2,
-				LayoutType.NON_AC_SEMI_SLEEPER, totalSeats2);
+				LayoutType.SEMI_SLEEPER, totalSeats2);
 		mockMvc.perform(asUser(
 				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout2)).contentType(
 						MediaType.APPLICATION_JSON), currentUser));
@@ -94,7 +94,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(jsonPath("$[0].totalSeats").value(44));
 
 		actions.andExpect(jsonPath("$[1].active").value(true));
-		actions.andExpect(jsonPath("$[1].type").value("NON_AC_SEMI_SLEEPER"));
+		actions.andExpect(jsonPath("$[1].type").value("SEMI_SLEEPER"));
 		actions.andExpect(jsonPath("$[1].id").value("Layout0012"));
 		actions.andExpect(jsonPath("$[1].name").value("SEMI_SLEEPER Layout"));
 		actions.andExpect(jsonPath("$[1].totalSeats").value(40));
@@ -159,7 +159,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		Layout layout4Update = layoutDAO.save(layout);
 		layout4Update.setTotalSeats(15);
 		;
-		layout4Update.setType(LayoutType.NON_AC_SEMI_SLEEPER);
+		layout4Update.setType(LayoutType.SEMI_SLEEPER);
 		Row middleRow = layout4Update.getRows().get(2);
 		Seat lastSeat = middleRow.getSeats().get(SEMI_SLEEPER_DEFAULT_COLUMNS - 1);
 		lastSeat.setDisplay(false);
@@ -171,7 +171,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(status().isOk());
 
 		actions.andExpect(jsonPath("$.totalSeats").value(15));
-		actions.andExpect(jsonPath("$.type").value("NON_AC_SEMI_SLEEPER"));
+		actions.andExpect(jsonPath("$.type").value("SEMI_SLEEPER"));
 
 		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
