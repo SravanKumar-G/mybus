@@ -7,8 +7,8 @@ package com.mybus.model;
 public enum LayoutType {
 
     SLEEPER,
-    AC_SEMI_SLEEPER,
-    NON_AC_SEMI_SLEEPER;
+    SEMI_SLEEPER,
+    AC_SEMI_SLEEPER;
 
     @Override
     public String toString() {

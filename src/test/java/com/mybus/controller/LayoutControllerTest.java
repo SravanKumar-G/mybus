@@ -80,7 +80,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		String layoutName2 = "SEMI_SLEEPER Layout";
 		int totalSeats2 = 40;
 		Layout layout2 = LayoutControllerTestUtils.constructSemiSleeperLayout(id2, layoutName2,
-				LayoutType.NON_AC_SEMI_SLEEPER, totalSeats2);
+				LayoutType.SEMI_SLEEPER, totalSeats2);
 		mockMvc.perform(asUser(
 				post("/api/v1/layout").content(objectMapper.writeValueAsBytes(layout2)).contentType(
 						MediaType.APPLICATION_JSON), currentUser));
@@ -159,7 +159,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		Layout layout4Update = layoutDAO.save(layout);
 		layout4Update.setTotalSeats(15);
 		;
-		layout4Update.setType(LayoutType.NON_AC_SEMI_SLEEPER);
+		layout4Update.setType(LayoutType.SEMI_SLEEPER);
 		Row middleRow = layout4Update.getRows().get(2);
 		Seat lastSeat = middleRow.getSeats().get(SEMI_SLEEPER_DEFAULT_COLUMNS - 1);
 		lastSeat.setDisplay(false);
