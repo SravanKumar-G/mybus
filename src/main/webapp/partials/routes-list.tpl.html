@@ -1,16 +1,11 @@
 <legend>{{ headline }}</legend>
 
 <style>
-    #deleteCityFromList, #deleteViaCityFromList{
+    #deleteCityFromList, #deleteViaCityFromList {
         color: #39739D;
         font-size: 12px;
         white-space: nowrap;
-        background: #E1ECF4 none repeat scroll 0% 0%;
-        border: 1px solid #E1ECF4;
-        display: inline-block;
-        margin: 2px 2px 2px 0px;
-        border-radius: 0px;
-        transition: color 0.15s ease 0s, background 0.15s ease 0s, border 0.15s ease 0s;
+        background: #E1ECF4;
     }
 </style>
 
@@ -93,7 +88,7 @@
 
             <div class="form-group">
                 <ul class="col-sm-7" id="deleteViaCityFromList">
-                    <li ng-repeat="city in cityGotFromId track by city.id">{{city.name}}
+                    <li ng-repeat="city in citiesFromService track by city.id">{{city.name}}
                     <md-button>
                         <md-icon type="button" class="btn-sm" ng-click="deleteViaCityFromList(city.id)">
                             <span class="glyphicon glyphicon-remove"></span></md-icon>
@@ -119,7 +114,6 @@
 </script>
 
 <!-- Model popup for Deleting a Route -->
-
 
 <script type="text/ng-template" id="delete-route-modal.html">
     <div class="modal-header">

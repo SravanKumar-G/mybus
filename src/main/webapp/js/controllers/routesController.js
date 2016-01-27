@@ -124,7 +124,6 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
 
     .controller('UpdateRouteModalController', function ($document,$scope, $modalInstance, $http, $log,cityManager, routesManager, passId,$rootScope) {
 
-        console.log("in UpdateStateCityModalController");
         $scope.cities= [];
         $scope.selectedViaCities = [];
         $scope.selectedViaCity = {};
@@ -135,16 +134,10 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 $scope.route = {};
                 routesManager.getRoute(passId,function(data){
                     $scope.route = data;
-                    console.log("loading route and viacities = " +angular.toJson($scope.route));
-                    console.log(angular.toJson($scope.cities));
                     angular.forEach($scope.route.viaCities,function(existingCityId) {
-                        console.log("in route loop");
                         angular.forEach($scope.cities,function(city){
-                            console.log("in cities loop");
                             if(existingCityId == city.id){
                                 $scope.selectedViaCities.push(city);
-                                //$scope.existingCityNames = city.name;
-                                console.log("assigned city name");
                             }
                         });
                     });
@@ -164,11 +157,9 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
         };
 
         $scope.addTheCity = function(selectedCity){
-            console.log("Before adding: current cities" + $scope.route.viaCities);
             if($scope.route.viaCities.indexOf(selectedCity) == -1){
                 $scope.route.viaCities.push(selectedCity);
                 cityManager.getCity(selectedCity,function(data){
-                    console.log("got city with Id");
                     $scope.selectedViaCities.push(data);
                 });
             }else{
@@ -180,6 +171,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             var index = $scope.route.viaCities.indexOf(cityId);
             if(index != -1 ){
                 $scope.route.viaCities.splice(index,1);
+                $scope.selectedViaCities.splice(index,1);
                 console.log("city removed with Id"+cityId);
             }else{
                 console.log("city already removed from list");
@@ -196,21 +188,19 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
         };
         $scope.cities = [];
         $scope.loadFromToCities = function(){
-            console.log("test");
             cityManager.getCities(function(data){
                 $scope.cities = data;
             });
         }();
 
-         //$scope.loadFromToCities();
         $scope.selectedViaCityId = {};
-        $scope.cityGotFromId = [];
+        $scope.citiesFromService = [];
 
         $scope.addCityToViaCities = function(viaCityId){
             if($scope.route.viaCities.indexOf(viaCityId)== -1) {
                 $scope.route.viaCities.push(viaCityId);
                 cityManager.getCity(viaCityId, function (data) {
-                    $scope.cityGotFromId.push(data);
+                    $scope.citiesFromService.push(data);
                 });
             }else{
                 console.log("city already exist");
@@ -221,6 +211,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             var index = $scope.route.viaCities.indexOf(cityId);
             if(index != -1 ){
                 $scope.route.viaCities.splice(cityId,1);
+                $scope.citiesFromService.splice(index,1);
                 console.log("city removed with Id"+cityId);
             }else{
                 console.log("city already removed from list");
