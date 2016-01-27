@@ -1,5 +1,19 @@
 <legend>{{ headline }}</legend>
 
+<style>
+    #deleteCityFromList, #deleteViaCityFromList{
+        color: #39739D;
+        font-size: 12px;
+        white-space: nowrap;
+        background: #E1ECF4 none repeat scroll 0% 0%;
+        border: 1px solid #E1ECF4;
+        display: inline-block;
+        margin: 2px 2px 2px 0px;
+        border-radius: 0px;
+        transition: color 0.15s ease 0s, background 0.15s ease 0s, border 0.15s ease 0s;
+    }
+</style>
+
 <div class="toolbar-button-div pull-right">
      <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddNewRoute()"><span class="glyphicon glyphicon-plus"></span> Add New Route</button>
 </div>
@@ -42,7 +56,7 @@
                 <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
                 <div class="row">
                     <div class="col-sm-7">
-                        <input name="modalRouteName" type="text" id="routeInput" class="form-control" ng-model="route.name">
+                        <input name="modalRouteName" type="text" id="routeInput" class="form-control" ng-model="route.name" placeholder="Enter name for the Route">
                     </div>
                 </div>
             </div>
@@ -50,9 +64,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
                         <div class="col-sm-7">
-                            <select name="modalRouteFromCity" ng-model="route.fromCity">
-                                <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
-                              <option value="" ng-if="false"></option>
+                            <select name="modalRouteFromCity" ng-model="route.fromCity" ng-options="city.id as city.name for city in cities">
+                                <option value="">--Select From City--</option>
                             </select>
                         </div>
                 </div>
@@ -60,15 +73,38 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
                     <div class="col-sm-7">
-                        <select name="modalRouteToCity" ng-model="route.toCity">
-                            <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
-                            <option value="" ng-if="false"></option>
+                        <select name="modalRouteToCity" ng-model="route.toCity" ng-options="city.id as city.name for city in cities">
+                            <option value="">--Select To City--</option>
                         </select>
                     </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label checkbox" for="routeActiveAdd">Active</label>
+                <label class="col-sm-3 control-label" for="modalRouteToCity">Via Cities</label>
+                <div class="col-sm-4">
+                    <select name="modalRouteViaCities" ng-model="selectedViaCityId" ng-options="city.id as city.name for city in cities">
+                        <option value="">--Select Via City--</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-primary btn-xs" id="modalRouteAddViaCitiesButton" ng-click="addCityToViaCities(selectedViaCityId)">Add</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <ul class="col-sm-7" id="deleteViaCityFromList">
+                    <li ng-repeat="city in cityGotFromId track by city.id">{{city.name}}
+                    <md-button>
+                        <md-icon type="button" class="btn-sm" ng-click="deleteViaCityFromList(city.id)">
+                            <span class="glyphicon glyphicon-remove"></span></md-icon>
+                    </md-button>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
                 <div class="col-sm-1">
                     <input type="checkbox" id="activeInactive" class="form-control" ng-model="route.active">
                 </div>
@@ -110,7 +146,7 @@
                 <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
                 <div class="row">
                     <div class="col-sm-7">
-                        <input name="modalRouteName" type="text" id="routeUpdateInput" class="form-control" ng-model="route.name">
+                        <input name="modalRouteName" type="text" id="modalRouteName" class="form-control" ng-model="route.name">
                     </div>
                 </div>
             </div>
@@ -118,29 +154,15 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
                 <div class="col-sm-7">
-
-
-                  <!-- <select name="modalRouteFromCity" id="modalRouteFromCity"
-                            ng-options="city.name for city in cities track by city.id"
-                            ng-model="route.fromCity"></select>-->
-
-
                    <select name="modalRouteFromCity" id="modalRouteFromCity" ng-model="route.fromCity">
                         <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
                     </select>
-
-
-                    <!--<input name="modalRouteFromCity" type="text" id="routeUpdateFromCityInput" class="form-control" ng-model="route.fromCity">-->
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
                 <div class="col-sm-7">
-                  <!-- <select name="modalRouteToCity" id="modalRouteToCity"
-                            ng-options="city as city.name for city in cities track by city.id"
-                            ng-model="route.toCity"></select>-->
-
                    <select name="modalRouteToCity" id="modalRouteToCity" ng-model="route.toCity">
                         <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
                     </select>
@@ -148,10 +170,34 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label checkbox" for="routeActiveAdd">Active</label>
-                <div class="col-sm-1">
-                    <input type="checkbox" id="activeOrInactive" class="form-control" ng-model="route.active">
+                <label class="col-sm-3 control-label" for="modalRouteViaCities">Via Cities</label>
+                <div class="col-sm-4">
+                    <select name="modalRouteViaCities" id="modalRouteViaCities" ng-model="selectedViaCity" ng-options="city.id as city.name for city in cities">
+                        <option value="">--Select Via City--</option>
+                    </select>
                 </div>
+
+                <div class="col-sm-3">
+                    <button class="btn btn-primary btn-xs" id="modalRouteViaCitiesButton" ng-click="addTheCity(selectedViaCity)">Add</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <ul class="col-sm-7" id="deleteCityFromList">
+                    <li ng-repeat="city in selectedViaCities track by city.id">{{city.name}}
+                        <md-button>
+                            <md-icon type="button" class="btn-sm" ng-click="deleteCityFromList(city.id)">
+                                <span class="glyphicon glyphicon-remove"></span></md-icon>
+                        </md-button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label checkbox" for="activeOrInactive">Active</label>
+                    <div class="col-sm-1">
+                        <input type="checkbox" id="activeOrInactive" class="form-control" ng-model="route.active">
+                    </div>
             </div>
 
         </form>
