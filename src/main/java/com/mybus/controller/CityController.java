@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
@@ -41,7 +42,24 @@ public class CityController {
     public Iterable<City> getCities(HttpServletRequest request) {
         return cityDAO.findAll();
     }
-    
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
+    public Map<String, String> getActiveCityNames(HttpServletRequest request) {
+        return cityManager.getCityNames(false);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "allCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
+    public Map<String, String> getAllCityNames(HttpServletRequest request) {
+        return cityManager.getCityNames(true);
+    }
+
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)

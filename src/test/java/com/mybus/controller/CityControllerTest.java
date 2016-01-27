@@ -59,6 +59,26 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     }
 
     @Test
+    public void testGetActiveCityNames() throws Exception {
+        for(int i=0; i< 3; i++ ) {
+            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+        }
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/activeCityNames"), currentUser));
+        actions.andExpect(status().isOk());
+        //TODO: check the map values
+    }
+
+    @Test
+    public void testGetAllCityNames() throws Exception {
+        for(int i=0; i< 3; i++ ) {
+            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+        }
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/allCityNames"), currentUser));
+        actions.andExpect(status().isOk());
+        //TODO: check the map values
+    }
+
+    @Test
     public void testCreateCitySuccess() throws Exception {
         JSONObject city = new JSONObject();
         city.put("name", "city");
@@ -72,6 +92,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.bp").doesNotExist());
 
     }
+
 
     @Test
     public void testCreateCityFail() throws Exception {

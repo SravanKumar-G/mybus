@@ -44,33 +44,6 @@
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
 
-    <%--
-        <script src="js/services/categoriesManager.js"></script>
-        <script src="js/services/classificationsManager.js"></script>
-        <script src="js/services/appUtils.js"></script>
-        <script src="js/services/businessNavHelper.js"></script>
-        <script src="js/services/geocoderService.js"></script>
-        <script src="js/services/googlePlacesService.js"></script>
-        <script src="js/services/infoOverlayService.js"></script>
-        <script src="js/directives/ng-really.js"></script>
-        <script src="js/directives/stateOptions.js"></script>
-        <script src="js/filters/unsafeFilter.js"></script>
-        <script src="js/filters/arrayNoneFilter.js"></script>
-        <script src="js/providers/stateValueProvider.js"></script>
-        <script src="js/controllers/homeController.js"></script>
-        <script src="js/controllers/conditionController.js"></script>
-        <script src="js/controllers/procedureController.js"></script>
-        <script src="js/controllers/neighborhoodsController.js"></script>
-        <script src="js/controllers/beaconController.js"></script>
-        <script src="js/controllers/businessController.js"></script>
-        <script src="js/controllers/businessImportController.js"></script>
-        <script src="js/controllers/apiDocsController.js"></script>
-        <script src="js/controllers/accountController.js"></script>
-        <script src="js/controllers/categoriesController.js"></script>
-        <script src="js/controllers/usersController.js"></script>--%>
-
-
-
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
     <link rel="stylesheet" href="css/app.css">
