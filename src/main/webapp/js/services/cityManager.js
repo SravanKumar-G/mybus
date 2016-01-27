@@ -2,12 +2,9 @@
 /*global angular, _*/
 
 var portalApp = angular.module('myBus');
-
 portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
-
   var cities = {}
       , rawChildDataWithGeoMap = {};
-
   return {
     fetchAllCities: function () {
       $log.debug("fetching cities data ...");
@@ -20,7 +17,6 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             $log.debug("error retrieving cities");
           });
     },
-
     getCities: function (callback) {
       $log.debug("fetching cities data ...");
       $http.get('/api/v1/cities')
@@ -31,15 +27,12 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             $log.debug("error retrieving cities");
           });
     },
-
     getAllData: function () {
       return cities;
     },
-
     getAllCities: function () {
       return cities;
     },
-
     getChildrenByParentId: function (parentId) {
       if (!parentId) {
         return [];
@@ -72,13 +65,13 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
     getCity: function (id, callback) {
       $http.get('/api/v1/city/' + id)
           .success(function (data) {
-            callback(data);
+              callback(data);
+              $rootScope.$broadcast('BoardingPointsInitComplete');
           })
           .error(function (error) {
             alert("error finding city. " + angular.toJson(error));
           });
     },
-
     deleteCity: function(id, callback) {
       $http.delete('/api/v1/city/' + id)
           .success(function (data) {
@@ -98,7 +91,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           })
     },
     //----------------------------------------------------------------------
-       createBordingPoint: function (cityId,boardingPoint, callback) {
+    createBordingPoint: function (cityId,boardingPoint, callback) {
       $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
       }).error(function () {
