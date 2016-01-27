@@ -6,11 +6,15 @@ import com.mybus.dao.impl.CityMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
+import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -124,5 +128,26 @@ public class CityManager {
             return bp.get();
         }
         return null;
+    }
+
+    /**
+     * Module to build a map of <cityId, cityName>,
+     * @param allCities -- when true all the names will be returned, when false only active city names are returned
+     * @return
+     */
+    public Map<String, String> getCityNames(boolean allCities) {
+        List<City> cities = null;
+        if(allCities) {
+            cities = IteratorUtils.toList(cityDAO.findAll().iterator());
+        } else {
+            //find only active cities
+            cities = IteratorUtils.toList(cityDAO.findByActive(true).iterator());
+        }
+        if (cities == null || cities.isEmpty() ) {
+            return new HashMap<>();
+        }
+        Map<String, String> map = cities.stream().collect(
+                Collectors.toMap(City::getId, city -> city.getName()));
+        return map;
     }
 }
