@@ -12,7 +12,6 @@
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span
             class="glyphicon glyphicon-plus"></span> Add Boarding Point
     </button>
-    <!--<button class="btn btn-sm btn-danger" ng-really-click="handleDeleteButtonClicked(city.id)"><i class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}</button>-->
     <button type="button"  class="btn btn-sm btn-danger" ng-click="handleDeleteButtonClicked(city.id)"><i
             class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}
     </button>
@@ -41,7 +40,6 @@
                 <td colspan="4">No boardingPoint exist.  Please add some.</td>
             </tr>
         </table>
-    <!--</div>-->
 
 <script type="text/ng-template" id="add-boardingpoint-to-city-state-modal.html">
     <div class="modal-header">
@@ -76,14 +74,12 @@
                                    ng-minlength="7" ng-maxlength="10" placeholder="contact number" ng-required="true">
                         </div>
                     </div>
-
                 </div>
 
                 <div class="checkbox top-buffer-5">
                     <input type="checkbox" value=""  ng-model="boardingPoint.active">Active
                 </div>
                 <div class="modal-footer">
-
                     <button class="btn btn-primary" ng-click="ok(id)" ng-disabled="!isInputValid()">Add</button>
                     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
@@ -94,7 +90,7 @@
 </script>
 <!-- -------------------modal popup for deleting City --------------------------------------------->
 
-<script type="text/ng-template" id="delete-boardingPoint-to-city-state-modal.html">
+<script type="text/ng-template" id="delete-city-state-modal.html">
     <div class="modal-header">
         <h3 class="modal-title">Do you want to delete BoardingPoint ? </h3>
     </div>
