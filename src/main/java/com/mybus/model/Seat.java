@@ -27,19 +27,11 @@ public class Seat extends AbstractDocument{
     @Getter
     @Setter
     private boolean display;
-    
-    @Getter
-    @Setter
-    private boolean window;
-    
+ 
     @Getter
     @Setter
     private boolean sleeper;
-    
-    @Getter
-    @Setter
-    private boolean sideSleeper;
-    
+   
     @Getter
     @Setter
     private boolean upperDeck;

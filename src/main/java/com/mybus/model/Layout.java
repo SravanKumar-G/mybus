@@ -35,14 +35,22 @@ public class Layout extends AbstractDocument {
 	@Setter
 	private List<Row> rows;
 
-//	@Getter
-//	@Setter
-//	private int rows;
+	@Getter
+	@Setter
+	private int totalRows;
 	
-//	@Getter
-//	@Setter
-//	private int columns;
+	@Getter
+	@Setter
+	private int seatsPerRow;
+	
+	@Getter
+	@Setter
+	private int middleRowPosition;
 
+	@Getter
+	@Setter
+	private boolean middleRowLastSeat;
+	
 	@Getter
 	@Setter
 	private boolean active = true;
