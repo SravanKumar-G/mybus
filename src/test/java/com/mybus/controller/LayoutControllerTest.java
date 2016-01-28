@@ -173,8 +173,8 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 		actions.andExpect(jsonPath("$.totalSeats").value(15));
 		actions.andExpect(jsonPath("$.type").value("SEMI_SLEEPER"));
 
+		actions.andExpect(jsonPath("$.rows[2].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(false));
-		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(false));
 	}
 

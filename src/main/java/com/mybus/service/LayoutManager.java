@@ -97,13 +97,13 @@ public class LayoutManager {
 		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_RIGHT_ROWS; i++) {
 			Row row = new Row();
 			row.setMiddleRow(false);
+			row.setWindow(i == 0);
 			List<Seat> seats = new ArrayList<Seat>();
 			for (int j = 0, k = i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++, k += 1) {
 				Seat seat = new Seat();
 				seat.setActive(true);
 				seat.setDisplay(true);
 				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "R" + k++);
-				seat.setWindow(i == 0);
 				seats.add(seat);
 			}
 			row.setSeats(seats);
@@ -117,6 +117,7 @@ public class LayoutManager {
 		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_LEFT_ROWS; i++) {
 			Row row = new Row();
 			row.setMiddleRow(false);
+			row.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
 			List<Seat> seats = new ArrayList<Seat>();
 			for (int j = 0, k = SEMI_SLEEPER_DEFAULT_LEFT_ROWS - i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
 				Seat seat = new Seat();
@@ -124,7 +125,6 @@ public class LayoutManager {
 				seat.setDisplay(!(j == 0 && i == 0));
 				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "L" + k);
 				k += j == 0 ? 0 : 2;
-				seat.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
 				seats.add(seat);
 			}
 			row.setSeats(seats);

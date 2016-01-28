@@ -19,7 +19,7 @@ import com.mybus.model.Seat;
  * Created by schanda on 1/17/16.
  */
 
-public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest {
+public class LayoutControllerTestUtils {
 
 	/**
 	 * Default layout for Semi-sleeper
@@ -38,13 +38,13 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_RIGHT_ROWS; i++) {
 			Row row = new Row();
 			row.setMiddleRow(false);
+			row.setWindow(i == 0);			
 			List<Seat> seats = new ArrayList<Seat>();
 			for (int j = 0, k = i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++, k += 1) {
 				Seat seat = new Seat();
 				seat.setActive(true);
 				seat.setDisplay(true);
 				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "R" + k++);
-				seat.setWindow(i == 0);
 				seats.add(seat);
 			}
 			row.setSeats(seats);
@@ -58,6 +58,7 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 		for (int i = 0; i < SEMI_SLEEPER_DEFAULT_LEFT_ROWS; i++) {
 			Row row = new Row();
 			row.setMiddleRow(false);
+			row.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
 			List<Seat> seats = new ArrayList<Seat>();
 			for (int j = 0, k = SEMI_SLEEPER_DEFAULT_LEFT_ROWS - i; j < SEMI_SLEEPER_DEFAULT_COLUMNS; j++) {
 				Seat seat = new Seat();
@@ -65,7 +66,6 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 				seat.setDisplay(!(j == 0 && i == 0));
 				seat.setDisplayName(j == 0 ? String.valueOf(c--) : "L" + k);
 				k += j == 0 ? 0 : 2;
-				seat.setWindow(i + 1 == SEMI_SLEEPER_DEFAULT_LEFT_ROWS);
 				seats.add(seat);
 			}
 			row.setSeats(seats);
@@ -102,67 +102,67 @@ public class LayoutControllerTestUtils extends AbstractControllerIntegrationTest
 		actions.andExpect(jsonPath("$.type").value("AC_SEMI_SLEEPER"));
 
 		// validating front seats
+		actions.andExpect(jsonPath("$.rows[0].window").value(true));
 		actions.andExpect(jsonPath("$.rows[0].seats[0].displayName").value("D"));
-		actions.andExpect(jsonPath("$.rows[0].seats[0].display").value(true));
-		actions.andExpect(jsonPath("$.rows[0].seats[0].window").value(true));
+		actions.andExpect(jsonPath("$.rows[0].seats[0].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[0].seats[0].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[1].window").value(false));
 		actions.andExpect(jsonPath("$.rows[1].seats[0].displayName").value("C"));
-		actions.andExpect(jsonPath("$.rows[1].seats[0].display").value(true));
-		actions.andExpect(jsonPath("$.rows[1].seats[0].window").value(false));
+		actions.andExpect(jsonPath("$.rows[1].seats[0].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[1].seats[0].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[2].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[0].displayName").value(""));
-		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));
-		actions.andExpect(jsonPath("$.rows[2].seats[0].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));		
 		actions.andExpect(jsonPath("$.rows[2].seats[0].active").value(false));
 
+		actions.andExpect(jsonPath("$.rows[3].window").value(false));
 		actions.andExpect(jsonPath("$.rows[3].seats[0].displayName").value("B"));
-		actions.andExpect(jsonPath("$.rows[3].seats[0].display").value(false));
-		actions.andExpect(jsonPath("$.rows[3].seats[0].window").value(false));
+		actions.andExpect(jsonPath("$.rows[3].seats[0].display").value(false));		
 		actions.andExpect(jsonPath("$.rows[3].seats[0].active").value(false));
 
+		actions.andExpect(jsonPath("$.rows[4].window").value(true));
 		actions.andExpect(jsonPath("$.rows[4].seats[0].displayName").value("A"));
-		actions.andExpect(jsonPath("$.rows[4].seats[0].display").value(true));
-		actions.andExpect(jsonPath("$.rows[4].seats[0].window").value(true));
+		actions.andExpect(jsonPath("$.rows[4].seats[0].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[4].seats[0].active").value(true));
 
 		// validating middle row
+		actions.andExpect(jsonPath("$.rows[2].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[0].displayName").value(""));
-		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));
-		actions.andExpect(jsonPath("$.rows[2].seats[0].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[0].display").value(false));		
 		actions.andExpect(jsonPath("$.rows[2].seats[0].active").value(false));
 
+		actions.andExpect(jsonPath("$.rows[2].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].displayName").value(
 				String.format("M%s", SEMI_SLEEPER_DEFAULT_COLUMNS * 2 - 1)));
-		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(true));
 
 		// validating back seats
+		actions.andExpect(jsonPath("$.rows[0].window").value(true));
 		actions.andExpect(jsonPath("$.rows[0].seats[10].displayName").value("R19"));
-		actions.andExpect(jsonPath("$.rows[0].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[0].seats[10].window").value(true));
+		actions.andExpect(jsonPath("$.rows[0].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[0].seats[10].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[1].window").value(false));
 		actions.andExpect(jsonPath("$.rows[1].seats[10].displayName").value("R20"));
-		actions.andExpect(jsonPath("$.rows[1].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[1].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[1].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[1].seats[10].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[2].window").value(false));
 		actions.andExpect(jsonPath("$.rows[2].seats[10].displayName").value("M21"));
-		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[2].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[2].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[2].seats[10].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[3].window").value(false));
 		actions.andExpect(jsonPath("$.rows[3].seats[10].displayName").value("L20"));
-		actions.andExpect(jsonPath("$.rows[3].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[3].seats[10].window").value(false));
+		actions.andExpect(jsonPath("$.rows[3].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[3].seats[10].active").value(true));
 
+		actions.andExpect(jsonPath("$.rows[4].window").value(true));
 		actions.andExpect(jsonPath("$.rows[4].seats[10].displayName").value("L19"));
-		actions.andExpect(jsonPath("$.rows[4].seats[10].display").value(true));
-		actions.andExpect(jsonPath("$.rows[4].seats[10].window").value(true));
+		actions.andExpect(jsonPath("$.rows[4].seats[10].display").value(true));		
 		actions.andExpect(jsonPath("$.rows[4].seats[10].active").value(true));
 	}
 
