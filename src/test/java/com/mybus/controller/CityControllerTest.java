@@ -5,6 +5,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
+
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.*;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,22 +62,40 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testGetActiveCityNames() throws Exception {
-        for(int i=0; i< 3; i++ ) {
-            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+    	String[] ids = {"123", "234", "345", "456"};
+        for(int i=1; i<= 4; i++ ) {
+        	City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
+        	city.setId(ids[i-1]);
+            cityDAO.save(city);
         }
+        
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/activeCityNames"), currentUser));
         actions.andExpect(status().isOk());
-        //TODO: check the map values
+        actions.andExpect(
+                jsonPath("$.234").value("Name2"));
+        actions.andExpect(
+                jsonPath("$.456").value("Name4"));
     }
 
     @Test
     public void testGetAllCityNames() throws Exception {
-        for(int i=0; i< 3; i++ ) {
-            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+    	String[] ids = {"123", "234", "345", "456"};
+        for(int i=1; i<=4; i++ ) {
+        	City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
+        	city.setId(ids[i-1]);
+            cityDAO.save(city);
         }
+
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/allCityNames"), currentUser));
         actions.andExpect(status().isOk());
-        //TODO: check the map values
+        actions.andExpect(
+                jsonPath("$.123").value("Name1"));
+        actions.andExpect(
+                jsonPath("$.234").value("Name2"));
+        actions.andExpect(
+                jsonPath("$.345").value("Name3"));
+        actions.andExpect(
+                jsonPath("$.456").value("Name4"));
     }
 
     @Test
