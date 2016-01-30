@@ -44,7 +44,12 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Bus Type:</label>
+                    <label for="sel1">Layout Name:</label>
+                    <input type="text" id=layoutName" class="form-control" ng-model="busLayoutEditCtrl.busLayouts.name">
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Layout Type:</label>
                     <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busLayout" id="busLayout" ng-model="busLayoutEditCtrl.busLayouts.busLayout" required>
                         <option ng-repeat="option in busLayoutEditCtrl.busLayouts.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
@@ -53,7 +58,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Seats:</label>
+                    <label for="sel1">Seats per Row:</label>
                     <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busColumns" id="busColumns" ng-model="busLayoutEditCtrl.busColumns.columns" required>
                         <option ng-repeat="option in busLayoutEditCtrl.busColumns.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
