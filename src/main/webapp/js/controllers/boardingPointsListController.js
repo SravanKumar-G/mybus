@@ -126,11 +126,6 @@ angular.module('myBus.boardingPointModule', [])
         $scope.cancel = function () {
          $modalInstance.dismiss('cancel');
      };
-        $scope.isInputValid = function () {
-         return ($scope.person.name || '') !== '' &&
-                ($scope.person.age || '') !== '' &&
-                ($scope.person.phone || '') !== '';
-     };
 })
 //======================Model - updateBpController=============================================
     .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http,$route,BpId,cityId, $log,cityManager) {
