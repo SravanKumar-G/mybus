@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 /*global angular, _*/
 
 var portalApp = angular.module('myBus');
@@ -70,6 +70,11 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
      $http.put('/api/v1/layout',layout).success(function (data) {
        //callback(data);
        $rootScope.$broadcast('layoutsCreateComplete');
+     });
+   },
+    deleteLayout: function(name) {
+     $http.delete('/api/v1/layout/'+name).success(function (data) {
+       $rootScope.$broadcast('layoutsDeleteComplete');
      });
    }
   };

@@ -2,13 +2,24 @@
     <button type="button" class="btn btn-sm btn-primary" ng-click="busLayoutCtrl.addNewBusLayout()"><span class="glyphicon glyphicon-plus"></span> Add Layout</button>
 </div>
 
-<table class="table table-bordered table-condensed table-hover" ng-table="layoutContentTableParams">
-    <tr ng-repeat="bus in busdetails">
-        <td data-title="'Bus Type'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.name }}</td>
-        <td data-title="'Seats'" class="clickable-item" ng-click="goToExpense(expense.id)">{{ bus.totalSeats }}</td>
-        <td data-title="'Layout'" class="clickable-item" ng-click="goToBusLayout(bus.id)">{{ bus.type }}</td>
+<table class="table table-bordered table-condensed table-hover" ng-table="busLayoutCtrl.layoutContentTableParams">
+    <tr ng-repeat="layout in busLayoutCtrl.layouts">
+        <td data-title="'Layout Name'">{{ layout.name }}</td>
+        <td data-title="'Seats'">{{ layout.totalSeats }}</td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="busLayoutCtrl.goToBusLayout(layout.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="busLayoutCtrl.deleteLayout(layout)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
     </tr>
-    <tr ng-if="!currentPageOfLayouts || currentPageOfLayouts.length === 0">
+    <tr ng-if="!busLayoutCtrl.currentPageOfLayouts || busLayoutCtrl.currentPageOfLayouts.length === 0">
         <td colspan="4">No details exist.</td>
     </tr>
 </table>

@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 /*global angular, _*/
 
 angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
@@ -21,6 +21,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         busLayoutEditCtrl.busLayout = {
             rows : null,
             type: null,
+            name : null,
             upper : null,
             lower : null,
             upperHeader : '',
@@ -28,6 +29,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         };
 
         busLayoutEditCtrl.busLayouts = {
+        	name : null,
             busLayout : null,
             availableOptions: [
               {id: 'SEMI_SLEEPER', name: 'SEMI_SLEEPER'},
@@ -76,6 +78,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             busLayoutEditCtrl.busLayout = {
                 rows : null,
                 type: null,
+                name : null,
                 upper : null,
                 lower : null,
                 upperHeader : '',
@@ -123,6 +126,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         };
 
         function initialize(){
+        	busLayoutEditCtrl.busLayout.name = null;
             busLayoutEditCtrl.busLayout.type = null;
             busLayoutEditCtrl.busLayout.rows = null;
             busLayoutEditCtrl.busLayout.upper = null;
@@ -159,6 +163,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             }
 
             busLayoutEditCtrl.busLayout.type = busLayoutEditCtrl.busLayouts.busLayout;
+            busLayoutEditCtrl.busLayout.name = busLayoutEditCtrl.busLayouts.name;
         };
 
         function getSeats(middleseatpos, middleseat){
@@ -218,7 +223,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                 rows.push({seats: seats});
             });
             var layoutToSave = {
-                name : busLayoutEditCtrl.busLayout.type,
+                name : busLayoutEditCtrl.busLayout.name,
                 type: busLayoutEditCtrl.busLayout.type,
                 totalSeats : 0,
                 rows: rows,
@@ -226,8 +231,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                 id : busLayoutEditCtrl.busLayout.id
             };
 
-            $log.debug(layoutToSave);
-            if(layoutToSave.id && layoutToSave.id !== '001'){
+            if(layoutToSave.id && layoutToSave.id !== 'create'){
                 busLayoutManager.updateLayout(layoutToSave);
             }else{
                 busLayoutManager.createLayout(layoutToSave);
