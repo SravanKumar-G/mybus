@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 /*global angular, _*/
 
 angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
@@ -226,8 +226,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                 id : busLayoutEditCtrl.busLayout.id
             };
 
-            $log.debug(layoutToSave);
-            if(layoutToSave.id && layoutToSave.id !== '001'){
+            if(layoutToSave.id && layoutToSave.id !== 'create'){
                 busLayoutManager.updateLayout(layoutToSave);
             }else{
                 busLayoutManager.createLayout(layoutToSave);
