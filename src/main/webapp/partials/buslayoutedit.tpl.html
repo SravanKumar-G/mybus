@@ -44,23 +44,28 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Bus Type:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busLayout" id="busLayout" ng-model="busLayoutEditCtrl.busLayouts.busLayout" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.busLayouts.availableOptions" value="{{option.id}}">{{option.name}}</option>
+                    <label for="sel1">Name:</label>
+                    <input type="text" class="form-control" ng-model="busLayoutEditCtrl.name" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Type:</label>
+                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="layouts" id="layouts" ng-model="busLayoutEditCtrl.layouts.type" required>
+                        <option ng-repeat="option in busLayoutEditCtrl.layouts.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Seats:</label>
+                    <label for="sel1">Seats per row:</label>
                     <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busColumns" id="busColumns" ng-model="busLayoutEditCtrl.busColumns.columns" required>
                         <option ng-repeat="option in busLayoutEditCtrl.busColumns.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Rows:</label>
+                    <label for="sel1">No of rows:</label>
                     <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="rows" id="rows" ng-model="busLayoutEditCtrl.busRows.rows" required>
                         <option ng-repeat="option in busLayoutEditCtrl.busRows.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
@@ -81,6 +86,16 @@
                         <option ng-repeat="option in busLayoutEditCtrl.middleRowSeats.availableOptions" value="{{option.id}}">{{option.name}}</option>
                     </select>
                     <br>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
+                <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="busLayoutEditCtrl.active">
+                </div>
+                <label class="col-sm-3 control-label checkbox" for="activeInactive">Total Seats</label>
+                <div class="col-sm-1">
+                    <span>{{busLayoutEditCtrl.totalSeats}}</span>
                 </div>
             </div>
 
