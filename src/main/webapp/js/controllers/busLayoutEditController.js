@@ -22,6 +22,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         busLayoutEditCtrl.busLayout = {
             rows : null,
             type: null,
+            name : null,
             upper : null,
             lower : null,
             upperHeader : '',
@@ -113,6 +114,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             busLayoutEditCtrl.busLayout = {
                 rows : null,
                 type: null,
+                name : null,
                 upper : null,
                 lower : null,
                 upperHeader : '',
@@ -132,6 +134,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         }
 
         function initialize(){
+        	busLayoutEditCtrl.busLayout.name = null;
             busLayoutEditCtrl.busLayout.type = null;
             busLayoutEditCtrl.busLayout.rows = null;
             busLayoutEditCtrl.busLayout.upper = null;
