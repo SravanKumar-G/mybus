@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CityDAO extends PagingAndSortingRepository<City, String> {
     City findOneByName(String name);
+    City findOneByNameAndState(String name, String state);
     Iterable<City> findByName(String name);
     Iterable<City> findByActive(boolean active);
     void delete(String s);
