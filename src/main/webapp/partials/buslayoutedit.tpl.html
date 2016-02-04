@@ -1,36 +1,36 @@
 <style type="text/css">
     .holder{
-        height:300px;
-        width:750px;
-        background-color:#F5F5F5;
-        border:1px solid #A4A4A4;
-        margin-left:10px;
+    height:300px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
     }
 
     .bigbus{
-        height:400px;
-        width:750px;
-        background-color:#F5F5F5;
-        border:1px solid #A4A4A4;
-        margin-left:10px;
+    height:400px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
     }
 
     table tr td.seat{
-        background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
-        height:77px;
-        width:40px;
+    background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+    height:77px;
+    width:40px;
     }
     #place .selectedSeat
     {
-        background-image:url("images/booked_seat_img.gif");
+    background-image:url("images/booked_seat_img.gif");
     }
     #place .selectingSeat
     {
-        background-image:url("images/selected_seat_img.gif");
+    background-image:url("images/selected_seat_img.gif");
     }
     .seatDescription{
-        padding-left : 5px;
-        font-size : 10px;
+    padding-left : 5px;
+    font-size : 10px;
     }
 
 </style>
@@ -44,54 +44,44 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Layout Name:</label>
-                    <input type="text" id=layoutName" class="form-control" ng-model="busLayoutEditCtrl.busLayouts.name">
+                    <label for="sel1">Name:</label>
+                    <input type="text" class="form-control" ng-model="busLayoutEditCtrl.name" required>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Layout Type:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busLayout" id="busLayout" ng-model="busLayoutEditCtrl.busLayouts.busLayout" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.busLayouts.availableOptions" value="{{option.id}}">{{option.name}}</option>
-                    </select>
+                    <label for="sel1">Type:</label>
+                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type"></select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Seats per Row:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="busColumns" id="busColumns" ng-model="busLayoutEditCtrl.busColumns.columns" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.busColumns.availableOptions" value="{{option.id}}">{{option.name}}</option>
-                    </select>
+                    <label for="sel1">Seats per row:</label>
+                    <select class="form-control" data-ng-options="seat.name for seat in busLayoutEditCtrl.seats" data-ng-model="busLayoutEditCtrl.seatsPerRow" ng-change="busLayoutEditCtrl.doLayout()"></select>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">No of rows:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="rows" id="rows" ng-model="busLayoutEditCtrl.busRows.rows" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.busRows.availableOptions" value="{{option.id}}">{{option.name}}</option>
-                    </select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.rows" data-ng-model="busLayoutEditCtrl.totalRows" ng-change="busLayoutEditCtrl.doLayout()"></select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Middle Row:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="middleRow" id="middleRow" ng-model="busLayoutEditCtrl.middleRow.middleRow" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.middleRow.availableOptions" value="{{option.id}}">{{option.name}}</option>
-                    </select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRows" data-ng-model="busLayoutEditCtrl.middleRow" ng-change="busLayoutEditCtrl.doLayout()"></select>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Middle Row Seat:</label>
-                    <select class="form-control" ng-change="busLayoutEditCtrl.doLayout()" name="middleRowSeat" id="middleRowSeat" ng-model="busLayoutEditCtrl.middleRowSeats.middleRowSeat" required>
-                        <option ng-repeat="option in busLayoutEditCtrl.middleRowSeats.availableOptions" value="{{option.id}}">{{option.name}}</option>
-                    </select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRowSeats" data-ng-model="busLayoutEditCtrl.middleRowSeat" ng-change="busLayoutEditCtrl.doLayout()"></select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
                 <div class="col-sm-1">
-                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="busLayoutEditCtrl.active">
+                    <input type="checkbox" ng-checked="busLayoutEditCtrl.active" class="form-control" ng-model="busLayoutEditCtrl.active">
                 </div>
                 <label class="col-sm-3 control-label checkbox" for="activeInactive">Total Seats</label>
                 <div class="col-sm-1">
