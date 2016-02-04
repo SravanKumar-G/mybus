@@ -85,6 +85,10 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
 
         routesManager.fetchAllRoutes();
 
+        $scope.handleClickDeleteRoute = function(passId){
+            routesManager.deleteRoute(passId);
+        };
+
        $scope.handleClickAddNewRoute = function(cityId){
             var modalInstance = $modal.open({
                 templateUrl : 'add-route-modal.html',
@@ -92,18 +96,6 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 resolve : {
                     passId : function(){
                         return cityId;
-                    }
-                }
-            });
-        };
-
-        $scope.handleClickDeleteRoute = function(routeId){
-            var modalInstance = $modal.open({
-                templateUrl : 'delete-route-modal.html',
-                controller : 'DeleteRouteModalController',
-                resolve : {
-                    passId : function(){
-                        return routeId;
                     }
                 }
             });
@@ -180,6 +172,8 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
     })
 
     .controller('AddRouteModalController', function ($scope, $modalInstance, $http, $log, cityManager,routesManager) {
+
+        $scope.fromCitySelected = {};
         $scope.route = {
             name : null,
             viaCities : [],
@@ -192,6 +186,15 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 $scope.cities = data;
             });
         }();
+
+        $scope.dropCallback = function(){
+            console.log("City dropped");
+        };
+
+        $scope.insertCallback = function(message,event){
+            console.log(message, '(triggered by the following', event.type, 'event)');
+            console.log(event);
+        };
 
         $scope.selectedViaCityId = {};
         $scope.citiesFromService = [];
@@ -223,6 +226,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 $log.error("nothing was added.");
                 $modalInstance.close(null);
             }
+            console.log(angular.toJson($scope.fromCitySelected));
             routesManager.createRoute($scope.route, function (data) {
                 $modalInstance.close(data);
             });
@@ -235,21 +239,16 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
         $scope.isInputValid = function () {
 
         };
-    })
-
-    .controller('DeleteRouteModalController',function($scope,$http,routesManager,$modalInstance,$log,passId) {
-                $scope.routeId = passId;
-
-                $scope.ok = function (passId) {
-                    routesManager.deleteRoute(passId);
-                    $modalInstance.close();
-                    console.log("Route deleted");
-                };
-
-                $scope.cancel = function () {
-                    $modalInstance.dismiss('cancel');
-                };
-
+        $scope.routesFromManager=[];
+        $scope.onMouseLeave = function(routeName){
+            routesManager.getRoutes(function(data){
+                $scope.routesFromManager=data;
+            });
+            angular.forEach($scope.routesFromManager,function(route){
+                if(route.name==routeName){
+                    swal("oops!","Route already exist","error");
+                }
+            })
+        }
     });
-
 
