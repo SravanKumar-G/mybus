@@ -58,9 +58,10 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             this.fetchAllCities();
           })
           .error(function (err) {
-            var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
-            $log.error(errorMsg);
-              sweetAlert("Oops","Error Message","error"+errorMsg);
+              sweetAlert("Oops","error adding new city info.","error",+err);
+           // var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
+           // $log.error(errorMsg);
+
           });
     },
     getCity: function (id, callback) {
@@ -98,8 +99,8 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
       $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
           sweetAlert("Great","Your BoardingPoint has been successfully added", "success");
-      }).error(function () {
-          sweetAlert("Oops...", "Error creating Bp data!", "error");
+      }).error(function (err) {
+          sweetAlert("Oops...", "Error creating Bp data!", "error"+err.message);
       });
     },
     updateBp: function(cityId,boardingPoint,callback) {
