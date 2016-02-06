@@ -55,13 +55,9 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           .success(function (data) {
             callback(data);
               swal("Great", "Your City has been successfully added", "success");
-            this.fetchAllCities();
           })
           .error(function (err) {
               sweetAlert("Oops","error adding new city info.","error",+err);
-           // var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
-           // $log.error(errorMsg);
-
           });
     },
     getCity: function (id, callback) {
@@ -74,17 +70,24 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             alert("error finding city. " + angular.toJson(error));
           });
     },
-    deleteCity: function(id, callback) {
-      $http.delete('/api/v1/city/' + id)
-          .success(function (data) {
-            callback(data);
-              sweetAlert("Great","Your City has been successfully deleted", "success");
-            $window.location = "#/cities";
-          })
-          .error(function (error) {
-              sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
+      deleteCity: function(id) {
+
+          swal({   title: "Are you sure?",   text: "You will not be able to recover this City !",   type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "Yes, delete it!",
+                  closeOnConfirm: false }, function() {
+              $http.delete('/api/v1/city/' + id)
+                  .success(function (data) {
+                      //callback(data);
+                      sweetAlert("Great", "Your City has been successfully deleted", "success");
+                      $window.location = "#/cities";
+                  })
+                  .error(function (error) {
+                      sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
+                  });
           });
-    },
+              },
     updateCity: function(city,callback) {
       $http.put('/api/v1/city/'+city.id,city).success(function (data) {
         callback(data);
@@ -113,12 +116,20 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
       });
     },
     deleteBp: function(cityId,BpId,callback) {
-      $http.delete('/api/v1/city/'+cityId+'/boardingpoint/'+BpId).success(function (data) {
-        callback(data);
-          sweetAlert("Great","Your BoardingPoint has been successfully deleted", "success");
-        //$rootScope.$broadcast('deleteBpCompleteEvent');
-      }).error(function () {
-          sweetAlert("Oops...", "Error deleting Bp data!", "error");
+      swal({   title: "Are you sure?",   text: "You will not be able to recover this BoardingPoint !",   type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false }, function() {
+              $http.delete('/api/v1/city/'+cityId+'/boardingpoint/'+BpId)
+              .success(function (data) {
+                  callback(data);
+                  sweetAlert("Great", "Your BoardingPoint has been successfully deleted", "success");
+                      $rootScope.$broadcast('deleteBpCompleteEvent');
+              })
+              .error(function (error) {
+                  sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
+              });
       });
     },
     getBp: function (id,BpId, callback) {
