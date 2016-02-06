@@ -94,7 +94,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           sweetAlert("Great","Your City has been successfully updated", "success");
         $rootScope.$broadcast('updateCityCompleteEvent');
       }).error(function (error) {
-          sweetAlert("Oops...", "Error updating City data!", "error" + angular.toJson(error));
+          sweetAlert("Oops..", "Error updating City data!", "error" + angular.toJson(error));
           })
     },
     //----------------------------------------------------------------------
