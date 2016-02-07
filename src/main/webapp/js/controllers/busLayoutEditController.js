@@ -135,7 +135,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             initialize();
             // layout css class
             var sleeper = false;
-            if(busLayoutEditCtrl.layouts.type === 'SLEEPER'){
+            if(busLayoutEditCtrl.type.id === 'SLEEPER'){
                 sleeper = true;
                 busLayoutEditCtrl.layoutCls = 'seat';
             }else{
@@ -144,14 +144,14 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
 
             // building the rows and columns
 
-            if(sleeper && busLayoutEditCtrl.seatsPerRow.id > 0 && busLayoutEditCtrl.totalRows.id > 0){
+            if(sleeper && busLayoutEditCtrl.seatsPerRow && busLayoutEditCtrl.totalRows){
                 for(var k = 0; k < 2; k++){
                     if(k===0){
                        busLayoutEditCtrl.busLayout.upper = getSeats();
-                       busLayoutEditCtrl.busLayout.upperHeader = 'Upper';
+                       busLayoutEditCtrl.busLayout.upperHeader = 'Upper Deck Layout';
                     }else{
                        busLayoutEditCtrl.busLayout.lower = getSeats();
-                       busLayoutEditCtrl.busLayout.lowerHeader = 'Lower';
+                       busLayoutEditCtrl.busLayout.lowerHeader = 'Lower Deck Layout';
                     }
                 }
             }else if(busLayoutEditCtrl.seatsPerRow && busLayoutEditCtrl.totalRows){

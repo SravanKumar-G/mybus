@@ -6,7 +6,7 @@
 
     <script src="lib/underscore-min-1.5.2.js"></script>
     <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
@@ -20,29 +20,9 @@
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="lib/async.js"></script>
-    <script src="js/myBus.js"></script>
-    <script src="js/controllers/citiesController.js"></script>
-    <script src="js/controllers/expensesController.js"></script>
-    <script src="js/controllers/boardingPointsListController.js"></script>
-    <script src="js/controllers/personController.js"></script>
-    <script src="js/controllers/busLayoutController.js"></script>
-    <script src="js/controllers/busLayoutEditController.js"></script>
-    <script src="js/controllers/homeController.js"></script>
-    <script src="js/controllers/busDetailsController.js"></script>
-    <script src="js/controllers/routesController.js"></script>
 
-    <script src="js/services/appConfigManager.js"></script>
-    <script src="js/services/userManager.js"></script>
-    <script src="js/services/cityManager.js"></script>
-    <script src="js/services/busManager.js"></script>
-    <script src="js/services/routesManager.js"></script>
-    <script src="js/services/personService.js"></script>
-    <script src="js/services/expensesManager.js"></script>
-    <script src="js/directives/ng-really.js"></script>
-    <script src="js/directives/stateOptions.js"></script>
-    <script src="js/filters/unsafeFilter.js"></script>
-    <script src="js/filters/arrayNoneFilter.js"></script>
-    <script src="js/providers/stateValueProvider.js"></script>
+    <script src="dist/scripts/mybus-0.1.0.js"></script>
+
 
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">

@@ -3,6 +3,7 @@
 
 angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
 
+
     // ==================================================================================================================
     // ====================================    BusLayoutController   ================================================
     // ==================================================================================================================
@@ -24,8 +25,8 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
         };
 
         busLayoutCtrl.deleteLayout = function (layout) {
-            console.log(layout.name);
-            busLayoutManager.deleteLayout(layout.name);
+            busLayoutManager.deleteLayout(layout.id);
+            $location.url('/layouts');
         };
 
         var loadTableData = function (tableParams, $defer) {

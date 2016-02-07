@@ -8,29 +8,29 @@
     }
 
     .bigbus{
-    height:400px;
-    width:750px;
-    background-color:#F5F5F5;
-    border:1px solid #A4A4A4;
-    margin-left:10px;
+        height:400px;
+        width:750px;
+        background-color:#F5F5F5;
+        border:1px solid #A4A4A4;
+        margin-left:10px;
     }
 
     table tr td.seat{
-    background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
-    height:77px;
-    width:40px;
+        background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+        height:77px;
+        width:40px;
     }
     #place .selectedSeat
     {
-    background-image:url("images/booked_seat_img.gif");
+        background-image:url("images/booked_seat_img.gif");
     }
     #place .selectingSeat
     {
-    background-image:url("images/selected_seat_img.gif");
+        background-image:url("images/selected_seat_img.gif");
     }
     .seatDescription{
-    padding-left : 5px;
-    font-size : 10px;
+        padding-left : 5px;
+        font-size : 10px;
     }
 
 </style>
@@ -106,15 +106,15 @@
     </tr>
 </table>
 <span>{{busLayoutEditCtrl.busLayout.upperHeader}}</span>
-<table id="holder">
+<table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.upper">
-        <td class="{{busLayoutEditCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 <span>{{busLayoutEditCtrl.busLayout.lowerHeader}}</span>
-<table id="holder">
+<table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.lower">
-        <td class="{{busLayoutEditCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 </div>
