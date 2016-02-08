@@ -29,13 +29,18 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             lowerHeader : ''
         };
 
-        busLayoutEditCtrl.layouts  = [
+        busLayoutEditCtrl.layouts = {
+            type : null,
+            availableOptions: [
               {id: 'SEMI_SLEEPER', name: 'SEMI_SLEEPER'},
               {id: 'AC_SEMI_SLEEPER', name: 'AC_SEMI_SLEEPER'},
               {id: 'SLEEPER', name: 'SLEEPER'}
-            ];
+            ]
+       };
 
-       busLayoutEditCtrl.rows = [
+       busLayoutEditCtrl.busRows = {
+           rows : null,
+           availableOptions: [
             {id: '10', name: '10'},
             {id: '11', name: '11'},
             {id: '12', name: '12'},
@@ -45,25 +50,35 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             {id: '16', name: '16'},
             {id: '17', name: '17'}
 
-           ];
+           ]
+      };
 
-      busLayoutEditCtrl.seats = [
+      busLayoutEditCtrl.busColumns = {
+           columns : null,
+           availableOptions: [
              {id: 1, name: '1'},
               {id: 2, name: '2'},
               {id: 3, name: '3'},
               {id: 4, name: '4'}
-           ];
+           ]
+      };
 
-      busLayoutEditCtrl.middleRows = [
+      busLayoutEditCtrl.middleRow = {
+           middleRow : null,
+           availableOptions: [
              {id: 2, name: 'Middle Row After First Seat'},
              {id: 3, name: 'Middle Row After Second Seat'},
              {id: 4, name: 'Middle Row After Third Seat'}
-           ];
+           ]
+      };
 
-      busLayoutEditCtrl.middleRowSeats = [
+      busLayoutEditCtrl.middleRowSeats = {
+           middleRowSeat : null,
+           availableOptions: [
              {id: true, name: 'Yes'},
              {id: false, name: 'No'}
-           ];
+           ]
+      };
 
 
       var layOutId = $routeParams.id;
@@ -75,12 +90,11 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
         }
         if(busLayoutEditCtrl.busLayout && busLayoutEditCtrl.busLayout.id !== ''){
             busLayoutEditCtrl.name = busLayoutEditCtrl.busLayout.name;
-            busLayoutEditCtrl.type = $filter('filter')(busLayoutEditCtrl.layouts, {id: busLayoutEditCtrl.busLayout.type})[0];
-            busLayoutEditCtrl.seatsPerRow = $filter('filter')(busLayoutEditCtrl.seats, {id: busLayoutEditCtrl.busLayout.seatsPerRow})[0];
-            busLayoutEditCtrl.totalRows = $filter('filter')(busLayoutEditCtrl.rows, {id: busLayoutEditCtrl.busLayout.totalRows})[0];
-            busLayoutEditCtrl.middleRow = $filter('filter')(busLayoutEditCtrl.middleRows, {id: busLayoutEditCtrl.busLayout.middleRowPosition})[0];
-            busLayoutEditCtrl.middleRowSeat = $filter('filter')(busLayoutEditCtrl.middleRowSeats, {id: busLayoutEditCtrl.busLayout.middleRowLastSeat})[0];
-            busLayoutEditCtrl.active = busLayoutEditCtrl.busLayout.active;
+            busLayoutEditCtrl.layouts.type = busLayoutEditCtrl.busLayout.type;
+            busLayoutEditCtrl.busRows.rows = busLayoutEditCtrl.busLayout.totalRows;
+            busLayoutEditCtrl.busColumns.columns = busLayoutEditCtrl.busLayout.seatsPerRow;
+            busLayoutEditCtrl.middleRow.value = busLayoutEditCtrl.busLayout.middleRowPosition;
+            busLayoutEditCtrl.middleRowSeats.value = busLayoutEditCtrl.busLayout.middleRowLastSeat;
             var rows = [];
             angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
                 var seats = [];
@@ -143,33 +157,26 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             }
 
             // building the rows and columns
-
-            if(sleeper && busLayoutEditCtrl.seatsPerRow.id > 0 && busLayoutEditCtrl.totalRows.id > 0){
+            if(sleeper && busLayoutEditCtrl.busColumns.columns > 0 && busLayoutEditCtrl.busRows.rows > 0){
                 for(var k = 0; k < 2; k++){
                     if(k===0){
-                       busLayoutEditCtrl.busLayout.upper = getSeats();
+                       busLayoutEditCtrl.busLayout.upper = getSeats(busLayoutEditCtrl.middleRow.middleRow, busLayoutEditCtrl.middleRowSeats.middleRowSeat);
                        busLayoutEditCtrl.busLayout.upperHeader = 'Upper';
                     }else{
-                       busLayoutEditCtrl.busLayout.lower = getSeats();
+                       busLayoutEditCtrl.busLayout.lower = getSeats(busLayoutEditCtrl.middleRow.middleRow, busLayoutEditCtrl.middleRowSeats.middleRowSeat);
                        busLayoutEditCtrl.busLayout.lowerHeader = 'Lower';
                     }
                 }
-            }else if(busLayoutEditCtrl.seatsPerRow && busLayoutEditCtrl.totalRows){
-                busLayoutEditCtrl.busLayout.rows = getSeats();
+            }else{
+                busLayoutEditCtrl.busLayout.rows = getSeats(busLayoutEditCtrl.middleRow.middleRow, busLayoutEditCtrl.middleRowSeats.middleRowSeat);
             }
 
+            //busLayoutEditCtrl.busLayout.type = busLayoutEditCtrl.layouts.type;
         };
 
         function getSeats(middleseatpos, middleseat){
-        //busLayoutEditCtrl.middleRow.id, busLayoutEditCtrl.middleRowSeat.id
-            var rows = [], middleseatpos = 0, middleseat = 0;
-            if(busLayoutEditCtrl.middleRow){
-                middleseatpos = busLayoutEditCtrl.middleRow.id;
-            }
-            if(busLayoutEditCtrl.middleRowSeat){
-                middleseat = busLayoutEditCtrl.middleRowSeat.id;
-            }
-            var cols = busLayoutEditCtrl.seatsPerRow.id;
+            var rows = [];
+            var cols = busLayoutEditCtrl.busColumns.columns;
             if(middleseatpos > 0){
                 cols = parseInt(cols) +1;
             }
@@ -181,9 +188,9 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             for (var i = 1; i <= cols; i++){
                 var seats = [];
                 if(i === parseInt(middleseatpos)){
-                    for (var j = 1; j <= busLayoutEditCtrl.totalRows.id; j++){
+                    for (var j = 1; j <= busLayoutEditCtrl.busRows.rows; j++){
                         var number = getName(j).name+''+i;
-                        if(middleseat === 1 && j === busLayoutEditCtrl.totalRows.id){
+                        if(middleseat === 1 && j === busLayoutEditCtrl.busRows.rows){
                             busLayoutEditCtrl.totalSeats = busLayoutEditCtrl.totalSeats + 1;
                             seats.push({number : number, [number]: number});
                         }else{
@@ -191,7 +198,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                         }
                     }
                 }else{
-                    for (var j = 1; j <= busLayoutEditCtrl.totalRows.id; j++){
+                    for (var j = 1; j <= busLayoutEditCtrl.busRows.rows; j++){
                         var number = getName(j).name+''+i;
                         busLayoutEditCtrl.totalSeats = busLayoutEditCtrl.totalSeats + 1;
                         seats.push({number : number, [number]: number});
@@ -229,14 +236,14 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
             });
             var layoutToSave = {
                 name : busLayoutEditCtrl.name,
-                type: busLayoutEditCtrl.type.id,
+                type: busLayoutEditCtrl.layouts.type,
                 totalSeats : busLayoutEditCtrl.totalSeats,
-                seatsPerRow : busLayoutEditCtrl.seatsPerRow.id,
-                totalRows : busLayoutEditCtrl.totalRows.id,
-                middleRowPosition : busLayoutEditCtrl.middleRow.id,
-                middleRowLastSeat : busLayoutEditCtrl.middleRowSeat.id,
+                seatsPerRow : busLayoutEditCtrl.busColumns.columns,
+                totalRows : busLayoutEditCtrl.busRows.rows,
+                middleRowPosition : busLayoutEditCtrl.middleRow.middleRow,
+                middleRowLastSeat : busLayoutEditCtrl.middleRowSeats.middleRowSeat,
                 rows: rows,
-                active : busLayoutEditCtrl.active,
+                active : true,
                 id : busLayoutEditCtrl.busLayout.id
             };
 

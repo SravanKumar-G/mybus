@@ -106,15 +106,15 @@
     </tr>
 </table>
 <span>{{busLayoutEditCtrl.busLayout.upperHeader}}</span>
-<table id="holder">
+<table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.upper">
-        <td class="{{busLayoutEditCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 <span>{{busLayoutEditCtrl.busLayout.lowerHeader}}</span>
-<table id="holder">
+<table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.lower">
-        <td class="{{busLayoutEditCtrl.layoutCls}}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 </div>

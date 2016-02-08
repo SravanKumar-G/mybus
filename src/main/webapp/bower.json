@@ -1,0 +1,17 @@
+{
+  "name": "mybus",
+  "description": "mybus resources",
+  "keywords": [],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "angular-animate": "1.5.0",
+    "angular-route": "1.5.0",
+    "angular-bootstrap": "0.11.2",
+    "angular-deferred-bootstrap": "0.1.5",
+    "bootstrap": "3.3.6"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.5.0"
+  }
+}
+
