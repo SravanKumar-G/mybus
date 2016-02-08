@@ -18,12 +18,14 @@
     <script src="bower_components/angular-unsavedChanges/dist/unsavedChanges.js"></script>
     <script src="bower_components/spin.js/spin.js"></script>
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
+    <script src="bower_components/sweet-alert/dist/sweetalert.min.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="lib/async.js"></script>
 
     <script src="dist/scripts/mybus-0.1.0.js"></script>
 
 
+    <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
     <link rel="stylesheet" href="css/app.css">
