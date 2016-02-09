@@ -18,8 +18,15 @@
     table tr td.seat{
     background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
     height:77px;
-    width:40px;
+    //width:40px;
     }
+
+    table tr td.sleeper{
+    background:url("images/sleeper.png") no-repeat scroll 0 0 transparent;
+    height:77px;
+    //width:40px;
+    }
+
     #place .selectedSeat
     {
     background-image:url("images/booked_seat_img.gif");
@@ -50,31 +57,31 @@
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Type:</label>
-                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type"></select>
+                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type" required></select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Seats per row:</label>
-                    <select class="form-control" data-ng-options="seat.name for seat in busLayoutEditCtrl.seats" data-ng-model="busLayoutEditCtrl.seatsPerRow" ng-change="busLayoutEditCtrl.doLayout()"></select>
+                    <select class="form-control" data-ng-options="seat.name for seat in busLayoutEditCtrl.seats" data-ng-model="busLayoutEditCtrl.seatsPerRow" ng-change="busLayoutEditCtrl.doLayout()" required></select>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">No of rows:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.rows" data-ng-model="busLayoutEditCtrl.totalRows" ng-change="busLayoutEditCtrl.doLayout()"></select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.rows" data-ng-model="busLayoutEditCtrl.totalRows" ng-change="busLayoutEditCtrl.doLayout()" required></select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Middle Row:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRows" data-ng-model="busLayoutEditCtrl.middleRow" ng-change="busLayoutEditCtrl.doLayout()"></select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRows" data-ng-model="busLayoutEditCtrl.middleRow" ng-change="busLayoutEditCtrl.doLayout()" required></select>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Middle Row Seat:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRowSeats" data-ng-model="busLayoutEditCtrl.middleRowSeat" ng-change="busLayoutEditCtrl.doLayout()"></select>
+                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRowSeats" data-ng-model="busLayoutEditCtrl.middleRowSeat" ng-change="busLayoutEditCtrl.doLayout()" required></select>
                     <br>
                 </div>
             </div>
@@ -88,8 +95,6 @@
                     <span>{{busLayoutEditCtrl.totalSeats}}</span>
                 </div>
             </div>
-
-
         </div>
     </form>
 
@@ -100,7 +105,7 @@
 
 </div>
 
-<table class="holder" ng-class="{'bigbus': busLayoutEditCtrl.busLayout.isBig}">
+<table ng-if="!busLayoutEditCtrl.sleeper" class="holder" ng-class="{'bigbus': busLayoutEditCtrl.busLayout.isBig}">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.rows">
         <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
@@ -108,13 +113,13 @@
 <span>{{busLayoutEditCtrl.busLayout.upperHeader}}</span>
 <table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.upper">
-        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 <span>{{busLayoutEditCtrl.busLayout.lowerHeader}}</span>
 <table class="holder">
     <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.lower">
-        <td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
     </tr>
 </table>
 </div>
