@@ -23,4 +23,13 @@ public class Row {
 	@Getter
 	@Setter
 	private boolean middleRow;
+	
+    @Getter
+    @Setter
+    private boolean window;
+
+    @Getter
+    @Setter
+    private boolean sideSleeper;
+
 }

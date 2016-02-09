@@ -1,0 +1,14 @@
+{
+  "curly": true,
+  "eqnull": true,
+  "eqeqeq": true,
+  "undef": true,
+  "node": true,
+  "globals": {
+    "jQuery": true,
+    "ReturnValue": false,
+    "alert": false
+  },
+  "debug": true,
+  "predef": ["angular", "console", "en_US", "module", "_", "ko"]
+}

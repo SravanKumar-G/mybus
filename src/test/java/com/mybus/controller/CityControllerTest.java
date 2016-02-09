@@ -5,6 +5,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
+
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.*;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,22 +62,40 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testGetActiveCityNames() throws Exception {
-        for(int i=0; i< 3; i++ ) {
-            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+    	String[] ids = {"123", "234", "345", "456"};
+        for(int i=1; i<= 4; i++ ) {
+        	City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
+        	city.setId(ids[i-1]);
+            cityDAO.save(city);
         }
+        
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/activeCityNames"), currentUser));
         actions.andExpect(status().isOk());
-        //TODO: check the map values
+        actions.andExpect(
+                jsonPath("$.234").value("Name2"));
+        actions.andExpect(
+                jsonPath("$.456").value("Name4"));
     }
 
     @Test
     public void testGetAllCityNames() throws Exception {
-        for(int i=0; i< 3; i++ ) {
-            cityDAO.save(new City("Name"+i, "state", true, new ArrayList<BoardingPoint>()));
+    	String[] ids = {"123", "234", "345", "456"};
+        for(int i=1; i<=4; i++ ) {
+        	City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
+        	city.setId(ids[i-1]);
+            cityDAO.save(city);
         }
+
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/allCityNames"), currentUser));
         actions.andExpect(status().isOk());
-        //TODO: check the map values
+        actions.andExpect(
+                jsonPath("$.123").value("Name1"));
+        actions.andExpect(
+                jsonPath("$.234").value("Name2"));
+        actions.andExpect(
+                jsonPath("$.345").value("Name3"));
+        actions.andExpect(
+                jsonPath("$.456").value("Name4"));
     }
 
     @Test
@@ -90,9 +110,19 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.name").value("city"));
         actions.andExpect(jsonPath("$.state").value("CA"));
         actions.andExpect(jsonPath("$.bp").doesNotExist());
-
     }
 
+    @Test
+    public void testCreateCityDuplicateName() throws Exception {
+        cityDAO.save(new City("city", "CA", true, new ArrayList<>()));
+        JSONObject city = new JSONObject();
+        city.put("name", "city");
+        city.put("state", "CA");
+        String str = city.toJSONString();
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/city")
+                .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isInternalServerError());
+    }
 
     @Test
     public void testCreateCityFail() throws Exception {
@@ -146,6 +176,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.boardingPoints[0].name").value("BPName"));
         actions.andExpect(jsonPath("$.boardingPoints[0].landmark").value("landmark"));
         actions.andExpect(jsonPath("$.boardingPoints[0].contact").value("123"));
+        bp.put("name", "BPNameNew");
         actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
@@ -158,6 +189,25 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
             Assert.assertNotNull(b.getId());
         }
     }
+
+    @Test
+    public void testAddBoardingPointDuplicateName() throws Exception {
+        City city = new City("city", "CA", true, new ArrayList<>());
+        BoardingPoint boardingPoint = new BoardingPoint("BPName", "landmark", "1234", true);
+        city.getBoardingPoints().add(boardingPoint);
+        city = cityDAO.save(city);
+
+        JSONObject bp = new JSONObject();
+        bp.put("name", "BPName");
+        bp.put("landmark", "landmark");
+        bp.put("contact", "123");
+        bp.put("active", true);
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
+                .content(getObjectMapper().writeValueAsBytes(bp))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isInternalServerError());
+    }
+
 
     @Test
     public void testAddBoardingPointNoName() throws Exception {
@@ -231,6 +281,18 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         Assert.assertNotNull(savedCity);
         Assert.assertFalse(savedCity.isActive());
         Assert.assertEquals(city.getName(), savedCity.getName());
+    }
+
+    @Test
+    public void testUpdateCityWithDuplicateName() throws Exception{
+        City city = new City("TestCity", "TestState", true, new ArrayList<>());
+        city = cityDAO.save(city);
+        cityDAO.save(new City("NewName", "TestState", true, new ArrayList<>()));
+        city.setName("NewName");
+        city.setActive(false);
+        ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s", city.getId()))
+                .content(getObjectMapper().writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isInternalServerError());
     }
 
 }

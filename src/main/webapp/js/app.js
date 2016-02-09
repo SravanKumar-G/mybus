@@ -6,7 +6,6 @@ var myBus = angular.module('myBus', [
   'ngRoute',
   'ngAnimate',
   'ngTouch',
-  'mgcrea.ngStrap',
   'ngTable',
   'ui.bootstrap',
   'unsavedChanges',
@@ -15,32 +14,15 @@ var myBus = angular.module('myBus', [
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
-    'myBus.personModules',
-    'myBus.layoutModules',
-    'myBus.layoutEditModules',
-    'myBus.homeModule',
-    'myBus.busDetailModule'
-  /*,
->>>>>>> ae038ed62a1839f592f5a89e869eebaba4fc7d32
+  'myBus.personModules',
+  'myBus.layoutModules',
+  'myBus.layoutEditModules',
   'myBus.homeModule',
   'myBus.busDetailModule'
-  /*,
-   'myBus.homeModule',
-   'myBus.conditionModule',
-   'myBus.procedureModule',
-   'myBus.neighborhoodsModule',
-   'myBus.beaconModule',
-   'myBus.businessModule',
-   'myBus.classificationModule',
-   'myBus.apiDocsModule',
-   'myBus.accountModule',
-   'myBus.userModule'*/
 ]);
-
 
 myBus.config(['$routeProvider',
   function ($routeProvider) {
-    console.log("configuring routes");
     $routeProvider.
         when('/dashboard', {
           templateUrl: 'partials/home.tpl.html',
@@ -76,8 +58,8 @@ myBus.config(['$routeProvider',
           controller: 'BusLayoutController as busLayoutCtrl'
         }).
         when('/layouts/:id', {
-          templateUrl: 'partials/buslayout.tpl.html',
-          controller: 'BusLayoutController'
+          templateUrl: 'partials/buslayoutedit.tpl.html',
+          controller: 'BusLayoutEditController as busLayoutEditCtrl'
         }).
         when('/busdetails', {
           templateUrl: 'partials/busdetails.tpl.html',
@@ -108,8 +90,6 @@ myBus.config(['$routeProvider',
         });
   }]);
 
-
-
 myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   appConfigManager.fetchAppSettings(function (err, cfg) {
     $rootScope.appConfigManager = appConfigManager;
@@ -128,4 +108,5 @@ myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   //classificationsManager.reloadClassificationData();
   //citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
 });
+
 

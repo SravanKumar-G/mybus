@@ -75,7 +75,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
         route.setFromCity(fromCity.getId());
 
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
         route.setToCity(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         Preconditions.checkNotNull(savedRoute);
@@ -89,7 +89,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
         route.setFromCity(fromCity.getId());
 
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
         route.setToCity(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         //try saving the route with same name
@@ -103,7 +103,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), true);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
         route.setFromCity(fromCity.getId());
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("To", "TestState", true, new ArrayList<>()));
         route.setToCity(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         //try saving the route with same name
@@ -152,7 +152,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     @Test
     public void createTestRouteWithInvalidViaCities() {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
         Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("invalid via city is found in via cities");
@@ -163,10 +163,10 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     @Test
     public void createTestRouteWithValidViaCities() {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
         Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
         for(int i =0; i<3; i++){
-            route.getViaCities().add(cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>())).getId());
+            route.getViaCities().add(cityManager.saveCity(new City("TestCity"+i, "TestState", true, new ArrayList<>())).getId());
         }
         routeManager.saveRoute(route);
         List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
@@ -180,7 +180,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
      */
     private Route createTestRoute() {
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        City toCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
+        City toCity = cityManager.saveCity(new City("To", "TestState", true, new ArrayList<>()));
         Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
         return routeManager.saveRoute(route);
     }

@@ -48,9 +48,13 @@ public class CityManager {
         Preconditions.checkNotNull(city, "The city can not be null");
         Preconditions.checkNotNull(city.getName(), "The city name can not be null");
         Preconditions.checkNotNull(city.getState(), "The city State can not be null");
+        if (cityDAO.findOneByNameAndState(city.getName(), city.getState()) != null) {
+            throw new RuntimeException("A city already exists with same name and state");
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Saving city:[{}]" + city);
         }
+
         return cityDAO.save(city);
     }
 
@@ -59,7 +63,10 @@ public class CityManager {
         Preconditions.checkNotNull(city.getId(), "The city id can not be null");
         Preconditions.checkNotNull(city.getName(), "The city name can not be null");
         Preconditions.checkNotNull(city.getState(), "The city State can not be null");
-
+        City matchingCity = cityDAO.findOneByNameAndState(city.getName(), city.getState());
+        if(matchingCity != null && !city.getId().equals(matchingCity.getId())) {
+            throw new RuntimeException("A city already exists with same name and state");
+        }
         if (logger.isDebugEnabled()) {
             logger.debug("Updating city:[{}]" + city);
         }
@@ -87,6 +94,7 @@ public class CityManager {
             logger.debug("Updating boarding point:[{}] to city:[{}]", bp.getId(), cityId);
         }
         City city = cityDAO.findOne(cityId);
+        cityMongoDAO.validateBoardingPoint(bp, city.getBoardingPoints());
         city.getBoardingPoints().stream().filter(b -> b.getId().equals(bp.getId())).forEach(b -> {
             try {
                 b.merge(bp);

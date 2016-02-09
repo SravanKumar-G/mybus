@@ -20,7 +20,22 @@ public class City extends AbstractDocument{
     private static final String KEY_NAME = "name";
     private static final String KEY_ACTIVE = "active";
     private static final String KEY_STATE = "state";
+    private static final String KEY_SHORT_CODE = "sc";
+    private static final String KEY_LANG_CODE = "langCode";
     private static final String KEY_BOARDING_POINTS = "bp";
+
+    @Getter
+    @Setter
+    @Field(KEY_SHORT_CODE)
+    @ApiModelProperty
+    private String shortCode;
+
+    @Getter
+    @Setter
+    @Field(KEY_LANG_CODE)
+    @ApiModelProperty
+    private String langCode;
+
 
     @Getter
     @Setter

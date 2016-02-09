@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -54,9 +55,19 @@ public class CityMongoDAO {
     public City addBoardingPoint(String cityId, BoardingPoint boardingPoint) {
         City city = cityDAO.findOne(cityId);
         List<BoardingPoint> bps = city.getBoardingPoints();
+        validateBoardingPoint(boardingPoint, bps);
         bps.add(boardingPoint);
         city.setBoardingPoints(bps);
         return cityDAO.save(city);
+    }
+
+    public void validateBoardingPoint(BoardingPoint boardingPoint, List<BoardingPoint> bps) {
+        List<BoardingPoint> matchingBps = bps.stream().filter(bp -> bp.getName()
+                .equals(boardingPoint.getName()) && !bp.getId().equals(boardingPoint.getId()))
+                .collect(Collectors.toList());
+        if(matchingBps.size() > 0) {
+            throw new RuntimeException("A boardingpoint already exists with name:"+ boardingPoint.getName());
+        }
     }
 
 }
