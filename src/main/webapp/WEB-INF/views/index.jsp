@@ -27,6 +27,8 @@
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/busLayoutEditController.js"></script>
+    <script src="js/controllers/busServiceController.js"></script>
+    <script src="js/controllers/busServiceEditController.js"></script>
     <script src="js/controllers/homeController.js"></script>
     <script src="js/controllers/busDetailsController.js"></script>
     <script src="js/controllers/routesController.js"></script>
@@ -35,6 +37,7 @@
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
     <script src="js/services/busManager.js"></script>
+    <script src="js/services/busServiceManager.js"></script>
     <script src="js/services/routesManager.js"></script>
     <script src="js/services/personService.js"></script>
     <script src="js/services/expensesManager.js"></script>
@@ -70,6 +73,7 @@
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
                 <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
+                <li data-match-route="/services"><a href="#/services">Services</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>

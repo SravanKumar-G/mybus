@@ -1,0 +1,105 @@
+<style type="text/css">
+    .holder{
+    height:300px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
+    }
+
+    .bigbus{
+    height:400px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
+    }
+
+    table tr td.seat{
+    background:url("images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+    height:77px;
+    width:40px;
+    }
+    #place .selectedSeat
+    {
+    background-image:url("images/booked_seat_img.gif");
+    }
+    #place .selectingSeat
+    {
+    background-image:url("images/selected_seat_img.gif");
+    }
+    .seatDescription{
+    padding-left : 5px;
+    font-size : 10px;
+    }
+
+</style>
+
+
+
+<div ng-class="container">
+    <!--seat arrangement-->
+    <form name="serviceForm">
+        <div class="form-group">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Service Name:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Service Number:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Enquiry Phone Number:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Cutoff-Time(Hours):</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Layout Name:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Status:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sel1">Service Tax:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="sel1">Service Tax Mode:</label>
+                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.name" required>
+                    <br>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <input type="submit" class="btn btn-primary" ng-if="!busServiceEditCtrl.valid" ng-disabled="serviceForm.$invalid" ng-click="busServiceEditCtrl.saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-primary" ng-if="busServiceEditCtrl.valid" ng-click="busServiceEditCtrl.saveService()" value="Save Service" />
+    <hr>
+
+</div>
+

@@ -67,14 +67,14 @@ public class LayoutController {
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
-	@RequestMapping(value = "layout/{name}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "layout/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
 	@ApiOperation(value = "Delete a layout")
 	public JSONObject deleteLayout(HttpServletRequest request,
-			@ApiParam(value = "Name of the layout to be deleted") @PathVariable final String name) {
+			@ApiParam(value = "Id of the layout to be deleted") @PathVariable final String id) {
 		logger.debug("get layout called");
 		JSONObject response = new JSONObject();
-		response.put("deleted", layoutManager.deleteLayout(name));
+		response.put("deleted", layoutManager.deleteLayout(id));
 		return response;
 	}
 
