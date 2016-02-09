@@ -6,7 +6,6 @@ var myBus = angular.module('myBus', [
   'ngRoute',
   'ngAnimate',
   'ngTouch',
-  'mgcrea.ngStrap',
   'ngTable',
   'ui.bootstrap',
   'unsavedChanges',
@@ -15,34 +14,17 @@ var myBus = angular.module('myBus', [
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
-    'myBus.personModules',
-    'myBus.layoutModules',
-    'myBus.layoutEditModules',
-    'myBus.serviceModules',
-    'myBus.serviceEditModules',
-    'myBus.homeModule',
-    'myBus.busDetailModule'
-  /*,
->>>>>>> ae038ed62a1839f592f5a89e869eebaba4fc7d32
+  'myBus.personModules',
+  'myBus.layoutModules',
+  'myBus.layoutEditModules',
+  'myBus.serviceModules',
+  'myBus.serviceEditModules',
   'myBus.homeModule',
   'myBus.busDetailModule'
-  /*,
-   'myBus.homeModule',
-   'myBus.conditionModule',
-   'myBus.procedureModule',
-   'myBus.neighborhoodsModule',
-   'myBus.beaconModule',
-   'myBus.businessModule',
-   'myBus.classificationModule',
-   'myBus.apiDocsModule',
-   'myBus.accountModule',
-   'myBus.userModule'*/
 ]);
-
 
 myBus.config(['$routeProvider',
   function ($routeProvider) {
-    console.log("configuring routes");
     $routeProvider.
         when('/dashboard', {
           templateUrl: 'partials/home.tpl.html',
@@ -81,14 +63,6 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/buslayoutedit.tpl.html',
           controller: 'BusLayoutEditController as busLayoutEditCtrl'
         }).
-        when('/services', {
-            templateUrl: 'partials/busService.tpl.html',
-            controller: 'BusServiceController as busServiceCtrl'
-          }).
-        when('/services/:id', {
-              templateUrl: 'partials/busServiceEdit.tpl.html',
-              controller: 'BusServiceEditController as busServiceEditCtrl'
-            }).
         when('/busdetails', {
           templateUrl: 'partials/busdetails.tpl.html',
           controller: 'BusDetailsController'
@@ -117,8 +91,6 @@ myBus.config(['$routeProvider',
           redirectTo: '/'
         });
   }]);
-
-
 
 myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   appConfigManager.fetchAppSettings(function (err, cfg) {
