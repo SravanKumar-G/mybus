@@ -103,7 +103,7 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
         callback(data);
           sweetAlert("Great","Your BoardingPoint has been successfully added", "success");
       }).error(function (err) {
-          sweetAlert("Oops...", "Error creating Bp data!", "error"+err.message);
+          sweetAlert("Oops...", "Error creating Bp data!", "error");
       });
     },
     updateBp: function(cityId,boardingPoint,callback) {
