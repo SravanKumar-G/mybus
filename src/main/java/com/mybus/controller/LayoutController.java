@@ -29,7 +29,7 @@ import com.mybus.service.LayoutManager;
 @Controller
 @RequestMapping(value = "/api/v1/")
 @Api(value = "LayoutController", description = "Management of the seats of a Bus")
-public class LayoutController {
+public class LayoutController extends MyBusBaseController{
 
 	private static final Logger logger = LoggerFactory.getLogger(LayoutController.class);
 

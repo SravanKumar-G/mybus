@@ -44,7 +44,7 @@ public class CityManager {
         return true;
     }
 
-    public City saveCity(City city) {
+    public City saveCity(City city){
         Preconditions.checkNotNull(city, "The city can not be null");
         Preconditions.checkNotNull(city.getName(), "The city name can not be null");
         Preconditions.checkNotNull(city.getState(), "The city State can not be null");

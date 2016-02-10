@@ -194,10 +194,6 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         return resolver;
     }
 
-
-
-
-
     @Bean
     public HandlerExceptionResolverComposite getHandlerExceptionResolverComposite() {
         HandlerExceptionResolverComposite result = new HandlerExceptionResolverComposite();
