@@ -19,7 +19,7 @@
     <script src="bower_components/spin.js/spin.js"></script>
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="bower_components/sweet-alert/dist/sweetalert.min.js"></script>
-    <script src="lib/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="lib/async.js"></script>
 
     <script src="js/app.js"></script>
