@@ -121,7 +121,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         String str = city.toJSONString();
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/city")
                 .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
+        actions.andExpect(jsonPath("$.message").value("A city already exists with same name and state"));
     }
 
     @Test
@@ -131,7 +132,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         String str = city.toJSONString();
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/city")
                 .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
+        actions.andExpect(jsonPath("$.message").value("The city State can not be null"));
 
         //send only state
         city = new JSONObject();
@@ -139,7 +141,9 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         str = city.toJSONString();
         actions = mockMvc.perform(asUser(post("/api/v1/city")
                 .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
+        actions.andExpect(jsonPath("$.message").value("The city name can not be null"));
+
     }
 
     @Test
@@ -154,7 +158,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testDeleteCityUnknownId() throws Exception {
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s", "123")), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -205,7 +209,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
     }
 
 
@@ -216,7 +220,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         BoardingPoint bp = new BoardingPoint(null, "landmark", "123", true);
         ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(bp)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -251,7 +255,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         Assert.assertEquals(1, cityDAO.findOne(city.getId()).getBoardingPoints().size());
         actions = mockMvc.perform(asUser(get(format("/api/v1/city/%s/boardingpoint/%s", city.getId(),
                 "1234")), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -292,7 +296,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city.setActive(false);
         ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
+//        actions.andExpect(jsonPath("$.message").value("A city already exists with same name and state"));
     }
 
 }

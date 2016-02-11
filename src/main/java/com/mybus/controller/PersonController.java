@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
-public class PersonController {
+public class PersonController extends MyBusBaseController{
 
     @Autowired
     private PersonDAO personDAO;

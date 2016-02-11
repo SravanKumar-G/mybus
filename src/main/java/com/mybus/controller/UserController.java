@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
-public class UserController {
+public class UserController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired

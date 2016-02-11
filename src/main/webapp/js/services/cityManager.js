@@ -55,9 +55,9 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
           .success(function (data) {
             callback(data);
               swal("Great", "Your City has been successfully added", "success");
-          })
-          .error(function (err) {
-              sweetAlert("Oops","error adding new city info.","error",+err);
+          }).error(function(err,status) {
+              sweetAlert("Error",err.message,"error");
+
           });
     },
     getCity: function (id, callback) {

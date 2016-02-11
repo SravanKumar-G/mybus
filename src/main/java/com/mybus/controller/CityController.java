@@ -15,17 +15,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
 @Api(value="CityController", description="City and Boarding points management")
-public class CityController {
+public class CityController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -65,10 +65,10 @@ public class CityController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiOperation(value = "Create a city")
-    public City createCity(HttpServletRequest request,
-                           @ApiParam(value = "JSON for City to be created") @RequestBody final City city) {
+    public ResponseEntity createCity(HttpServletRequest request,
+                           @ApiParam(value = "JSON for City to be created") @RequestBody final City city){
         logger.debug("post city called");
-        return cityManager.saveCity(city);
+        return new ResponseEntity<>(cityManager.saveCity(city), HttpStatus.OK);
     }
 
     @RequestMapping(value = "city/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -80,15 +80,15 @@ public class CityController {
         return cityDAO.findOne(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value ="Update city", response = City.class)
-    public boolean updateCity(HttpServletRequest request,
+    public ResponseEntity updateCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
                         @ApiParam(value = "City JSON") @RequestBody final City city) {
         logger.debug("get city called");
-        //save per
-        return cityManager.updateCity(city);
+        return new ResponseEntity<>(cityManager.updateCity(city), HttpStatus.OK);
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.DELETE)
@@ -153,4 +153,5 @@ public class CityController {
         logger.debug("create boardingpoint called");
         return cityManager.deleteBoardingPoint(cityId, id);
     }
+
 }
