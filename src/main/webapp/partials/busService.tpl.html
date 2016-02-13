@@ -1,0 +1,29 @@
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="busServiceCtrl.addNewBusService()"><span class="glyphicon glyphicon-plus"></span> Add New Service</button>
+</div>
+
+<table class="table table-bordered table-condensed table-hover" ng-table="busServiceCtrl.serviceContentTableParams">
+    <tr ng-repeat="service in busServiceCtrl.services">
+        <td data-title="'Service Name'"></td>
+        <td data-title="'Service Number'"></td>
+        <td data-title="'From Date'"></td>
+        <td data-title="'To Date'"></td>
+        <td data-title="'Total Seats'"></td>
+        <td data-title="'Bus Type'"></td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="busServiceCtrl.goToBusService(service.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="busServiceCtrl.deleteService(service)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!busServiceCtrl.currentPageOfServices || busServiceCtrl.currentPageOfServices.length === 0">
+        <td colspan="4">No details exist.</td>
+    </tr>
+</table>

@@ -71,7 +71,7 @@ public class LayoutController extends MyBusBaseController{
 	@ResponseBody
 	@ApiOperation(value = "Delete a layout")
 	public JSONObject deleteLayout(HttpServletRequest request,
-			@ApiParam(value = "Name of the layout to be deleted") @PathVariable final String id) {
+			@ApiParam(value = "Id of the layout to be deleted") @PathVariable final String id) {
 		logger.debug("get layout called");
 		JSONObject response = new JSONObject();
 		response.put("deleted", layoutManager.deleteLayout(id));

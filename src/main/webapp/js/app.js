@@ -17,6 +17,8 @@ var myBus = angular.module('myBus', [
   'myBus.personModules',
   'myBus.layoutModules',
   'myBus.layoutEditModules',
+  'myBus.serviceModules',
+  'myBus.serviceEditModules',
   'myBus.homeModule',
   'myBus.busDetailModule'
 ]);
@@ -108,5 +110,4 @@ myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   //classificationsManager.reloadClassificationData();
   //citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
 });
-
 
