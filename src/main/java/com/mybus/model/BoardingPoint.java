@@ -8,7 +8,6 @@ import org.bson.types.ObjectId;
  * Created by skandula on 12/9/15.
  */
 @ToString
-
 @ApiModel(value = "BoardingPoint")
 public class BoardingPoint extends AbstractDocument {
     @Getter
@@ -22,6 +21,10 @@ public class BoardingPoint extends AbstractDocument {
     @Getter
     @Setter
     private boolean active;
+
+    @Getter
+    @Setter
+    private boolean droppingPoint;
 
     @Getter
     @Setter
