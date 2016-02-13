@@ -229,19 +229,12 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             }
         };
 
-        $scope.dropCallback = function(event1,index1,item1){
-            console.log("index:"+index1);
-            $scope.citiesFromService.push(data);
-            console.log("item:"+item1);
-            console.log("City dropped");
-        };
-
         $scope.moveCallback = function(event,index1,item){
             console.log("index:"+index1);
-            $scope.citiesFromService.splice(index1,1);
-            $scope.route.viaCities.splice(index1,1);
+            console.log("Before slicing..    " +$scope.route.viaCities);
 
-            //     $scope.indexOfMovedCity = index;
+            $scope.citiesFromService.splice(index1,1);
+            console.log($scope.route.viaCities.splice(index1,1));
             console.log("event:"+event);
             console.log("City moved" + angular.toJson($scope.citiesFromService));
             console.log("City id    " +$scope.route.viaCities);
@@ -249,11 +242,8 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
         };
 
         $scope.insertedCallback = function(index,item){
-            //$scope.citiesFromService.splice(index,1);
-           // $scope.citiesFromService.push(index,item.id);
 
-            $scope.route.viaCities.push(item.id);
-
+            $scope.route.viaCities.splice(index,0,item.id);
             console.log("index2:"+index);
             console.log("item2:"+item.id);
             return true;
