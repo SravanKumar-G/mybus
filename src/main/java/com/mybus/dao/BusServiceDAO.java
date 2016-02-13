@@ -11,7 +11,7 @@ import com.mybus.model.BusService;
 @Repository
 public interface BusServiceDAO extends PagingAndSortingRepository<BusService, String> {
 	
-	BusService findOneByName(String name);
+	BusService findOneByServiceName(String name);
 
 	void delete(String s);
 }
