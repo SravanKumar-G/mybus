@@ -51,10 +51,11 @@ portalApp.factory('routesManager', function ($rootScope, $http, $log, $window) {
                 callback(data);
                 $rootScope.$broadcast('CreateRouteCompleted');
             })
-                .error(function (err) {
-                    var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
+                .error(function (err,status) {
+                    /*var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
                     $log.error(errorMsg);
-                    alert(errorMsg);
+                    alert(errorMsg);*/
+                    sweetAlert("Error",err.message,"error");
                 });
         },
 

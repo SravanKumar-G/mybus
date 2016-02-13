@@ -1,24 +1,86 @@
-<legend>{{ headline }}</legend>
-
-
+<!--<legend>{{ headline }}</legend>-->
 <ol class="breadcrumb">
     <li><a ng-href="/#/cities">All Cities</a></li>
     <li ng-repeat="crumb in breadCrumbs"><a ng-href="/#/cities/{{crumb.id}}">{{crumb.name}}</a></li>
     <li><strong>{{ city.name }}</strong></li>
 </ol>
 
-
 <div class="toolbar-button-div pull-right">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span
+    <!--<button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span
             class="glyphicon glyphicon-plus"></span> Add Boarding Point
-    </button>
+    </button>-->
     <button type="button"  class="btn btn-sm btn-danger" ng-click="handleDeleteButtonClicked(city.id)"><i
             class="glyphicon glyphicon-remove"></i> Delete {{ city.name }}
     </button>
 
 </div>
-   <!-- <div class="container">-->
-        <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
+
+<div class="bpdp-tab" ng-init="tab=1">
+    <ul>
+        <li class="tab"  ng-class="{active:tab==1}">
+            <a href ng-click="tab = 1">Boarding Points</a>
+        </li>
+        <li class="tab" ng-class="{active:tab==2}">
+            <a href ng-click="tab = 2">Dropping Points</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" ng-show="tab==1">
+    <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
+        <div class="toolbar-button-div pull-right">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddBoardingPoint()"><span
+                    class="glyphicon glyphicon-plus"></span> Add Boarding Point
+            </button>
+        </div>
+    <tr ng-repeat="boardingPoint in currentPageOfBoardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
+        <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
+        <td data-title="'Landmark'" class="clickable-item col-md-4">{{ boardingPoint.landmark }}</td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="deleteBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+
+        </td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="updateBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!currentPageOfBoardingPoints || currentPageOfBoardingPoints.length === 0">
+        <td colspan="4">No boardingPoint exist.  Please add some.</td>
+    </tr>
+    </table>
+    </div>
+    <div class="tab-content" ng-show="tab==2">
+    <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
+    <tr ng-repeat="boardingPoint in currentPageOfBoardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
+        <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
+        <td data-title="'Landmark'" class="clickable-item col-md-4">{{ boardingPoint.landmark }}</td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="deleteBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+
+        </td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="updateBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!currentPageOfBoardingPoints || currentPageOfBoardingPoints.length === 0">
+        <td colspan="4">No boardingPoint exist.  Please add some.</td>
+    </tr>
+    </table>
+    </div>
+</div>
+<!-- <div class="container">-->
+     <!--  <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
             <tr ng-repeat="boardingPoint in currentPageOfBoardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
                 <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
                 <td data-title="'Landmark'" class="clickable-item col-md-4">{{ boardingPoint.landmark }}</td>
@@ -40,6 +102,7 @@
                 <td colspan="4">No boardingPoint exist.  Please add some.</td>
             </tr>
         </table>
+        -->
 <!--modal popup for adding boardingpoint(Bp) to existing city -->
 <script type="text/ng-template" id="add-boardingpoint-to-city-state-modal.html">
     <div class="modal-header">
