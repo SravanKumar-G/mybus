@@ -147,6 +147,10 @@
                     <div class="col-sm-1">
                     <input type="checkbox" id="addBoardingPoint" class="form-control" ng-model="boardingPoint.active">
                     </div>
+                    <label class="col-sm-3 control-label checkbox" for="addBoardingPoint">Dropping Point</label>
+                    <div class="col-sm-1">
+                        <input type="checkbox" id="addBoardingPointDp" class="form-control" ng-model="boardingPoint.droppingPoint">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="ok(id)" ng-disabled="!isInputValid()">Add</button>
@@ -191,14 +195,17 @@
                     <label class="col-sm-2 control-label checkbox" for="boardingPointUpdate">Active</label>
                     <div class="col-sm-1">
                         <input type="checkbox" id="boardingPointUpdate" class="form-control" ng-model="boardingPoint.active">
-                   </div>
+                    </div>
+                    <label class="col-sm-3 control-label checkbox" for="boardingPointUpdate">Dropping Point</label>
+                    <div class="col-sm-1">
+                        <input type="checkbox" id="boardingPointUpdateDp" class="form-control" ng-model="boardingPoint.droppingPoint">
+                    </div>
                 </div>
         </div>
         <div class="modal-footer">
                 <button class="btn btn-primary" ng-click="ok(boardingPoint.id)">Update</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
-
         </form>
     </div>
 </script>
