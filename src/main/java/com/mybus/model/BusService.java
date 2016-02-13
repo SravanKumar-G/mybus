@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -33,10 +31,6 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private String routeId; /* ADDED ONE IN SERVICEROUTE, IS REALLY REQUIRED? */
-
-	@Getter
-	@Setter
 	private String phoneEnquiry;
 
 	@Getter
@@ -53,7 +47,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Layout layout;
+	private ServiceLayout layout;
 
 	@Getter
 	@Setter

@@ -195,6 +195,30 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     }
 
     @Test
+    public void testAddDroppingPoint() throws Exception {
+        City city = new City("city", "CA", true, null);
+        city = cityDAO.save(city);
+        JSONObject bp = new JSONObject();
+        bp.put("name", "BPName");
+        bp.put("landmark", "landmark");
+        bp.put("contact", "123");
+        bp.put("active", true);
+        bp.put("droppingPoint", true);
+
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/city/%s/boardingpoint", city.getId()))
+                .content(getObjectMapper().writeValueAsBytes(bp))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.boardingPoints").exists());
+        actions.andExpect(jsonPath("$.boardingPoints").isArray());
+        actions.andExpect(jsonPath("$.boardingPoints", Matchers.hasSize(1)));
+        actions.andExpect(jsonPath("$.boardingPoints[0].name").value("BPName"));
+        actions.andExpect(jsonPath("$.boardingPoints[0].landmark").value("landmark"));
+        actions.andExpect(jsonPath("$.boardingPoints[0].contact").value("123"));
+        actions.andExpect(jsonPath("$.boardingPoints[0].droppingPoint").value(true));
+    }
+
+    @Test
     public void testAddBoardingPointDuplicateName() throws Exception {
         City city = new City("city", "CA", true, new ArrayList<>());
         BoardingPoint boardingPoint = new BoardingPoint("BPName", "landmark", "1234", true);

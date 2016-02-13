@@ -23,6 +23,8 @@ public class City extends AbstractDocument{
     private static final String KEY_SHORT_CODE = "sc";
     private static final String KEY_LANG_CODE = "langCode";
     private static final String KEY_BOARDING_POINTS = "bp";
+    private static final String KEY_IS_HUB = "hub";
+
 
     @Getter
     @Setter
@@ -57,6 +59,12 @@ public class City extends AbstractDocument{
 
     @Getter
     @Setter
+    @Field(KEY_IS_HUB)
+    @ApiModelProperty
+    private boolean hub = true;
+
+    @Getter
+    @Setter
     @Field(KEY_BOARDING_POINTS)
     @ApiModelProperty
     private List<BoardingPoint> boardingPoints = new ArrayList<>();
@@ -66,6 +74,14 @@ public class City extends AbstractDocument{
         this.state = state;
         this.active = active;
         this.boardingPoints = bps;
+    }
+
+    public City(String name, String state, boolean active,boolean hub, List<BoardingPoint> bps) {
+        this.name = name;
+        this.state = state;
+        this.active = active;
+        this.boardingPoints = bps;
+        this.hub = hub;
     }
 
  }

@@ -1,5 +1,7 @@
 package com.mybus.model;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +21,14 @@ public class ServiceRoute {
 	
 	@Getter
 	@Setter
-	private ServiceRoutePoint routePoint;
+	private City originCity;
+	
+	@Getter
+	@Setter
+	private City destinationCity;
+	
+	@Getter
+	@Setter
+	private List<ServiceRoutePoint> routePoints;
 	
 }

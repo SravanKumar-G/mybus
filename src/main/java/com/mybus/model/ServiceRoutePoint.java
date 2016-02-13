@@ -19,5 +19,5 @@ public class ServiceRoutePoint extends City {
 	
 	@Getter
 	@Setter
-	private int journeyDay;
+	private int journeyDuration;
 }

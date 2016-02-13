@@ -6,9 +6,9 @@ package com.mybus.model;
 
 public enum ServiceTaxType {
 
-    DAILY,
-    WEEKLY,
-    SPECIAL;
+	PERCENTAGE,
+    FIXED;
+    
 
     @Override
     public String toString() {

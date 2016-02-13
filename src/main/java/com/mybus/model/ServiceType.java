@@ -6,8 +6,9 @@ package com.mybus.model;
 
 public enum ServiceType {
 
-    PERCENTAGE,
-    FIXED;
+    DAILY,
+    WEEKLY,
+    SPECIAL;
 
     @Override
     public String toString() {
