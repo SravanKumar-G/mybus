@@ -2,10 +2,20 @@
 
 <style>
     #deleteCityFromList, #deleteViaCityFromList {
+
         color: #39739D;
         font-size: 12px;
         white-space: nowrap;
         background: #E1ECF4;
+    }
+
+    #deleteViaCityFromList,#deleteViaCityFromList ul[dnd-list] > li{
+        position: relative;
+    }
+
+    #routeTable th {
+        background-color: black;
+        color : white;
     }
 </style>
 
@@ -13,9 +23,9 @@
      <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddNewRoute()"><span class="glyphicon glyphicon-plus"></span> Add New Route</button>
 </div>
 
-<table class="table table-bordered table-condensed table-hover" ng-table="routeContentTableParams">
+<table class="table table-bordered table-condensed table-hover" id="routeTable" ng-table="routeContentTableParams">
     <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
-        <td data-title="'Name'"  sortable="'city'" class="col-md-6">{{ route.name }}</td>
+        <td data-title="'Name'"  id="routeName" sortable="'city'" class="col-md-6">{{ route.name }}</td>
         <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}</td>
         <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCity }}</td>
         <td class="col-md-2">
@@ -41,8 +51,19 @@
 
 <script type="text/ng-template" id="add-route-modal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add a New Route</h3>
+        <div class="row">
+            <div class="col-sm-11">
+                <h3 class="modal-title">Add a New Route</h3>
+            </div>
+            <div class="col-sm-1">
+                <md-button>
+                    <md-icon type="button" class="btn-sm" ng-click="cancel()">
+                        <span class="glyphicon glyphicon-remove"></span></md-icon>
+                </md-button>
+            </div>
+        </div>
     </div>
+
     <div class="modal-body">
 
         <!-- ---------------------------------------------------------------------------- -->
@@ -57,30 +78,23 @@
                 </div>
             </div>
 
-                <div class="form-group">
-                    <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
-                    <div class="col-sm-6">
-                         <select name="modalRouteFromCity" ng-model="route.fromCity" ng-options="city.id as city.name for city in cities" class="form-control">
-                              <option value="">--Select From City--</option>
-                         </select>
-                    </div>
-                </div>
-
-           <!-- <div class="form-group">
+            <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
                 <div class="col-sm-6">
-                    <input id="fromCityInput"type="text" ng-model="route.fromCity" typeahead="city.id as city.name for city in cities | filter:$viewValue | limitTo:8"
-                            class="form-control" typeahead-show-hint="true" typeahead-min-length="1">
+                    <input id="fromCityInputName"type="text" ng-model="fromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                           class="form-control" typeahead-min-length="1" typeahead-on-select="selectFromCity($item)"
+                            typeahead-select-on-exact="true" typeahead-popup-template-url="typeahead-popup-ALTERNATIVE.html">
+                    <input id="fromCityInputId"type="hidden" ng-model="route.fromCity" >
                 </div>
-            </div>-->
+            </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
-                    <div class="col-sm-6">
-                        <select name="modalRouteToCity" ng-model="route.toCity" ng-options="city.id as city.name for city in cities" class="form-control">
-                            <option value="">--Select To City--</option>
-                        </select>
-                    </div>
+                <div class="col-sm-6">
+                    <input id="toCityInputName"type="text" ng-model="toCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                           class="form-control" typeahead-show-hint="true" typeahead-min-length="1" typeahead-on-select="selectToCity($item, $model, $label, $event)">
+                    <input id="toCityInputId"type="hidden" ng-model="route.toCity" >
+                </div>
             </div>
 
             <div class="form-group">
@@ -96,8 +110,9 @@
             </div>
 
             <div class="form-group">
-                <ul class="col-sm-7" id="deleteViaCityFromList" dnd-list="citiesFromService">
-                    <li id="cityInCitiesFromService" ng-repeat="city in citiesFromService" dnd-moved="citiesFromService.splice($index,1)" dnd-effect-allowed="move">
+                <ul class="col-sm-7" id="deleteViaCityFromList" dnd-list="citiesFromService" dnd-inserted="insertedCallback(index,item)">
+                    <li id="cityInCitiesFromService" ng-repeat="city in citiesFromService" dnd-draggable="city" dnd-moved="moveCallback(event,$index,item)"
+                        dnd-effect-allowed="move">
                         {{city.name}}
                         <md-button>
                             <md-icon type="button" class="btn-sm" ng-click="deleteViaCityFromList(city.id)">
@@ -106,17 +121,6 @@
                     </li>
                 </ul>
             </div>
-
-           <!-- <div class="form-group">
-                <ul class="col-sm-7" id="deleteViaCityFromList">
-                    <li ng-repeat="city in citiesFromService track by city.id">{{city.name}}
-                    <md-button>
-                        <md-icon type="button" class="btn-sm" ng-click="deleteViaCityFromList(city.id)">
-                            <span class="glyphicon glyphicon-remove"></span></md-icon>
-                    </md-button>
-                    </li>
-                </ul>
-            </div>-->
 
 
             <div class="form-group">
@@ -132,6 +136,14 @@
         <button class="btn btn-primary" ng-click="ok()">Add</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
+</script>
+
+<script type="text/ng-template" id="typeahead-popup-ALTERNATIVE.html">
+    <a><div>
+
+    </div></a>
+
+
 </script>
 
 <!-- Model popup for Updating a Route -->

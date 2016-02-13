@@ -187,8 +187,16 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             });
         }();
 
-        $scope.dropCallback = function(){
-            console.log("City dropped");
+        $scope.selectFromCity = function(item){
+            $scope.fromCityName = item.name;
+            $scope.route.fromCity= item.id;
+            console.log("items:"+angular.toJson(item));
+            console.log("id:"+$scope.route.fromCity);
+        };
+
+        $scope.selectToCity = function(item, model, label, event){
+            $scope.toCityId = item.name;
+            $scope.route.toCity= item.id;
         };
 
         $scope.insertCallback = function(message,event){
@@ -221,6 +229,37 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             }
         };
 
+        $scope.dropCallback = function(event1,index1,item1){
+            console.log("index:"+index1);
+            $scope.citiesFromService.push(data);
+            console.log("item:"+item1);
+            console.log("City dropped");
+        };
+
+        $scope.moveCallback = function(event,index1,item){
+            console.log("index:"+index1);
+            $scope.citiesFromService.splice(index1,1);
+            $scope.route.viaCities.splice(index1,1);
+
+            //     $scope.indexOfMovedCity = index;
+            console.log("event:"+event);
+            console.log("City moved" + angular.toJson($scope.citiesFromService));
+            console.log("City id    " +$scope.route.viaCities);
+
+        };
+
+        $scope.insertedCallback = function(index,item){
+            //$scope.citiesFromService.splice(index,1);
+           // $scope.citiesFromService.push(index,item.id);
+
+            $scope.route.viaCities.push(item.id);
+
+            console.log("index2:"+index);
+            console.log("item2:"+item.id);
+            return true;
+        };
+
+
         $scope.ok = function () {
             if ($scope.route.name === null || $scope.route.toCity === null  ) {
                 $log.error("nothing was added.");
@@ -250,5 +289,12 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 }
             })
         }
+    })
+
+    .config(function ($provide) {
+    $provide.decorator('typeaheadPopupDirective', function ($delegate) {
+        $delegate[0].templateUrl = 'typeahead-popup-ALTERNATIVE.html';
+        return $delegate;
     });
+});
 
