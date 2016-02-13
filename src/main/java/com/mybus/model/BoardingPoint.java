@@ -40,4 +40,13 @@ public class BoardingPoint extends AbstractDocument {
         this.active = active;
     }
 
+    public BoardingPoint(String name, String landmark, String contact, boolean active, boolean droppingPoint) {
+        setId(new ObjectId().toString());
+        this.name = name;
+        this.landmark = landmark;
+        this.contact = contact;
+        this.active = active;
+        this.droppingPoint = droppingPoint;
+    }
+
 }
