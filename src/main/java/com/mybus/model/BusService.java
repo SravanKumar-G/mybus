@@ -17,8 +17,6 @@ import lombok.ToString;
  */
 @ToString
 @ApiModel(value = "BusService")
-@AllArgsConstructor
-@NoArgsConstructor
 public class BusService extends AbstractDocument {
 
 	@Getter
