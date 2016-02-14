@@ -2,7 +2,9 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.UserDAO;
+import com.mybus.model.City;
 import com.mybus.model.User;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,13 @@ public class UserController extends MyBusBaseController{
     @ResponseBody
     public List<String> getUserGroups(HttpServletRequest request) {
         return null;
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "users", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value = "Get all the users available", response = User.class, responseContainer = "List")
+    public Iterable<User> getUsers(HttpServletRequest request) {
+        return userDAO.findAll();
     }
 }
