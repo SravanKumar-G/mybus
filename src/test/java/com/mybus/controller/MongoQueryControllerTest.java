@@ -3,9 +3,7 @@ package com.mybus.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.BoardingPoint;
-import com.mybus.model.City;
-import com.mybus.model.User;
+import com.mybus.model.*;
 import junit.framework.Assert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -51,7 +49,8 @@ public class MongoQueryControllerTest extends AbstractControllerIntegrationTest 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
-        currentUser = new User("test", "test", "test", "test", true, true);
+        currentUser = new User("fname", "lname", "uname", "pwd", true, true, "e@email.com", "1234567", "add1", "add2",
+                "city", "state", UserType.USER, 10.0, CommissionType.FIXED);
         cleanup();
         currentUser = userDAO.save(currentUser);
     }

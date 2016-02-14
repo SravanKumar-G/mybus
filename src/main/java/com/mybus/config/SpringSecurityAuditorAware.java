@@ -1,8 +1,6 @@
 package com.mybus.config;
 
 import com.mybus.dao.UserDAO;
-import com.mybus.model.User;
-import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +27,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
             return null;
         }
         String userName = ((UserDetails) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal()).getUsername();
-        return userDAO.findOneByUsername(userName).getId();
+        return userDAO.findOneByUserName(userName).getId();
     }
 }

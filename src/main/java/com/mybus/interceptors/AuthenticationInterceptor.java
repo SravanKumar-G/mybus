@@ -54,7 +54,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Principal principal = request.getUserPrincipal();
             if (principal != null && sessionManager.getCurrentUser() == null) {
-                User user = userDAO.findOneByUsername(principal.getName());
+                User user = userDAO.findOneByUserName(principal.getName());
                 sessionManager.setCurrentUser(user);
                 failIfAdminRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser());
             }else {

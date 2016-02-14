@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserDAO extends PagingAndSortingRepository<User, String> {
-    User findOneByUsername(String username);
+    User findOneByUserName(String username);
 }
