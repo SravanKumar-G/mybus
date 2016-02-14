@@ -1,11 +1,10 @@
 package com.mybus.dao.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.model.BusService;
 import com.mybus.service.SessionManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by schanda on 02/02/16.

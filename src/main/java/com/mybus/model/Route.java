@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Created by skandula on 12/30/15.

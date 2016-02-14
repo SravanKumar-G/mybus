@@ -1,13 +1,5 @@
 package com.mybus.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.impl.LayoutMongoDAO;
@@ -15,6 +7,13 @@ import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.model.Row;
 import com.mybus.model.Seat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by schanda on 01/15/16.

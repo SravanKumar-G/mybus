@@ -1,7 +1,10 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Created by skandula on 3/31/15.
