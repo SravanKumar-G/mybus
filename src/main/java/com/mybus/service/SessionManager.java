@@ -1,8 +1,6 @@
 package com.mybus.service;
 
 import com.mybus.model.User;
-import lombok.Getter;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;

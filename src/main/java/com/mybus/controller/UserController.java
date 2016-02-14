@@ -2,7 +2,6 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.City;
 import com.mybus.model.User;
 import com.mybus.service.UserManager;
 import io.swagger.annotations.ApiOperation;

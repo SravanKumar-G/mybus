@@ -1,9 +1,8 @@
 package com.mybus.dao;
 
+import com.mybus.model.Layout;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-
-import com.mybus.model.Layout;
 
 /**
  * Created by schanda on 01/15/16.

@@ -1,14 +1,9 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
+import lombok.*;
 
 import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @ToString
 @ApiModel(value = "Row")
