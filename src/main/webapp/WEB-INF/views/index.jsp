@@ -78,7 +78,7 @@
                 <li data-match-route="/services"><a href="#/services">Services</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
+                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().userName}}</b> Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
 
@@ -108,7 +108,7 @@
                 <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
+                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().userName}}</b> Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

@@ -32,7 +32,7 @@ public class LoginService implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final User user = userDAO.findOneByUsername(username);
+        final User user = userDAO.findOneByUserName(username);
         if(user == null) {
             return null;
         }
@@ -49,7 +49,7 @@ public class LoginService implements UserDetailsService {
 
             @Override
             public String getUsername() {
-                return user.getUsername();
+                return user.getUserName();
             }
 
             @Override

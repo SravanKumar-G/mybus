@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 /**
  * Created by skandula on 12/12/15.
  */
@@ -28,7 +26,7 @@ public class TestDataCreator {
     public void createTestData() {
         String createTestData = systemProperties.getProperty("create.test.data");
         if(StringUtils.isNotBlank(createTestData) && Boolean.parseBoolean(createTestData)) {
-            User user = userDAO.findOneByUsername("bill");
+            User user = userDAO.findOneByUserName("bill");
             if(user == null) {
                 user = new User();
                 user.setFirstName("bill");
@@ -36,7 +34,7 @@ public class TestDataCreator {
                 user.setAdmin(true);
                 user.setLastName("Lname");
                 user.setPassword("123");
-                user.setUsername("bill");
+                user.setUserName("bill");
                 userDAO.save(user);
             } else {
                 logger.debug("Test data already created");
