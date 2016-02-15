@@ -76,6 +76,7 @@
                         <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
                         <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
                         <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
+                        <li data-match-route="/vehicle"><a href="#/vehicle">Vehicle</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
