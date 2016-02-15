@@ -148,6 +148,13 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             });
         };
 
+        $scope.updateFromCity = function(item){
+            $scope.fromUpdateCityName = item.name;
+            $scope.route.fromCity= item.id;
+            console.log("items:"+angular.toJson(item));
+            console.log("id:"+$scope.route.fromCity);
+        };
+
         $scope.addTheCity = function(selectedCity){
             if($scope.route.viaCities.indexOf(selectedCity) == -1){
                 $scope.route.viaCities.push(selectedCity);
@@ -279,12 +286,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
                 }
             })
         }
-    })
-
-    .config(function ($provide) {
-    $provide.decorator('typeaheadPopupDirective', function ($delegate) {
-        $delegate[0].templateUrl = 'typeahead-popup-ALTERNATIVE.html';
-        return $delegate;
     });
-});
+
+
 

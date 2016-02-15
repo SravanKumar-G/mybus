@@ -7,6 +7,7 @@ var myBus = angular.module('myBus', [
   'ngAnimate',
   'ngTouch',
   'ngTable',
+  'dndLists',
   'ui.bootstrap',
   'unsavedChanges',
   'angularSpinner',
