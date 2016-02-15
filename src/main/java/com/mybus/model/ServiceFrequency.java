@@ -1,10 +1,10 @@
 package com.mybus.model;
 
-import java.util.Date;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by schanda on 02/02/16.

@@ -1,14 +1,13 @@
 package com.mybus.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by schanda on 02/02/16.

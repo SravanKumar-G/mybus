@@ -1,7 +1,9 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 
 /**

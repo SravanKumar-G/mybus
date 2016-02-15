@@ -57,7 +57,7 @@
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Type:</label>
-                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type" required></select>
+                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type" ng-change="busLayoutEditCtrl.doLayout()" required></select>
                     <br>
                 </div>
             </div>
