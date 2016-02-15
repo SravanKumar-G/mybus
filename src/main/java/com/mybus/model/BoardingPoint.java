@@ -1,7 +1,9 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 
 /**
@@ -38,6 +40,15 @@ public class BoardingPoint extends AbstractDocument {
         this.landmark = landmark;
         this.contact = contact;
         this.active = active;
+    }
+
+    public BoardingPoint(String name, String landmark, String contact, boolean active, boolean droppingPoint) {
+        setId(new ObjectId().toString());
+        this.name = name;
+        this.landmark = landmark;
+        this.contact = contact;
+        this.active = active;
+        this.droppingPoint = droppingPoint;
     }
 
 }

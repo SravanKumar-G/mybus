@@ -14,6 +14,18 @@ public class ServiceBoardingPoint {
 
 	@Getter
 	@Setter
-	private String layoutId;
+	private String boardingPointId;
+	
+	@Getter
+	@Setter
+	private Time pickupTime;
+	
+	@Getter
+	@Setter
+	private String landmark;
+	
+	@Getter
+	@Setter
+	private boolean haltAvailable;
 	
 }

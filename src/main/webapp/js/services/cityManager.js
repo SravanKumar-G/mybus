@@ -102,8 +102,8 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
       $http.post('/api/v1/city/'+cityId+'/boardingpoint',boardingPoint).success(function (data) {
         callback(data);
           sweetAlert("Great","Your BoardingPoint has been successfully added", "success");
-      }).error(function (err) {
-          sweetAlert("Oops...", "Error creating Bp data!", "error");
+      }).error(function (err,status) {
+          sweetAlert("Error",err.message,"error");
       });
     },
     updateBp: function(cityId,boardingPoint,callback) {

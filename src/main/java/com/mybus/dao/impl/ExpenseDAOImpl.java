@@ -1,8 +1,6 @@
 package com.mybus.dao.impl;
 
-import com.mybus.dao.CityDAO;
 import com.mybus.dao.ExpenseDAO;
-import com.mybus.model.City;
 import com.mybus.model.Expense;
 import com.mybus.service.SessionManager;
 import org.joda.time.DateTime;

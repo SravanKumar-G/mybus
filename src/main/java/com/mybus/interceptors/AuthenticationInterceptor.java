@@ -20,6 +20,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+
 import static java.lang.String.format;
 
 /**
@@ -54,7 +55,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Principal principal = request.getUserPrincipal();
             if (principal != null && sessionManager.getCurrentUser() == null) {
-                User user = userDAO.findOneByUsername(principal.getName());
+                User user = userDAO.findOneByUserName(principal.getName());
                 sessionManager.setCurrentUser(user);
                 failIfAdminRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser());
             }else {

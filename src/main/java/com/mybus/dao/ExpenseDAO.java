@@ -1,6 +1,5 @@
 package com.mybus.dao;
 
-import com.mybus.model.City;
 import com.mybus.model.Expense;
 import com.mybus.model.ExpenseType;
 import org.springframework.data.repository.PagingAndSortingRepository;
