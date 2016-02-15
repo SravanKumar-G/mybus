@@ -56,32 +56,6 @@
 </head>
 <body>
 <!-- Fixed navbar -->
-<!--<div class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li data-match-route="/dashboard"><a href="#/dashboard">Home</a></li>
-                <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
-                <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
-                <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
-                <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
-                <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
-                <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
-                <li data-match-route="/services"><a href="#/services">Services</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().userName}}</b> Logout</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
-
 <div class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
     <div class="container">
         <div class="navbar-header">
@@ -101,14 +75,14 @@
                     <ul class="dropdown-menu">
                         <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
                         <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
+                        <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
-                <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().userName}}</b> Logout</a></li>
+                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
