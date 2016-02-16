@@ -18,18 +18,6 @@ public class ServiceDropingPoint {
 
 	@Getter
 	@Setter
-	private String droppingPointPlace;
-
-	@Getter
-	@Setter
 	private Time droppingTime;
-	
-	@Getter
-	@Setter
-	private String landmark;
-	
-	@Getter
-	@Setter
-	private boolean haltAvailable;
 	
 }

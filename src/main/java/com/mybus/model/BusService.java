@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,14 +63,14 @@ public class BusService extends AbstractDocument {
 	
 	@Getter
 	@Setter
-	private ServiceRoute serviceRoute;
-
-	@Getter
-	@Setter
 	private Set<ServiceBoardingPoint> boardingPoints;
 
 	@Getter
 	@Setter
-	private Set<String> dropingPoints;
+	private Set<ServiceDropingPoint> dropingPoints;
+	
+	@Getter
+	@Setter
+	private List<ServiceFare> serviceFares;
 
 }

@@ -1,0 +1,29 @@
+<table class="table table-bordered table-condensed table-hover" ng-table="vehicleContentTableParams">
+    <div class="toolbar-button-div pull-right">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddVehicle()"><span
+                class="glyphicon glyphicon-plus"></span> Add Boarding Point
+        </button>
+    </div>
+    <tr ng-repeat="vehicle in currentPageOfVehicles" ng-class="vehicle.active?'':'bg-danger'">
+        <td data-title="'Vehicle Type'"  sortable="'name'" class="clickable-item col-md-6">{{ vehicle.type }}</td>
+        <td data-title="'Registration #'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
+        <td data-title="'Description'" class="clickable-item col-md-4">{{ vehicle.description }}</td>
+        <td data-title="'Active'" class="clickable-item col-md-4">{{ vehicle.active }}</td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="deleteBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+
+        </td>
+        <td>
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="updateBpOnClick(boardingPoint.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!currentPageOfBoardingPoints || currentPageOfBoardingPoints.length === 0">
+        <td colspan="4">No boardingPoint exist.  Please add some.</td>
+    </tr>
+</table>

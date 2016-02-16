@@ -14,6 +14,7 @@ var myBus = angular.module('myBus', [
   'myBus.citiesModules',
   'myBus.expensesModules',
   'myBus.boardingPointModule',
+  'myBus.vehicleModule',
   'myBus.personModules',
   'myBus.layoutModules',
   'myBus.layoutEditModules',
@@ -54,6 +55,10 @@ myBus.config(['$routeProvider',
         when('/city/:id', {
           templateUrl: 'partials/boardingpoints-list.tpl.html',
           controller: 'BoardingPointsListController'
+        }).
+        when('/vehicles', {
+            templateUrl: 'partials/vehicle-list.tpl.html',
+            controller: 'VehicleController'
         }).
         when('/layouts', {
           templateUrl: 'partials/buslayout.tpl.html',

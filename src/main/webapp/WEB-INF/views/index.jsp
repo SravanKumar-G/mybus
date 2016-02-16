@@ -26,6 +26,8 @@
     <script src="js/controllers/citiesController.js"></script>
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
+    <script src="js/controllers/vehicleController.js"></script>
+
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/busLayoutEditController.js"></script>
@@ -41,6 +43,8 @@
     <script src="js/services/busServiceManager.js"></script>
     <script src="js/services/routesManager.js"></script>
     <script src="js/services/personService.js"></script>
+    <script src="js/services/vehicleManager.js"></script>
+
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
@@ -76,6 +80,7 @@
                         <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
                         <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
                         <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
+                        <li data-match-route="/vehicles"><a href="#/vehicles">Vehicles</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>

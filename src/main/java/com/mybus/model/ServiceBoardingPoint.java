@@ -20,12 +20,4 @@ public class ServiceBoardingPoint {
 	@Setter
 	private Time pickupTime;
 	
-	@Getter
-	@Setter
-	private String landmark;
-	
-	@Getter
-	@Setter
-	private boolean haltAvailable;
-	
 }
