@@ -34,29 +34,38 @@ public class VehicleController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicles", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
-    @ApiOperation(value = "Get all the vehicles available", response = User.class, responseContainer = "List")
+    @ApiOperation(value = "Get all the vehicles available", response = Vehicle.class, responseContainer = "List")
     public Iterable<Vehicle> getVehicles(HttpServletRequest request) {
-        return vehicleDAO.findAll();
+    	return vehicleDAO.findAll();
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value ="Get vehicle", response = User.class)
+    public Vehicle getVehicle(HttpServletRequest request,
+                                     @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id
+                                    ) {
+        logger.debug("get vehicle called");
+        return vehicleDAO.findOne(id);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiOperation(value = "Create a new vehicle")
-    public ResponseEntity createUser(HttpServletRequest request,
+    public ResponseEntity createVehicle(HttpServletRequest request,
                     @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
         logger.debug("create vehicle called");
         return new ResponseEntity<>(vehicleManager.saveVehicle(vehicle), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "vehicle", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value ="Update vehicle", response = User.class)
     public ResponseEntity updateVehicle(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id,
                                      @ApiParam(value = "Vehicle JSON") @RequestBody final Vehicle vehicle) {
         logger.debug("update vehicle called");
         return new ResponseEntity<>(vehicleManager.updateVehicle(vehicle), HttpStatus.OK);
