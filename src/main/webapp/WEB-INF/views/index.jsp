@@ -20,6 +20,7 @@
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="bower_components/sweet-alert/dist/sweetalert.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/drag-drop/angular-drag-and-drop-lists.js"></script>
     <script src="lib/async.js"></script>
 
     <script src="js/app.js"></script>
@@ -87,7 +88,7 @@
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout"> <b style="color:white;">{{userManager.getUser().username}}</b> Logout</a></li>
+                <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

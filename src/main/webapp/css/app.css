@@ -323,3 +323,54 @@ li.tab.active a{
     text-decoration: none;
 
 }
+
+/* nav bar styling */
+
+.navbar-default  {
+    background-color: #ffefc8;
+    border-color:black ;
+}
+
+.navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus
+
+{
+    font-family: proxima-nova;
+    font-style: normal;
+    font-weight: 100;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #272fff;
+
+}
+.navbar-nav li ul li>a:hover,.navbar-default .navbar-nav li ul li>a:focus {
+
+    font-family: proxima-nova;
+    font-style: normal;
+    font-weight: 100;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #272fff;
+}
+
+.navbar-default .navbar-nav .open .dropdown-toggle>li>a, .navbar-default .navbar-nav .open .dropdown-menu {
+    background-color: #ffefc8;;
+    color:black;
+}
+
+/* Styling for temporary ViaCities list in Routes*/
+#deleteCityFromList, #deleteViaCityFromList, #updateViaCityFromList {
+
+    color: #39739D;
+    font-size: 12px;
+    white-space: nowrap;
+    background: #E1ECF4;
+}
+
+#deleteViaCityFromList,#deleteViaCityFromList ul[dnd-list] > li{
+    position: relative;
+}
+
+#routeTable th {
+    background-color: black;
+    color : white;
+}
