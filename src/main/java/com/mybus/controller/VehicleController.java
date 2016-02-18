@@ -36,10 +36,20 @@ public class VehicleController extends MyBusBaseController{
     @ResponseBody
     @ApiOperation(value = "Get all the vehicles available", response = User.class, responseContainer = "List")
     public Iterable<Vehicle> getVehicles(HttpServletRequest request) {
-        return vehicleDAO.findAll();
+        System.out.println("geting all vehicles...");
+        Iterable<Vehicle> vs= vehicleDAO.findAll();
+        System.out.println("geting all vehicles..."+vs);
+        return  vs;
     }
 
-
+    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value ="Get the Vehicle JSON", response = Vehicle.class)
+    public Vehicle getVehicle(HttpServletRequest request,
+                        @ApiParam(value = "Id of the Vehicle to be found") @PathVariable final String id) {
+        logger.debug("get vehicle called");
+        return vehicleDAO.findOne(id);
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
