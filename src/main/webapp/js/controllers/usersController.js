@@ -3,8 +3,140 @@
 
 angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
 
-
   //
+  // ============================= List All ===================================
+  //
+    .controller('UsersController', function($scope, $http, $log, $filter, ngTableParams, $location, usSpinnerService,userManager,$rootScope) {
+      console.log("in UsersController");
+      $scope.headline = "Users";
+      //$scope.users = [];
+      $scope.userCount = 0;
+
+      $scope.startSpin = function(){
+        usSpinnerService.spin('spinner-1');
+      };
+      $scope.stopSpin = function(){
+        usSpinnerService.stop('spinner-1');
+      };
+
+      $scope.currentPageOfUsers = [];
+      var loadTableData = function (tableParams, $defer) {
+          userManager.getUsers(function (data) {
+              $scope.users = data;
+              var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+              $scope.allUsers = orderedData;
+              tableParams.total(data.length);
+              if (angular.isDefined($defer)) {
+                  $defer.resolve(orderedData);
+              }
+              $scope.currentPageOfUsers = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+          });
+      };
+      $scope.userContentTableParams = new ngTableParams({
+        page: 1,
+        count: 50,
+        sorting: {
+          state: 'asc',
+          name: 'asc'
+        }
+      }, {
+        total: $scope.currentPageOfUsers.length,
+        getData: function ($defer, params) {
+          $scope.$on('UsersInitComplete', function (e, value) {
+            loadTableData(params);
+          });
+        }
+      });
+
+        userManager.fetchAllUsers();
+
+        $scope.$on('CreateUserCompleted',function(e,value){
+            userManager.fetchAllUsers();
+        });
+
+      /*$scope.userContentTableParams = new ngTableParams(
+          // merge default params with url
+          angular.extend({
+            page: 1,            // show first page
+            count: 25,          // count per page
+            sorting: {
+              surname: 'asc'     // initial sorting
+            }
+          }, $location.search()), {
+            total: $scope.users.length,
+            getData: function($defer, params) {
+              $location.search(params.url()); // put params in url
+              $http.get('/api/v1/accounts')
+                  .success(function (data) {
+                    $scope.userCount = data.length || 0;
+                    //$log.debug("user data: " + angular.toJson(data));
+                    var orderedData = params.sorting ? $filter('orderBy')(data, params.orderBy()) : data;
+                    params.total(data.length);
+                    $scope.users = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                    _.each($scope.users, function (u) {
+                      if (angular.isArray(u.businesses)) {
+                        u.businesses.sort();
+                      }
+                    });
+                    $defer.resolve($scope.users);
+                    $scope.stopSpin();
+                  }).error(function (error) {
+                    $log.info("Error getting users. " + error);
+                    $scope.stopSpin();
+                  });
+            }
+          });*/
+
+      $scope.editUser = function (userEmail) {
+        $location.url('/user?email=' + userEmail);
+      };
+
+        $scope.addUser = function () {
+            $location.url('/users/'+'create');
+        };
+
+    })
+
+    //
+    // ============================= Add ========================================
+    //
+    .controller('UserAddController', function($scope,userManager) {
+        $scope.headline = "Add New User";
+
+        $scope.isAdd = false;
+
+        $scope.user = {};
+
+        $scope.usersFromManager=[];
+        $scope.onMouseLeave = function(userNameFromUI){
+            userManager.getUsers(function(data){
+                $scope.usersFromManager=data;
+            });
+            angular.forEach($scope.usersFromManager,function(user){
+                if(user.userName==userNameFromUI){
+                    swal("oops!","Username already exist","error");
+                }
+            });
+        };
+
+        $scope.callBlurFunction = function(userPassword){
+            $scope.user.password = userPassword;
+        };
+
+        $scope.passwordCheck = function(gotPassword){
+            if (gotPassword != $scope.user.password) {
+                swal("oops!", "Password should match", "error");
+            }
+        };
+
+        $scope.saveButtonClicked = function(){
+            userManager.createUser($scope.user,function(data){
+                swal("success","User successfully added","success");
+            })
+        }
+    })
+
+    //
   // ======================== Edit User =====================================
   //
   .controller('UserEditController', function ($scope, $location, $http, $log, $modal, infoOverlay) {
@@ -91,71 +223,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
           $log.error(errorMsg);
           infoOverlay.displayInfo(errorMsg);
         });
-    };
-
-  })
-
-
-  //
-  // ============================= Add ========================================
-  //
-  .controller('UserAddController', function($scope) {
-    $scope.headline = "Add New User";
-    $scope.isAdd = true;
-  })
-
-
-  //
-  // ============================= List All ===================================
-  //
-  .controller('UsersController', function($scope, $http, $log, $filter, ngTableParams, $location, usSpinnerService) {
-
-    $scope.headline = "Users";
-    $scope.users = [];
-    $scope.userCount = 0;
-
-    $scope.startSpin = function(){
-      usSpinnerService.spin('spinner-1');
-    };
-    $scope.stopSpin = function(){
-      usSpinnerService.stop('spinner-1');
-    };
-
-    $scope.userContentTableParams = new ngTableParams(
-      // merge default params with url
-      angular.extend({
-        page: 1,            // show first page
-        count: 25,          // count per page
-        sorting: {
-          surname: 'asc'     // initial sorting
-        }
-      }, $location.search()), {
-        total: $scope.users.length,
-        getData: function($defer, params) {
-          $location.search(params.url()); // put params in url
-          $http.get('/api/v1/accounts')
-            .success(function (data) {
-              $scope.userCount = data.length || 0;
-              //$log.debug("user data: " + angular.toJson(data));
-              var orderedData = params.sorting ? $filter('orderBy')(data, params.orderBy()) : data;
-              params.total(data.length);
-              $scope.users = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-              _.each($scope.users, function (u) {
-                if (angular.isArray(u.businesses)) {
-                  u.businesses.sort();
-                }
-              });
-              $defer.resolve($scope.users);
-              $scope.stopSpin();
-            }).error(function (error) {
-              $log.info("Error getting users. " + error);
-              $scope.stopSpin();
-            });
-        }
-    });
-
-    $scope.editUser = function (userEmail) {
-      $location.url('/user?email=' + userEmail);
     };
 
   })

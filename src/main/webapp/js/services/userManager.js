@@ -3,7 +3,7 @@
 
 var portalApp = angular.module('myBus');
 
-portalApp.factory('userManager', function ($http, $log) {
+portalApp.factory('userManager', function ($http, $log,$rootScope) {
 
   var GRP_READ_ONLY = "Read-only"
     , GRP_AUTHOR = "Author"
@@ -20,7 +20,51 @@ portalApp.factory('userManager', function ($http, $log) {
     , hasRoleDeveloper = null
     , hasRoleBusinessAdmin = null;
 
+  var users = {};
+
   return {
+
+    fetchAllUsers: function () {
+      $log.debug("fetching routes data ...");
+      $http.get('/api/v1/users')
+          .success(function (data) {
+            users=data;
+            $rootScope.$broadcast('UsersInitComplete');
+          })
+          .error(function (error) {
+            $log.debug("error retrieving users");
+          });
+    },
+
+      getUsers: function (callback) {
+          $log.debug("fetching users data ...");
+          $http.get('/api/v1/users')
+              .success(function (data) {
+                  callback(data);
+                  $rootScope.$broadcast('FetchingUsersComplete');
+              })
+              .error(function (error) {
+                  $log.debug("error retrieving cities");
+              });
+      },
+
+      getAllUsers: function () {
+          return users;
+      },
+
+    createUser: function(user,callback){
+      $http.post('/api/v1/user',user).success(function(data){
+        callback(data);
+        $rootScope.$broadcast('CreateUserCompleted');
+      })
+          .error(function (err,status) {
+            /*var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
+             $log.error(errorMsg);
+             alert(errorMsg);*/
+            sweetAlert("Error",err.message,"error");
+          });
+    },
+
     getCurrentUser: function (callback, forceRefresh) {
       if (currentUser === null || forceRefresh) {
         $http.get('/api/v1/user/me')

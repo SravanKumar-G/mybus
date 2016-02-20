@@ -29,6 +29,8 @@
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/vehicleController.js"></script>
 
+    <script src="js/controllers/usersController.js"></script>
+
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/busLayoutEditController.js"></script>
@@ -49,6 +51,8 @@
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
+    <script src="js/directives/compareTo.js"></script>
+
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
@@ -86,6 +90,7 @@
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
+                <li data-match-route="/users"><a href="#/users">Users</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>

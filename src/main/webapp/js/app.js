@@ -22,7 +22,8 @@ var myBus = angular.module('myBus', [
   'myBus.serviceModules',
   'myBus.serviceEditModules',
   'myBus.homeModule',
-  'myBus.busDetailModule'
+  'myBus.busDetailModule',
+    'myBus.userModule'
 ]);
 
 myBus.config(['$routeProvider',
@@ -76,6 +77,10 @@ myBus.config(['$routeProvider',
         when('/users', {
           templateUrl: 'partials/users.tpl.html',
           controller: 'UsersController'
+        }).
+        when('/users/:id', {
+            templateUrl: 'partials/user-details.tpl.html',
+            controller: 'UserAddController'
         }).
         when('/user', {
           templateUrl: 'partials/user-details.tpl.html',
