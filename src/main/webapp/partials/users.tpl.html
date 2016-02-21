@@ -8,15 +8,31 @@
 
 <br/>
 
-<span us-spinner spinner-key="spinner-1" spinner-start-active="1"></span>
+<!--<span us-spinner spinner-key="spinner-1" spinner-start-active="1"></span>-->
 
 <span class="small-text">Total: {{ userCount }}</span>
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="addUser()"><span class="glyphicon glyphicon-plus"></span> Add User</button>
+</div>
+
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
-    <tr ng-click="editUser(user.email)" class="clickable-item" ng-repeat="user in users | orderBy: 'lastName'">
-        <td data-title="'Last'" sortable="'lastName'">{{ user.lastName }}</td>
-        <td data-title="'First'" sortable="'firstName'">{{ user.firstName }}</td>
-        <td data-title="'Username'" sortable="'userName'">{{ user.userName }}</td>
-        <td data-title="'Associated Businesses'">{{ user.businesses | arrayNone }}</td>
+    <tr ng-click="editUser(user.email)" class="clickable-item" ng-repeat="user in currentPageOfUsers">
+        <td data-title="'Last Name'" class="col-md-4" sortable="'lastName'">{{ user.lastName }}</td>
+        <td data-title="'First Name'" class="col-md-4"sortable="'firstName'">{{ user.firstName }}</td>
+        <td data-title="'Username'" class="col-md-4" sortable="'userName'">{{ user.userName }}</td>
+        <td data-title="'Type'" class="col-md-4" sortable="'type'">{{ user.type }}</td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
     </tr>
 </table>
