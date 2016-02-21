@@ -28,9 +28,7 @@
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/vehicleController.js"></script>
-
     <script src="js/controllers/usersController.js"></script>
-
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/busLayoutEditController.js"></script>
