@@ -22,13 +22,13 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/drag-drop/angular-drag-and-drop-lists.js"></script>
     <script src="lib/async.js"></script>
-
     <script src="js/app.js"></script>
     <script src="js/controllers/citiesController.js"></script>
     <script src="js/controllers/expensesController.js"></script>
     <script src="js/controllers/boardingPointsListController.js"></script>
     <script src="js/controllers/vehicleController.js"></script>
     <script src="js/controllers/usersController.js"></script>
+    <script src="js/controllers/agentPlanController.js"></script>
     <script src="js/controllers/personController.js"></script>
     <script src="js/controllers/busLayoutController.js"></script>
     <script src="js/controllers/busLayoutEditController.js"></script>
@@ -45,16 +45,13 @@
     <script src="js/services/routesManager.js"></script>
     <script src="js/services/personService.js"></script>
     <script src="js/services/vehicleManager.js"></script>
-
+    <script src="js/services/agentPlanManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
-    <script src="js/directives/compareTo.js"></script>
-
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
-
     <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
@@ -84,6 +81,7 @@
                         <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
                         <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
                         <li data-match-route="/vehicles"><a href="#/vehicles">Vehicles</a></li>
+                        <li data-match-route="/plans"><a href="#/plans">Agent Plan Type</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>

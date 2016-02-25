@@ -1,0 +1,29 @@
+<legend>{{ headline }}</legend>
+
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="goToAddNewPlan()"><span class="glyphicon glyphicon-plus"></span> Add New Plan</button>
+</div>
+
+<table class="table table-bordered table-condensed table-hover" id="planTable" ng-table="planContentTableParams">
+    <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
+        <td data-title="'Name'"  id="routeName"  class="col-md-4">{{  }}</td>
+        <td data-title="'Type'" class="col-md-4">{{ route.fromCity }}</td>
+        <td data-title="'Settlement Frequency'"  class="col-md-4">{{ route.toCity }}</td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="handleClickUpdateRoute(route.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="handleClickDeleteRoute(route.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
+
+    </tr>
+    <tr ng-if="!currentPageOfRoutes || currentPageOfRoutes.length === 0">
+        <td colspan="4">No routes exist.  Please add some.</td>
+    </tr>
+</table>
