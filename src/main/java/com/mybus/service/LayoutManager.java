@@ -3,17 +3,23 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.impl.LayoutMongoDAO;
+import com.mybus.model.City;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.model.Row;
 import com.mybus.model.Seat;
+
+import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by schanda on 01/15/16.
@@ -72,6 +78,27 @@ public class LayoutManager {
 		return layoutDAO.save(layout);
 	}
 
+	/**
+     * Module to build a map of <layoutId, layoutName>,
+     * @param allLayouts -- when true all the names will be returned, when false only active layout names are returned
+     * @return
+     */
+    public Map<String, String> getLayoutNames(boolean allLayouts) {
+        List<Layout> layouts = null;
+        if(allLayouts) {
+        	layouts = IteratorUtils.toList(layoutDAO.findAll().iterator());
+        } else {
+            //find only active cities
+        	layouts = IteratorUtils.toList(layoutDAO.findByActive(true).iterator());
+        }
+        if (layouts == null || layouts.isEmpty() ) {
+            return new HashMap<>();
+        }
+        Map<String, String> map = layouts.stream().collect(
+                Collectors.toMap(Layout::getId, layout -> layout.getName()));
+        return map;
+    }
+    
 	public Layout getDefaultLayout(LayoutType layoutType) {
 		Layout layout = null;
 		if (LayoutType.SLEEPER.equals(layoutType)) {

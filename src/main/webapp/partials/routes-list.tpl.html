@@ -7,7 +7,7 @@
 <table class="table table-bordered table-condensed table-hover" id="routeTable" ng-table="routeContentTableParams">
     <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
         <td data-title="'Name'"  id="routeName" sortable="'city'" class="col-md-6">{{ route.name }}</td>
-        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}</td>
+        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}{{route.id}}</td>
         <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCity }}</td>
         <td class="col-md-2">
             <md-button>

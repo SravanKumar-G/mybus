@@ -32,6 +32,14 @@ portalApp.factory('routesManager', function ($rootScope, $http, $log, $window) {
                     $log.debug("error retrieving cities");
                 });
         },
+        
+        
+        getActiveRouteNames: function() {
+        	return $http({
+        		method:'GET',
+        		url:'/api/v1/documents/route?fields=id,name'
+        	});
+        },
 
         getRoute: function(routeId,callback){
              $http.get('/api/v1/route/'+routeId).success(function(data){
