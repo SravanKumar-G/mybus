@@ -1,6 +1,3 @@
-/**
- * Created by skandula on 5/19/15.
- */
 
 'use strict';
 /*global angular,_*/
@@ -71,11 +68,8 @@ angular.module('myBus.boardingPointModule', [])
             cityManager.deleteBp($scope.cityId,id,function(data){
                 console.log("in deleteBP"+data.name);
                 $route.reload();
-
             });
-
          }
-
          })
 
     // ========================== Modal - Boarding point controller =================================

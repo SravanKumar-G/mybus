@@ -34,39 +34,39 @@ public class VehicleController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicles", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
-    @ApiOperation(value = "Get all the vehicles available", response = Vehicle.class, responseContainer = "List")
+    @ApiOperation(value = "Get all the vehicles available", response = User.class, responseContainer = "List")
     public Iterable<Vehicle> getVehicles(HttpServletRequest request) {
-    	return vehicleDAO.findAll();
+        logger.info("geting all vehicles...");
+        Iterable<Vehicle> vs= vehicleDAO.findAll();
+        return  vs;
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
-    @ApiOperation(value ="Get vehicle", response = User.class)
+    @ApiOperation(value ="Get the Vehicle JSON", response = Vehicle.class)
     public Vehicle getVehicle(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id
-                                    ) {
+                              @ApiParam(value = "Id of the Vehicle to be found") @PathVariable final String id) {
         logger.debug("get vehicle called");
         return vehicleDAO.findOne(id);
     }
-
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiOperation(value = "Create a new vehicle")
-    public ResponseEntity createVehicle(HttpServletRequest request,
-                    @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
+    public ResponseEntity createUser(HttpServletRequest request,
+                                     @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
         logger.debug("create vehicle called");
         return new ResponseEntity<>(vehicleManager.saveVehicle(vehicle), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "vehicle", method = RequestMethod.PUT)
+    @RequestMapping(value = "vehicle/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value ="Update vehicle", response = User.class)
     public ResponseEntity updateVehicle(HttpServletRequest request,
-                                     @ApiParam(value = "Vehicle JSON") @RequestBody final Vehicle vehicle) {
+                                        @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id,
+                                        @ApiParam(value = "Vehicle JSON") @RequestBody final Vehicle vehicle) {
         logger.debug("update vehicle called");
         return new ResponseEntity<>(vehicleManager.updateVehicle(vehicle), HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class VehicleController extends MyBusBaseController{
     @ResponseBody
     @ApiOperation(value ="Delete a vehicle")
     public JSONObject deleteVehicle(HttpServletRequest request,
-                                 @ApiParam(value = "Id of the vehicle to be deleted") @PathVariable final String id) {
+                                    @ApiParam(value = "Id of the vehicle to be deleted") @PathVariable final String id) {
         logger.debug("delete vehicle called");
         JSONObject response = new JSONObject();
         response.put("deleted", vehicleManager.deleteVehicle(id));

@@ -22,7 +22,9 @@ var myBus = angular.module('myBus', [
   'myBus.serviceModules',
   'myBus.serviceEditModules',
   'myBus.homeModule',
-  'myBus.busDetailModule'
+  'myBus.busDetailModule',
+  'myBus.userModule',
+  'myBus.agentPlanModule'
 ]);
 
 myBus.config(['$routeProvider',
@@ -86,13 +88,25 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/users.tpl.html',
           controller: 'UsersController'
         }).
+        when('/users/:id', {
+            templateUrl: 'partials/user-details.tpl.html',
+            controller: 'UserAddController'
+        }).
         when('/user', {
           templateUrl: 'partials/user-details.tpl.html',
-          controller: 'UserEditController'
+          controller: 'UserAddController'
         }).
         when('/users-new', {
           templateUrl: 'partials/user-details.tpl.html',
           controller: 'UserAddController'
+        }).
+        when('/plans', {
+            templateUrl: 'partials/agentPlan-details.tpl.html',
+            controller: 'AgentPlanController'
+        }).
+        when('/plan', {
+            templateUrl: 'partials/agentPlanEdit-details.tpl.html',
+            controller: 'AddAgentPlanTypeController'
         }).
         when('/docs', {
           templateUrl: 'partials/api-docs.tpl.html',
