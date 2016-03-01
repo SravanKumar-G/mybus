@@ -1,13 +1,17 @@
 package com.mybus.controller;
 
+import java.util.Map;
+
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.service.LayoutManager;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,14 @@ public class LayoutController extends MyBusBaseController{
 	public Iterable<Layout> getLayouts(HttpServletRequest request) {
 		return layoutDAO.findAll();
 	}
+
+	@ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "activelayoutnames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value = "Get names of the active layout as key value pair", response = Map.class, responseContainer = "Map")
+    public Map<String, String> getActiveLayoutNames(HttpServletRequest request) {
+        return layoutManager.getLayoutNames(false);
+    }
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "layout", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -7,7 +7,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusServiceEditController   ================================================
   // ==================================================================================================================
 
-  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busServiceManager, $routeParams, $location, $cacheFactory) {
+  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busServiceManager, routesManager,cityManager, layoutNamesPromise, routeNamesPromise, $routeParams, $location, $cacheFactory) {
         $log.debug('BusServiceController loading');
         var busServiceEditCtrl = this;
 
@@ -28,6 +28,14 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
             upperHeader : '',
             lowerHeader : ''
         };
+        busServiceEditCtrl.layouts = layoutNamesPromise.data;
+        busServiceEditCtrl.routes = routeNamesPromise.data;
+        busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        busServiceEditCtrl.specialDays = [{'date':''}]
+        busServiceEditCtrl.taxModes  = [
+                                      {id: 'FIXED', name: 'FIXED'},
+                                      {id: 'PERCENTAGE', name: 'PERCENTAGE'}
+                                    ];
 
       var serviceId = $routeParams.id;
 
@@ -62,6 +70,35 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
             busServiceEditCtrl.totalSeats = 0;
         }
 
+        busServiceEditCtrl.getRouteCities = function() {
+        	var routeId = busServiceEditCtrl.route._id.date;
+        	console.log('route id -' + routeId);
+        	console.log('route name -' +busServiceEditCtrl.route.name);
+        	routesManager.getRoutes(function(data){
+        		angular.forEach(data, function(value, key) {
+        			console.log('value ' + value.id);
+        			console.log('value name - ' + value.name);
+            		if (busServiceEditCtrl.route.name === value.name){
+                		console.log('via cities -' + value.viaCities);
+                		busServiceEditCtrl.routeCities = [];                		
+                        cityManager.getCities(function(data){
+                            var cities = data;
+                            angular.forEach(value.viaCities,function(existingCityId) {
+                                angular.forEach(cities,function(city){
+                                    if(existingCityId == city.id){
+                                    	var routCity = {provideStop:false, hour:'', minutes:'', meridian:'', day:0};
+                                    	routCity.name = city.name;
+                                    	busServiceEditCtrl.routeCities.push(routCity);
+                                    }
+                                });
+                            });
+                        });
+                        //break;
+            		}
+        		});
+            });
+        };
+        
         busServiceEditCtrl.doService = function (){
             initialize();
             // service css class
