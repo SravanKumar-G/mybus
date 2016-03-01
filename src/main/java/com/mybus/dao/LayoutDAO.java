@@ -1,6 +1,8 @@
 package com.mybus.dao;
 
+import com.mybus.model.City;
 import com.mybus.model.Layout;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface LayoutDAO extends PagingAndSortingRepository<Layout, String> {
     Layout findOneByName(String name);
     void delete(String s);
+    Iterable<City> findByActive(boolean active);
 }
