@@ -24,7 +24,8 @@ var myBus = angular.module('myBus', [
   'myBus.homeModule',
   'myBus.busDetailModule',
   'myBus.userModule',
-  'myBus.agentPlanModule'
+  'myBus.agentPlanModule',
+  'myBus.paymentModule'
 ]);
 
 myBus.config(['$routeProvider',
@@ -115,6 +116,10 @@ myBus.config(['$routeProvider',
         when('/account', {
           templateUrl: 'partials/account.tpl.html',
           controller: 'AccountController'
+        }).
+        when('/payment',{
+        	templateUrl: 'partials/payment.tpl.html',
+        	controller: 'PaymentController'
         })
         .otherwise({
           redirectTo: '/'

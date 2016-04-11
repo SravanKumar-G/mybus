@@ -1,5 +1,14 @@
 package com.mybus.controller;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class AppController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
 
 	@RequestMapping(value = { "/", "/helloworld**" }, method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
@@ -63,6 +73,30 @@ public class AppController {
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public ModelAndView home(@RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "logout", required = false) String logout) {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("index");
+        return model;
+    }
+    
+    /**
+     * 
+     * @param request
+     * @param response
+     * @return
+     * this is call back response from payment gateways. 
+     * 
+     */
+    @RequestMapping(value = "/paymentStatus", method = {RequestMethod.GET,RequestMethod.POST})
+    public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
+    	System.out.println("response from payu paymentStatus");
+		Enumeration<String> paramNames = request.getParameterNames();
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String[]> mapData = request.getParameterMap();
+		while(paramNames.hasMoreElements()) {
+			String paramName = (String)paramNames.nextElement();
+			map.put(paramName, mapData.get(paramName)[0]);
+		}
+    	LOGGER.info("got response from payu pg"+map);
         ModelAndView model = new ModelAndView();
         model.setViewName("index");
         return model;

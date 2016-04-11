@@ -37,6 +37,7 @@
     <script src="js/controllers/homeController.js"></script>
     <script src="js/controllers/busDetailsController.js"></script>
     <script src="js/controllers/routesController.js"></script>
+    <script src="js/controllers/paymentController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
@@ -46,10 +47,11 @@
     <script src="js/services/personService.js"></script>
     <script src="js/services/vehicleManager.js"></script>
     <script src="js/services/agentPlanManager.js"></script>
+    <script src="js/services/paymentManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
-    <script src="js/directives/datePicker.js"></script>
+   <!--  <script src="js/directives/datePicker.js"></script> -->
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
@@ -90,6 +92,7 @@
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
                 <li data-match-route="/users"><a href="#/users">Users</a></li>
+                <li data-match-route="/payment"><a href="#/payment">Payment</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
