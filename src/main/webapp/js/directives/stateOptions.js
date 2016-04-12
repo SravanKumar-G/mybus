@@ -12,4 +12,4 @@ angular.module('myBus')
         scope.states = states;
       }
     };
-  });
+  })
