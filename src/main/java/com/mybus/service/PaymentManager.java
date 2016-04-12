@@ -18,7 +18,7 @@ import com.mybus.util.Status;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentGateways;
 import com.mybus.util.Constants;
-import com.mybus.util.PaymentResponse;
+import com.mybus.model.PaymentResponse;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class PaymentManager {
 		pg.setPgKey("eCwWELxi"); //payu  salt
 		pg.setPgAccountID("gtKFFx"); //payu key
 		pg.setPgRequestUrl("https://test.payu.in/_payment");
-		pg.setPgCallbackUrl("http://localhost:8081/paymentStatus");
+		pg.setPgCallbackUrl("http://localhost:8081/payUResponse");
 		String merchantRefNo =  getRandamNo();
 		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+ payment.getFirstName() +"|"+ payment.getEmailID() +"|||||||||||"+pg.getPgKey();
 		LOGGER.info("hashSequence - "+hashSequence);		
