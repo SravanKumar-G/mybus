@@ -1,20 +1,25 @@
-package com.mybus.util;
+package com.mybus.model;
 
 import java.util.Date;
 
+import com.mybus.util.Status;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 
  * @author yks-Srinivas
- * payment response object
+ *
  */
-public class PaymentResponse {
+public class RefundResponse {
 	
 	@Setter
 	@Getter
-	private double amount;
+	private double refundAmout;
+	
+	@Setter
+	@Getter
+	private Date refundDate;
 	
 	@Setter
 	@Getter
@@ -22,11 +27,11 @@ public class PaymentResponse {
 	
 	@Setter
 	@Getter
-	private String merchantrefNo;
+	private String refundId;
 	
 	@Setter
 	@Getter
-	private Date paymentDate;
+	private String merchentrefNo;
 	
 	/**
 	 * Type of payment method, paymentgateway (PG) or Wallet

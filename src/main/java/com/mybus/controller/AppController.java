@@ -7,8 +7,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mybus.dao.PaymentResponseDAO;
+import com.mybus.model.PaymentResponse;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +22,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AppController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
+
+	@Autowired
+	private PaymentResponseDAO paymentResponseDAO;
 
 	@RequestMapping(value = { "/", "/helloworld**" }, method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
@@ -77,29 +84,33 @@ public class AppController {
         model.setViewName("index");
         return model;
     }
-    
-    /**
-     * 
-     * @param request
-     * @param response
-     * @return
-     * this is call back response from payment gateways. 
-     * 
-     */
-    @RequestMapping(value = "/paymentStatus", method = {RequestMethod.GET,RequestMethod.POST})
-    public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
-    	System.out.println("response from payu paymentStatus");
+
+	/**
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 * this is call back response from payment gateways.
+	 *
+	 */
+	@RequestMapping(value = "/payUResponse", method = {RequestMethod.GET,RequestMethod.POST})
+	public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
+		LOGGER.info("response from payu paymentStatus");
 		Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String[]> mapData = request.getParameterMap();
-		while(paramNames.hasMoreElements()) {
+		/*while(paramNames.hasMoreElements()) {
 			String paramName = (String)paramNames.nextElement();
 			map.put(paramName, mapData.get(paramName)[0]);
-		}
-    	LOGGER.info("got response from payu pg"+map);
-        ModelAndView model = new ModelAndView();
-        model.setViewName("index");
-        return model;
-    }
+		}*/
+		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse.setResponseParams(new JSONObject(mapData));
+		paymentResponseDAO.save(paymentResponse);
+		LOGGER.info("got response from payu pg"+map);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("../../index");
+		return model;
+	}
+
 
 }

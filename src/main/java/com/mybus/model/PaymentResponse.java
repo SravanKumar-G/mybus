@@ -1,24 +1,27 @@
-package com.mybus.util;
+package com.mybus.model;
 
 import java.util.Date;
+import java.util.Map;
 
+import com.mybus.util.Status;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.json.simple.JSONObject;
 
 /**
  * 
  * @author yks-Srinivas
- *
+ * payment response object
  */
-public class RefundResponse {
+@ToString
+@ApiModel(value = "PaymentResponse")
+public class PaymentResponse extends AbstractDocument {
 	
 	@Setter
 	@Getter
-	private double refundAmout;
-	
-	@Setter
-	@Getter
-	private Date refundDate;
+	private double amount;
 	
 	@Setter
 	@Getter
@@ -26,11 +29,11 @@ public class RefundResponse {
 	
 	@Setter
 	@Getter
-	private String refundId;
+	private String merchantrefNo;
 	
 	@Setter
 	@Getter
-	private String merchentrefNo;
+	private Date paymentDate;
 	
 	/**
 	 * Type of payment method, paymentgateway (PG) or Wallet
@@ -49,4 +52,8 @@ public class RefundResponse {
 	@Setter
 	@Getter
 	private Status status;
+
+	@Setter
+	@Getter
+	private JSONObject responseParams;
 }
