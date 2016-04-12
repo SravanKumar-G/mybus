@@ -34,7 +34,7 @@ portalApp.factory('agentPlanManager', function ($rootScope, $http, $log, $window
         },
 
         getPlan: function(planId,callback){
-            $http.get('/api/v1/planId/'+planId).success(function(data){
+            $http.get('/api/v1/plan/'+planId).success(function(data){
                 callback(data);
             })
                 .error(function (error) {
@@ -44,6 +44,35 @@ portalApp.factory('agentPlanManager', function ($rootScope, $http, $log, $window
 
         getAllPlans: function () {
             return plans;
+        },
+
+        updatePlan: function(plan,callback) {
+            $http.put('/api/v1/plan',plan).success(function (data) {
+                callback(data);
+                sweetAlert("Great","Your Plan has been successfully updated", "success");
+                $rootScope.$broadcast('updatePlanCompleteEvent');
+            }).error(function (error) {
+                sweetAlert("Oops..", "Error updating Plan data!", "error" + angular.toJson(error));
+            })
+        },
+
+        deletePlan: function(planId) {
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to delete this plan?",
+                type: "warning",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonText: "Yes, delete it!",
+                confirmButtonColor: "#ec6c62"},function(){
+
+                $http.delete('/api/v1/plan/' + planId).success(function (data) {
+                    $rootScope.$broadcast('DeletePlanCompleted');
+                    swal("Deleted!", "Plan was successfully deleted!", "success");
+                }).error(function () {
+                    swal("Oops", "We couldn't connect to the server!", "error");
+                });
+            })
         },
 
         createPlan: function(agentPlanType,callback){

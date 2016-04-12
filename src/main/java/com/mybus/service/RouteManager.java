@@ -61,6 +61,9 @@ public class RouteManager {
 
     private void validateRoute(final Route route) {
         Preconditions.checkNotNull(route, "route can not be null");
+        if(route == null){
+            throw new NullPointerException("route can not be null");
+        }
         Preconditions.checkNotNull(route.getName(), "Route name can not be null");
         Preconditions.checkNotNull(route.getFromCity(), "Route from city can not be null");
         Preconditions.checkNotNull(route.getToCity(), "Route to city can not be null");
