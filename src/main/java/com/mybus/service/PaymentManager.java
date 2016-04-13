@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +85,9 @@ public class PaymentManager {
 		return paymentResponse;
 	}
 
+	public List<PaymentResponse> getAllPayments(){
+		return null;
+	}
 	private String getRandamNo(){
 		return String.valueOf(Calendar.getInstance().getTimeInMillis());
 	}

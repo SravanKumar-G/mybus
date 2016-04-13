@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Payment;
+import com.mybus.model.User;
 import com.mybus.service.PaymentManager;
 import com.mybus.model.PaymentResponse;
 
@@ -79,6 +80,5 @@ public class PaymentController {
         return model;
 
 	}
-
-
+	
 }

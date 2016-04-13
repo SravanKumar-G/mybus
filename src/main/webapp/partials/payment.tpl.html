@@ -79,6 +79,24 @@
 </form>
 
 
+<div>
+	<table class="table">
+		<thead>
+			<th>ID</th>
+			<th>Merchant RefNo</th>
+			<th>Payment Id</th>
+			<th>Amount</th>
+			<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="payment in payments">
+				<td>{{payment}}</td>
+			</tr>
+		</tbody>
+		</tbody>
+</div>
+
 
 <!-- This is a payu form directive which need to be submitted to payu payment gateway -->
 <form-submitter></form-submitter>
