@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.PaymentResponse;
+import com.mybus.service.PaymentManager;
+
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +26,8 @@ public class AppController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppController.class);
 
 	@Autowired
-	private PaymentResponseDAO paymentResponseDAO;
-
+	PaymentManager paymentManager;
+	
 	@RequestMapping(value = { "/", "/helloworld**" }, method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
 
@@ -96,17 +98,20 @@ public class AppController {
 	@RequestMapping(value = "/payUResponse", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
 		LOGGER.info("response from payu paymentStatus");
-		Enumeration<String> paramNames = request.getParameterNames();
+		/*Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String[]> mapData = request.getParameterMap();
-		/*while(paramNames.hasMoreElements()) {
-			String paramName = (String)paramNames.nextElement();
-			map.put(paramName, mapData.get(paramName)[0]);
-		}*/
 		PaymentResponse paymentResponse = new PaymentResponse();
-		paymentResponse.setResponseParams(new JSONObject(mapData));
-		paymentResponseDAO.save(paymentResponse);
-		LOGGER.info("got response from payu pg"+map);
+		paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
+		paymentResponse.setPaymentId(map.get("txnid"));
+		paymentResponse.setMerchantrefNo(map.get("mihpayid"));
+		paymentResponse.setPaymentDate(map.get("addedon"));
+		paymentResponse.setPaymentType(map.get(""));
+		paymentResponse.setPaymentName(map.get(""));
+		paymentResponse.setResponseParams(new JSONObject(mapData));*/
+		paymentManager.paymentResponseFromPayu(request);
+		//paymentResponseDAO.save(paymentResponse);
+		//LOGGER.info("got response from payu pg"+map);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;

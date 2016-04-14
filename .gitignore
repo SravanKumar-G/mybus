@@ -19,3 +19,4 @@ out/
 .idea_modules/
 .idea/**
  .idea/workspace.xml
+/bin/

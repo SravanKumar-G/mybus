@@ -79,6 +79,8 @@
 </form>
 
 
+<legend>{{ paymentsDetails }}</legend>
+
 <div>
 	<table class="table">
 		<thead>
@@ -87,16 +89,21 @@
 			<th>Payment Id</th>
 			<th>Amount</th>
 			<th></th>
+			<th>Refund status</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="payment in payments">
-				<td>{{payment}}</td>
+				<td>{{payment.id}}</td>
+				<td>{{payment.merchantrefNo}}</td>
+				<td>{{payment.paymentId}}</td>
+				<td>{{payment.amount}}</td>
+				<td><button class="btn btn-danger" ng-disabled="payment.status.success && !payment.refundResponse ==''" ng-click="paymentButtonForRefund(payment.id)">Refund</td>
+				<td>{{payment.refundResponse.status.statusMessage}}</td>
 			</tr>
 		</tbody>
 		</tbody>
 </div>
-
 
 <!-- This is a payu form directive which need to be submitted to payu payment gateway -->
 <form-submitter></form-submitter>

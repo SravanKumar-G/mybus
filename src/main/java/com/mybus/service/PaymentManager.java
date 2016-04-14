@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
@@ -11,15 +12,23 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.mybus.util.Status;
+import com.google.common.base.Preconditions;
+import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentGateways;
 import com.mybus.util.Constants;
 import com.mybus.model.PaymentResponse;
+import com.mybus.model.RefundResponse;
+import com.mybus.model.Route;
+
 
 /**
  * 
@@ -30,6 +39,9 @@ public class PaymentManager {
 
 
 	private static final Logger LOGGER= LoggerFactory.getLogger(PaymentManager.class);
+	
+	@Autowired
+	PaymentResponseDAO paymentResponseDAO;
 
 	public Payment getPayuPaymentGatewayDetails(Payment payment){
 
@@ -51,9 +63,6 @@ public class PaymentManager {
 	}
 
 	public PaymentResponse paymentResponseFromPayu(HttpServletRequest request) {
-
-		PaymentResponse paymentResponse = new PaymentResponse();
-		Status status = new Status();
 		Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String[]> mapData = request.getParameterMap();
@@ -61,33 +70,85 @@ public class PaymentManager {
 			String paramName = (String)paramNames.nextElement();
 			map.put(paramName, mapData.get(paramName)[0]);
 		}
-		LOGGER.info("got response from payu pg"+map);
-
+		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
+		paymentResponse.setPaymentId(map.get("txnid"));
+		paymentResponse.setMerchantrefNo(map.get("mihpayid"));
+		paymentResponse.setPaymentDate(map.get("addedon"));
+		paymentResponse.setPaymentType(map.get(""));
+		paymentResponse.setPaymentName(map.get(""));
+		paymentResponse.setResponseParams(new JSONObject(mapData));
+		Status status = new Status();
 		String hashSequence = "eCwWELxi|"+map.get("status")+"|||||||||||"+ map.get("email") +"|"+ map.get("firstname") +"|"+ map.get("productinfo")+"|"+ map.get("amount") +"|"+ map.get("txnid") +"|"+map.get("key");
-
 		if(!hashCal(Constants.SHA_512,hashSequence).equalsIgnoreCase(map.get("hash")) || !Constants.status.SUCCESS.name().equalsIgnoreCase(map.get("status")) || !Constants.PAYU_SUCCESS_CODE.equalsIgnoreCase(map.get("error"))){
 			status.setSuccess(false);
 			status.setStatusCode(Constants.FAILED_CODE);
 			status.setStatusMessage("Payment has failed");
-			paymentResponse.setStatus(status);
 			LOGGER.info("hash failed from payu.. request and response hash both are not same...");	
 		}else{
 			status.setSuccess(true);
 			status.setStatusCode(Constants.SUCCESS_CODE);
 			status.setStatusMessage("Payment has success");
-			paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
-			paymentResponse.setPaymentId(map.get("payuMoneyId"));
-			paymentResponse.setMerchantrefNo(map.get("txnid"));
-			paymentResponse.setPaymentDate(new Date());
-			paymentResponse.setStatus(status);
-
 		}
+		paymentResponse.setStatus(status);
+		paymentResponseDAO.save(paymentResponse);
 		return paymentResponse;
 	}
 
-	public List<PaymentResponse> getAllPayments(){
-		return null;
+	/**
+	 * @param paymentResponse
+	 * @return
+	 * This is the common method for refund amount to all payment gateways 
+	 */
+	public RefundResponse refundProcessToPaymentGateways(String paymentid) {
+		PaymentResponse paymentResponse = paymentResponseDAO.findOne(paymentid);
+		String uniqueId = getRandamNo();
+		String hashSequence =null;
+		hashSequence = "gtKFFx|cancel_refund_transaction|"+paymentResponse.getMerchantrefNo()+"|eCwWELxi";
+		java.net.URL url;
+		java.io.OutputStreamWriter wr = null;
+		RefundResponse refundResponse = new RefundResponse();
+		try {
+			url = new java.net.URL("https://test.payu.in/merchant/postservice?form=2");
+			java.net.URLConnection conn = url.openConnection();
+			conn.setDoOutput(true);
+			wr = new java.io.OutputStreamWriter(conn.getOutputStream());
+			wr.write("key=gtKFFx&command=cancel_refund_transaction&hash="+ hashCal("SHA-512",hashSequence) +"&var1="+ paymentResponse.getMerchantrefNo() +"&var2="+ uniqueId +"&var3="+paymentResponse.getAmount());
+			LOGGER.info("In util:refundAmountToPaymentGateWays PAYU call Refund request ::"+hashSequence);
+			wr.flush();
+			java.io.BufferedReader rd = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+			String line = null;
+			StringBuilder rowResonse = new StringBuilder();
+			while ((line = rd.readLine()) != null) {
+				rowResonse.append(line);
+				LOGGER.info("In util:refundAmountToPaymentGateWays PAYU call Refund response ::"+line);
+			}
+			Status status = new Status();
+			status.setSuccess(true);
+			status.setStatusCode(Constants.SUCCESS_CODE);
+			status.setStatusMessage("Refund has success");
+			refundResponse.setStatus(status);
+			refundResponse.setRefundResponseParams(rowResonse.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(wr!=null){
+				try {
+					wr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		paymentResponse.setRefundResponse(refundResponse);
+		update(paymentResponse);
+		return refundResponse;
 	}
+	
+	public Iterable<PaymentResponse> getPaymentDetails() {
+        return paymentResponseDAO.findAll();
+    }
+	
 	private String getRandamNo(){
 		return String.valueOf(Calendar.getInstance().getTimeInMillis());
 	}
@@ -111,4 +172,19 @@ public class PaymentManager {
 		}
 		return hexString.toString();
 	}	
+	
+
+	public boolean update(PaymentResponse paymentResponse) {
+        
+        PaymentResponse pr = paymentResponseDAO.findOne(paymentResponse.getId());
+        try {
+        	pr.merge(paymentResponse);
+        	paymentResponseDAO.save(pr);
+        } catch (Exception e) {
+        	LOGGER.error("Error updating the Route ", e);
+           throw new RuntimeException(e);
+        }
+        return true;
+    }
+
 }

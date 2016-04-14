@@ -7,33 +7,58 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 	console.log("In PaymentController");
 	
 	$scope.headline = "Proceed to pay";
+	$scope.paymentsDetails = "Payments and Refund Details "; 
 	
 	$scope.payment = {};
-
+	
+	$scope.payments =[];
+	
+	$scope.paymentToBeRefund = {};
+	
     $scope.paymentButtonClicked = function(){
     	 	paymentManager.proceedToPay($scope.payment,function(data){
     	 		console.log('Payment response',data);
     	 		FormSubmitter.submit(data)
-        })
+    	 	});
     };
+    
     $scope.paymentButtonResetFields= function(){
     	$scope.payment = {};
-    }
+    };
+    
+    $scope.getAllPaymentDetails = function(){
+    	paymentManager.getAllPayments(function(data){
+    		$scope.payments=data;
+    	});
+    };
+    
+    $scope.getAllPaymentDetails();
+    
+    $scope.paymentButtonForRefund= function(paymentid){
+    	paymentManager.processToRefund(paymentid,function(data){
+    		$scope.getAllPaymentDetails();
+    	})
+    };
+    isInputValid = function(paymentStatus,refundStatus){
+     	return false;
+    };
+    
 });
-function FormSubmitter($rootScope, $sce) {
-// Expose our Api
-return {
-	submit: submit
-}
 
-function submit(params) {
+function FormSubmitter($rootScope, $sce) {
+	//Expose our Api
+	return {
+		submit: submit
+	}
+
+	function submit(params) {
 		var url = $sce.trustAsResourceUrl(params.paymentGateways.pgRequestUrl);
-        console.log('params',params,url);
-        $rootScope.$broadcast('form.submit', {
-             params: params,
-             url : url 	
-        });
-    }
+		console.log('params',params,url);
+		$rootScope.$broadcast('form.submit', {
+			params: params,
+			url : url 	
+		});
+	}
 }
 
 function formSubmitterDirective($timeout) {
