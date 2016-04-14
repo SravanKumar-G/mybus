@@ -48,6 +48,9 @@
     <script src="js/services/agentPlanManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
+    <script src="js/directives/pwCheck.js"></script>
+
+
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
