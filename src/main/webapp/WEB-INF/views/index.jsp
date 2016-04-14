@@ -37,6 +37,7 @@
     <script src="js/controllers/homeController.js"></script>
     <script src="js/controllers/busDetailsController.js"></script>
     <script src="js/controllers/routesController.js"></script>
+    <script src="js/controllers/paymentController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
@@ -46,11 +47,14 @@
     <script src="js/services/personService.js"></script>
     <script src="js/services/vehicleManager.js"></script>
     <script src="js/services/agentPlanManager.js"></script>
+    <script src="js/services/paymentManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/stateOptions.js"></script>
+   <!--  <script src="js/directives/datePicker.js"></script> -->
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
+    <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
@@ -81,12 +85,14 @@
                         <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
                         <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
                         <li data-match-route="/vehicles"><a href="#/vehicles">Vehicles</a></li>
+                        <li data-match-route="/services"><a href="#/services">Services</a></li>
                         <li data-match-route="/plans"><a href="#/plans">Agent Plan Type</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
                 <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
                 <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
                 <li data-match-route="/users"><a href="#/users">Users</a></li>
+                <li data-match-route="/payment"><a href="#/payment">Payment</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>

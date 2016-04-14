@@ -24,7 +24,8 @@ var myBus = angular.module('myBus', [
   'myBus.homeModule',
   'myBus.busDetailModule',
   'myBus.userModule',
-  'myBus.agentPlanModule'
+  'myBus.agentPlanModule',
+  'myBus.paymentModule'
 ]);
 
 myBus.config(['$routeProvider',
@@ -71,6 +72,15 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/buslayoutedit.tpl.html',
           controller: 'BusLayoutEditController as busLayoutEditCtrl'
         }).
+        when('/services', {
+            templateUrl: 'partials/busService.tpl.html',
+            controller: 'BusServiceController as busServiceCtrl'
+        }).
+        when('/services/:id', {
+              templateUrl: 'partials/busServiceEdit.tpl.html',
+              controller: 'BusServiceEditController as busServiceEditCtrl',
+              resolve : busServiceEditResolver,
+        }).          
         when('/busdetails', {
           templateUrl: 'partials/busdetails.tpl.html',
           controller: 'BusDetailsController'
@@ -106,11 +116,25 @@ myBus.config(['$routeProvider',
         when('/account', {
           templateUrl: 'partials/account.tpl.html',
           controller: 'AccountController'
+        }).
+        when('/payment',{
+        	templateUrl: 'partials/payment.tpl.html',
+        	controller: 'PaymentController'
         })
         .otherwise({
           redirectTo: '/'
         });
   }]);
+
+	var busServiceEditResolver = {
+			layoutNamesPromise : ['busLayoutManager', function(busLayoutManager){
+				return busLayoutManager.getActiveLayoutNames();
+			}],
+			routeNamesPromise : ['routesManager', function(routesManager){
+				return routesManager.getActiveRouteNames();
+			}]
+	};
+
 
 myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   appConfigManager.fetchAppSettings(function (err, cfg) {

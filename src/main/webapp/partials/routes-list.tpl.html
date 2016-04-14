@@ -7,7 +7,7 @@
 <table class="table table-bordered table-condensed table-hover" id="routeTable" ng-table="routeContentTableParams">
     <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
         <td data-title="'Name'"  id="routeName" sortable="'city'" class="col-md-6">{{ route.name }}</td>
-        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}</td>
+        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}<!-- {{route.id}} --></td>
         <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCity }}</td>
         <td class="col-md-2">
             <md-button>
@@ -50,19 +50,19 @@
         <!-- ---------------------------------------------------------------------------- -->
         <form name="routeAddForm" class="form-horizontal" role="form" autocomplete="off">
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
-                <div class="row">
-                    <div class="col-sm-7">
+                <!-- <label class="col-sm-3 control-label" for="modalRouteName">Name</label> -->
+                
+                    <div class="col-sm-7 col-xs-offset-2">
                         <input name="modalRouteName" type="text" id="routeInput" class="form-control" ng-model="route.name" placeholder="Enter name for the Route"
                                ng-mouseleave="onMouseLeave(route.name)">
                     </div>
-                </div>
+                
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label>
-                <div class="col-sm-6">
-                    <input id="modalRouteFromCity"type="text" ng-model="fromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                <!-- <label class="col-sm-3 control-label" for="modalRouteFromCity">From City</label> -->
+                <div class="col-sm-6 col-xs-offset-2">
+                    <input id="modalRouteFromCity"type="text" placeholder="From City" ng-model="fromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="selectFromCity($item)"
                             typeahead-select-on-exact="true">
                     <input id="fromCityInputId"type="hidden" ng-model="route.fromCity" >
@@ -70,17 +70,17 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label>
-                <div class="col-sm-6">
-                    <input id="modalRouteToCity"type="text" ng-model="toCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                <!-- <label class="col-sm-3 control-label" for="modalRouteToCity">To City</label> -->
+                <div class="col-sm-6 col-xs-offset-2">
+                    <input id="modalRouteToCity"type="text" placeholder="To City" ng-model="toCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-show-hint="true" typeahead-min-length="1" typeahead-on-select="selectToCity($item, $model, $label, $event)">
                     <input id="toCityInputId"type="hidden" ng-model="route.toCity" >
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteViaCities">Via Cities</label>
-                <div class="col-sm-6">
+                <!-- <label class="col-sm-3 control-label" for="modalRouteViaCities">Via Cities</label> -->
+                <div class="col-sm-6 col-xs-offset-2">
                     <select name="modalRouteViaCities" ng-model="selectedViaCityId" ng-options="city.id as city.name for city in cities" class="form-control">
                         <option value="">--Select Via City--</option>
                     </select>
@@ -105,9 +105,9 @@
 
 
             <div class="form-group">
-                <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
-                <div class="col-sm-1">
-                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="route.active">
+                <label class="col-sm-4 control-label checkbox" for="activeInactive">Active</label>
+                <div class="col-sm-1 ">
+	            	<input type="checkbox" id="activeInactive" class="form-control" ng-model="route.active">
                 </div>
             </div>
 
@@ -138,18 +138,16 @@
         <!-- ---------------------------------------------------------------------------- -->
         <form name="routeAddForm" class="form-horizontal" role="form" autocomplete="off">
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteName">Name</label>
-                <div class="row">
-                    <div class="col-sm-7">
-                        <input name="modalRouteName" type="text" id="modalRouteName" class="form-control" ng-model="route.name">
-                    </div>
-                </div>
+                <!-- <label class="col-sm-3 control-label" for="modalRouteName">Name</label> -->
+               	<div class="col-sm-7 col-xs-offset-2">
+                	<input name="modalRouteName" type="text" placeholder="Enter name for the route" id="modalRouteName" class="form-control" ng-model="route.name">
+            	</div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="updateRouteFromCity">From City</label>
-                <div class="col-sm-6">
-                    <input id="updateRouteFromCity" type="text" ng-model="routesFromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                <!-- <label class="col-sm-3 control-label" for="updateRouteFromCity">From City</label> -->
+                <div class="col-sm-6 col-xs-offset-2">
+                    <input id="updateRouteFromCity" type="text" placeholder="From City" ng-model="routesFromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="updateFromCity($item)"
                            typeahead-select-on-exact="true">
                     <input id="updateFromCityInputId" type="hidden" ng-model="route.fromCity" >
@@ -157,9 +155,9 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="updateRouteFromCity">To City</label>
-                <div class="col-sm-6">
-                    <input id="updateRouteToCity" type="text" ng-model="routesToCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                <!-- <label class="col-sm-3 control-label" for="updateRouteFromCity">To City</label> -->
+                <div class="col-sm-6 col-xs-offset-2">
+                    <input id="updateRouteToCity" type="text" placeholder ="To City" ng-model="routesToCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="updateToCity($item)"
                            typeahead-select-on-exact="true">
                     <input id="updateToCityInputId" type="hidden" ng-model="route.toCity" >
@@ -167,8 +165,8 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="modalRouteViaCities">Via Cities</label>
-                <div class="col-sm-4">
+                <!-- <label class="col-sm-3 control-label" for="modalRouteViaCities">Via Cities</label> -->
+                <div class="col-sm-4 col-xs-offset-2">
                     <select name="modalRouteViaCities" id="modalRouteViaCities"  class="form-control" ng-model="selectedViaCity" ng-options="city.id as city.name for city in cities">
                         <option value="">--Select Via City--</option>
                     </select>
@@ -193,7 +191,7 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label checkbox" for="activeOrInactive">Active</label>
+                <label class="col-sm-4 control-label checkbox" for="activeOrInactive">Active</label>
                     <div class="col-sm-1">
                         <input type="checkbox" id="activeOrInactive" class="form-control" ng-model="route.active">
                     </div>

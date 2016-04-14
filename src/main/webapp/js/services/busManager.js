@@ -30,6 +30,13 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
           });
     },
 
+    getActiveLayoutNames: function() {
+    	return $http({
+    		method:'GET',
+    		url:'/api/v1/documents/layout?fields=id,name'
+    	});
+    },
+    
     getAllData: function () {
       return layouts;
     },

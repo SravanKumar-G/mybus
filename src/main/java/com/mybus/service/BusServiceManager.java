@@ -37,10 +37,9 @@ public class BusServiceManager {
 	}
 
 	public BusService updateBusService(BusService busService) {
-		Preconditions.checkNotNull(busService, "The bus service can not be null");
-		Preconditions.checkNotNull(busService.getServiceName(), "The bus service name can not be null");
+		validateBusService(busService);
 		if (logger.isDebugEnabled()) {
-			logger.debug("Saving bus service :[{}]" + busService);
+			logger.debug("Updating bus service :[{}]" + busService);
 		}
 		BusService busServiceUpdated = null;
 		try {
@@ -52,12 +51,30 @@ public class BusServiceManager {
 	}
 
 	public BusService saveBusService(BusService busService) {
-		Preconditions.checkNotNull(busService, "The bus service can not be null");
-		Preconditions.checkNotNull(busService.getServiceName(), "The bus service name can not be null");
+		validateBusService(busService);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Saving bus service :[{}]" + busService);
 		}
 		return busServiceDAO.save(busService);
+	}
+
+	private void validateBusService(BusService busService) {
+		Preconditions.checkNotNull(busService, "The bus service can not be null");
+		Preconditions.checkNotNull(busService.getServiceName(), "The bus service name can not be null");
+		//update
+		if (busService.getId() != null ){
+			BusService service = busServiceDAO.findOne(busService.getId());
+			Preconditions.checkNotNull(service, "Service not found for update");
+			BusService servicebyName = busServiceDAO.findOneByServiceName(service.getServiceName());
+			if(!service.getId().equals(servicebyName.getId())){
+				throw new RuntimeException("A service already exists with the same name");
+			}
+		} else { //save
+			BusService service = busServiceDAO.findOneByServiceName(busService.getServiceName());
+			if(service != null) {
+				throw new RuntimeException("A service already exists with the same name");
+			}
+		}
 	}
 
 }
