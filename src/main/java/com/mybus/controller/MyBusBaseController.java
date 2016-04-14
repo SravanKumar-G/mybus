@@ -10,19 +10,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by skandula on 2/10/16.
  */
 public class MyBusBaseController {
-    @ExceptionHandler(RuntimeException.class)
+
+    @ExceptionHandler(NumberFormatException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public JSONObject handleAppException(RuntimeException ex) {
-        JSONObject error = new JSONObject();
-        error.put("message", ex.getMessage());
-        return error;
+        return getJsonObject(ex);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public JSONObject handleAppException(Exception ex) {
+        return getJsonObject(ex);
+    }
+
+    private JSONObject getJsonObject(Exception ex) {
         JSONObject error = new JSONObject();
         error.put("message", ex.getMessage());
         return error;

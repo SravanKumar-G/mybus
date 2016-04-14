@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="CityController", description="City and Boarding points management")
 public class CityController extends MyBusBaseController{
@@ -37,7 +37,6 @@ public class CityController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
     public Iterable<City> getCities(HttpServletRequest request) {
         return cityDAO.findAll();
@@ -45,7 +44,6 @@ public class CityController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Map<String, String> getActiveCityNames(HttpServletRequest request) {
         return cityManager.getCityNames(false);
@@ -53,7 +51,6 @@ public class CityController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "allCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Map<String, String> getAllCityNames(HttpServletRequest request) {
         return cityManager.getCityNames(true);
@@ -63,7 +60,6 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value = "Create a city")
     public ResponseEntity createCity(HttpServletRequest request,
                            @ApiParam(value = "JSON for City to be created") @RequestBody final City city){
@@ -72,7 +68,6 @@ public class CityController extends MyBusBaseController{
     }
 
     @RequestMapping(value = "city/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get the City JSON", response = City.class)
     public City getCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id) {
@@ -82,7 +77,6 @@ public class CityController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     @ApiOperation(value ="Update city", response = City.class)
     public ResponseEntity updateCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
@@ -92,7 +86,6 @@ public class CityController extends MyBusBaseController{
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
     @ApiOperation(value ="Delete a city")
     public JSONObject deleteCity(HttpServletRequest request,
                                  @ApiParam(value = "Id of the city to be deleted") @PathVariable final String id) {
@@ -106,7 +99,6 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "city/{cityId}/boardingpoint", method = RequestMethod.POST,
             produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value ="Create a new city boarding point", response = City.class)
     public City createCityBoardingpoint(HttpServletRequest request,
                                         @ApiParam(value = "Id of the city to which boardingpoint to be added") @PathVariable final String cityId,
@@ -118,7 +110,6 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{cityId}/boardingpoint/{id}", method = RequestMethod.GET,
             produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get JSON for a city boardingpoint", response = BoardingPoint.class)
     public BoardingPoint getgCityBoardingpoint(HttpServletRequest request,
                                                 @ApiParam(value = "cityId") @PathVariable final String cityId,
@@ -133,7 +124,6 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "city/{cityId}/boardingpoint", method = RequestMethod.PUT,
             produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value ="Update a city boarding point", response = City.class)
     public City updateCityBoardingpoint(HttpServletRequest request,
                 @ApiParam(value = "Id of the city to which contains boardingpoint ")@PathVariable final String cityId,
@@ -145,7 +135,6 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "city/{cityId}/boardingpoint/{id}", method = RequestMethod.DELETE,
             produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Delete a city boarding point", response = City.class)
     public City deleteCityBoardingpoint(HttpServletRequest request,
                                         @ApiParam(value = "City Id")  @PathVariable final String cityId,
