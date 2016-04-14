@@ -92,7 +92,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
       };
 
         $scope.addUser = function () {
-            $location.url('/users/'+'create');
+            $location.url('/user');
         };
 
     })
@@ -100,11 +100,10 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager) {
+    .controller('UserAddController', function($scope,userManager,$window) {
         $scope.headline = "Add New User";
-
         $scope.isAdd = false;
-
+        $scope.ConfirmPassword = "";
         $scope.user = {};
 
         $scope.usersFromManager=[];
@@ -132,7 +131,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.saveButtonClicked = function(){
             userManager.createUser($scope.user,function(data){
                 swal("success","User successfully added","success");
-            })
+            });
+            $window.history.back();
+
         }
     })
 
