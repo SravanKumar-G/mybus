@@ -1,17 +1,10 @@
 package com.mybus.controller;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mybus.dao.PaymentResponseDAO;
-import com.mybus.model.PaymentResponse;
 import com.mybus.service.PaymentManager;
 
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +72,7 @@ public class AppController {
         return model;
 
     }
+    
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public ModelAndView home(@RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "logout", required = false) String logout) {
@@ -92,30 +86,31 @@ public class AppController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * this is call back response from payment gateways.
+	 * this is call back response from payu payment gateways.
 	 *
 	 */
 	@RequestMapping(value = "/payUResponse", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
 		LOGGER.info("response from payu paymentStatus");
-		/*Enumeration<String> paramNames = request.getParameterNames();
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String[]> mapData = request.getParameterMap();
-		PaymentResponse paymentResponse = new PaymentResponse();
-		paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
-		paymentResponse.setPaymentId(map.get("txnid"));
-		paymentResponse.setMerchantrefNo(map.get("mihpayid"));
-		paymentResponse.setPaymentDate(map.get("addedon"));
-		paymentResponse.setPaymentType(map.get(""));
-		paymentResponse.setPaymentName(map.get(""));
-		paymentResponse.setResponseParams(new JSONObject(mapData));*/
 		paymentManager.paymentResponseFromPayu(request);
-		//paymentResponseDAO.save(paymentResponse);
-		//LOGGER.info("got response from payu pg"+map);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;
 	}
-
-
+	/**
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 * this is call back response from EBS payment gateways.
+	 *
+	 */
+	@RequestMapping(value = "/eBSResponse", method = {RequestMethod.GET,RequestMethod.POST})
+	public ModelAndView paymentFromEbs(HttpServletRequest request,HttpServletResponse response) {
+		LOGGER.info("response from ebs paymentStatus");
+		paymentManager.paymentResponseFromEBS(request);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("../../index");
+		return model;
+	}
 }

@@ -1,12 +1,16 @@
 
 angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 .factory('FormSubmitter', FormSubmitter)
+.factory('EBSFormSubmitter', EBSFormSubmitter)
 .directive('formSubmitter', formSubmitterDirective)
-.controller("PaymentController", function($rootScope, $http,$scope,$modal, paymentManager,FormSubmitter){
+.directive('ebsFormSubmitter', ebsFormSubmitterDirective)
+
+.controller("PaymentController", function($rootScope, $http,$scope,$modal, paymentManager,FormSubmitter,EBSFormSubmitter){
 	
 	console.log("In PaymentController");
 	
 	$scope.headline = "Proceed to pay";
+	
 	$scope.paymentsDetails = "Payments and Refund Details "; 
 	
 	$scope.payment = {};
@@ -16,10 +20,13 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 	$scope.paymentToBeRefund = {};
 	
     $scope.paymentButtonClicked = function(){
-    	 	paymentManager.proceedToPay($scope.payment,function(data){
-    	 		console.log('Payment response',data);
-    	 		FormSubmitter.submit(data)
-    	 	});
+	 	paymentManager.proceedToPay($scope.payment,function(data){
+	 		console.log('Payment response',data);
+	 		if(data.paymentType == "EBS")
+	 			EBSFormSubmitter.ebsSubmit(data)
+	 		else
+	 			FormSubmitter.payuSubmit(data)
+	 	});
     };
     
     $scope.paymentButtonResetFields= function(){
@@ -35,26 +42,83 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     $scope.getAllPaymentDetails();
     
     $scope.paymentButtonForRefund= function(paymentid){
-    	paymentManager.processToRefund(paymentid,function(data){
-    		$scope.getAllPaymentDetails();
-    	})
+    	 var modalInstance = $modal.open({
+             templateUrl : 'payment-refund-amount.html',
+             controller : 'PaymentRefuntController',
+             resolve : {
+            	 pID : function(){
+                     return paymentid;
+                 }
+             }
+         });
+    	
     };
     isInputValid = function(paymentStatus,refundStatus){
      	return false;
     };
     
+}).controller("PaymentRefuntController",function($rootScope, $http,$scope,$modal,$modalInstance, paymentManager,pID){
+	
+	$scope.pID="";
+	
+	$scope.refundResponse = {};
+	
+	 $scope.getAllPaymentDetails = function(){
+	    paymentManager.getAllPayments(function(data){
+	    	$scope.payments=data;
+	    });
+	 };
+	    
+	$scope.proceedToRefund= function(refundResponse){
+    	
+    	paymentManager.processToRefund(refundResponse,function(data){
+    		$modalInstance.close(data);
+    		$scope.getAllPaymentDetails();
+    	})
+    };
+    
+    
+    $scope.setpID = function(pID){
+    	$scope.pID=pID;
+    };
+    $scope.setpID(pID);
+    
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.isInputValid = function () {
+        return ($scope.refundResponse.refundAmount || '') !== '' &&
+            ($scope.refundResponse.disc || '') !== '';
+    };
 });
 
 function FormSubmitter($rootScope, $sce) {
-	//Expose our Api
+	
 	return {
-		submit: submit
+		payuSubmit: payuSubmit
 	}
 
-	function submit(params) {
+	function payuSubmit(params) {
 		var url = $sce.trustAsResourceUrl(params.paymentGateways.pgRequestUrl);
 		console.log('params',params,url);
-		$rootScope.$broadcast('form.submit', {
+		$rootScope.$broadcast('form.payuSubmit', {
+			params: params,
+			url : url 	
+		});
+	}
+}
+
+function EBSFormSubmitter($rootScope, $sce) {
+	
+	return {
+		ebsSubmit: ebsSubmit
+	}
+
+	function ebsSubmit(params) {
+		var url = $sce.trustAsResourceUrl(params.paymentGateways.pgRequestUrl);
+		console.log('params',params,url);
+		$rootScope.$broadcast('form.ebsSubmit', {
 			params: params,
 			url : url 	
 		});
@@ -85,7 +149,7 @@ function formSubmitterDirective($timeout) {
 	    	
     	    	
         link: function($scope, $elementType, $attrs) {
-            $scope.$on('form.submit', function(event, data) {
+            $scope.$on('form.payuSubmit', function(event, data) {
                 $scope.paymentForm = data.params;
                 $scope.url = data.url;
 
@@ -98,4 +162,51 @@ function formSubmitterDirective($timeout) {
             })
         }
     }
+}
+function ebsFormSubmitterDirective($timeout) {
+	return {
+        restrict: 'E',
+        replace: true,
+        template:'<form name="order" action="{{ url }}" method="post"  name="formToEBS" id="formToEBS">'+
+	        '<input type="hidden" name="account_id" value="{{paymentEbsForm.paymentGateways.pgAccountID}}"/>'+
+	        '<input type="hidden" name="address" value="{{paymentEbsForm.address}}"/>'+
+	        '<input type="hidden" name="algo" value="{{paymentEbsForm.algo}}"/>'+
+	        '<input type="hidden" name="amount" value="{{paymentEbsForm.amount}}"/>'+
+	        '<input type="hidden" name="channel" value="{{paymentEbsForm.channel}}"/>'+
+	        '<input type="hidden" name="city" value="{{paymentEbsForm.city}}"/>'+
+	        '<input type="hidden" name="country" value="{{paymentEbsForm.country}}"/>'+
+	        '<input type="hidden" name="currency" value="{{paymentEbsForm.currency}}"/>'+
+	        '<input type="hidden" name="description" value="{{paymentEbsForm.description}}"/>'+
+	        '<input type="hidden" name="email" value="{{paymentEbsForm.emailID}}"/>'+
+	        '<input type="hidden" name="mode" value="{{paymentEbsForm.mode}}"/>'+
+	        '<input type="hidden" name="name" value="{{paymentEbsForm.firstName}}"/>'+
+	        '<input type="hidden" name="phone" value="{{paymentEbsForm.phoneNo}}"/>'+
+	        '<input type="hidden" name="postal_code" value="{{paymentEbsForm.postalCode}}"/>'+
+	        '<input type="hidden" name="reference_no" value="{{paymentEbsForm.merchantRefNo}}"/>'+
+	        '<input type="hidden" name="return_url" value="{{paymentEbsForm.paymentGateways.pgCallbackUrl}}"/>'+
+	        '<input type="hidden" name="ship_address" value="{{paymentEbsForm.address}}"/>'+
+	        '<input type="hidden" name="ship_city" value="{{paymentEbsForm.city}}"/>'+
+	        '<input type="hidden" name="ship_country" value="{{paymentEbsForm.country}}"/>'+
+	        '<input type="hidden" name="ship_name" value="{{paymentEbsForm.firstName}}"/>'+
+	        '<input type="hidden" name="ship_phone" value="{{paymentEbsForm.phoneNo}}"/>'+
+	        '<input type="hidden" name="ship_postal_code" value="{{paymentEbsForm.postalCode}}"/>'+
+	        '<input type="hidden" name="ship_state" value="{{paymentEbsForm.state}}"/>'+
+	        '<input type="hidden" name="state" value="{{paymentEbsForm.state}}"/>'+
+	        '<input type="hidden" name="secure_hash" value="{{paymentEbsForm.hashCode}}"/>'+
+	        '</form>',
+        	
+			 link: function($scope, $elementType, $attrs) {
+		            $scope.$on('form.ebsSubmit', function(event, data) {
+		                $scope.paymentEbsForm = data.params;
+		                $scope.url = data.url;
+
+		                console.log('auto submitting form...',data,$elementType);
+
+		                $timeout(function() {
+		                	var submitEvent = $(formToEBS)
+		                	submitEvent.submit();
+		                })
+		            })
+		        }
+	}
 }

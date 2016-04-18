@@ -1,9 +1,5 @@
 package com.mybus.model;
 
-import java.util.Date;
-
-import org.json.simple.JSONObject;
-
 import com.mybus.util.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,14 +12,14 @@ import lombok.ToString;
  */
 @ToString
 public class RefundResponse {
+
+	@Setter
+	@Getter
+	private double refundAmount;
 	
 	@Setter
 	@Getter
-	private double refundAmout;
-	
-	@Setter
-	@Getter
-	private Date refundDate;
+	private String refundDate;
 	
 	@Setter
 	@Getter
@@ -32,6 +28,10 @@ public class RefundResponse {
 	@Setter
 	@Getter
 	private String refundId;
+	
+	@Setter
+	@Getter
+	private String disc;
 	
 	@Setter
 	@Getter
