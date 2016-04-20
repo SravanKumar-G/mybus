@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.json.simple.JSONObject;
 
 /**
  * Created by skandula on 3/31/15.
@@ -61,22 +62,61 @@ public class User extends AbstractDocument implements AttributesDocument{
 
     @Getter
     @Setter
-    private UserType type;
+    private UserType userType;
 
     @Getter
     @Setter
-    private double commission;
+    private String planType;
 
-    @Getter
-    @Setter
-    private CommissionType commissionType;
-
-
+    public User(JSONObject json){
+        if(json.containsKey("id")) {
+            this.setId(json.get("id").toString());
+        }
+        if(json.containsKey("userName")) {
+            this.userName = json.get("userName").toString();
+        }
+        if(json.containsKey("firstName")) {
+            this.firstName = json.get("firstName").toString();
+        }
+        if(json.containsKey("email")) {
+            this.email = json.get("email").toString();
+        }
+        if(json.containsKey("lastName")) {
+            this.lastName = json.get("lastName").toString();
+        }
+        if(json.containsKey("password")) {
+            this.password = json.get("password").toString();
+        }
+        if(json.containsKey("contact")) {
+            this.contact = json.get("contact").toString();
+        }
+        if(json.containsKey("address1")) {
+            this.address1 = json.get("address1").toString();
+        }
+        if(json.containsKey("city")) {
+            this.city = json.get("city").toString();
+        }
+        if(json.containsKey("userType")){
+            this.setUserType(UserType.valueOf((String)json.get("userType")));
+        }
+        if(json.containsKey("planType")){
+            this.planType = json.get("planType").toString();
+        }
+    }
 
     @Override
     public boolean containsKey(String attributeName) {
         return false;
     }
+    public User(final String firstName, final String lastName, final String userName, final String password,
+                boolean active, UserType userType){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.active = active;
+        this.userType = userType;
+    }
+
     public User(final String firstName, final String lastName, final String userName, final String password,
                 boolean active, boolean admin){
         this.firstName = firstName;
@@ -87,16 +127,15 @@ public class User extends AbstractDocument implements AttributesDocument{
     }
     public User(final String firstName, final String lastName, final String userName, final String password,
                 final boolean active,
-                final boolean admin,
+               final boolean admin,
                 final String email,
                 final String contact,
                 final String address1,
                 final String address2,
                 final String city,
                 final String state,
-                final UserType type,
-                final double commission,
-                final CommissionType commissionType){
+                final UserType userType,
+                final String planType){
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -109,9 +148,8 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.address2 = address2;
         this.city = city;
         this.state = state;
-        this.type = type;
-        this.commission = commission;
-        this.commissionType = commissionType;
+        this.userType = userType;
+        this.planType = planType;
     }
     public User(final String firstName, final String lastName, final String userName, final String password,
                 final String email,
@@ -120,9 +158,8 @@ public class User extends AbstractDocument implements AttributesDocument{
                 final String address2,
                 final String city,
                 final String state,
-                final UserType type,
-                final double commission,
-                final CommissionType commissionType){
+                final UserType userType,
+                final String planType){
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -133,8 +170,7 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.address2 = address2;
         this.city = city;
         this.state = state;
-        this.type = type;
-        this.commission = commission;
-        this.commissionType = commissionType;
+        this.userType = userType;
+        this.planType = planType;
     }
 }

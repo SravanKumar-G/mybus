@@ -29,8 +29,6 @@
     <div class="form-group">
         <label class="col-sm-2 control-label" for="passwordInput">Password</label>
         <div class="col-sm-4">
-           <!-- <input type="password" id="passwordInput" class="form-control" ng-model="userPassword" ng-blur="callBlurFunction(userPassword)">
-            <input type="hidden" id="passwordHiddenInput" class="form-control" ng-model="user.password">-->
             <input type="password" id="passwordInput" name="passwordInput" class="form-control" ng-model="user.password" placeholder="Password">
         </div>
     </div>
@@ -38,8 +36,6 @@
     <div class="form-group">
         <label class="col-sm-2 control-label" for="confirmPasswordInput">Confirm Password</label>
         <div class="col-sm-4">
-            <!--<input type="password" id="confirmPasswordInput" class="form-control" ng-model="confirmPassword"
-                    ng-blur="passwordCheck(confirmPassword)">-->
             <input type="password" id="confirmPasswordInput" name="confirmPasswordInput" class="form-control" ng-model="ConfirmPassword"
                    pw-check="passwordInput" placeholder="Confirm Password">
             <div class="msg-block" ng-show="userForm.$error">
@@ -86,16 +82,21 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Type</label>
         <div class="col-sm-6">
-           <label class="radio-inline" for="radioAgent"><input type="radio" id="radioAgent" name="radioAgent" ng-model="user.type" value="AGENT">Agent</label>
-           <label class="radio-inline" for="radioEmployee"><input type="radio" id="radioEmployee" name="radioEmployee" ng-model="user.type" value="EMPLOYEE">Employee</label>
-           <label class="radio-inline" for="radioAdmin"><input type="radio" id="radioAdmin" name="radioAdmin" ng-model="user.type" value="ADMIN">Admin</label>
+           <label class="radio-inline" for="radioAgent"><input type="radio" id="radioAgent" name="radioAgent" ng-model="user.userType" value="AGENT">Agent</label>
+           <label class="radio-inline" for="radioEmployee"><input type="radio" id="radioEmployee" name="radioEmployee" ng-model="user.userType" value="EMPLOYEE">Employee</label>
+           <label class="radio-inline" for="radioAdmin"><input type="radio" id="radioAdmin" name="radioAdmin" ng-model="user.userType" value="ADMIN">Admin</label>
+           <label class="radio-inline" for="radioUser"><input type="radio" id="radioUser" name="radioUser" ng-model="user.userType" value="USER">User</label>
+
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="commissionInput">Commission</label>
+    <div class="form-group" ng-show="user.userType=='AGENT'">
+        <label class="col-sm-2 control-label" for="planTypeInput">Agent Plan Type</label>
         <div class="col-sm-4">
-            <input type="text" id="commissionInput" class="form-control" ng-model="user.commission" placeholder="Commission">
+            <select name="planTypeInput" id="planTypeInput" class="form-control" ng-model="user.planType"
+                    ng-options="planType.id as planType.name for planType in planTypes">
+                <option value="">--Select Agent Plan Type--</option>
+            </select>
         </div>
     </div>
 
@@ -111,7 +112,7 @@
             <button class="btn btn-primary" ng-click="saveButtonClicked()">Save User</button>
         </div>
         <div class="col-sm-3 next">
-            <button  class="btn btn-danger" ng-click="deleteButtonClicked()">Cancel</button>
+            <button  class="btn btn-danger" ng-click="cancel()">Cancel</button>
         </div>
     </div>
 
@@ -123,6 +124,10 @@
 <br/>
 
 
+
+
+
+<!--
 <accordion close-others="oneAtATime">
     <accordion-group is-open="status.open">
         <accordion-heading>
@@ -136,7 +141,7 @@
 
 
 
-<!-- modal popup for associating businesses -->
+&lt;!&ndash; modal popup for associating businesses &ndash;&gt;
 
 <script type="text/ng-template" id="associated-businesses-modal.html">
     <div class="modal-header">
@@ -154,7 +159,7 @@
     </div>
     <div class="modal-body">
 
-        <!-- ---------------------------------------------------------------------------- -->
+        &lt;!&ndash; &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; &ndash;&gt;
         <table class="table table-condensed table-striped">
             <thead>
             <tr>
@@ -171,7 +176,7 @@
             </tbody>
         </table>
 
-        <!-- ---------------------------------------------------------------------------- -->
+        &lt;!&ndash; &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; &ndash;&gt;
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">Ok</button>
@@ -183,4 +188,4 @@
 
 <div id="infoOverlay">
     <div id="infoOverlayDetails"></div>
-</div>
+</div>-->

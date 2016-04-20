@@ -17,20 +17,20 @@
 
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
-    <tr ng-click="editUser(user.email)" class="clickable-item" ng-repeat="user in currentPageOfUsers">
+    <tr ng-repeat="user in currentPageOfUsers">
         <td data-title="'Last Name'" class="col-md-4" sortable="'lastName'">{{ user.lastName }}</td>
         <td data-title="'First Name'" class="col-md-4"sortable="'firstName'">{{ user.firstName }}</td>
         <td data-title="'Username'" class="col-md-4" sortable="'userName'">{{ user.userName }}</td>
         <td data-title="'Type'" class="col-md-4" sortable="'type'">{{ user.type }}</td>
         <td class="col-md-2">
             <md-button>
-                <md-icon type="button" class="btn">
+                <md-icon type="button" class="btn" ng-click="editUser(user.id)">
                     <span class="glyphicon glyphicon-pencil"></span></md-icon>
             </md-button>
         </td>
         <td class="col-md-2">
             <md-button>
-                <md-icon type="button" class="btn">
+                <md-icon type="button" class="btn" ng-click="deleteUser(user.id)">
                     <span class="glyphicon glyphicon-remove"></span></md-icon>
             </md-button>
         </td>

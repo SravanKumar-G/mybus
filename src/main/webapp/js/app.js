@@ -89,18 +89,15 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/users.tpl.html',
           controller: 'UsersController'
         }).
-        when('/users/:id', {
-            templateUrl: 'partials/user-details.tpl.html',
-            controller: 'UserAddController'
-        }).
         when('/user', {
           templateUrl: 'partials/user-details.tpl.html',
           controller: 'UserAddController'
         }).
-        when('/users-new', {
-          templateUrl: 'partials/user-details.tpl.html',
-          controller: 'UserAddController'
+        when('/user/:id', {
+            templateUrl: 'partials/user-editDetails.tpl.html',
+            controller: 'UpdateUserController'
         }).
+
         when('/plans', {
             templateUrl: 'partials/agentPlan-details.tpl.html',
             controller: 'AgentPlanController'
