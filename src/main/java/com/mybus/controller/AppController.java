@@ -1,5 +1,9 @@
 package com.mybus.controller;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,8 +95,15 @@ public class AppController {
 	 */
 	@RequestMapping(value = "/payUResponse", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
+		Enumeration<String> paramNames = request.getParameterNames();
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String[]> mapData = request.getParameterMap();
+		while(paramNames.hasMoreElements()) {
+			String paramName = (String)paramNames.nextElement();
+			map.put(paramName, mapData.get(paramName)[0]);
+		}
 		LOGGER.info("response from payu paymentStatus");
-		paymentManager.paymentResponseFromPayu(request);
+		paymentManager.paymentResponseFromPayu(map);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;
@@ -107,8 +118,15 @@ public class AppController {
 	 */
 	@RequestMapping(value = "/eBSResponse", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView paymentFromEbs(HttpServletRequest request,HttpServletResponse response) {
-		LOGGER.info("response from ebs paymentStatus");
-		paymentManager.paymentResponseFromEBS(request);
+		Enumeration<String> paramNames = request.getParameterNames();
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String[]> mapData = request.getParameterMap();
+		while(paramNames.hasMoreElements()) {
+			String paramName = (String)paramNames.nextElement();
+			map.put(paramName, mapData.get(paramName)[0]);
+		}
+		LOGGER.info("response from ebs paymentStatus"+map);
+		paymentManager.paymentResponseFromEBS(map);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;
