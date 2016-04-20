@@ -103,6 +103,17 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("userType","ADMIN");
         user.put("password","sample");
 
+        JSONObject planType = new JSONObject();
+        planType.put("name", "Pname");
+        planType.put("balance", 200.00);
+        planType.put("type", "123");
+        planType.put("commissionType", "0");
+        planType.put("settlementFrequency", true);
+        ResultActions actionsPlanType = mockMvc.perform(asUser(post("/api/v1/plan")
+                .content(getObjectMapper().writeValueAsBytes(planType))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actionsPlanType.andExpect(status().isOk());
+
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/user")
                 .content(getObjectMapper().writeValueAsBytes(user))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
@@ -111,6 +122,25 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         actions.andExpect(jsonPath("$.contact").value(user.get("contact").toString()));
         actions.andExpect(jsonPath("$.address1").value(user.get("address1").toString()));
 
+    }
+
+    @Test
+    public void testCreateFail() throws Exception{
+        JSONObject user = new JSONObject();
+        user.put("userName", "Pname");
+        user.put("firstName","fName");
+        user.put("contact", "3452555");
+        user.put("address1", "123 maple");
+        user.put("city","city");
+        user.put("state","state");
+        user.put("email","email@email");
+        user.put("lastName","lname");
+        user.put("userType","AGENT");
+        user.put("password","sample");
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/user")
+                .content(getObjectMapper().writeValueAsBytes(user))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isBadRequest());
     }
 
     @Test

@@ -1,11 +1,11 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.PlanTypeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.User;
 import com.mybus.model.UserType;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,12 @@ public class UserManager {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private PlanTypeDAO planTypeDAO;
+
     public User saveUser(User user){
         validate(user);
         User duplicateUser = userDAO.findOneByUserName(user.getUserName());
-
-
         if (duplicateUser != null && !duplicateUser.getId().equals(user.getId())) {
             throw new RuntimeException("A user already exists with username");
         }
@@ -97,6 +98,9 @@ public class UserManager {
             Preconditions.checkNotNull(user.getContact(),"Agent contact number required");
             Preconditions.checkNotNull(user.getCity(),"Agent city required");
             Preconditions.checkNotNull(user.getState(),"Agent state required");
+            if (!(user.getPlanType().equals(planTypeDAO.findOneById(user.getPlanType())))) {
+                throw new RuntimeException("Plan Does not exist");
+            }
         }
     }
 }
