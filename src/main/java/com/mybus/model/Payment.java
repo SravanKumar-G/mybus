@@ -42,7 +42,15 @@ public class Payment {
 	
 	@Setter
 	@Getter
+	private String state;
+	
+	@Setter
+	@Getter
 	private String country;
+	
+	@Setter
+	@Getter
+	private String postalCode;
 	
 	@Setter
 	@Getter
@@ -67,4 +75,25 @@ public class Payment {
 	@Setter
 	@Getter
 	private String hashCode;
+
+	@Setter
+	@Getter
+	private String currency;
+	
+	@Getter
+	@Setter
+	private String mode;
+	
+	@Getter
+	@Setter
+	private String algo;
+
+	@Getter
+	@Setter
+	private String description;
+
+	@Getter
+	@Setter
+	private String channel;
+	
 }

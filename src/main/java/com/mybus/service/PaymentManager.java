@@ -1,14 +1,19 @@
 package com.mybus.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,18 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.mybus.util.Status;
-import com.google.common.base.Preconditions;
 import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentGateways;
 import com.mybus.util.Constants;
 import com.mybus.model.PaymentResponse;
 import com.mybus.model.RefundResponse;
-import com.mybus.model.Route;
-
 
 /**
  * 
@@ -51,6 +52,8 @@ public class PaymentManager {
 		pg.setPgAccountID("gtKFFx"); //payu key
 		pg.setPgRequestUrl("https://test.payu.in/_payment");
 		pg.setPgCallbackUrl("http://localhost:8081/payUResponse");
+		pg.setPaymentType("PG");
+		pg.setPgName("PAYU");
 		String merchantRefNo =  getRandamNo();
 		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+ payment.getFirstName() +"|"+ payment.getEmailID() +"|||||||||||"+pg.getPgKey();
 		LOGGER.info("hashSequence - "+hashSequence);		
@@ -61,7 +64,64 @@ public class PaymentManager {
 		payment.setMerchantRefNo(merchantRefNo);
 		return payment;
 	}
-
+	
+	public Payment getEBSPaymentGatewayDetails(Payment payment){
+		
+		LOGGER.info("PaymentManager :: getEBSPaymentGatewayDetails");
+		PaymentGateways pg = new PaymentGateways();
+		pg.setPgKey("ebs Secret Key");
+		pg.setPgAccountID("account id");
+		pg.setPgRequestUrl("https://secure.ebs.in/pg/ma/payment/request");
+		pg.setPgCallbackUrl("http://localhost:8081/eBSResponse");
+		pg.setPaymentType("PG");
+		pg.setPgName("EBS");
+		String merchantRefNo =  getRandamNo();
+		payment.setAlgo("MD5");
+		payment.setChannel("0");
+		payment.setCurrency("INR");
+		payment.setDescription("Description");
+		payment.setMode("TEST");
+		payment.setMerchantRefNo(merchantRefNo);
+		payment.setPaymentGateways(pg);
+		String hash = hashForEbs(payment);
+		LOGGER.info("secured hash - "+hash);
+		payment.setHashCode(hash);
+		return payment;
+	}
+	
+	public PaymentResponse paymentResponseFromEBS(HttpServletRequest request) {
+		Enumeration<String> paramNames = request.getParameterNames();
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String[]> mapData = request.getParameterMap();
+		while(paramNames.hasMoreElements()) {
+			String paramName = (String)paramNames.nextElement();
+			map.put(paramName, mapData.get(paramName)[0]);
+		}
+		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse.setAmount(Double.parseDouble(map.get("Amount")));
+		paymentResponse.setPaymentId(map.get("PaymentID"));
+		paymentResponse.setMerchantrefNo(map.get("MerchantRefNo"));
+		paymentResponse.setPaymentDate(map.get("DateCreated"));
+		paymentResponse.setPaymentType("PG");
+		paymentResponse.setPaymentName("EBS");
+		paymentResponse.setResponseParams(new JSONObject(mapData));
+		Status status = new Status();
+		
+		if("0".equals(map.get("ResponseCode")) /*&& ebsHashValidation(map) */&& "No".equalsIgnoreCase(map.get("IsFlagged"))){
+			status.setSuccess(true);
+			status.setStatusCode(Constants.SUCCESS_CODE);
+			status.setStatusMessage("Payment has success");
+		}else{
+			status.setSuccess(false);
+			status.setStatusCode(Constants.FAILED_CODE);
+			status.setStatusMessage("Payment has failed");
+		}
+		LOGGER.info("Payment Resone from ebs"+map);
+		paymentResponse.setStatus(status);
+		paymentResponseDAO.save(paymentResponse);
+		return paymentResponse;
+	}
+	
 	public PaymentResponse paymentResponseFromPayu(HttpServletRequest request) {
 		Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
@@ -75,8 +135,8 @@ public class PaymentManager {
 		paymentResponse.setPaymentId(map.get("txnid"));
 		paymentResponse.setMerchantrefNo(map.get("mihpayid"));
 		paymentResponse.setPaymentDate(map.get("addedon"));
-		paymentResponse.setPaymentType(map.get(""));
-		paymentResponse.setPaymentName(map.get(""));
+		paymentResponse.setPaymentType("PG");
+		paymentResponse.setPaymentName("PAYU");
 		paymentResponse.setResponseParams(new JSONObject(mapData));
 		Status status = new Status();
 		String hashSequence = "eCwWELxi|"+map.get("status")+"|||||||||||"+ map.get("email") +"|"+ map.get("firstname") +"|"+ map.get("productinfo")+"|"+ map.get("amount") +"|"+ map.get("txnid") +"|"+map.get("key");
@@ -100,44 +160,123 @@ public class PaymentManager {
 	 * @return
 	 * This is the common method for refund amount to all payment gateways 
 	 */
-	public RefundResponse refundProcessToPaymentGateways(String paymentid) {
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(paymentid);
-		String uniqueId = getRandamNo();
-		String hashSequence =null;
-		hashSequence = "gtKFFx|cancel_refund_transaction|"+paymentResponse.getMerchantrefNo()+"|eCwWELxi";
-		java.net.URL url;
-		java.io.OutputStreamWriter wr = null;
+	public RefundResponse refundProcessToPaymentGateways(String pID,double refundAmount,String disc) {
+		
+		PaymentResponse paymentResponse = paymentResponseDAO.findOne(pID);
 		RefundResponse refundResponse = new RefundResponse();
-		try {
-			url = new java.net.URL("https://test.payu.in/merchant/postservice?form=2");
-			java.net.URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
-			wr = new java.io.OutputStreamWriter(conn.getOutputStream());
-			wr.write("key=gtKFFx&command=cancel_refund_transaction&hash="+ hashCal("SHA-512",hashSequence) +"&var1="+ paymentResponse.getMerchantrefNo() +"&var2="+ uniqueId +"&var3="+paymentResponse.getAmount());
-			LOGGER.info("In util:refundAmountToPaymentGateWays PAYU call Refund request ::"+hashSequence);
-			wr.flush();
-			java.io.BufferedReader rd = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-			String line = null;
-			StringBuilder rowResonse = new StringBuilder();
-			while ((line = rd.readLine()) != null) {
-				rowResonse.append(line);
-				LOGGER.info("In util:refundAmountToPaymentGateWays PAYU call Refund response ::"+line);
-			}
-			Status status = new Status();
-			status.setSuccess(true);
-			status.setStatusCode(Constants.SUCCESS_CODE);
-			status.setStatusMessage("Refund has success");
-			refundResponse.setStatus(status);
-			refundResponse.setRefundResponseParams(rowResonse.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			if(wr!=null){
-				try {
-					wr.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+		refundResponse.setRefundAmount(refundAmount);
+		refundResponse.setDisc(disc);
+		if(paymentResponse.getPaymentName().equalsIgnoreCase("PAYU")){
+			String uniqueId = getRandamNo();
+			String hashSequence =null;
+			refundResponse.setPaymentType("PG");
+			refundResponse.setPaymentName("PAYU");
+			hashSequence = "gtKFFx|cancel_refund_transaction|"+paymentResponse.getMerchantrefNo()+"|eCwWELxi";
+			java.net.URL url;
+			java.io.OutputStreamWriter wr = null;
+			try {
+				url = new java.net.URL("https://test.payu.in/merchant/postservice?form=2");
+				java.net.URLConnection conn = url.openConnection();
+				conn.setDoOutput(true);
+				wr = new java.io.OutputStreamWriter(conn.getOutputStream());
+				wr.write("key=gtKFFx&command=cancel_refund_transaction&hash="+ hashCal("SHA-512",hashSequence) +"&var1="+ refundAmount +"&var2="+ uniqueId +"&var3="+refundAmount);
+				LOGGER.info("PAYU Refund request ::"+hashSequence);
+				wr.flush();
+				java.io.BufferedReader rd = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+				String line = null;
+				StringBuilder rowResonse = new StringBuilder();
+				while ((line = rd.readLine()) != null) {
+					rowResonse.append(line);
+					LOGGER.info("PAYU Refund response ::"+line);
 				}
+				Status status = new Status();
+				status.setSuccess(true);
+				status.setStatusCode(Constants.SUCCESS_CODE);
+				status.setStatusMessage("Refund has success");
+				refundResponse.setStatus(status);
+				refundResponse.setRefundResponseParams(rowResonse.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				if(wr!=null){
+					try {
+						wr.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}else{
+			String paymentID =paymentResponse.getPaymentId();
+			java.net.URL url;
+			PrintStream ps = null;
+			HttpURLConnection connection = null;
+			BufferedReader in = null;
+			refundResponse.setPaymentType("PG");
+			refundResponse.setPaymentName("EBS");
+			try {
+				url = new java.net.URL("https://api.secure.ebs.in/api/1_0");
+				LOGGER.info("Starting refund operation at EBS" + url);
+				connection = (HttpURLConnection) url.openConnection();
+				HttpURLConnection.setFollowRedirects(true);
+				connection.setDoOutput(true);
+				connection.setRequestMethod("POST");
+				String formData = "Action=refund&AccountID=ebs accountid&SecretKey=ebs Secret Key&Amount=" + refundAmount+"&PaymentID=" + paymentID;
+				ps = new PrintStream(connection.getOutputStream());
+				ps.print(formData);
+				LOGGER.info("EBS Refund request ::"+formData);
+				connection.connect();
+				if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
+					in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+					StringBuilder stringXML = new StringBuilder();
+					String inputXML = null;
+					while ((inputXML = in.readLine()) != null) {
+						stringXML.append(inputXML);
+					}
+					LOGGER.info("EBS Refund response :: " + stringXML.toString());
+					if (stringXML.toString().contains(" errorCode=") && stringXML.toString().contains(" error=")){
+						Status status = new Status();
+						status.setSuccess(false);
+						status.setStatusCode(Constants.FAILED_CODE);
+						status.setStatusMessage("Refund has been failed");
+						refundResponse.setStatus(status);
+						refundResponse.setRefundResponseParams(stringXML.toString());
+						
+					} else {
+						try {
+							Status status = new Status();
+							status.setSuccess(true);
+							status.setStatusCode(Constants.SUCCESS_CODE);
+							status.setStatusMessage("Refund has success");
+							refundResponse.setStatus(status);
+							refundResponse.setRefundResponseParams(stringXML.toString());
+							LOGGER.info("Cancellation response from EBS :: "	+ refundResponse.toString());
+						} catch (RuntimeException e) {
+							Status status = new Status();
+							status.setSuccess(false);
+							status.setStatusCode(Constants.FAILED_CODE);
+							status.setStatusMessage("Refund has been failed");
+							refundResponse.setStatus(status);
+							refundResponse.setRefundResponseParams(stringXML.toString());
+							LOGGER.info("EBS Response parsing error came at the time of refund::"+e);
+						}			
+					}
+					in.close();
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}finally{
+				if(ps!=null){
+					ps.close();
+				}
+				if(in!=null){
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				connection.disconnect();
 			}
 		}
 		paymentResponse.setRefundResponse(refundResponse);
@@ -173,6 +312,49 @@ public class PaymentManager {
 		return hexString.toString();
 	}	
 	
+	public String md5(String str) {
+		MessageDigest m = null;
+		try {
+			m = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			try {
+				m = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException e1) {
+			}
+			e.printStackTrace();
+		}
+		byte[] data = str.getBytes();
+		m.update(data,0,data.length);
+		BigInteger i = new BigInteger(1,m.digest());
+		String hash = String.format("%1$032X", i);
+		return hash;
+	}
+
+	public boolean ebsHashValidation(Map<String, String> map){
+
+		//sort the map
+		Map<String,String> requestFields = new TreeMap<String,String>(map);
+		requestFields.remove("SecureHash");
+		String md5HashData = "ebskey";
+		for (Iterator<String> i = requestFields.keySet().iterator(); i.hasNext(); ){
+			String key = (String)i.next();
+			String value = (String)requestFields.get(key);
+			md5HashData += "|"+value;
+		}
+		if(md5(md5HashData).equalsIgnoreCase(map.get("SecureHash"))){
+			return true;
+		}
+		return false;
+	}
+	public String hashForEbs(Payment payment){
+		
+		String md5HashData = "";
+		md5HashData = payment.getPaymentGateways().getPgKey()+"|"+payment.getPaymentGateways().getPgAccountID()+"|"+payment.getAddress()+"|"+payment.getAlgo()+"|"+(int)payment.getAmount()+"|"+payment.getChannel()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getCurrency()+"|"+payment.getDescription()+"|"+payment.getEmailID()+"|"+payment.getMode()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getMerchantRefNo()+"|"+payment.getPaymentGateways().getPgCallbackUrl()+"|"+payment.getAddress()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getState()+"|"+payment.getState();
+		LOGGER.info("md5HashData :: "+md5HashData);
+		String hash = md5(md5HashData);
+		LOGGER.info("hash"+hash);
+		return hash;
+	}
 
 	public boolean update(PaymentResponse paymentResponse) {
         
@@ -186,5 +368,4 @@ public class PaymentManager {
         }
         return true;
     }
-
 }
