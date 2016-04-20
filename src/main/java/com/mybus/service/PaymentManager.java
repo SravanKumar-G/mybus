@@ -89,14 +89,8 @@ public class PaymentManager {
 		return payment;
 	}
 	
-	public PaymentResponse paymentResponseFromEBS(HttpServletRequest request) {
-		Enumeration<String> paramNames = request.getParameterNames();
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String[]> mapData = request.getParameterMap();
-		while(paramNames.hasMoreElements()) {
-			String paramName = (String)paramNames.nextElement();
-			map.put(paramName, mapData.get(paramName)[0]);
-		}
+	public PaymentResponse paymentResponseFromEBS(Map<String, String> map) {
+		
 		PaymentResponse paymentResponse = new PaymentResponse();
 		paymentResponse.setAmount(Double.parseDouble(map.get("Amount")));
 		paymentResponse.setPaymentId(map.get("PaymentID"));
@@ -104,7 +98,7 @@ public class PaymentManager {
 		paymentResponse.setPaymentDate(map.get("DateCreated"));
 		paymentResponse.setPaymentType("PG");
 		paymentResponse.setPaymentName("EBS");
-		paymentResponse.setResponseParams(new JSONObject(mapData));
+		paymentResponse.setResponseParams(new JSONObject(map));
 		Status status = new Status();
 		
 		if("0".equals(map.get("ResponseCode")) /*&& ebsHashValidation(map) */&& "No".equalsIgnoreCase(map.get("IsFlagged"))){
@@ -122,14 +116,8 @@ public class PaymentManager {
 		return paymentResponse;
 	}
 	
-	public PaymentResponse paymentResponseFromPayu(HttpServletRequest request) {
-		Enumeration<String> paramNames = request.getParameterNames();
-		Map<String, String> map = new HashMap<String, String>();
-		Map<String, String[]> mapData = request.getParameterMap();
-		while(paramNames.hasMoreElements()) {
-			String paramName = (String)paramNames.nextElement();
-			map.put(paramName, mapData.get(paramName)[0]);
-		}
+	public PaymentResponse paymentResponseFromPayu(Map<String, String> map) {
+		
 		PaymentResponse paymentResponse = new PaymentResponse();
 		paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
 		paymentResponse.setPaymentId(map.get("txnid"));
@@ -137,7 +125,7 @@ public class PaymentManager {
 		paymentResponse.setPaymentDate(map.get("addedon"));
 		paymentResponse.setPaymentType("PG");
 		paymentResponse.setPaymentName("PAYU");
-		paymentResponse.setResponseParams(new JSONObject(mapData));
+		paymentResponse.setResponseParams(new JSONObject(map));
 		Status status = new Status();
 		String hashSequence = "eCwWELxi|"+map.get("status")+"|||||||||||"+ map.get("email") +"|"+ map.get("firstname") +"|"+ map.get("productinfo")+"|"+ map.get("amount") +"|"+ map.get("txnid") +"|"+map.get("key");
 		if(!hashCal(Constants.SHA_512,hashSequence).equalsIgnoreCase(map.get("hash")) || !Constants.status.SUCCESS.name().equalsIgnoreCase(map.get("status")) || !Constants.PAYU_SUCCESS_CODE.equalsIgnoreCase(map.get("error"))){
