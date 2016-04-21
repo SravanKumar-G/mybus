@@ -37,8 +37,7 @@ public class MongoQueryControllerTest extends AbstractControllerIntegrationTest 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
-        currentUser = new User("fname", "lname", "uname", "pwd", true, true, "e@email.com", "1234567", "add1", "add2",
-                "city", "state", UserType.USER, 10.0, CommissionType.FIXED);
+        currentUser = new User("fname", "lname", "uname", "pwd", true, true);
         cleanup();
         currentUser = userDAO.save(currentUser);
     }

@@ -65,6 +65,39 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
           });
     },
 
+    getUserWithId:function(id,callback){
+      $http.get("/api/v1/userId/" + id).success(function(data){
+        callback(data);
+       // $rootScope.$broadcast("UpdateUserCompleted");
+      })
+
+    },
+    updateUser : function (user,callback) {
+      $http.put('/api/v1/userEdit/'+user.id,user).success(function(data){
+        callback(data);
+        $rootScope.$broadcast('UpdateUserCompleted');
+      })
+    },
+
+    deleteUser : function (id){
+      swal({
+            title: "Are you sure?",
+            text: "Are you sure you want to delete this route?",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#ec6c62"},function(){
+
+            $http.delete('api/v1/user/'+id).success(function(data){
+            $rootScope.$broadcast('DeleteUserCompleted');
+            swal("Deleted!", "Route was successfully deleted!", "success");
+            }).error(function () {
+              swal("Oops", "We couldn't connect to the server!", "error");
+            });
+      })
+    },
+
     getCurrentUser: function (callback, forceRefresh) {
       if (currentUser === null || forceRefresh) {
         $http.get('/api/v1/user/me')

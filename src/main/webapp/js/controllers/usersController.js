@@ -54,57 +54,33 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             userManager.fetchAllUsers();
         });
 
-      /*$scope.userContentTableParams = new ngTableParams(
-          // merge default params with url
-          angular.extend({
-            page: 1,            // show first page
-            count: 25,          // count per page
-            sorting: {
-              surname: 'asc'     // initial sorting
-            }
-          }, $location.search()), {
-            total: $scope.users.length,
-            getData: function($defer, params) {
-              $location.search(params.url()); // put params in url
-              $http.get('/api/v1/accounts')
-                  .success(function (data) {
-                    $scope.userCount = data.length || 0;
-                    //$log.debug("user data: " + angular.toJson(data));
-                    var orderedData = params.sorting ? $filter('orderBy')(data, params.orderBy()) : data;
-                    params.total(data.length);
-                    $scope.users = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                    _.each($scope.users, function (u) {
-                      if (angular.isArray(u.businesses)) {
-                        u.businesses.sort();
-                      }
-                    });
-                    $defer.resolve($scope.users);
-                    $scope.stopSpin();
-                  }).error(function (error) {
-                    $log.info("Error getting users. " + error);
-                    $scope.stopSpin();
-                  });
-            }
-          });*/
-
-      $scope.editUser = function (userEmail) {
-        $location.url('/user?email=' + userEmail);
-      };
+        $scope.$on('DeleteUserCompleted',function(e,value){
+            userManager.fetchAllUsers();
+        });
 
         $scope.addUser = function () {
             $location.url('/user');
         };
+
+        $scope.editUser = function(id){
+            $location.url('/user/'+id);
+        };
+        $scope.deleteUser = function(id){
+            userManager.deleteUser(id)
+        };
+
 
     })
 
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window) {
+    .controller('UserAddController', function($scope,userManager,$window,agentPlanManager) {
         $scope.headline = "Add New User";
-        $scope.isAdd = false;
+        //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
         $scope.user = {};
+        $scope.planTypes = [];
 
         $scope.usersFromManager=[];
         $scope.onMouseLeave = function(userNameFromUI){
@@ -117,6 +93,13 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
+
+        $scope.loadFromPlanType = function(){
+            agentPlanManager.getPlans(function (data) {
+                $scope.planTypes = data;
+            });
+        };
+        $scope.loadFromPlanType();
 
         $scope.callBlurFunction = function(userPassword){
             $scope.user.password = userPassword;
@@ -131,20 +114,48 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.saveButtonClicked = function(){
             userManager.createUser($scope.user,function(data){
                 swal("success","User successfully added","success");
+                $window.history.back();
             });
-            $window.history.back();
 
+
+        };
+
+        $scope.cancel = function(){
+            $window.history.back();
         }
     })
 
     //
   // ======================== Edit User =====================================
   //
-  .controller('UserEditController', function ($scope, $location, $http, $log, $modal, infoOverlay) {
-    $scope.headline = "Edit User";
-    $scope.isAdd = false;
+  .controller('UpdateUserController', function ($scope, $location, $http, $log, $modal,$routeParams,userManager,$window) {
+        $scope.headline = "Edit User";
+        $scope.id=$routeParams.id;
+        $scope.user={};
 
-    $scope.user = {customData: {}};
+        $scope.loadUserWithId = function(){
+            userManager.getUserWithId($scope.id,function(data){
+                $scope.user=data;
+            })
+        };
+        $scope.loadUserWithId();
+
+        $scope.updateUser = function(){
+            userManager.updateUser($scope.user,function(data){
+                swal("success","User Updated","success");
+            });
+            $location.url('/users');
+        };
+        $scope.cancel = function(){
+            $window.history.back();
+        }
+
+    });
+
+
+
+
+   /* $scope.user = {customData: {}};
     $scope.businessesMinimal = [];
 
     $scope.fetchUser = function () {
@@ -225,13 +236,13 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
           infoOverlay.displayInfo(errorMsg);
         });
     };
-
-  })
+*/
+  /*})
 
   //
   // ============================= Modal - Conditions  ===============================
   //
-  .controller('UserAssociatedBusinessesModalController', function ($scope, selectedIds, businessList, $modalInstance) {
+  /*.controller('UserAssociatedBusinessesModalController', function ($scope, selectedIds, businessList, $modalInstance) {
     $scope.selectedIds = selectedIds;
     $scope.businessList = businessList;
 
@@ -257,6 +268,8 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
 
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
-    };
-  });
+    };*/
+//  });
+
+
 

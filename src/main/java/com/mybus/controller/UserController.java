@@ -44,35 +44,44 @@ public class UserController extends MyBusBaseController{
         return null;
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "users", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
     @ApiOperation(value = "Get all the users available", response = User.class, responseContainer = "List")
-    public Iterable<User> getUsers(HttpServletRequest request) {
-        return userDAO.findAll();
+    public ResponseEntity<List<User>> getUsers(HttpServletRequest request)
+    {
+        return new ResponseEntity<List<User>>((List<User>) userDAO.findAll(), HttpStatus.OK);
     }
 
 
-    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @ApiOperation(value = "Create a user")
     public ResponseEntity createUser(HttpServletRequest request,
-                                     @ApiParam(value = "JSON for User to be created") @RequestBody final User user){
+                                     @ApiParam(value = "JSON for User to be created") @RequestBody JSONObject userJson){
         logger.debug("create user called");
-        return new ResponseEntity<>(userManager.saveUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(userManager.saveUser(new User(userJson)), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "user/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "userEdit/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value ="Update user", response = User.class)
     public ResponseEntity updateUser(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the User to be found") @PathVariable final String id,
-                                     @ApiParam(value = "User JSON") @RequestBody final User user) {
+                                     @ApiParam(value = "Id of the User to be found")
+                                     @PathVariable final String id,
+                                     @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
+        System.out.println("update user called");
         logger.debug("update user called");
-        return new ResponseEntity<>(userManager.updateUser(user), HttpStatus.OK);
+        return new ResponseEntity<>(userManager.updateUser(new User(userJson)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "userId/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ResponseBody
+    @ApiOperation(value ="Get user with Id", response = User.class)
+    public ResponseEntity getUser(HttpServletRequest request,
+                                     @ApiParam(value = "Id of the User to be found") @PathVariable final String id) {
+        logger.debug("get user called");
+        return new ResponseEntity<>(userManager.getUser(id), HttpStatus.OK);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
