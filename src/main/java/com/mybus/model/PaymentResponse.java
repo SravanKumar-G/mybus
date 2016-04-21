@@ -1,8 +1,5 @@
 package com.mybus.model;
 
-import java.util.Date;
-import java.util.Map;
-
 import com.mybus.util.Status;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -33,7 +30,7 @@ public class PaymentResponse extends AbstractDocument {
 	
 	@Setter
 	@Getter
-	private Date paymentDate;
+	private String paymentDate;
 	
 	/**
 	 * Type of payment method, paymentgateway (PG) or Wallet
@@ -52,6 +49,10 @@ public class PaymentResponse extends AbstractDocument {
 	@Setter
 	@Getter
 	private Status status;
+	
+	@Setter
+	@Getter
+	private RefundResponse refundResponse;
 
 	@Setter
 	@Getter

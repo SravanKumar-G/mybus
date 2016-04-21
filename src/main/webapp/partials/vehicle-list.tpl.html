@@ -29,44 +29,57 @@
 <!------------------------- modal popup for adding vehicle------------------------------------------------- -->
 <script type="text/ng-template" id="add-vehicle-modal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add a Vehicle</h3>
+		<div class="row">
+            <div class="col-sm-11">
+        		<h3 class="modal-title">Add a Vehicle</h3>
+			</div>
+ 			<div class="col-sm-1">
+        		<md-button>
+            		<md-icon type="button" class="btn-sm" ng-click="cancel()">
+               			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+           		</md-button>
+        	</div>
+		</div>
     </div>
     <div class="modal-body">
         <form name="addVehicleForm" role="form" class="container-fluid">
             <div class="form-group">
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addVehicle">Type</label>
-                    <div class="col-xs-10">
+                    <!-- <label class="col-sm-2 control-label" for="addVehicle">Type</label> -->
+                    <div class="col-xs-7 col-xs-offset-2">
                         <div class="form-group" ng-class="{ 'has-error': addVehicleForm.type.$invalid && addVehicleForm.type.$dirty}">
-                            <input type="text" id="modalAddNeighInput" name="type" class="form-control"
+                            <input type="text" placeholder ="Type" id="modalAddNeighInput" name="type" class="form-control"
                                    ng-model="vehicle.type" placeholder="Type" required>
                         </div>
                     </div>
                 </div>
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addVehicle">Description</label>
-                    <div class="col-xs-10">
+                    <!-- <label class="col-sm-2 control-label" for="addVehicle">Description</label> -->
+                    <div class="col-xs-7 col-xs-offset-2">
                         <div class="form-group" ng-class="{ 'has-error': addVehicleForm.description.$invalid && addVehicleForm.description.$dirty }">
-                            <input type="text" class="form-control" name="description" ng-model="vehicle.description"
+                            <input type="text" placeholder ="Description" class="form-control" name="description" ng-model="vehicle.description"
                                    placeholder="Description" required>
                         </div>
                     </div>
                 </div>
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addVehicle">RegNo#</label>
-                    <div class="col-xs-10">
+                    <!-- <label class="col-sm-2 control-label" for="addVehicle">RegNo#</label> -->
+                    <div class="col-xs-7 col-xs-offset-2">
                         <div class="form-group" ng-class="{ 'has-error': addVehicleForm.regNo.$invalid && addVehicleForm.regNo.$dirty }">
-                            <input type="text" class="form-control" name="regNo" ng-model="vehicle.regNo"
+                            <input type="text" placeholder ="RegNo" class="form-control" name="regNo" ng-model="vehicle.regNo"
                                    placeholder="RegNo." ng-required="true">
                         </div>
                     </div>
                 </div>
 
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label checkbox" for="addVehicle">Active</label>
-                    <div class="col-sm-1">
+					<div class="col-xs-7 col-xs-offset-2">
+                    <label class="col-sm-4 control-label checkbox" for="addVehicle">Active</label>
+                    <div class="col-sm-2">
                         <input type="checkbox" id="addVehicle" class="form-control" ng-model="vehicle.active">
                     </div>
+					</div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="ok(id)" ng-disabled="!isInputValid()">Add</button>
@@ -80,37 +93,50 @@
 <!------------------------- modal popup for updating vehicle------------------------------------------------- -->
 <script type="text/ng-template" id="update-vehicle-modal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Update Vehicle</h3>
+		<div class="row">
+            <div class="col-sm-11">
+        		<h3 class="modal-title">Update Vehicle</h3>
+			</div>
+ 			<div class="col-sm-1">
+        		<md-button>
+            		<md-icon type="button" class="btn-sm" ng-click="cancel()">
+               			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+           		</md-button>
+        	</div>
+		</div>
     </div>
     <div class="modal-body">
         <div name="updatevehicleForm" role="form" class="container-fluid">
 
             <div class="row top-buffer-5">
-                <label class="col-sm-2 control-label" for="vehicleUpdate">Type</label>
-                <div class="col-xs-8">
+                <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">Type</label> -->
+                <div class="col-xs-7 col-xs-offset-2">
                     <input type="text" id="modalUpdateNeighInput" class="form-control" ng-model="vehicle.type"
                            placeholder="Type">
                 </div>
             </div>
             <div class="row top-buffer-5">
-                <label class="col-sm-2 control-label" for="vehicleUpdate">Description</label>
-                <div class="col-xs-8">
+                <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">Description</label> -->
+                <div class="col-xs-7 col-xs-offset-2">
                     <input type="text" class="form-control" ng-model="vehicle.description"
                            placeholder="Description">
                 </div>
             </div>
             <div class="row top-buffer-5">
-                <label class="col-sm-2 control-label" for="vehicleUpdate">RegNo#</label>
-                <div class="col-xs-8">
+                <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">RegNo#</label> -->
+                <div class="col-xs-7 col-xs-offset-2">
                     <input type="text" class="form-control" ng-model="vehicle.regNo"
                            placeholder="regNo">
                 </div>
             </div>
             <div class="row top-buffer-5">
-                <label class="col-sm-2 control-label checkbox" for="vehicleUpdate">Active</label>
-                <div class="col-sm-1">
-                    <input type="checkbox" id="vehicleUpdate" class="form-control" ng-model="vehicle.active">
-                </div>
+				<div class="col-xs-7 col-xs-offset-2">
+                	<label class="col-sm-2 control-label checkbox" for="vehicleUpdate">Active</label>
+                	<div class="col-sm-2">
+                    	<input type="checkbox" id="vehicleUpdate" class="form-control" ng-model="vehicle.active">
+                	</div>
+				</div>
             </div>
         </div>
         <div class="modal-footer">
