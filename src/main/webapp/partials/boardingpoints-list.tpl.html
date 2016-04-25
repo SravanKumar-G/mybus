@@ -77,38 +77,49 @@
 </div>
 <!--modal popup for adding boardingpoint(Bp) to existing city -->
 <script type="text/ng-template" id="add-boardingpoint-to-city-state-modal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Add Boarding point to {{ city.name }}</h3>
+   <div class="modal-header">
+        <div class="row">
+            <div class="col-sm-11">
+                <h3 class="modal-title">Add Boarding point to {{ city.name }}</h3>
+            </div>
+            <div class="col-sm-1">
+                <md-button>
+                    <md-icon type="button" class="btn-sm" ng-click="cancel()">
+                        <span class="glyphicon glyphicon-remove"></span></md-icon>
+                </md-button>
+            </div>
+        </div>
     </div>
+
     <div class="modal-body">
-        <form name="addBoardingPointForm" role="form" class="container-fluid">
+        <form name="addBoardingPointForm " role="form" class="container-fluid col-xs-offset-2">
 
             <div class="form-group">
                 <label for="modalAddNeighInput">Boarding Point</label>
 
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addBoardingPoint">Name</label>
+                    <!-- <label class="col-sm-2 control-label" for="addBoardingPoint">Name</label> -->
                     <div class="col-xs-10">
                         <div class="form-group" ng-class="{ 'has-error': addBoardingPointForm.name.$invalid && addBoardingPointForm.name.$dirty}">
-                            <input type="text" id="modalAddNeighInput" name="name" class="form-control"
+                            <input type="text" placeholder="Name" id="modalAddNeighInput" name="name" class="form-control"
                                    ng-model="boardingPoint.name" placeholder="name" required>
                         </div>
                     </div>
                 </div>
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addBoardingPoint">Landmark</label>
+                    <!-- <label class="col-sm-2 control-label" for="addBoardingPoint">Landmark</label> -->
                     <div class="col-xs-10">
                         <div class="form-group" ng-class="{ 'has-error': addBoardingPointForm.landmark.$invalid && addBoardingPointForm.landmark.$dirty }">
-                            <input type="text" class="form-control" name="landmark" ng-model="boardingPoint.landmark"
+                            <input type="text" placeholder = "Landmark" class="form-control" name="landmark" ng-model="boardingPoint.landmark"
                                    placeholder="near by landmark" required>
                         </div>
                     </div>
                 </div>
                 <div class="row top-buffer-5">
-                    <label class="col-sm-2 control-label" for="addBoardingPoint">Contact</label>
+                    <!-- <label class="col-sm-2 control-label" for="addBoardingPoint">Contact</label> -->
                     <div class="col-xs-10">
                         <div class="form-group" ng-class="{ 'has-error': addBoardingPointForm.contact.$invalid && addBoardingPointForm.contact.$dirty }">
-                            <input type="number" class="form-control" name="contact" ng-model="boardingPoint.contact"
+                            <input type="number" placeholder="Contact" class="form-control" name="contact" ng-model="boardingPoint.contact"
                                    ng-minlength="7" ng-maxlength="10" placeholder="contact number" ng-required="true">
                         </div>
                     </div>
@@ -116,11 +127,11 @@
 
                 <div class="row top-buffer-5">
                     <label class="col-sm-2 control-label checkbox" for="addBoardingPoint">Active</label>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                     <input type="checkbox" id="addBoardingPoint" class="form-control" ng-model="boardingPoint.active">
                     </div>
                     <label class="col-sm-3 control-label checkbox" for="addBoardingPoint">Dropping Point</label>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <input type="checkbox" id="addBoardingPointDp" class="form-control" ng-model="boardingPoint.droppingPoint">
                     </div>
                 </div>

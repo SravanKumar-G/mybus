@@ -6,35 +6,37 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Service Name:</label>
-                    <input type="text" class="form-control" data-ng-model="busServiceEditCtrl.name" required>
+                    <!-- <label for="sel1">Service Name:</label> -->
+                    <input type="text" placeholder="Service Name" class="form-control" data-ng-model="busServiceEditCtrl.name" required>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Service Number:</label>
-                    <input type="text" class="form-control" data-ng-model="busServiceEditCtrl.number" required>
-                    <br>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="sel1">Enquiry Phone Number:</label>
-                    <input type="text" class="form-control" data-ng-model="busServiceEditCtrl.enquirePhone" required>
-                    <br>
-                </div>
-                <div class="col-sm-4">
-                    <label for="sel1">Cutoff-Time(Hours):</label>
-                    <input type="text" class="form-control" data-ng-model="busServiceEditCtrl.cutoffTime" required>
+                    <!-- <label for="sel1">Service Number:</label> -->
+                    <input type="text" placeholder="Service Number" class="form-control" data-ng-model="busServiceEditCtrl.number" required>
                     <br>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Layout Name:</label>
-                    <select class="form-control" data-ng-options="layout as layout.name for layout in busServiceEditCtrl.layouts track by layout._id.date" 
-                    		data-ng-model="busServiceEditCtrl.layoutName" ></select>
+                    <!-- <label for="sel1">Enquiry Phone Number:</label> -->
+                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" data-ng-model="busServiceEditCtrl.enquirePhone" required>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <!-- <label for="sel1">Cutoff-Time(Hours):</label> -->
+                    <input type="text" placeholder="Cutoff-Time(Hours):" class="form-control" data-ng-model="busServiceEditCtrl.cutoffTime" required>
+                    <br>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <!-- <label for="sel1">Layout Name:</label> -->
+                    <select class="form-control" ng-options="layout as layout.name for layout in busServiceEditCtrl.layouts track by layout._id.date" 
+                    		data-ng-model="busServiceEditCtrl.layoutName" >
+                    		<option>-- Layout Name -- </option>
+                    		</select>
                     <br>
                 </div>
                 <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
@@ -45,28 +47,30 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Service Tax Mode:</label>
+                    <!-- <label for="sel1">Service Tax Mode:</label> -->
                     <select class="form-control" data-ng-options="taxMode.name for taxMode in busServiceEditCtrl.taxModes" 
-                    data-ng-model="busServiceEditCtrl.taxMode" required></select>
+                    data-ng-model="busServiceEditCtrl.taxMode" required>
+                    	<option>--Service Tax Mode--</option>
+                    </select>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Service Tax:</label>
-                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.serviceTax" required>
+                   <!--  <label for="sel1">Service Tax:</label> -->
+                    <input type="text" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.serviceTax" required>
                     <br>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Journey From Date :</label>
-                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.effectiveFrom" required>
+                    <!-- <label for="sel1">Journey From Date :</label> -->
+                    <input type="text" placeholder="Journey From Date" class="form-control" ng-model="busServiceEditCtrl.effectiveFrom" required>
                     <!-- <md-datepicker ng-model="busServiceEditCtrl.effectiveFrom"></md-datepicker> -->
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Journey To Date :</label>
-                    <input type="text" class="form-control" ng-model="busServiceEditCtrl.effectiveTo" required>
+                    <!-- <label for="sel1">Journey To Date :</label> -->
+                    <input type="text" placeholder="Journey To Date" class="form-control" ng-model="busServiceEditCtrl.effectiveTo" required>
                     <!-- <md-datepicker ng-model="busServiceEditCtrl.effectiveTo"></md-datepicker> -->
                     <br>
                 </div>
@@ -114,9 +118,11 @@
              </div>
              <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Route Name:</label>
-                    <select class="form-control" data-ng-options="route as route.name for route in busServiceEditCtrl.routes track by route._id.date" 
-                    		data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()"></select>
+                    <!-- <label for="sel1">Route Name:</label> -->
+                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route._id.date" 
+                    		data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
+                    		<option>--Route Name--</option>
+                    		</select>
                     <br>
                 </div>
              </div>
