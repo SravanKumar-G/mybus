@@ -23,6 +23,14 @@ portalApp.factory('paymentManager',function($rootScope, $http, $log, $window){
 				callback(err);
 			});
 		},
+		getRefundAmount : function(pID,callback){
+			$http.get('/api/v1/getRefundAmount',{ params:{pID:pID, seatFare:1200}} ).success(function(data){
+				callback(data);
+			}).error(function (err,status) {
+				sweetAlert("Error",err.message,"error");
+				callback(err);
+			});
+		},
 		
 		processToRefund : function(refundResponse,callback){
 			
