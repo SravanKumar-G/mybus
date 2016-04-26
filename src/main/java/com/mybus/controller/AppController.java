@@ -98,12 +98,13 @@ public class AppController {
 		Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String[]> mapData = request.getParameterMap();
+		String id =  request.getParameter("payID");
 		while(paramNames.hasMoreElements()) {
 			String paramName = (String)paramNames.nextElement();
 			map.put(paramName, mapData.get(paramName)[0]);
 		}
 		LOGGER.info("response from payu paymentStatus");
-		paymentManager.paymentResponseFromPayu(map);
+		paymentManager.paymentResponseFromPayu(map,id);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;
@@ -121,12 +122,14 @@ public class AppController {
 		Enumeration<String> paramNames = request.getParameterNames();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, String[]> mapData = request.getParameterMap();
+		String id =  request.getParameter("payID");
+		
 		while(paramNames.hasMoreElements()) {
 			String paramName = (String)paramNames.nextElement();
 			map.put(paramName, mapData.get(paramName)[0]);
 		}
 		LOGGER.info("response from ebs paymentStatus"+map);
-		paymentManager.paymentResponseFromEBS(map);
+		paymentManager.paymentResponseFromEBS(map,id);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("../../index");
 		return model;

@@ -61,7 +61,20 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 	
 	$scope.pID="";
 	
-	$scope.refundResponse = {};
+	$scope.refundResponse = {
+			pID:pID,
+			refundAmount:"",
+			disc:""
+	};
+	
+	$scope.getRefundAmount = function(){
+		paymentManager.getRefundAmount($scope.refundResponse.pID,function(data){
+			$scope.refundResponse.refundAmount = data
+		})
+		
+	}
+	
+	$scope.getRefundAmount()
 	
 	 $scope.getAllPaymentDetails = function(){
 	    paymentManager.getAllPayments(function(data){

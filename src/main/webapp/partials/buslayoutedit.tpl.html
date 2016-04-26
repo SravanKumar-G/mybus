@@ -51,37 +51,47 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Name:</label>
-                    <input type="text" class="form-control" ng-model="busLayoutEditCtrl.name" required>
+                    <!-- <label for="sel1">Name:</label> -->
+                    <input type="text" placeholder="Name" class="form-control" ng-model="busLayoutEditCtrl.name" required>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Type:</label>
-                    <select class="form-control" data-ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type" ng-change="busLayoutEditCtrl.doLayout()" required></select>
-                    <br>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="sel1">Seats per row:</label>
-                    <select class="form-control" data-ng-options="seat.name for seat in busLayoutEditCtrl.seats" data-ng-model="busLayoutEditCtrl.seatsPerRow" ng-change="busLayoutEditCtrl.doLayout()" required></select>
-                    <br>
-                </div>
-                <div class="col-sm-4">
-                    <label for="sel1">No of rows:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.rows" data-ng-model="busLayoutEditCtrl.totalRows" ng-change="busLayoutEditCtrl.doLayout()" required></select>
+                    <!-- <label for="sel1">Type:</label> -->
+                    <select class="form-control" ng-options="type.name for type in busLayoutEditCtrl.layouts" data-ng-model="busLayoutEditCtrl.type" ng-change="busLayoutEditCtrl.doLayout()" required>
+                    	<option value="" selected="selected">-- Type --</option>
+                    </select>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <label for="sel1">Middle Row:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRows" data-ng-model="busLayoutEditCtrl.middleRow" ng-change="busLayoutEditCtrl.doLayout()" required></select>
+                    <!-- <label for="sel1">Seats per row:</label> -->
+                    <select class="form-control" ng-options="seat.name for seat in busLayoutEditCtrl.seats" data-ng-model="busLayoutEditCtrl.seatsPerRow" ng-change="busLayoutEditCtrl.doLayout()" required>
+                    	<option value="" selected="selected">-- Seats per row --</option>
+                    </select>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <label for="sel1">Middle Row Seat:</label>
-                    <select class="form-control" data-ng-options="row.name for row in busLayoutEditCtrl.middleRowSeats" data-ng-model="busLayoutEditCtrl.middleRowSeat" ng-change="busLayoutEditCtrl.doLayout()" required></select>
+                    <!-- <label for="sel1">No of rows:</label> -->
+                    <select class="form-control" ng-options="row.name for row in busLayoutEditCtrl.rows" data-ng-model="busLayoutEditCtrl.totalRows" ng-change="busLayoutEditCtrl.doLayout()" required>
+                    	<option value="" selected="selected">-- No of rows --</option>
+                    </select>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <!-- <label for="sel1">Middle Row:</label> -->
+                    <select class="form-control" ng-options="row.name for row in busLayoutEditCtrl.middleRows" data-ng-model="busLayoutEditCtrl.middleRow" ng-change="busLayoutEditCtrl.doLayout()" required>
+                    	<option value="" selected="selected">-- Middle Row --</option>
+                    </select>
+                    <br>
+                </div>
+                <div class="col-sm-4">
+                    <!-- <label for="sel1">Middle Row Seat:</label> -->
+                    <select class="form-control" ng-options="row.name for row in busLayoutEditCtrl.middleRowSeats" data-ng-model="busLayoutEditCtrl.middleRowSeat" ng-change="busLayoutEditCtrl.doLayout()" required>
+                    	<option value="" selected="selected">-- Middle Row Seat --</option>
+                    </select>
                     <br>
                 </div>
             </div>
