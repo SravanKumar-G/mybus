@@ -115,15 +115,15 @@
 
 
     <div class="modal-body">
-        <form name="personDetailsForm" class="form-horizontal" role="form">
+        <form name="personDetailsForm" class="form-horizontal col-xs-offset-2" role="form">
             <div class="form-group">
                 <!-- <label class="col-sm-3 control-label">Name</label> -->
-                <div class="row">
+               
                     <div class="col-sm-7">
                         <input type="text" placeholder="Name" id="updatePersonNameInput" class="form-control" ng-model="person.name" required ng-valid="person.name != ''">
                         <!--<state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="person.name" required></state-options>-->
                     </div>
-                </div>
+               
             </div>
 
             <div class="form-group">
@@ -141,11 +141,11 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Cities Lived</label>
-                <div class="col-sm-7">
-                    <select name="allCities" id="allCities" ng-model="citySelected">
-                        <option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
+                <div class="col-sm-4">
+                    <select name="allCities" class="form-control" id="allCities" ng-model="citySelected">
+						<option ng-repeat="city in cities" value="{{city.id}}">{{city.name}}</option>
                     </select>
-                    <button ng-click="addLivingCity(citySelected)">Add</button>
+                    <button ng-click="addLivingCity(citySelected)" class="btn btn-primary btn-xs">Add</button>
                     <br/>
                     Cities Selected
                     <div>

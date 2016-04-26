@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,4 +75,17 @@ public class PaymentController {
 			@RequestParam("disc") String disc) {
 		return paymentManager.refundProcessToPaymentGateways(pID,refundAmount,disc);
     }
+	
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getRefundAmount", method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "Refund Payment request")
+	public double getRefundAmount(HttpServletRequest request,
+			@RequestParam("pID") String pID,
+			@RequestParam("seatFare") double seatFare) {
+		
+		DateTime busStartTime = new DateTime(2016,05,25,11,30);
+		return paymentManager.refundAmount(busStartTime,seatFare);
+    }
+	
 }

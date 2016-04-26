@@ -9,13 +9,10 @@ import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -24,13 +21,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mybus.util.Status;
+
+import com.mybus.SystemProperties;
 import com.mybus.dao.PaymentResponseDAO;
+import com.mybus.model.BookingTracking;
+import com.mybus.model.CancellationPolicy;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentGateways;
 import com.mybus.util.Constants;
 import com.mybus.model.PaymentResponse;
 import com.mybus.model.RefundResponse;
 
+import org.codehaus.jackson.type.TypeReference;
+import org.joda.time.DateTime;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 /**
  * 
  * @author yks-Srinivas
@@ -42,7 +48,13 @@ public class PaymentManager {
 	private static final Logger LOGGER= LoggerFactory.getLogger(PaymentManager.class);
 	
 	@Autowired
+	private SystemProperties systemProperties;
+	
+	@Autowired
 	PaymentResponseDAO paymentResponseDAO;
+	
+	@Autowired
+	private BookingTrackingManager bookingTrackingManager;
 
 	public Payment getPayuPaymentGatewayDetails(Payment payment){
 
@@ -62,6 +74,19 @@ public class PaymentManager {
 		payment.setHashCode(hash);
 		payment.setPaymentGateways(pg);
 		payment.setMerchantRefNo(merchantRefNo);
+		
+		PaymentResponse paymentRespose= new PaymentResponse();
+		paymentRespose.setAmount(payment.getAmount());
+		paymentRespose.setMerchantrefNo(payment.getMerchantRefNo());
+		paymentRespose.setPaymentName(payment.getPaymentGateways().getPgName());
+		paymentRespose.setPaymentType(payment.getPaymentGateways().getPaymentType());
+		Status status = new Status();
+		status.setSuccess(true);
+		status.setStatusCode(Constants.SUCCESS_CODE);
+		status.setStatusMessage("Payment request in progress");
+		paymentRespose.setStatus(status);
+		paymentRespose = paymentResponseDAO.save(paymentRespose);
+		payment.getPaymentGateways().setPgCallbackUrl(payment.getPaymentGateways().getPgCallbackUrl()+"?payID="+paymentRespose.getId());
 		return payment;
 	}
 	
@@ -83,15 +108,30 @@ public class PaymentManager {
 		payment.setMode("TEST");
 		payment.setMerchantRefNo(merchantRefNo);
 		payment.setPaymentGateways(pg);
+		
+		PaymentResponse paymentRespose= new PaymentResponse();
+		paymentRespose.setAmount(payment.getAmount());
+		paymentRespose.setMerchantrefNo(payment.getMerchantRefNo());
+		paymentRespose.setPaymentName(payment.getPaymentGateways().getPgName());
+		paymentRespose.setPaymentType(payment.getPaymentGateways().getPaymentType());
+		Status status = new Status();
+		status.setSuccess(true);
+		status.setStatusCode(Constants.SUCCESS_CODE);
+		status.setStatusMessage("Payment request in progress");
+		paymentRespose.setStatus(status);
+		paymentRespose = paymentResponseDAO.save(paymentRespose);
+		payment.getPaymentGateways().setPgCallbackUrl(payment.getPaymentGateways().getPgCallbackUrl()+"?payID="+paymentRespose.getId());
 		String hash = hashForEbs(payment);
 		LOGGER.info("secured hash - "+hash);
 		payment.setHashCode(hash);
+		
 		return payment;
 	}
 	
-	public PaymentResponse paymentResponseFromEBS(Map<String, String> map) {
+	public PaymentResponse paymentResponseFromEBS(Map<String, String> map,String _id) {
 		
 		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse.setId(_id);
 		paymentResponse.setAmount(Double.parseDouble(map.get("Amount")));
 		paymentResponse.setPaymentId(map.get("PaymentID"));
 		paymentResponse.setMerchantrefNo(map.get("MerchantRefNo"));
@@ -112,13 +152,19 @@ public class PaymentManager {
 		}
 		LOGGER.info("Payment Resone from ebs"+map);
 		paymentResponse.setStatus(status);
-		paymentResponseDAO.save(paymentResponse);
+		update(paymentResponse);
+		BookingTracking bookingTracking = new BookingTracking();
+		bookingTracking.setBookingId(paymentResponse.getId());
+		bookingTracking.setMerchantRefNo(paymentResponse.getMerchantrefNo());
+		bookingTrackingManager.savePayment(bookingTracking);
+		
 		return paymentResponse;
 	}
 	
-	public PaymentResponse paymentResponseFromPayu(Map<String, String> map) {
+	public PaymentResponse paymentResponseFromPayu(Map<String, String> map,String id) {
 		
 		PaymentResponse paymentResponse = new PaymentResponse();
+		paymentResponse.setId(id);
 		paymentResponse.setAmount(Double.parseDouble(map.get("amount")));
 		paymentResponse.setPaymentId(map.get("txnid"));
 		paymentResponse.setMerchantrefNo(map.get("mihpayid"));
@@ -139,7 +185,12 @@ public class PaymentManager {
 			status.setStatusMessage("Payment has success");
 		}
 		paymentResponse.setStatus(status);
-		paymentResponseDAO.save(paymentResponse);
+		update(paymentResponse);
+		BookingTracking bookingTracking = new BookingTracking();
+		bookingTracking.setBookingId(paymentResponse.getId());
+		bookingTracking.setMerchantRefNo(paymentResponse.getMerchantrefNo());
+		bookingTrackingManager.savePayment(bookingTracking);
+		
 		return paymentResponse;
 	}
 
@@ -356,4 +407,50 @@ public class PaymentManager {
         }
         return true;
     }
+	public double refundAmount(DateTime doj,double SeatFare){
+		double refundAmount = 0.0;
+		DateTime systemdate = new DateTime();
+		List<CancellationPolicy> cancellationPolicyList = getCancellationPolicy();
+		long correntTimeMil = systemdate.getMillis();
+	    long dojTimeMil = doj.getMillis();
+	    long timediffernt = dojTimeMil - correntTimeMil;
+	    int days = (int) (timediffernt / (1000*60*60*24));
+	    int count = 1;
+	    for(CancellationPolicy cp:cancellationPolicyList){
+	    	if(cp.getCutoffTime()>(days*24)){
+	    		LOGGER.info(""+cp.getRefundInPercentage());
+	    		refundAmount = refundCalculation(SeatFare,cp.getRefundInPercentage());
+	    	}else if(count==cancellationPolicyList.size()){
+	    		LOGGER.info(""+cp.getRefundInPercentage());
+	    		refundAmount = refundCalculation(SeatFare,cp.getRefundInPercentage());
+	    	}
+	    	count++;
+	    }
+	    LOGGER.info("refundAmount"+refundAmount);
+	    return refundAmount;
+	}
+	public double refundCalculation(double seatFare,double refundInPercentage){
+		double refundAmount = 0.0;
+		if(!(refundInPercentage==0)){
+			double pgCharges= Double.parseDouble(systemProperties.getProperty("pgCharges"));
+			refundAmount = ((seatFare*refundInPercentage)/100-(seatFare*pgCharges)/100);
+		}
+		return refundAmount;
+	}
+	public List<CancellationPolicy> getCancellationPolicy(){
+		String cancellationPolicyJsonString = systemProperties.getProperty("cancellationPolicy");
+		List<CancellationPolicy> cancellationPolicyList = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			cancellationPolicyList = mapper.readValue(cancellationPolicyJsonString, new TypeReference<List<CancellationPolicy>>(){});
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		LOGGER.info("cancellation Policy List ::"+cancellationPolicyList);
+		return cancellationPolicyList;
+	}
 }
