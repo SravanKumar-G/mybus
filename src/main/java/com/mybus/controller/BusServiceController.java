@@ -46,7 +46,7 @@ public class BusServiceController {
 	public BusService createService(HttpServletRequest request,
 			@ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
 		logger.debug("post bus service called");
-		return busServiceManager.saveBusService(busService);
+		return busServiceManager.saveBusService(busServiceManager.convertStringToDatesInBusService(busService));
 	}
 
 	@RequestMapping(value = "service/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

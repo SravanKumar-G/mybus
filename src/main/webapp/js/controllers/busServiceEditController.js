@@ -20,14 +20,21 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         $scope.headline = "Service Details";
 
         busServiceEditCtrl.busService = {
-            rows : null,
-            type: null,
-            name : null,
-            upper : null,
-            lower : null,
-            upperHeader : '',
-            lowerHeader : ''
-        };
+        	active:false,
+			serviceName:null,
+			serviceNumber:null,
+			phoneEnquiry:null,
+			cutoffTime:null,
+        	serviceTaxType:null,
+        	serviceTax:null, 
+	        layout:null,
+	        effectiveFrom:null,
+        	effectiveTo:null,
+        	frequency:null,        	
+        	boardingPoints:[],
+        	dropingPoints:[],
+        	serviceFares:[]
+        }
         busServiceEditCtrl.layouts = layoutNamesPromise.data;
         busServiceEditCtrl.routes = routeNamesPromise.data;
         busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -40,38 +47,55 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
       var serviceId = $routeParams.id;
 
       if(serviceId !== ''){
-        var cache = $cacheFactory.get($rootScope.id);
-        if(cache){
-            busServiceEditCtrl.busService = cache.get(serviceId);
-        }
-        if(busServiceEditCtrl.busService && busServiceEditCtrl.busService.id !== ''){
-        }else{
-            busServiceEditCtrl.busService = {
-                rows : null,
-                type: null,
-                name : null,
-                upper : null,
-                lower : null,
-                upperHeader : '',
-                lowerHeader : ''
-            }
-        }
+    	  
+    	  var cache = $cacheFactory.get($rootScope.id);
+    	  if(cache){
+    		  busServiceEditCtrl.busService = cache.get(serviceId);
+    	  }
+    	  if(busServiceEditCtrl.busService && busServiceEditCtrl.busService.id !== ''){
+    		  
+    	  }else{
+    		 
+    		  busServiceEditCtrl.busService = {
+    		        	active:false,
+    					serviceName:null,
+    					serviceNumber:null,
+    					phoneEnquiry:null,
+    					cutoffTime:null,
+    		        	serviceTaxType:null,
+    		        	serviceTax:null, 
+    			        layout:null,
+    			        effectiveFrom:null,
+    		        	effectiveTo:null,
+    		        	frequency:null,        	
+    		        	boardingPoints:[],
+    		        	dropingPoints:[],
+    		        	serviceFares:[]
+    		        }
+    	  }
       }
 
         function initialize(){
-        	busServiceEditCtrl.busService.name = null;
-            busServiceEditCtrl.busService.type = null;
-            busServiceEditCtrl.busService.rows = null;
-            busServiceEditCtrl.busService.upper = null;
-            busServiceEditCtrl.busService.lower = null;
-            busServiceEditCtrl.busService.isBig = false;
-            busServiceEditCtrl.busService.upperHeader = '';
-            busServiceEditCtrl.busService.lowerHeader = '';
-            busServiceEditCtrl.totalSeats = 0;
+        	
+        	busServiceEditCtrl.busService.active=false;
+        	busServiceEditCtrl.busService.serviceName=null;
+        	busServiceEditCtrl.busService.serviceNumber=null;
+        	busServiceEditCtrl.busService.phoneEnquiry=null;
+        	busServiceEditCtrl.busService.cutoffTime=null;
+        	busServiceEditCtrl.busService.serviceTaxType=null;
+        	busServiceEditCtrl.busService.serviceTax=null; 
+        	busServiceEditCtrl.busService.layout=null;
+        	busServiceEditCtrl.busService.effectiveFrom=null;
+        	busServiceEditCtrl.busService.effectiveTo=null;
+        	busServiceEditCtrl.busService.frequency=null;        	
+        	busServiceEditCtrl.busService.boardingPoints=[];
+        	busServiceEditCtrl.busService.dropingPoints=[];
+        	busServiceEditCtrl.busService.serviceFares=[];
+        	
         }
 
         busServiceEditCtrl.getRouteCities = function() {
-        	var routeId = busServiceEditCtrl.route._id.date;
+        	var routeId = busServiceEditCtrl.route.id;
         	console.log('route id -' + routeId);
         	console.log('route name -' +busServiceEditCtrl.route.name);
         	routesManager.getRoutes(function(data){
@@ -80,9 +104,28 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         			console.log('value name - ' + value.name);
             		if (busServiceEditCtrl.route.name === value.name){
                 		console.log('via cities -' + value.viaCities);
-                		busServiceEditCtrl.routeCities = [];                		
-                        cityManager.getCities(function(data){
+                		busServiceEditCtrl.routeCities = [];
+                		cityManager.getCities(function(data){
                             var cities = data;
+                            angular.forEach(cities,function(city){
+                            	if(value.toCity===city.id){
+                            		$scope.dropingPoints=$filter('filter')(city.boardingPoints,true);
+                            		angular.forEach($scope.dropingPoints,function(bp){
+                            			if(bp.active){
+                            				bp.active=false;
+                            			}
+                            		});
+                            	}
+                            	if(value.fromCity===city.id){
+                            		$scope.boardingPoints=$filter('filter')(city.boardingPoints,true);
+                            		
+                            		angular.forEach($scope.boardingPoints,function(dp){
+                            			if(dp.active){
+                            				dp.active=false;
+                            			}
+                            		});
+                            	}
+                            });
                             angular.forEach(value.viaCities,function(existingCityId) {
                                 angular.forEach(cities,function(city){
                                     if(existingCityId == city.id){
@@ -119,9 +162,53 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
              busServiceEditCtrl.goToServices();
         });
 
-        busServiceEditCtrl.saveService = function (){
+        $scope.saveService = function (){
+        	busServiceEditCtrl.busService.effectiveFrom = $filter('date')(busServiceEditCtrl.busService.effectiveFrom,'yyyy-MM-dd');
+        	busServiceEditCtrl.busService.effectiveTo = $filter('date')(busServiceEditCtrl.busService.effectiveTo,'yyyy-MM-dd');
+        	
+        	busServiceManager.createService(busServiceEditCtrl.busService)
         };
+        
+        $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index){
+        	switch (bpOrdb) {
+			case 'bp':
+				if(active){ 
+					var boardPoint = $filter('filter')(busServiceEditCtrl.busService.boardingPoints, bpOrdbID)
+					if(boardPoint.length>0){
+						boardPoint[0].pickupTime = $filter('date')(time,'HH:mm');
+					}else{
 
+						busServiceEditCtrl.busService.boardingPoints.push({
+							boardingPointId:bpOrdbID,
+							pickupTime : $filter('date')(time,'HH:mm')
+						});
+					}
+				}else{
+					busServiceEditCtrl.busService.boardingPoints.splice(index, 1);
+				}
+				break;
+				
+			case 'dp':
+				if(active){
+					var dropingPoint = $filter('filter')(busServiceEditCtrl.busService.dropingPoints, bpOrdbID);
+					if(dropingPoint.length>0){
+						dropingPoint[0].droppingTime = $filter('date')(time,'HH:mm');
+					}else{
+						busServiceEditCtrl.busService.dropingPoints.push({
+							droppingPointId:bpOrdbID,
+							droppingTime:$filter('date')(time,'HH:mm')
+						})
+					}
+				}else{
+					busServiceEditCtrl.busService.dropingPoints.splice(index,1)
+				}
+				
+				break;
+			default:
+				break;
+			}
+        };
+        
         return busServiceEditCtrl;
 
   })

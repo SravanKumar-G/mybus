@@ -3,6 +3,8 @@
  */
 package com.mybus.model;
 
+import org.joda.time.DateTime;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,10 @@ public class ServiceDropingPoint {
 
 	@Getter
 	@Setter
-	private Time droppingTime;
+	private String droppingTime;
+
+	@Getter
+	@Setter
+	private DateTime droppingTimeInDate;
 	
 }
