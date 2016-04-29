@@ -51,7 +51,7 @@ public class BusServiceManagerTest {
 		
 		ServiceLayout layout = new ServiceLayout();
 		layout.setLayoutId("571a255184ae0784faf601cc");
-		busService.setLayout(layout);
+		//busService.setLayout(layout);
 		busServiceManager.saveBusService(busService);
 	}
 }
