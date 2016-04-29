@@ -23,7 +23,8 @@ import org.springframework.stereotype.Service;
 public class CommunicationManager {
 
 	private Logger LOGGER = LoggerFactory.getLogger(CommunicationManager.class);
-	@Autowired
+
+	/*@Autowired
 	private TaskExecutor etsTaskExecutor;
 
 	public void sendSMS(final String to,final String  body) {
@@ -63,5 +64,5 @@ public class CommunicationManager {
 			};
 		};
 		etsTaskExecutor.execute(runnable);
-	}
+	} */
 }
