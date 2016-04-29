@@ -4,12 +4,12 @@
 
 <table class="table table-bordered table-condensed table-hover" ng-table="busServiceCtrl.serviceContentTableParams">
     <tr ng-repeat="service in busServiceCtrl.services">
-        <td data-title="'Service Name'"></td>
-        <td data-title="'Service Number'"></td>
-        <td data-title="'From Date'"></td>
-        <td data-title="'To Date'"></td>
-        <td data-title="'Total Seats'"></td>
-        <td data-title="'Bus Type'"></td>
+        <td data-title="'Service Name'">{{service.serviceName}}</td>
+        <td data-title="'Service Number'">{{service.serviceNumber}}</td>
+        <td data-title="'From Date'">{{service.effectiveFrom | date: "yyyy-MM-dd"}}</td>
+        <td data-title="'To Date'">{{service.effectiveTo | date: "yyyy-MM-dd"}}</td>
+        <td data-title="'Total Seats'">N/A</td>
+        <td data-title="'Bus Type'">12</td>
         <td class="col-md-2">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="busServiceCtrl.goToBusService(service.id)">

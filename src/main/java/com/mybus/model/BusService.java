@@ -6,9 +6,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import org.joda.time.DateTime;
 
 /**
  * Created by skandula on 12/30/15.
@@ -35,11 +36,17 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Time cutoffTime;
+	private String cutoffTime;
 	
 	@Getter
 	@Setter
-	private ServiceTaxType serviceTaxType;
+	private DateTime cutoffTimeInDate;
+	
+	
+	@Getter
+	@Setter
+	//private ServiceTaxType serviceTaxType;
+	private String serviceTaxType;
 
 	@Getter
 	@Setter
@@ -51,12 +58,20 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Date effectiveFrom;
+	private String effectiveFrom;
 	
 	@Getter
 	@Setter
-	private Date effectiveTo;
+	private DateTime effectiveFromInDate;
+	
+	@Getter
+	@Setter
+	private String effectiveTo;
 
+	@Getter
+	@Setter
+	private DateTime effectiveToInDate;
+	
 	@Getter
 	@Setter
 	private ServiceFrequency frequency;

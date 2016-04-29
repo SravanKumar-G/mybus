@@ -37,7 +37,9 @@ portalApp.factory('routesManager', function ($rootScope, $http, $log, $window) {
         getActiveRouteNames: function() {
         	return $http({
         		method:'GET',
-        		url:'/api/v1/documents/route?fields=id,name'
+        		/*url:'/api/v1/documents/route?fields=id,name'*/
+        		url:'/api/v1/routes'
+        			
         	});
         },
 

@@ -7,12 +7,12 @@
             <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Name:</label> -->
-                    <input type="text" placeholder="Service Name" class="form-control" data-ng-model="busServiceEditCtrl.name" required>
+                    <input type="text" placeholder="Service Name" class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceName" ng-init="busServiceEditCtrl.busService.serviceName ='Test' " required>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Number:</label> -->
-                    <input type="text" placeholder="Service Number" class="form-control" data-ng-model="busServiceEditCtrl.number" required>
+                    <input type="text" placeholder="Service Number" class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceNumber" ng-init="busServiceEditCtrl.busService.serviceNumber =123" required>
                     <br>
                 </div>
             </div>
@@ -20,12 +20,12 @@
             <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Enquiry Phone Number:</label> -->
-                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" data-ng-model="busServiceEditCtrl.enquirePhone" required>
+                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" data-ng-model="busServiceEditCtrl.busService.phoneEnquiry" ng-init="busServiceEditCtrl.busService.phoneEnquiry =9294541342" required>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Cutoff-Time(Hours):</label> -->
-                    <input type="text" placeholder="Cutoff-Time(Hours):" class="form-control" data-ng-model="busServiceEditCtrl.cutoffTime" required>
+                    <input type="number" placeholder="Cutoff-Time(Hours):" class="form-control" data-ng-model="busServiceEditCtrl.busService.cutoffTime" required>
                     <br>
                 </div>
             </div>
@@ -33,103 +33,148 @@
             <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Layout Name:</label> -->
-                    <select class="form-control" ng-options="layout as layout.name for layout in busServiceEditCtrl.layouts track by layout._id.date" 
-                    		data-ng-model="busServiceEditCtrl.layoutName" >
-                    		<option>-- Layout Name -- </option>
-                    		</select>
+                    <select class="form-control" ng-model="busServiceEditCtrl.busService.layout.layoutId" >
+                    		<option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
+                    		<option selected="selected" values="">-- Layout Name -- </option>
+                    </select>
                     <br>
                 </div>
                 <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
                 <div class="col-sm-1">
-                    <input type="checkbox" data-ng-checked="busServiceEditCtrl.active" class="form-control" data-ng-model="busServiceEditCtrl.active">
+                    <input type="checkbox" data-ng-checked="busServiceEditCtrl.active" class="form-control" data-ng-model="busServiceEditCtrl.busService.active">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Tax Mode:</label> -->
-                    <select class="form-control" data-ng-options="taxMode.name for taxMode in busServiceEditCtrl.taxModes" 
-                    data-ng-model="busServiceEditCtrl.taxMode" required>
-                    	<option>--Service Tax Mode--</option>
+                    <select class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" required>
+                    	<option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
+                    	<option selected="selected" values="">--Service Tax Mode--</option>
                     </select>
                     <br>
                 </div>
                 <div class="col-sm-4">
                    <!--  <label for="sel1">Service Tax:</label> -->
-                    <input type="text" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.serviceTax" required>
+                    <input type="number" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.busService.serviceTax" ng-init="busServiceEditCtrl.serviceTax=10" required >
                     <br>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Journey From Date :</label> -->
-                    <input type="text" placeholder="Journey From Date" class="form-control" ng-model="busServiceEditCtrl.effectiveFrom" required>
-                    <!-- <md-datepicker ng-model="busServiceEditCtrl.effectiveFrom"></md-datepicker> -->
+                    <label for="sel1">Journey From Date :</label>
+                     <input type="date" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Journey To Date :</label> -->
-                    <input type="text" placeholder="Journey To Date" class="form-control" ng-model="busServiceEditCtrl.effectiveTo" required>
-                    <!-- <md-datepicker ng-model="busServiceEditCtrl.effectiveTo"></md-datepicker> -->
-                    <br>
+                    <label for="sel1">Journey To Date :</label>
+                     <input type="date" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
+                  	<br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Service Mode :</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.serviceMode" value="daily">
+                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="DAILY">
                     <label>Daily</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.serviceMode" value="weekly">
+                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="WEEKLY">
                     <label>Weekly</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.serviceMode" value="special">
+                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="SPECIAL">
                     <label>Special</label>
                     <br>
                 </div>
             </div>
-             <div class="row" ng-if="busServiceEditCtrl.serviceMode=='daily'">
+             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='DAILY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
-                	 	<input type="checkbox" data-ng-checked="true" disabled="true">
+                	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-model="busServiceEditCtrl.busService.frequency.DAILY">
                 	 	{{day}}
                 	 </span>
                 </div>
              </div>
-			<div class="row" ng-if="busServiceEditCtrl.serviceMode=='weekly'">
+			<div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='WEEKLY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
-                	 	<input type="checkbox" >
+                	 	<input type="checkbox" name="{{day}}" ng-model="busServiceEditCtrl.busService.frequency.weeklyDays" >
                 	 	{{day}}
                 	 </span>
                 </div>
              </div>
-             <div class="row" ng-if="busServiceEditCtrl.serviceMode=='special'">
+             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='SPECIAL'">
                 <div class="col-sm-4">
                 	<div ng-repeat="specialDay in busServiceEditCtrl.specialDays">
-                		<span ng-if="specialDay.date != ''">
-                	 		<input type="text" >
+                		<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates != ''">
+                	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates"  mybus-datepicker >
                 	 		<input type="submit" class="btn btn-primary" value="Delete" ng-click"" >
                 	 	</span>
-                	 	<span ng-if="specialDay.date == ''">
-                	 		<input type="text" >
+                	 	<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates == ''">
+                	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates">
                 	 	</span>
+                	 	<br/>
                 	 </div>
                 </div>
              </div>
              <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Route Name:</label> -->
-                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route._id.date" 
+                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id" 
                     		data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
-                    		<option>--Route Name--</option>
+                    		<option selected="selected" values="">--Route Name--</option>
                     		</select>
                     <br>
                 </div>
              </div>
              <div class="row" ng-if="busServiceEditCtrl.routeCities">
-             	<table class="table table-bordered table-condensed table-hover" style="width: 80%" ng-table="">
+	             <div class="col-md-9">
+	             	<div class="bpdp-tab" ng-init="tab=1">
+					    <ul>
+					        <li class="tab"  ng-class="{active:tab==1}">
+					            <a href ng-click="tab = 1">Boarding Points</a>
+					        </li>
+					        <li class="tab" ng-class="{active:tab==2}">
+					            <a href ng-click="tab = 2">Dropping Points</a>
+					        </li>
+					    </ul>
+					
+					    <div class="tab-content" ng-show="tab==1">
+					        <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
+						        <tr ng-repeat="boardingPoint in boardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
+							        <td data-title="'Boarding Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
+							        <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+							        	<input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+									</td>
+							        <td data-title="'Departure Time'">
+							        	<div ng-show="boardingPoint.active">
+							        		<input type="time" class="form-control" ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+							        	</div>
+							        </td>
+							        <td data-title="'Day'">0</td>
+							   	</tr>
+						    </table>
+					    </div>
+					    <div class="tab-content" ng-show="tab==2">
+						    <table class="table table-bordered table-condensed table-hover" ng-table="dropingPointContentTableParams">
+							    <tr ng-repeat="dropingPoint in dropingPoints" ng-class="dropingPoint.active?'':'bg-danger'">
+							        <td data-title="'Droping Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ dropingPoint.name }}</td>
+							        <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+							        	<input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+									</td>
+							        <td data-title="'Departure Time'">
+							        	<div ng-show="dropingPoint.active">
+							        		<input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+							        	</div>
+							        </td>
+							        <td data-title="'Day'"></td>
+							   	</tr>
+						    </table>
+					    </div>
+					</div>
+			    </div>
+			    
+             	<!-- <table class="table table-bordered table-condensed table-hover" style="width: 80%" ng-table="">
 				    <tr ng-repeat="routeCity in busServiceEditCtrl.routeCities">
-				        <td data-title="'Stattion Name'">{{routeCity.name}}</td>
+				        <td data-title="'Station Name'">{{routeCity.name}}</td>
 				        <td data-title="'Provide Stop'"><input type="checkbox" data-ng-checked="routeCity.provideStop" class="form-control" data-ng-model="routeCity.provideStop"></td>
 				        <td data-title="'Departure Time'">
 				        	<select class="form-control" data-ng-options="n for n in [] | range:1:12" 
@@ -142,14 +187,14 @@
 				        <td data-title="'Day'"><select class="form-control" data-ng-options="n for n in [] | range:1:60" 
                     				data-ng-model="routeCity.day" ></select> </td>
 				    </tr>
-				</table>
+				</table> -->
              </div>
              
         </div>
     </form>
 
-    <input type="submit" class="btn btn-primary" ng-if="!busServiceEditCtrl.valid" ng-disabled="serviceForm.$invalid" ng-click="busServiceEditCtrl.saveService()" value="Save Service" />
-    <input type="submit" class="btn btn-primary" ng-if="busServiceEditCtrl.valid" ng-click="busServiceEditCtrl.saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-primary" ng-if="!busServiceEditCtrl.valid" ng-disabled="serviceForm.$invalid" ng-click="saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-primary" ng-if="busServiceEditCtrl.valid" ng-click="saveService()" value="Save Service" />
     <hr>
 
 </div>

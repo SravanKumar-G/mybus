@@ -5,6 +5,8 @@ package com.mybus.model;
 
 import java.math.BigDecimal;
 
+import org.joda.time.DateTime;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,11 +30,19 @@ public class ServiceFare {
 	
 	@Getter
 	@Setter
-	private Time arrivalTime;
+	private String arrivalTime;
 	
 	@Getter
 	@Setter
-	private Time departureTime;
+	private DateTime arrivalTimeInDate;
+	
+	@Getter
+	@Setter
+	private String departureTime;
+
+	@Getter
+	@Setter
+	private DateTime departureTimeInDate;
 	
 	@Getter
 	@Setter

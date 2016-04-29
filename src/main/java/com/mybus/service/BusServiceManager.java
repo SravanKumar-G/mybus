@@ -4,6 +4,10 @@ import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +79,18 @@ public class BusServiceManager {
 				throw new RuntimeException("A service already exists with the same name");
 			}
 		}
+	}
+	public BusService convertStringToDatesInBusService(BusService busService){
+		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service Effective From can not be null");
+		busService.setEffectiveFromInDate(convertStringToDate(busService.getEffectiveFrom()));
+		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service Effective To can not be null");
+		busService.setEffectiveToInDate(convertStringToDate(busService.getEffectiveTo()));
+		return busService;
+	}
+	private DateTime convertStringToDate(String stringDate){
+			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+			DateTime dt = formatter.parseDateTime(stringDate);
+			return dt;
 	}
 
 }

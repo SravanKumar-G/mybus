@@ -38,6 +38,7 @@
     <script src="js/controllers/busDetailsController.js"></script>
     <script src="js/controllers/routesController.js"></script>
     <script src="js/controllers/paymentController.js"></script>
+    <script src="js/controllers/tripController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
@@ -49,12 +50,13 @@
     <script src="js/services/agentPlanManager.js"></script>
     <script src="js/services/paymentManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
+    <script src="js/services/tripManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
 
 
     <script src="js/directives/stateOptions.js"></script>
-   <!--  <script src="js/directives/datePicker.js"></script> -->
+    <script src="js/directives/datePicker.js"></script>
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
@@ -89,6 +91,7 @@
                         <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
                         <li data-match-route="/vehicles"><a href="#/vehicles">Vehicles</a></li>
                         <li data-match-route="/services"><a href="#/services">Services</a></li>
+                        <li data-match-route="/trip"><a href="#/trip">Trip</a></li>
                         <li data-match-route="/plans"><a href="#/plans">Agent Plan Type</a></li>
                     </ul>
                 <li data-match-route="/persons"><a href="#/persons">Persons</a></li>

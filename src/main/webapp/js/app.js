@@ -25,7 +25,8 @@ var myBus = angular.module('myBus', [
   'myBus.busDetailModule',
   'myBus.userModule',
   'myBus.agentPlanModule',
-  'myBus.paymentModule'
+  'myBus.paymentModule',
+  'myBus.tripModule'
 ]);
 
 myBus.config(['$routeProvider',
@@ -114,6 +115,11 @@ myBus.config(['$routeProvider',
           templateUrl: 'partials/account.tpl.html',
           controller: 'AccountController'
         }).
+        when('/trip',{
+        	templateUrl: 'partials/trip.tpl.html',
+        	controller: 'TripController'
+        })
+        .
         when('/payment',{
         	templateUrl: 'partials/payment.tpl.html',
         	controller: 'PaymentController'
