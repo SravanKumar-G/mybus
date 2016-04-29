@@ -54,7 +54,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private ServiceLayout layout;
+	private String layoutId;
 
 	@Getter
 	@Setter

@@ -34,8 +34,8 @@
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Layout Name:</label> -->
                     <select class="form-control" ng-model="busServiceEditCtrl.busService.layout.layoutId" >
-                    		<option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
-                    		<option selected="selected" values="">-- Layout Name -- </option>
+                        <option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
+                        <option selected="selected" values="">-- Layout Name -- </option>
                     </select>
                     <br>
                 </div>
@@ -49,13 +49,13 @@
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Tax Mode:</label> -->
                     <select class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" required>
-                    	<option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
-                    	<option selected="selected" values="">--Service Tax Mode--</option>
+                        <option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
+                        <option selected="selected" values="">--Service Tax Mode--</option>
                     </select>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                   <!--  <label for="sel1">Service Tax:</label> -->
+                    <!--  <label for="sel1">Service Tax:</label> -->
                     <input type="number" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.busService.serviceTax" ng-init="busServiceEditCtrl.serviceTax=10" required >
                     <br>
                 </div>
@@ -64,13 +64,13 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Journey From Date :</label>
-                     <input type="date" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
+                    <input type="date" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Journey To Date :</label>
-                     <input type="date" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
-                  	<br>
+                    <input type="date" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
+                    <br>
                 </div>
             </div>
             <div class="row">
@@ -85,25 +85,25 @@
                     <br>
                 </div>
             </div>
-             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='DAILY'">
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='DAILY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-model="busServiceEditCtrl.busService.frequency.DAILY">
                 	 	{{day}}
                 	 </span>
                 </div>
-             </div>
-			<div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='WEEKLY'">
+            </div>
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='WEEKLY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" name="{{day}}" ng-model="busServiceEditCtrl.busService.frequency.weeklyDays" >
                 	 	{{day}}
                 	 </span>
                 </div>
-             </div>
-             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='SPECIAL'">
+            </div>
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='SPECIAL'">
                 <div class="col-sm-4">
-                	<div ng-repeat="specialDay in busServiceEditCtrl.specialDays">
+                    <div ng-repeat="specialDay in busServiceEditCtrl.specialDays">
                 		<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates != ''">
                 	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates"  mybus-datepicker >
                 	 		<input type="submit" class="btn btn-primary" value="Delete" ng-click"" >
@@ -111,85 +111,85 @@
                 	 	<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates == ''">
                 	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates">
                 	 	</span>
-                	 	<br/>
-                	 </div>
+                        <br/>
+                    </div>
                 </div>
-             </div>
-             <div class="row">
+            </div>
+            <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Route Name:</label> -->
-                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id" 
-                    		data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
-                    		<option selected="selected" values="">--Route Name--</option>
-                    		</select>
+                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id"
+                            data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
+                        <option selected="selected" values="">--Route Name--</option>
+                    </select>
                     <br>
                 </div>
-             </div>
-             <div class="row" ng-if="busServiceEditCtrl.routeCities">
-	             <div class="col-md-9">
-	             	<div class="bpdp-tab" ng-init="tab=1">
-					    <ul>
-					        <li class="tab"  ng-class="{active:tab==1}">
-					            <a href ng-click="tab = 1">Boarding Points</a>
-					        </li>
-					        <li class="tab" ng-class="{active:tab==2}">
-					            <a href ng-click="tab = 2">Dropping Points</a>
-					        </li>
-					    </ul>
-					
-					    <div class="tab-content" ng-show="tab==1">
-					        <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
-						        <tr ng-repeat="boardingPoint in boardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
-							        <td data-title="'Boarding Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
-							        <td data-title="'Provide Stop'" class="clickable-item col-md-4">
-							        	<input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
-									</td>
-							        <td data-title="'Departure Time'">
-							        	<div ng-show="boardingPoint.active">
-							        		<input type="time" class="form-control" ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
-							        	</div>
-							        </td>
-							        <td data-title="'Day'">0</td>
-							   	</tr>
-						    </table>
-					    </div>
-					    <div class="tab-content" ng-show="tab==2">
-						    <table class="table table-bordered table-condensed table-hover" ng-table="dropingPointContentTableParams">
-							    <tr ng-repeat="dropingPoint in dropingPoints" ng-class="dropingPoint.active?'':'bg-danger'">
-							        <td data-title="'Droping Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ dropingPoint.name }}</td>
-							        <td data-title="'Provide Stop'" class="clickable-item col-md-4">
-							        	<input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
-									</td>
-							        <td data-title="'Departure Time'">
-							        	<div ng-show="dropingPoint.active">
-							        		<input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
-							        	</div>
-							        </td>
-							        <td data-title="'Day'"></td>
-							   	</tr>
-						    </table>
-					    </div>
-					</div>
-			    </div>
-			    
-             	<!-- <table class="table table-bordered table-condensed table-hover" style="width: 80%" ng-table="">
-				    <tr ng-repeat="routeCity in busServiceEditCtrl.routeCities">
-				        <td data-title="'Station Name'">{{routeCity.name}}</td>
-				        <td data-title="'Provide Stop'"><input type="checkbox" data-ng-checked="routeCity.provideStop" class="form-control" data-ng-model="routeCity.provideStop"></td>
-				        <td data-title="'Departure Time'">
-				        	<select class="form-control" data-ng-options="n for n in [] | range:1:12" 
-                    				data-ng-model="routeCity.hour" style="width:75px; display:inline"></select>
-							<select class="form-control" data-ng-options="n for n in [] | range:1:60" 
-                    				data-ng-model="routeCity.minutes" style="width:75px; display:inline"></select>     
-							<select class="form-control" data-ng-options="n for n in ['AM', 'PM']" 
-                    				data-ng-model="routeCity.meridian" style="width:75px; display:inline"></select>                    				               				
-				        </td>
-				        <td data-title="'Day'"><select class="form-control" data-ng-options="n for n in [] | range:1:60" 
-                    				data-ng-model="routeCity.day" ></select> </td>
-				    </tr>
-				</table> -->
-             </div>
-             
+            </div>
+            <div class="row" ng-if="busServiceEditCtrl.routeCities">
+                <div class="col-md-9">
+                    <div class="bpdp-tab" ng-init="tab=1">
+                        <ul>
+                            <li class="tab"  ng-class="{active:tab==1}">
+                                <a href ng-click="tab = 1">Boarding Points</a>
+                            </li>
+                            <li class="tab" ng-class="{active:tab==2}">
+                                <a href ng-click="tab = 2">Dropping Points</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" ng-show="tab==1">
+                            <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
+                                <tr ng-repeat="boardingPoint in boardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
+                                    <td data-title="'Boarding Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
+                                    <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+                                        <input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+                                    </td>
+                                    <td data-title="'Departure Time'">
+                                        <div ng-show="boardingPoint.active">
+                                            <input type="time" class="form-control" ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+                                        </div>
+                                    </td>
+                                    <td data-title="'Day'">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="tab-content" ng-show="tab==2">
+                            <table class="table table-bordered table-condensed table-hover" ng-table="dropingPointContentTableParams">
+                                <tr ng-repeat="dropingPoint in dropingPoints" ng-class="dropingPoint.active?'':'bg-danger'">
+                                    <td data-title="'Droping Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ dropingPoint.name }}</td>
+                                    <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+                                        <input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+                                    </td>
+                                    <td data-title="'Departure Time'">
+                                        <div ng-show="dropingPoint.active">
+                                            <input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+                                        </div>
+                                    </td>
+                                    <td data-title="'Day'"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <table class="table table-bordered table-condensed table-hover" style="width: 80%" ng-table="">
+                   <tr ng-repeat="routeCity in busServiceEditCtrl.routeCities">
+                       <td data-title="'Station Name'">{{routeCity.name}}</td>
+                       <td data-title="'Provide Stop'"><input type="checkbox" data-ng-checked="routeCity.provideStop" class="form-control" data-ng-model="routeCity.provideStop"></td>
+                       <td data-title="'Departure Time'">
+                           <select class="form-control" data-ng-options="n for n in [] | range:1:12"
+                                   data-ng-model="routeCity.hour" style="width:75px; display:inline"></select>
+                           <select class="form-control" data-ng-options="n for n in [] | range:1:60"
+                                   data-ng-model="routeCity.minutes" style="width:75px; display:inline"></select>
+                           <select class="form-control" data-ng-options="n for n in ['AM', 'PM']"
+                                   data-ng-model="routeCity.meridian" style="width:75px; display:inline"></select>
+                       </td>
+                       <td data-title="'Day'"><select class="form-control" data-ng-options="n for n in [] | range:1:60"
+                                   data-ng-model="routeCity.day" ></select> </td>
+                   </tr>
+               </table> -->
+            </div>
+
         </div>
     </form>
 
@@ -198,4 +198,3 @@
     <hr>
 
 </div>
-
