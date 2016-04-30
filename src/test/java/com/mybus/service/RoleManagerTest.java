@@ -76,7 +76,8 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         role.setName("kee");
         Assert.assertNotNull(r);
         roleDAO.save(r);
-        Assert.assertEquals("kee", "kee");
+        Assert.assertEquals("kee", role.getName());
+        
     }
 
     @Test
