@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by CrazyNaveen on 4/27/16.
  */
 @Api(value = "Role Controller")
-@RequestMapping(value = "/api/v1/kee")
+@RequestMapping(value = "/api/v1/")
 @RestController
 public class RoleController extends MyBusBaseController {
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
