@@ -28,6 +28,12 @@ public class CoreAppConfig {
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
+        // for Hibernate 4.x:
+       // mapper.registerModule(new Hibernate4Module());
+// or, for Hibernate 5.x
+        //mapper.registerModule(new Hibernate5Module());
+// or, for Hibernate 3.6
+        //mapper.registerModule(new Hibernate3Module());
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
     }
