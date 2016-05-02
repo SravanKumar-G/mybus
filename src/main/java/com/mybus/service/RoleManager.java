@@ -26,7 +26,7 @@ public class RoleManager {
             //role.id =123, role.name=test
         //1234,test
             Preconditions.checkNotNull(role, "The role can not be null");
-            Preconditions.checkNotNull(role.getName(), "role can not be null");
+            Preconditions.checkNotNull(role.getName(), "role name can not be null");
             Role duplicateRole = (Role) roleDAO.findOneByName(role.getName());
             //duplicateRole =123, name=test
 
