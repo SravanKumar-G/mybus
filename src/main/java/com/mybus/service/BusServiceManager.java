@@ -2,6 +2,7 @@ package com.mybus.service;
 
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
+import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
 
@@ -27,6 +28,9 @@ public class BusServiceManager {
 
 	@Autowired
 	private BusServiceDAO busServiceDAO;
+
+	@Autowired
+	private LayoutDAO layoutDAO;
 	//TODO: When a service is deleted the respective trips need to be deleted and so does any reservations tied to
 	//those trips
 	public boolean deleteService(String id) {
@@ -70,9 +74,14 @@ public class BusServiceManager {
 		Preconditions.checkNotNull(busService.getServiceNumber(), "The bus service number can not be null");
 		Preconditions.checkNotNull(busService.getPhoneEnquiry(), "The bus service enquiry phone can not be null");
 		Preconditions.checkNotNull(busService.getLayoutId(), "The bus service layout can not be null");
+		Preconditions.checkNotNull(layoutDAO.findOne(busService.getLayoutId()), "Invalid layout id");
+		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service start date can not be null");
+		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service end date not be null");
 		Preconditions.checkNotNull(busService.getFrequency(), "The bus service frequency can not be null");
 		if(busService.getFrequency().equals(ServiceFrequency.WEEKLY)){
 			Preconditions.checkNotNull(busService.getFrequency().getWeeklyDays(), "Weekly days can not be null");
+		} else if(busService.getFrequency().equals(ServiceFrequency.SPECIAL)){
+			Preconditions.checkNotNull(busService.getFrequency().getSpecialServiceDatesInDate(), "Weekly days can not be null");
 		}
 
 		//update
@@ -92,9 +101,9 @@ public class BusServiceManager {
 	}
 	public BusService convertStringToDatesInBusService(BusService busService){
 		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service Effective From can not be null");
-		busService.setEffectiveFromInDate(convertStringToDate(busService.getEffectiveFrom()));
+		//busService.setEffectiveFromInDate(convertStringToDate(busService.getEffectiveFrom()));
 		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service Effective To can not be null");
-		busService.setEffectiveToInDate(convertStringToDate(busService.getEffectiveTo()));
+		//busService.setEffectiveToInDate(convertStringToDate(busService.getEffectiveTo()));
 		return busService;
 	}
 	private DateTime convertStringToDate(String stringDate){

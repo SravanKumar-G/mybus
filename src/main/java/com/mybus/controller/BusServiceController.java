@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value = "/api/v1/")
 @Api(value = "BusServiceController", description = "Management of the Bus Services ")
-public class BusServiceController {
+public class BusServiceController extends MyBusBaseController{
 
 	private static final Logger logger = LoggerFactory.getLogger(BusServiceController.class);
 

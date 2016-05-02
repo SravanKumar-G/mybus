@@ -58,20 +58,17 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private String effectiveFrom;
-	
-	@Getter
-	@Setter
-	private DateTime effectiveFromInDate;
-	
-	@Getter
-	@Setter
-	private String effectiveTo;
+	private String routeId;
 
 	@Getter
 	@Setter
-	private DateTime effectiveToInDate;
-	
+	//yyyy-MM-dd
+	private DateTime effectiveFrom;
+
+	@Getter
+	@Setter
+	private DateTime effectiveTo;
+
 	@Getter
 	@Setter
 	private ServiceFrequency frequency;
