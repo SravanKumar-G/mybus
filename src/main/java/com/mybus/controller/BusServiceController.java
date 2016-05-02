@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +44,10 @@ public class BusServiceController extends MyBusBaseController{
 	@RequestMapping(value = "service", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@ApiOperation(value = "Create a bus service", response = BusService.class)
-	public BusService createService(HttpServletRequest request,
+	public ResponseEntity createService(HttpServletRequest request,
 			@ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
 		logger.debug("post bus service called");
-		return busServiceManager.saveBusService(busServiceManager.convertStringToDatesInBusService(busService));
+		return new ResponseEntity<>(busServiceManager.saveBusService(busServiceManager.convertStringToDatesInBusService(busService)), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "service/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -78,6 +79,16 @@ public class BusServiceController extends MyBusBaseController{
 			@ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
 		logger.debug("update BusService called");
 		return busServiceManager.updateBusService(service);
+	}
+	
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "publish/{id}" ,method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value="service publish")
+	public BusService pubulishBusService(HttpServletRequest request, 
+			@ApiParam(value = "id of the bus service to be publish ") @PathVariable final String id){
+		logger.debug("publish bus service id :{}",id);
+		return busServiceManager.publishBusService(id);
 	}
 
 }

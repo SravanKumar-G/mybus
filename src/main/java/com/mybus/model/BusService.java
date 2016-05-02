@@ -84,5 +84,9 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private List<ServiceFare> serviceFares;
+	
+	@Getter
+	@Setter
+	private String status;
 
 }

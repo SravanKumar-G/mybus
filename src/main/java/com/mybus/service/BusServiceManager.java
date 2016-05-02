@@ -5,6 +5,7 @@ import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
+import com.mybus.model.BusServicePublishStatus;
 
 import com.mybus.model.ServiceFrequency;
 import org.joda.time.DateTime;
@@ -48,6 +49,9 @@ public class BusServiceManager {
 
 	public BusService updateBusService(BusService busService) {
 		validateBusService(busService);
+		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
+			busService.setId(null);
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Updating bus service :[{}]" + busService);
 		}
@@ -110,6 +114,17 @@ public class BusServiceManager {
 			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 			DateTime dt = formatter.parseDateTime(stringDate);
 			return dt;
+	}
+	public BusService publishBusService(String id){
+		BusService busService = busServiceDAO.findOne(id);
+		Preconditions.checkNotNull(busService, "We don't have this bus service");
+		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
+			throw new RuntimeException("This bus service already published");
+		} else if(BusServicePublishStatus.IN_ACTIVE.name().equalsIgnoreCase(busService.getStatus())){
+			throw new RuntimeException("This bus service is in In-Active State,You Can not publish !");
+		}
+		busService.setStatus(BusServicePublishStatus.PUBLISHED.name());
+		return busServiceDAO.save(busService);
 	}
 
 }

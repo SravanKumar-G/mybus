@@ -14,7 +14,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.valid = false;
 
         busServiceEditCtrl.totalSeats = 0;
-
+        
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 
         $scope.headline = "Service Details";
@@ -27,7 +27,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			cutoffTime:null,
         	serviceTaxType:null,
         	serviceTax:null, 
-	        layout:null,
+        	routeId:null,
 	        effectiveFrom:null,
         	effectiveTo:null,
         	frequency:null,        	
@@ -64,10 +64,10 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     					cutoffTime:null,
     		        	serviceTaxType:null,
     		        	serviceTax:null, 
-    			        layout:null,
+    		        	layoutId:null,
     			        effectiveFrom:null,
     		        	effectiveTo:null,
-    		        	frequency:null,        	
+    		        	frequency:{weeklyDays:[]},
     		        	boardingPoints:[],
     		        	dropingPoints:[],
     		        	serviceFares:[]
@@ -84,10 +84,12 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.cutoffTime=null;
         	busServiceEditCtrl.busService.serviceTaxType=null;
         	busServiceEditCtrl.busService.serviceTax=null; 
-        	busServiceEditCtrl.busService.layout=null;
+        	busServiceEditCtrl.busService.layoutId=null;
+        	busServiceEditCtrl.busService.routeId=null;
+        	
         	busServiceEditCtrl.busService.effectiveFrom=null;
         	busServiceEditCtrl.busService.effectiveTo=null;
-        	busServiceEditCtrl.busService.frequency=null;        	
+        	busServiceEditCtrl.busService.frequency.weeklyDays=[];
         	busServiceEditCtrl.busService.boardingPoints=[];
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
@@ -97,6 +99,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.getRouteCities = function() {
         	var routeId = busServiceEditCtrl.route.id;
         	console.log('route id -' + routeId);
+        	busServiceEditCtrl.busService.routeId=routeId;
         	console.log('route name -' +busServiceEditCtrl.route.name);
         	routesManager.getRoutes(function(data){
         		angular.forEach(data, function(value, key) {
@@ -168,6 +171,22 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	
         	busServiceManager.createService(busServiceEditCtrl.busService)
         };
+        
+        $scope.editPublishedService=function(){
+        	busServiceEditCtrl.busService.status = "ACTIVE";
+        }
+        
+          $scope.weeklyDays = function(checkedOrUnchecked,index) {
+        	  if(busServiceEditCtrl.busService.frequency.weeklyDays==undefined)
+        		  busServiceEditCtrl.busService.frequency.weeklyDays=[];
+        	  
+        	  if(checkedOrUnchecked){
+        		  busServiceEditCtrl.busService.frequency.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
+        	  }else{
+        		  $filter('filter')(busServiceEditCtrl.busService.frequency.weeklyDays, busServiceEditCtrl.weeklyDays[index])
+        		  busServiceEditCtrl.busService.frequency.weeklyDays.splice(busServiceEditCtrl.busService.frequency.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]),  busServiceEditCtrl.busService.frequency.weeklyDays.length); 
+        	  }        	  
+          };
         
         $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index){
         	switch (bpOrdb) {

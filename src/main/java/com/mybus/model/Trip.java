@@ -1,5 +1,6 @@
 package com.mybus.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.ToString;
 /**
  * 
@@ -8,6 +9,7 @@ import lombok.ToString;
  */
 
 @ToString
-public class Trip {
+@ApiModel("Trip")
+public class Trip extends AbstractDocument {
 
 }

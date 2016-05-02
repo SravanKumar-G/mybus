@@ -62,9 +62,9 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 				callback(data);
 			})
 			.error(function (err) {
-				var errorMsg = "error adding new service info. " + (err && err.error ? err.error : '');
+				var errorMsg = "error adding new service info. " + (err && err.message ? err.message : '');
 				$log.error(errorMsg);
-				alert(errorMsg);
+				 sweetAlert("Error",errorMsg,"error");
 			});
 		},
 		updateService: function(service,callback) {
@@ -84,10 +84,32 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 	                confirmButtonColor: "#ec6c62"},function(){
 	                	
 	                	$http.delete('/api/v1/service/'+id).success(function (data) {
-	        				$rootScope.$broadcast('servicesDeleteComplete');
 	        				swal("Deleted!", "Bus Service was successfully deleted!", "success");
+	        				$rootScope.$broadcast('servicesDeleteComplete');
 	        			}).error(function () {
 	                       swal("Oops", "We couldn't connect to the server!", "error");
+	                    });
+	                	
+	            })
+			
+		},
+		
+		busServicePublish : function(id) {
+			 swal({
+	                title: "Are you sure ?",
+	                text: "Are you sure you want to publish this Bus Service ?",
+	                type: "warning",
+	                showCancelButton: true,
+	                closeOnConfirm: false,
+	                confirmButtonText: "Yes, publish it!",
+	                confirmButtonColor: "#ec6c62"},function(){
+	                	
+	                	$http.get('/api/v1/publish/'+id).success(function (data) {
+	        				$rootScope.$broadcast('servicesPublished');
+	        				swal("Published!", "Bus Service was successfully published!", "success");
+	        				callback(data);
+	        			}).error(function (error) {
+	                       swal("Oops", error, "error");
 	                    });
 	                	
 	            })

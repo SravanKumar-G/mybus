@@ -6,13 +6,13 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Service Name:</label> -->
-                    <input type="text" placeholder="Service Name" class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceName" ng-init="busServiceEditCtrl.busService.serviceName ='Test' " required>
+                    <!-- <label for="sel1">Service Name:</label> --> 
+                    <input type="text" placeholder="Service Name" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.serviceName" ng-init="busServiceEditCtrl.busService.serviceName ='Test' " required>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Number:</label> -->
-                    <input type="text" placeholder="Service Number" class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceNumber" ng-init="busServiceEditCtrl.busService.serviceNumber =123" required>
+                    <input type="text" placeholder="Service Number" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.serviceNumber" ng-init="busServiceEditCtrl.busService.serviceNumber =123" required>
                     <br>
                 </div>
             </div>
@@ -20,43 +20,47 @@
             <div class="row">
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Enquiry Phone Number:</label> -->
-                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" data-ng-model="busServiceEditCtrl.busService.phoneEnquiry" ng-init="busServiceEditCtrl.busService.phoneEnquiry =9294541342" required>
+                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.phoneEnquiry" ng-init="busServiceEditCtrl.busService.phoneEnquiry =9294541342" required>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Cutoff-Time(Hours):</label> -->
-                    <input type="number" placeholder="Cutoff-Time(Hours):" class="form-control" data-ng-model="busServiceEditCtrl.busService.cutoffTime" required>
+                    <input type="number" placeholder="Cutoff-Time(Hours):" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.cutoffTime" required>
                     <br>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-sm-4">
-                    <!-- <label for="sel1">Layout Name:</label> -->
-                    <select class="form-control" ng-model="busServiceEditCtrl.busService.layout.layoutId" >
-                        <option selected="selected" values="">-- Layout Name -- </option>
-                        <option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
-                    </select>
+            <div class="col-sm-4">
+
+                    <!--  <label for="sel1">Service Tax:</label> -->
+                    <input type="number" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.busService.serviceTax" ng-init="busServiceEditCtrl.serviceTax=10" required >
+
                     <br>
                 </div>
-                <label class="col-sm-3 control-label checkbox" for="activeInactive">Active</label>
+                
+                <label class="col-sm-1 control-label checkbox" for="activeInactive">Active</label>
                 <div class="col-sm-1">
-                    <input type="checkbox" data-ng-checked="busServiceEditCtrl.active" class="form-control" data-ng-model="busServiceEditCtrl.busService.active">
+                    <input type="checkbox" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" class="form-control" data-ng-checked="busServiceEditCtrl.active"  data-ng-model="busServiceEditCtrl.busService.active">
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Service Tax Mode:</label> -->
-                    <select class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" required>
-                        <option selected="selected" values="">--Service Tax Mode--</option>
+                    <label for="sel1">Service Tax Mode:</label>
+
+                    <select class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" required>
                         <option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
                     </select>
                     <br>
                 </div>
+                
                 <div class="col-sm-4">
-                    <!--  <label for="sel1">Service Tax:</label> -->
-                    <input type="number" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.busService.serviceTax" ng-init="busServiceEditCtrl.serviceTax=10" required >
+                    <label for="sel1">Layout Name:</label>
+
+                    <select class="form-control" ng-model="busServiceEditCtrl.busService.layoutId" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'">
+                        <option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
+                    </select>
                     <br>
                 </div>
             </div>
@@ -64,23 +68,24 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Journey From Date :</label>
-                    <input type="date" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Journey To Date :</label>
-                    <input type="date" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
+
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" mybus-datepicker/>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Service Mode :</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="DAILY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="DAILY">
                     <label>Daily</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="WEEKLY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="WEEKLY">
                     <label>Weekly</label>
-                    <input type="radio" name="serviceMode" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="SPECIAL">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="SPECIAL">
                     <label>Special</label>
                     <br>
                 </div>
@@ -88,7 +93,7 @@
             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='DAILY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
-                	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-model="busServiceEditCtrl.busService.frequency.DAILY">
+                	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" checklist-model="busServiceEditCtrl.busService.frequency.DAILY" checklist-value="{{day}}">
                 	 	{{day}}
                 	 </span>
                 </div>
@@ -96,31 +101,33 @@
             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='WEEKLY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
-                	 	<input type="checkbox" name="{{day}}" ng-model="busServiceEditCtrl.busService.frequency.weeklyDays" >
+                	 	<input type="checkbox" name="{{day}}" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model='checkedOrUnchecked' checklist-model="busServiceEditCtrl.busService.frequency.weeklyDays" checklist-value="{{day}}" ng-click=weeklyDays(checkedOrUnchecked,$index)>
                 	 	{{day}}
                 	 </span>
                 </div>
             </div>
+            
             <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='SPECIAL'">
                 <div class="col-sm-4">
                     <div ng-repeat="specialDay in busServiceEditCtrl.specialDays">
                 		<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates != ''">
-                	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates"  mybus-datepicker >
+                	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates"  mybus-datepicker >
                 	 		<input type="submit" class="btn btn-primary" value="Delete" ng-click"" >
                 	 	</span>
                 	 	<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates == ''">
-                	 		<input type="date" class="form-control" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates">
+                	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates">
                 	 	</span>
                         <br/>
                     </div>
                 </div>
+                
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Route Name:</label> -->
-                    <select class="form-control" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id"
+                
+                    <label for="sel1">Route Name : </label>
+                    <select class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id"
                             data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
-                        <option selected="selected" values="">--Route Name--</option>
                     </select>
                     <br>
                 </div>
@@ -193,8 +200,9 @@
         </div>
     </form>
 
-    <input type="submit" class="btn btn-primary" ng-if="!busServiceEditCtrl.valid" ng-disabled="serviceForm.$invalid" ng-click="saveService()" value="Save Service" />
-    <input type="submit" class="btn btn-primary" ng-if="busServiceEditCtrl.valid" ng-click="saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-primary" ng-hide="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-if="!busServiceEditCtrl.valid" ng-disabled="serviceForm.$invalid" ng-click="saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-primary" ng-hide="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-if="busServiceEditCtrl.valid" ng-click="saveService()" value="Save Service" />
+    <input type="submit" class="btn btn-warning" ng-if="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="editPublishedService()" value="Edit Service" />
     <hr>
 
 </div>

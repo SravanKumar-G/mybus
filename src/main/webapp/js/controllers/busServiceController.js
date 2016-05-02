@@ -28,6 +28,9 @@ angular.module('myBus.serviceModules', ['ngTable', 'ui.bootstrap'])
             busServiceManager.deleteService(service.id);
         };
 
+        busServiceCtrl.busServicePublish = function(serviceID) {
+        	busServiceManager.busServicePublish(serviceID);
+        }
         var loadTableData = function (tableParams, $defer) {
             var data = busServiceManager.getAllServices();
             var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
