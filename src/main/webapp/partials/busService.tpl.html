@@ -22,11 +22,11 @@
                     <span class="glyphicon glyphicon-remove"></span></md-icon>
             </md-button>
         </td>
-        <td data-title="'Published'">
+        <td data-title="'Publish status'">
             
-            	<button ng-show="service.active=='PUBLISHED'" class="btn btn-primary">Published</button>
-            	<button ng-hide="service.active=='ACTIVE' or service.active=='PUBLISH'" class="btn btn-primary" ng-click=" busServiceCtrl.busServicePublish(service.id)" >Publish</button>
-            	<button ng-hide="service.active=='IN_ACTIVE'" class="btn btn-primary">Active</button>
+            	<button ng-show="service.status=='PUBLISHED'" ng-disabled="true" class="btn btn-primary">Published</button>
+            	<button ng-hide="service.status=='PUBLISHED'" class="btn btn-primary" ng-click=" busServiceCtrl.busServicePublish(service.id)" >Publish</button>
+            	<button ng-show="service.status=='IN_ACTIVE'" class="btn btn-primary">Active</button>
             	
             </div>
         </td>

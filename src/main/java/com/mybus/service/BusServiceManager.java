@@ -49,7 +49,7 @@ public class BusServiceManager {
 
 	public BusService updateBusService(BusService busService) {
 		validateBusService(busService);
-		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getActive())){
+		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
 			busService.setId(null);
 		}
 		if (logger.isDebugEnabled()) {
@@ -118,12 +118,12 @@ public class BusServiceManager {
 	public BusService publishBusService(String id){
 		BusService busService = busServiceDAO.findOne(id);
 		Preconditions.checkNotNull(busService, "We don't have this bus service");
-		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getActive())){
+		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
 			throw new RuntimeException("This bus service already published");
-		} else if(BusServicePublishStatus.IN_ACTIVE.name().equalsIgnoreCase(busService.getActive())){
+		} else if(BusServicePublishStatus.IN_ACTIVE.name().equalsIgnoreCase(busService.getStatus())){
 			throw new RuntimeException("This bus service is in In-Active State,You Can not publish !");
 		}
-		busService.setActive(BusServicePublishStatus.PUBLISHED.name());
+		busService.setStatus(BusServicePublishStatus.PUBLISHED.name());
 		return busServiceDAO.save(busService);
 	}
 

@@ -20,7 +20,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private String active;
+	private boolean active;
 
 	@Getter
 	@Setter
@@ -54,10 +54,6 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private ServiceLayout layout;
-
-	@Getter
-	@Setter
 	private String layoutId;
 
 	@Getter
@@ -88,5 +84,9 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private List<ServiceFare> serviceFares;
+	
+	@Getter
+	@Setter
+	private String status;
 
 }

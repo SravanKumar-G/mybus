@@ -62,9 +62,9 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 				callback(data);
 			})
 			.error(function (err) {
-				var errorMsg = "error adding new service info. " + (err && err.error ? err.error : '');
+				var errorMsg = "error adding new service info. " + (err && err.message ? err.message : '');
 				$log.error(errorMsg);
-				alert(errorMsg);
+				 sweetAlert("Error",errorMsg,"error");
 			});
 		},
 		updateService: function(service,callback) {
