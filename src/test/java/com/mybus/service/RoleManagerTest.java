@@ -22,8 +22,6 @@ import static org.junit.Assert.*;
 public class RoleManagerTest extends AbstractControllerIntegrationTest{
 
 
-    private Role currentRole;
-
     @Autowired
     private RoleDAO roleDAO;
 
@@ -61,7 +59,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         roleDAO.save(role);
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Role  already exists with this same name");
+        expectedEx.expectMessage("Role already exists with this same name");
         roleManager.saveRole(duplicateRole);
 
     }
@@ -77,7 +75,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Assert.assertNotNull(r);
         roleDAO.save(r);
         Assert.assertEquals("kee", role.getName());
-        
+
     }
 
     @Test
