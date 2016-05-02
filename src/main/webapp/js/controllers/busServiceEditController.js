@@ -14,7 +14,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.valid = false;
 
         busServiceEditCtrl.totalSeats = 0;
-
+        
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 
         $scope.headline = "Service Details";

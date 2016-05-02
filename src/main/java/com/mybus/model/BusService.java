@@ -20,7 +20,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private boolean active;
+	private String active;
 
 	@Getter
 	@Setter
@@ -51,6 +51,10 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private BigDecimal serviceTax; 
+
+	@Getter
+	@Setter
+	private ServiceLayout layout;
 
 	@Getter
 	@Setter

@@ -80,5 +80,4 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
                 .content(service.toJSONString()).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
     }
-
 }
