@@ -5,6 +5,7 @@ import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
 
+import com.mybus.model.ServiceFrequency;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -26,7 +27,8 @@ public class BusServiceManager {
 
 	@Autowired
 	private BusServiceDAO busServiceDAO;
-
+	//TODO: When a service is deleted the respective trips need to be deleted and so does any reservations tied to
+	//those trips
 	public boolean deleteService(String id) {
 		Preconditions.checkNotNull(id, "The Service id can not be null");
 		if (logger.isDebugEnabled()) {
@@ -65,6 +67,14 @@ public class BusServiceManager {
 	private void validateBusService(BusService busService) {
 		Preconditions.checkNotNull(busService, "The bus service can not be null");
 		Preconditions.checkNotNull(busService.getServiceName(), "The bus service name can not be null");
+		Preconditions.checkNotNull(busService.getServiceNumber(), "The bus service number can not be null");
+		Preconditions.checkNotNull(busService.getPhoneEnquiry(), "The bus service enquiry phone can not be null");
+		Preconditions.checkNotNull(busService.getLayoutId(), "The bus service layout can not be null");
+		Preconditions.checkNotNull(busService.getFrequency(), "The bus service frequency can not be null");
+		if(busService.getFrequency().equals(ServiceFrequency.WEEKLY)){
+			Preconditions.checkNotNull(busService.getFrequency().getWeeklyDays(), "Weekly days can not be null");
+		}
+
 		//update
 		if (busService.getId() != null ){
 			BusService service = busServiceDAO.findOne(busService.getId());

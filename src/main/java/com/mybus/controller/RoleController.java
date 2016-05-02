@@ -42,10 +42,10 @@ public class RoleController extends MyBusBaseController {
     }
 
 
-    @RequestMapping(value = "create", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
+    @RequestMapping(value = "createRole", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a role")
-    public ResponseEntity createRole(HttpServletRequest request,
+    public ResponseEntity<Role> createRole(HttpServletRequest request,
                                      @ApiParam(value = "JSON for Role to be created") @RequestBody final Role role){
         logger.debug("create role called");
         return new ResponseEntity<>(roleManager.saveRole(role), HttpStatus.OK);
@@ -79,44 +79,5 @@ public class RoleController extends MyBusBaseController {
         Role  role = (Role)roleDAO.findOne(id);
         return role;
     }
-
-
 }
 
- /* @RequestMapping(value = "/list", method = {RequestMethod.GET}, produces = ControllerUtils.JSON_UTF8)
-    public Iterable<Role> getRoles(final HttpServletRequest request) throws Exception {
-        return roleDAO.findAll();
-    }*/
-
-   /* @RequestMapping(value = "/create", method = {RequestMethod.POST}, produces = ControllerUtils.JSON_UTF8)
-    public String createRole(final HttpServletRequest request) throws Exception {
-        String name = request.getParameter("name");
-        Iterable<Role> roles = roleDAO.findByName(name);
-        if (roles.iterator().hasNext()) {
-            throw new RuntimeException("Employee with same names found");
-        }
-        Role role = new Role();
-        role.setName(name);
-        roleDAO.save(role);
-        return "Role is created";
-    }*/
-  /* @RequestMapping(value = "/{id}", method = { RequestMethod.GET }, produces = ControllerUtils.JSON_UTF8)
-    public Role getRole(final HttpServletRequest request, @PathVariable String id) throws Exception {
-        Role role = roleDAO.findByRoleId(new Long(id));
-        return role;
-    }*/
-
-    /*@RequestMapping(value = "/update/{roleId}", method = {RequestMethod.PUT}, produces = ControllerUtils.JSON_UTF8)
-    public String updateRole(final HttpServletRequest request, @PathVariable String roleId) throws Exception {
-        String name = request.getParameter("name");
-        roleManager.updateRole(roleId, name);
-        return "Role is updated";
-    }*/
-
-   /* @RequestMapping(value = "/delete", method = { RequestMethod.DELETE }, produces = ControllerUtils.JSON_UTF8)
-    public String deleteRole(final HttpServletRequest request) throws Exception {
-        String id = request.getParameter("id");
-        Role role = roleDAO.findByRoleId(Long.parseLong(id));
-        roleDAO.delete(role);
-        return "Role is deleted";
-    }*/

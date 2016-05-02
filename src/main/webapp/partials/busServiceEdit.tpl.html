@@ -34,8 +34,8 @@
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Layout Name:</label> -->
                     <select class="form-control" ng-model="busServiceEditCtrl.busService.layout.layoutId" >
-                        <option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
                         <option selected="selected" values="">-- Layout Name -- </option>
+                        <option ng-repeat="layout in busServiceEditCtrl.layouts" value="{{layout.id}}">{{layout.name}} </option>
                     </select>
                     <br>
                 </div>
@@ -49,8 +49,8 @@
                 <div class="col-sm-4">
                     <!-- <label for="sel1">Service Tax Mode:</label> -->
                     <select class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" required>
-                        <option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
                         <option selected="selected" values="">--Service Tax Mode--</option>
+                        <option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
                     </select>
                     <br>
                 </div>

@@ -12,6 +12,9 @@ import org.joda.time.DateTime;
  * Created by schanda on 02/02/16.
  */
 public class ServiceFrequency {
+	public static String DAILY = "DAILY";
+	public static String WEEKLY = "WEEKLY";
+	public static String SPECIAL = "SPECIAL";
 
 	@Getter
 	@Setter
