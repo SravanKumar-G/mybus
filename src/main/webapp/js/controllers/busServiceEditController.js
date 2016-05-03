@@ -18,6 +18,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 
         $scope.headline = "Service Details";
+        $scope.sSDates=[];
 
         busServiceEditCtrl.busService = {
         	active:false,
@@ -30,7 +31,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	routeId:null,
 	        effectiveFrom:null,
         	effectiveTo:null,
-        	frequency:null,        	
+        	frequency:null,  
+        	weeklyDays:[],
+        	specialServiceDates:[],
         	boardingPoints:[],
         	dropingPoints:[],
         	serviceFares:[]
@@ -52,7 +55,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     	  if(cache){
     		  busServiceEditCtrl.busService = cache.get(serviceId);
     	  }
-    	  if(busServiceEditCtrl.busService && busServiceEditCtrl.busService.id !== ''){
+    	  /*if(busServiceEditCtrl.busService && busServiceEditCtrl.busService.id !== ''){
     		  
     	  }else{
     		 
@@ -67,12 +70,14 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     		        	layoutId:null,
     			        effectiveFrom:null,
     		        	effectiveTo:null,
-    		        	frequency:{weeklyDays:[]},
+    		        	frequency:null,
+    		        	weeklyDays:[],
+    		        	specialServiceDates:[],
     		        	boardingPoints:[],
     		        	dropingPoints:[],
     		        	serviceFares:[]
     		        }
-    	  }
+    	  }*/
       }
 
         function initialize(){
@@ -89,7 +94,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	
         	busServiceEditCtrl.busService.effectiveFrom=null;
         	busServiceEditCtrl.busService.effectiveTo=null;
-        	busServiceEditCtrl.busService.frequency.weeklyDays=[];
+        	busServiceEditCtrl.busService.weeklyDays=[];
+        	busServiceEditCtrl.busService.specialServiceDates=[];
         	busServiceEditCtrl.busService.boardingPoints=[];
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
@@ -176,17 +182,38 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.status = "ACTIVE";
         }
         
-          $scope.weeklyDays = function(checkedOrUnchecked,index) {
-        	  if(busServiceEditCtrl.busService.frequency.weeklyDays==undefined)
-        		  busServiceEditCtrl.busService.frequency.weeklyDays=[];
-        	  
-        	  if(checkedOrUnchecked){
-        		  busServiceEditCtrl.busService.frequency.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
+        $scope.weeklyDays = function(checkedOrUnchecked,index) {
+       	  if(busServiceEditCtrl.busService.weeklyDays==undefined){
+       		  busServiceEditCtrl.busService.weeklyDays=[];
+          }
+       	  if(checkedOrUnchecked){
+       		  busServiceEditCtrl.busService.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
+       	  }else{
+       		  busServiceEditCtrl.busService.weeklyDays.splice(busServiceEditCtrl.busService.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]), 1);
+       	  }        	  
+       };
+       
+       $scope.specialServiceDates = function(specialServiceDate) {
+        	  if(busServiceEditCtrl.busService.specialServiceDates==undefined){
+        		  busServiceEditCtrl.busService.specialServiceDates=[];
+        		  busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+        		  $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
         	  }else{
-        		  $filter('filter')(busServiceEditCtrl.busService.frequency.weeklyDays, busServiceEditCtrl.weeklyDays[index])
-        		  busServiceEditCtrl.busService.frequency.weeklyDays.splice(busServiceEditCtrl.busService.frequency.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]),  busServiceEditCtrl.busService.frequency.weeklyDays.length); 
+        		  busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+        		  $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
         	  }        	  
-          };
+        };
+        $scope.removeSpecialServiceDatesFromList = function(specialServiceDate) {
+      	  if(busServiceEditCtrl.busService.specialServiceDates==undefined){
+      		busServiceEditCtrl.busService.specialServiceDates=[];
+      	  }else{
+      		var index = busServiceEditCtrl.busService.specialServiceDates.indexOf(specialServiceDate)
+      		if(index!=-1)
+      			busServiceEditCtrl.busService.specialServiceDates.splice(index, 1);
+      			$scope.sSDates.splice(index, 1);
+      	  }
+      	  return '';
+      };
         
         $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index){
         	switch (bpOrdb) {

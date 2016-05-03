@@ -43,8 +43,7 @@ public class BusService extends AbstractDocument {
 	
 	@Getter
 	@Setter
-	//private ServiceTaxType serviceTaxType;
-	private String serviceTaxType;
+	private ServiceTaxType serviceTaxType;
 
 	@Getter
 	@Setter

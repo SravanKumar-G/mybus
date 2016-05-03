@@ -81,16 +81,16 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Service Mode :</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="DAILY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="DAILY">
                     <label>Daily</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="WEEKLY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="WEEKLY">
                     <label>Weekly</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.serviceType" value="SPECIAL">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="SPECIAL">
                     <label>Special</label>
                     <br>
                 </div>
             </div>
-            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='DAILY'">
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency=='DAILY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" checklist-model="busServiceEditCtrl.busService.frequency.DAILY" checklist-value="{{day}}">
@@ -98,7 +98,7 @@
                 	 </span>
                 </div>
             </div>
-            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='WEEKLY'">
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency=='WEEKLY'">
                 <div class="col-sm-4">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" name="{{day}}" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model='checkedOrUnchecked' checklist-model="busServiceEditCtrl.busService.frequency.weeklyDays" checklist-value="{{day}}" ng-click=weeklyDays(checkedOrUnchecked,$index)>
@@ -107,15 +107,16 @@
                 </div>
             </div>
             
-            <div class="row" ng-show="busServiceEditCtrl.busService.frequency.serviceType=='SPECIAL'">
+            <div class="row" ng-show="busServiceEditCtrl.busService.frequency=='SPECIAL'">
                 <div class="col-sm-4">
-                    <div ng-repeat="specialDay in busServiceEditCtrl.specialDays">
-                		<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates != ''">
-                	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates"  mybus-datepicker >
-                	 		<input type="submit" class="btn btn-primary" value="Delete" ng-click"" >
+                	 	<span>
+                	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.specialServiceDate">
+                	 		<input type="submit" class="btn btn-primary" ng-disabled="!busServiceEditCtrl.specialServiceDate" value="add" ng-click="busServiceEditCtrl.specialServiceDate = specialServiceDates(busServiceEditCtrl.specialServiceDate)" >
                 	 	</span>
-                	 	<span ng-if="busServiceEditCtrl.busService.frequency.specialServiceDates == ''">
-                	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency.specialServiceDates">
+                    <div ng-repeat="specialDay in sSDates">
+                		<span ng-if="specialDay != ''">
+                			{{specialDay}}
+                	 		<input type="submit" value="Delete" class="btn btn-warning" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="removeSpecialServiceDatesFromList(busServiceEditCtrl.specialServiceDate)">
                 	 	</span>
                         <br/>
                     </div>
