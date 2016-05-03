@@ -79,7 +79,7 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
         //fail case
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/createRole").content(getObjectMapper()
                 .writeValueAsBytes(role)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
         actions.andExpect(jsonPath("$.message").value("role name can not be null"));
         //success
         role.put("name", "testRole");
@@ -90,7 +90,7 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
 
         actions = mockMvc.perform(asUser(post("/api/v1/createRole").content(getObjectMapper()
                 .writeValueAsBytes(role)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isInternalServerError());
+        actions.andExpect(status().isBadRequest());
         actions.andExpect(jsonPath("$.message").value("Role  already exists with this same name"));
 
     }

@@ -19,7 +19,7 @@ public class MyBusBaseController {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public JSONObject handleAppException(Exception ex) {
         return getJsonObject(ex);

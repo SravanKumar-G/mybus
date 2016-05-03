@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.LayoutDAO;
+import com.mybus.dao.RouteDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
 import com.mybus.model.BusService;
 import com.mybus.model.BusServicePublishStatus;
@@ -29,6 +30,9 @@ public class BusServiceManager {
 
 	@Autowired
 	private BusServiceDAO busServiceDAO;
+
+	@Autowired
+	private RouteDAO routeDAO;
 
 	@Autowired
 	private LayoutDAO layoutDAO;
@@ -79,14 +83,22 @@ public class BusServiceManager {
 		Preconditions.checkNotNull(busService.getPhoneEnquiry(), "The bus service enquiry phone can not be null");
 		Preconditions.checkNotNull(busService.getLayoutId(), "The bus service layout can not be null");
 		Preconditions.checkNotNull(layoutDAO.findOne(busService.getLayoutId()), "Invalid layout id");
+		Preconditions.checkNotNull(routeDAO.findOne(busService.getRouteId()), "Invalid route id");
 		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service start date can not be null");
 		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service end date not be null");
+		if(busService.getEffectiveFrom().isAfter(busService.getEffectiveTo())){
+			throw new RuntimeException("Invalid service dates. FROM date can not be after TO date");
+		}
 		Preconditions.checkNotNull(busService.getFrequency(), "The bus service frequency can not be null");
 		if(busService.getFrequency().equals(ServiceFrequency.WEEKLY)){
-			Preconditions.checkNotNull(busService.getFrequency().getWeeklyDays(), "Weekly days can not be null");
+			Preconditions.checkNotNull(busService.getWeeklyDays(), "Weekly days can not be null");
 		} else if(busService.getFrequency().equals(ServiceFrequency.SPECIAL)){
-			Preconditions.checkNotNull(busService.getFrequency().getSpecialServiceDatesInDate(), "Weekly days can not be null");
+			Preconditions.checkNotNull(busService.getSpecialServiceDates(), "Weekly days can not be null");
 		}
+
+		//TODO: validate the service fares
+
+		//TODO validate the boarding and dropping points
 
 		//update
 		if (busService.getId() != null ){
@@ -103,18 +115,7 @@ public class BusServiceManager {
 			}
 		}
 	}
-	public BusService convertStringToDatesInBusService(BusService busService){
-		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service Effective From can not be null");
-		//busService.setEffectiveFromInDate(convertStringToDate(busService.getEffectiveFrom()));
-		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service Effective To can not be null");
-		//busService.setEffectiveToInDate(convertStringToDate(busService.getEffectiveTo()));
-		return busService;
-	}
-	private DateTime convertStringToDate(String stringDate){
-			DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-			DateTime dt = formatter.parseDateTime(stringDate);
-			return dt;
-	}
+
 	public BusService publishBusService(String id){
 		BusService busService = busServiceDAO.findOne(id);
 		Preconditions.checkNotNull(busService, "We don't have this bus service");
@@ -127,4 +128,7 @@ public class BusServiceManager {
 		return busServiceDAO.save(busService);
 	}
 
+	public BusService updateServiceConfiguration(BusService service) {
+		return null;
+	}
 }

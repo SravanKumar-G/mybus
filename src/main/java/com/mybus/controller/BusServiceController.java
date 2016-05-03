@@ -47,7 +47,7 @@ public class BusServiceController extends MyBusBaseController{
 	public ResponseEntity createService(HttpServletRequest request,
 			@ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
 		logger.debug("post bus service called");
-		return new ResponseEntity<>(busServiceManager.saveBusService(busServiceManager.convertStringToDatesInBusService(busService)), HttpStatus.OK);
+		return new ResponseEntity<>(busServiceManager.saveBusService(busService), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "service/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

@@ -45,7 +45,7 @@ public class RoleController extends MyBusBaseController {
     @RequestMapping(value = "createRole", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a role")
-    public ResponseEntity<Role> createRole(HttpServletRequest request,
+    public ResponseEntity createRole(HttpServletRequest request,
                                      @ApiParam(value = "JSON for Role to be created") @RequestBody final Role role){
         logger.debug("create role called");
         return new ResponseEntity<>(roleManager.saveRole(role), HttpStatus.OK);

@@ -1,6 +1,7 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,12 +37,9 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private String cutoffTime;
-	
-	@Getter
-	@Setter
-	private DateTime cutoffTimeInDate;
-	
+	@ApiModelProperty(notes = "Cut off time in minutes for disabling reservations " +
+			"for this service before the bus starts")
+	private int cutoffTime;
 	
 	@Getter
 	@Setter
@@ -50,7 +48,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private BigDecimal serviceTax; 
+	private double serviceTax;
 
 	@Getter
 	@Setter
@@ -80,9 +78,20 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private Set<ServiceDropingPoint> dropingPoints;
-	
+
 	@Getter
 	@Setter
+	@ApiModelProperty(notes = "Days of the week to run the service")
+	private List<String> weeklyDays;
+
+	@Getter
+	@Setter
+	@ApiModelProperty(notes = "Dates for the service to be run, incase Frequency = 'Special' ")
+	private List<DateTime> specialServiceDates;
+
+	@Getter
+	@Setter
+	@ApiModelProperty(notes = "Fares for combination of routes with different cities")
 	private List<ServiceFare> serviceFares;
 	
 	@Getter

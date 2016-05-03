@@ -11,25 +11,12 @@ import org.joda.time.DateTime;
 /**
  * Created by schanda on 02/02/16.
  */
-public class ServiceFrequency {
-	public static String DAILY = "DAILY";
-	public static String WEEKLY = "WEEKLY";
-	public static String SPECIAL = "SPECIAL";
-
-	@Getter
-	@Setter
-	//private ServiceType serviceType;
-	private String serviceType;
-	
-	@Getter
-	@Setter
-	private List<String> weeklyDays;
-
-	@Getter
-	@Setter
-	private List<String> specialServiceDates;
-
-	@Getter
-	@Setter
-	private List<DateTime> specialServiceDatesInDate;
+public enum ServiceFrequency {
+	DAILY,
+	WEEKLY,
+	SPECIAL;
+	@Override
+	public String toString() {
+		return name();
+	}
 }

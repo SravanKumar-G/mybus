@@ -33,7 +33,7 @@ public class City extends AbstractDocument{
     @Getter
     @Setter
     @Field(KEY_SHORT_CODE)
-    @ApiModelProperty
+    @ApiModelProperty(dataType = "int")
     private String shortCode;
 
     @Getter
