@@ -46,18 +46,26 @@ public class RoleManager {
         Preconditions.checkNotNull(role, "The role can not be null");
         Preconditions.checkNotNull(role.getId(), "Unknown role for update");
 
-        Role loadedRole = roleDAO.findOne(role.getId());//123,test
-        if(loadedRole != null) {
-            try {
-                loadedRole.merge(role);
-            } catch (Exception e) {
-                logger.error("Error merging role", e);
-                throw new BadRequestException("Error merging role info");
+        Role loadedRole = roleDAO.findOne(role.getId());//1234,test , 2nd obj test
+
+        if(loadedRole != null && loadedRole.getName().equals(role.getName())) {
+            throw new RuntimeException("Role already exists with this same name in DB");
+            //if (loadedRole != null && loadedRole.getName().equals(role.getName())) {
+        } else{
+                try {
+                    saveRole(loadedRole);
+                    saveRole(role);
+                    loadedRole.merge(role);
+                } catch (Exception e) {
+                    logger.error("Error merging role", e);
+                    throw new BadRequestException("Error merging role info");
+                }
             }
-        }
-        else{
-            throw new RuntimeException("Invalid id given as input");
-        }
+        //}
+        /*else{
+            throw new RuntimeException("Role already exists with this same name");
+        }*/
+
         return saveRole(loadedRole);
     }
 
