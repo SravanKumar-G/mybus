@@ -49,7 +49,7 @@ public class CityManager {
         Preconditions.checkNotNull(city.getName(), "The city name can not be null");
         Preconditions.checkNotNull(city.getState(), "The city State can not be null");
         if (cityDAO.findOneByNameAndState(city.getName(), city.getState()) != null) {
-            throw new RuntimeException("A city already exists with same name and state");
+            throw new BadRequestException("A city already exists with same name and state");
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Saving city:[{}]" + city);
@@ -65,7 +65,7 @@ public class CityManager {
         Preconditions.checkNotNull(city.getState(), "The city State can not be null");
         City matchingCity = cityDAO.findOneByNameAndState(city.getName(), city.getState());
         if(matchingCity != null && !city.getId().equals(matchingCity.getId())) {
-            throw new RuntimeException("A city already exists with same name and state");
+            throw new BadRequestException("A city already exists with same name and state");
         }
         if (logger.isDebugEnabled()) {
             logger.debug("Updating city:[{}]" + city);
@@ -82,7 +82,7 @@ public class CityManager {
             logger.debug("Adding boarding point to city with id" + cityId);
         }
         if (cityDAO.findOne(cityId) == null) {
-            throw new RuntimeException("Unknown city id");
+            throw new BadRequestException("Unknown city id");
         }
         return cityMongoDAO.addBoardingPoint(cityId, bp);
     }
