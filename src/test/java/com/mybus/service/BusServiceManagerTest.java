@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 	
@@ -59,33 +61,52 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	public void testUpdateServiceConfiguration() {
+		
 		BusService service = createBusService();
 		service = busServiceManager.updateServiceConfiguration(service);
+		Assert.assertNotNull(service);
 		Assert.assertNotSame(0, service.getBoardingPoints());
 		Assert.assertNotSame(0, service.getDropingPoints());
-		Assert.assertNotSame(0, service.getServiceFares());
+		
+		Assert.assertEquals(6, service.getServiceFares().size());
+		Assert.assertEquals(4, service.getBoardingPoints().size());
+		Assert.assertEquals(4, service.getDropingPoints().size());
 	}
 
 
 	private BusService createBusService() {
+		
 		BusService service = new BusService();
 
 		City fromCity = new City("FromCity", "TestState", true, new ArrayList<>());
-		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp1", "landmark", "123", true));
-		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp2", "landmark", "123", true));
+		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp1", "landmark", "123", true,true));
+		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp2", "landmark", "123", true,true));
 		fromCity = cityManager.saveCity(fromCity);
 
 		City toCity = new City("ToCity", "TestState", true, new ArrayList<>());
-		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp1", "landmark", "123", true));
-		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp2", "landmark", "123", true));
+		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp1", "landmark", "123", true,true));
+		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp2", "landmark", "123", true,true));
 		toCity = cityManager.saveCity(toCity);
 
+		Set<String> viaCitySet = new HashSet<String>();
+		City viaCity = new City("ViaCity", "TestState", true, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp1", "landmark", "123", false,false));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp2", "landmark", "123", false,false));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+
+		viaCity = new City("ViaCity2", "TestState2", true, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp1", "landmark2", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp2", "landmark2", "123", true,true));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+		
 		JSONObject routeJSON = new JSONObject();
 		routeJSON.put("name", "To to From");
 		routeJSON.put("fromCity", fromCity.getId());
 		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());
 

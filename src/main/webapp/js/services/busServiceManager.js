@@ -59,7 +59,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 			.success(function (data) {
 				sweetAlert("success","Bus Service has created successfully","success");
 				$rootScope.$broadcast('servicesCreateComplete');
-				callback(data);
+				
 			})
 			.error(function (err) {
 				var errorMsg = "error adding new service info. " + (err && err.message ? err.message : '');

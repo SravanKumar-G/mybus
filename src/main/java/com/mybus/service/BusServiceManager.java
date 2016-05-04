@@ -2,16 +2,27 @@ package com.mybus.service;
 
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
+import com.mybus.dao.CityDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.RouteDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
+import com.mybus.model.BoardingPoint;
 import com.mybus.model.BusService;
 import com.mybus.model.BusServicePublishStatus;
-
+import com.mybus.model.City;
+import com.mybus.model.Route;
+import com.mybus.model.ServiceBoardingPoint;
+import com.mybus.model.ServiceDropingPoint;
+import com.mybus.model.ServiceFare;
 import com.mybus.model.ServiceFrequency;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+
+
+import java.util.ArrayList;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +44,13 @@ public class BusServiceManager {
 
 	@Autowired
 	private RouteDAO routeDAO;
-
+	
+	@Autowired
+	private CityDAO cityDAO;
+	
 	@Autowired
 	private LayoutDAO layoutDAO;
+	
 	//TODO: When a service is deleted the respective trips need to be deleted and so does any reservations tied to
 	//those trips
 	public boolean deleteService(String id) {
@@ -129,6 +144,83 @@ public class BusServiceManager {
 	}
 
 	public BusService updateServiceConfiguration(BusService service) {
-		return null;
+		
+		Route route = routeDAO.findOne(service.getRouteId());
+		
+		City fromCity = cityDAO.findOne(route.getFromCity());
+		Set<ServiceBoardingPoint> boardingPointsSet = new LinkedHashSet<ServiceBoardingPoint>();
+		ServiceBoardingPoint sbp = null;
+		for(BoardingPoint bp :fromCity.getBoardingPoints()){
+			if(bp.isActive()) {
+				sbp = new ServiceBoardingPoint();
+				sbp.setBoardingPointId(bp.getId());
+				boardingPointsSet.add(sbp);
+			}
+		}
+		
+		
+		City toCity = cityDAO.findOne(route.getToCity());
+		Set<ServiceDropingPoint> dropingPointsSet = new LinkedHashSet<ServiceDropingPoint>();
+		ServiceDropingPoint sdp = null; 
+		for(BoardingPoint dp :toCity.getBoardingPoints()) {
+			if(dp.isActive() && dp.isDroppingPoint()) {
+				sdp = new ServiceDropingPoint();
+				sdp.setDroppingPointId(dp.getId());
+				dropingPointsSet.add(sdp);
+			}
+		}
+		
+		//Assumed via cities is in source to destination order in List
+		City viaCity = null;
+		City preViaCity = null;
+		ServiceFare sf = null;
+		List<ServiceFare> sfList =  new ArrayList<ServiceFare>();
+		for(String cityID:route.getViaCities()) {
+			viaCity = cityDAO.findOne(cityID);
+			if(viaCity.isActive()) {
+				
+				sf = new ServiceFare();
+				sf.setSourceCityId(route.getFromCity());
+				sf.setDestinationCityId(viaCity.getId());
+				sfList.add(sf);
+				
+				sf = new ServiceFare();
+				sf.setSourceCityId(viaCity.getId());
+				sf.setDestinationCityId(route.getToCity());
+				sfList.add(sf);
+				
+				sf = new ServiceFare();
+				if(preViaCity!=null){
+					sf.setSourceCityId(preViaCity.getId());
+					sf.setDestinationCityId(viaCity.getId());
+					sfList.add(sf);
+				}
+				
+				for(BoardingPoint bp :viaCity.getBoardingPoints()){
+					if(bp.isActive()) {
+						sbp = new ServiceBoardingPoint();
+						sbp.setBoardingPointId(bp.getId());
+						boardingPointsSet.add(sbp);
+					}
+					if(bp.isActive() && bp.isDroppingPoint()) {
+						sdp = new ServiceDropingPoint();
+						sdp.setDroppingPointId(bp.getId());
+						dropingPointsSet.add(sdp);
+					}
+				}
+				preViaCity = viaCity; 
+			}
+		}
+		
+		sf = new ServiceFare();
+		sf.setSourceCityId(route.getFromCity());
+		sf.setDestinationCityId(route.getToCity());
+		sfList.add(sf);
+		
+		service.setBoardingPoints(boardingPointsSet);
+		service.setDropingPoints(dropingPointsSet);
+		service.setServiceFares(sfList);
+		
+		return service;
 	}
 }
