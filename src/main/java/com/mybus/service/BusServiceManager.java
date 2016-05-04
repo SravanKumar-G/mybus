@@ -146,24 +146,18 @@ public class BusServiceManager {
 	public BusService updateServiceConfiguration(BusService service) {
 		
 		Route route = routeDAO.findOne(service.getRouteId());
-		ServiceFare sf = new ServiceFare();
-		sf.setSourceCityId(route.getFromCity());
-		sf.setDestinationCityId(route.getToCity());
-		List<ServiceFare> sfList =  new ArrayList<ServiceFare>();
-		sfList.add(sf);
-		service.setServiceFares(sfList);
 		
 		City fromCity = cityDAO.findOne(route.getFromCity());
 		Set<ServiceBoardingPoint> boardingPointsSet = new LinkedHashSet<ServiceBoardingPoint>();
 		ServiceBoardingPoint sbp = null;
 		for(BoardingPoint bp :fromCity.getBoardingPoints()){
-			if(bp.isActive()){
-			sbp = new ServiceBoardingPoint();
-			sbp.setBoardingPointId(bp.getId());
-			boardingPointsSet.add(sbp);
+			if(bp.isActive()) {
+				sbp = new ServiceBoardingPoint();
+				sbp.setBoardingPointId(bp.getId());
+				boardingPointsSet.add(sbp);
 			}
 		}
-		service.setBoardingPoints(boardingPointsSet);
+		
 		
 		City toCity = cityDAO.findOne(route.getToCity());
 		Set<ServiceDropingPoint> dropingPointsSet = new LinkedHashSet<ServiceDropingPoint>();
@@ -175,17 +169,58 @@ public class BusServiceManager {
 				dropingPointsSet.add(sdp);
 			}
 		}
+		
+		//Assumed via cities is in source to destination order in List
 		City viaCity = null;
+		City preViaCity = null;
+		ServiceFare sf = null;
+		List<ServiceFare> sfList =  new ArrayList<ServiceFare>();
 		for(String cityID:route.getViaCities()) {
 			viaCity = cityDAO.findOne(cityID);
 			if(viaCity.isActive()) {
-				sdp = new ServiceDropingPoint();
-				sdp.setDroppingPointId(viaCity.getId());
-				dropingPointsSet.add(sdp);
+				
+				sf = new ServiceFare();
+				sf.setSourceCityId(route.getFromCity());
+				sf.setDestinationCityId(viaCity.getId());
+				sfList.add(sf);
+				
+				sf = new ServiceFare();
+				sf.setSourceCityId(viaCity.getId());
+				sf.setDestinationCityId(route.getToCity());
+				sfList.add(sf);
+				
+				sf = new ServiceFare();
+				if(preViaCity!=null){
+					sf.setSourceCityId(preViaCity.getId());
+					sf.setDestinationCityId(viaCity.getId());
+					sfList.add(sf);
+				}
+				
+				for(BoardingPoint bp :viaCity.getBoardingPoints()){
+					if(bp.isActive()) {
+						sbp = new ServiceBoardingPoint();
+						sbp.setBoardingPointId(bp.getId());
+						boardingPointsSet.add(sbp);
+					}
+					if(bp.isActive() && bp.isDroppingPoint()) {
+						sdp = new ServiceDropingPoint();
+						sdp.setDroppingPointId(bp.getId());
+						dropingPointsSet.add(sdp);
+					}
+				}
+				preViaCity = viaCity; 
 			}
 		}
+		
+		sf = new ServiceFare();
+		sf.setSourceCityId(route.getFromCity());
+		sf.setDestinationCityId(route.getToCity());
+		sfList.add(sf);
+		
+		service.setBoardingPoints(boardingPointsSet);
 		service.setDropingPoints(dropingPointsSet);
-
+		service.setServiceFares(sfList);
+		
 		return service;
 	}
 }
