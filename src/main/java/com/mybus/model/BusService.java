@@ -96,5 +96,9 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private String status;
-
+	
+	@Getter
+	@Setter
+	private double fare;
+	
 }

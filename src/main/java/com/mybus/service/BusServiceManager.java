@@ -20,6 +20,7 @@ import com.mybus.model.ServiceFrequency;
 import java.util.ArrayList;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -172,9 +173,10 @@ public class BusServiceManager {
 		
 		//Assumed via cities is in source to destination order in List
 		City viaCity = null;
-		City preViaCity = null;
+		
 		ServiceFare sf = null;
 		List<ServiceFare> sfList =  new ArrayList<ServiceFare>();
+		List<City> preViaCityList = new LinkedList<City>();
 		for(String cityID:route.getViaCities()) {
 			viaCity = cityDAO.findOne(cityID);
 			if(viaCity.isActive()) {
@@ -182,18 +184,23 @@ public class BusServiceManager {
 				sf = new ServiceFare();
 				sf.setSourceCityId(route.getFromCity());
 				sf.setDestinationCityId(viaCity.getId());
+				sf.setActive(false);
 				sfList.add(sf);
 				
 				sf = new ServiceFare();
 				sf.setSourceCityId(viaCity.getId());
 				sf.setDestinationCityId(route.getToCity());
+				sf.setActive(false);
 				sfList.add(sf);
 				
 				sf = new ServiceFare();
-				if(preViaCity!=null){
-					sf.setSourceCityId(preViaCity.getId());
-					sf.setDestinationCityId(viaCity.getId());
-					sfList.add(sf);
+				if(preViaCityList.size()>=0){
+					for(City preViaCity:preViaCityList){
+						sf.setSourceCityId(preViaCity.getId());
+						sf.setDestinationCityId(viaCity.getId());
+						sf.setActive(false);
+						sfList.add(sf);
+					}
 				}
 				
 				for(BoardingPoint bp :viaCity.getBoardingPoints()){
@@ -208,13 +215,14 @@ public class BusServiceManager {
 						dropingPointsSet.add(sdp);
 					}
 				}
-				preViaCity = viaCity; 
+				preViaCityList.add(viaCity);
 			}
 		}
 		
 		sf = new ServiceFare();
 		sf.setSourceCityId(route.getFromCity());
 		sf.setDestinationCityId(route.getToCity());
+		sf.setActive(true);
 		sfList.add(sf);
 		
 		service.setBoardingPoints(boardingPointsSet);

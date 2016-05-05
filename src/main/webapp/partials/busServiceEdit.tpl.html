@@ -81,13 +81,18 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Service Mode :</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="DAILY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="DAILY" ng-click="dailyService()">
                     <label>Daily</label>
                     <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="WEEKLY">
                     <label>Weekly</label>
                     <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="SPECIAL">
                     <label>Special</label>
                     <br>
+                </div>
+                
+                <div class="col-sm-4">
+                	<input type="number" class="form-control" placeholder="Service Fare" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.fare"/>
+                	</br>
                 </div>
             </div>
             <div class="row" ng-show="busServiceEditCtrl.busService.frequency=='DAILY'">
@@ -134,6 +139,31 @@
                 </div>
             </div>
             <div class="row" ng-if="busServiceEditCtrl.routeCities">
+				<br>	         
+	            <div class="col-md-9">
+	            	<label  for="sel1">Vai Cities</label>
+	            	  <table class="table table-bordered table-condensed table-hover" ng-table="">
+		            	  <tr ng-repeat="viaCities in serviceFares">
+		            	  	<td data-title="'Source City'" sortable="'name'" class="col-md-3">{{viaCities.sourceCityId.name}}</td>
+		            	  	<td data-title="'Destination City'" sortable="'name'" class="col-md-3">{{viaCities.destinationCityId.name}}</td>
+		            	  	<td data-title="'Arrival Time'">
+		            	  		<input type="time" placeholder="" class="form-control  col-md-2" name="arrivalTime" ng-model="serviceFare.arrivalTime" ng-change="addServiceFare(viaCities.sourceCityId.id, viaCities.destinationCityId.id, serviceFare.arrivalTime, 'at')">
+		            	  	</td>
+		            	  	<td data-title="'Separture Time'">
+		            	  		<input type="time" placeholder="" class="form-control  col-md-2" name="departureTime" ng-model="serviceFare.departureTime" ng-change="addServiceFare(viaCities.sourceCityId.id, viaCities.destinationCityId.id, serviceFare.departureTime, 'dt')">
+		            	  	</td>
+		            	  	<td data-title="'Fare '">
+		            	  		<input type="number" placeholder="" class="form-control  col-md-2" name="Fare" ng-model="serviceFare.fare" ng-change="addServiceFare(viaCities.sourceCityId.id, viaCities.destinationCityId.id, serviceFare.fare, 'fare')">
+		            	  	</td>
+		            	  	<td data-title="'Status '">
+		            	  		<input type="checkbox" placeholder="" data-ng-checked="viaCities.active" class="form-control  col-md-2" name="Fare" ng-model="serviceFare.active" ng-change="addServiceFare(viaCities.sourceCityId.id, viaCities.destinationCityId.id, serviceFare.active, 'active')">
+		            	  	</td>
+		            	  </tr>
+	                  </table>
+	            </div>
+			</div>
+            
+            <div class="row" ng-if="busServiceEditCtrl.routeCities">
                 <div class="col-md-9">
                     <div class="bpdp-tab" ng-init="tab=1">
                         <ul>
@@ -149,55 +179,38 @@
                             <table class="table table-bordered table-condensed table-hover" ng-table="boardingPointContentTableParams">
                                 <tr ng-repeat="boardingPoint in boardingPoints" ng-class="boardingPoint.active?'':'bg-danger'">
                                     <td data-title="'Boarding Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
-                                    <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+                                    <td data-title="'Provide Stop'" class="clickable-item col-md-2">
                                         <input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
                                     </td>
-                                    <td data-title="'Departure Time'">
+                                    <td data-title="'Departure Time'" class="col-md-2">
                                         <div ng-show="boardingPoint.active">
-                                            <input type="time" class="form-control" ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+                                            <input type="time" class="form-control " ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
                                         </div>
                                     </td>
-                                    <td data-title="'Day'">0</td>
+                                    <td data-title="'Day'" class="col-md-2">0</td>
                                 </tr>
                             </table>
                         </div>
                         <div class="tab-content" ng-show="tab==2">
                             <table class="table table-bordered table-condensed table-hover" ng-table="dropingPointContentTableParams">
                                 <tr ng-repeat="dropingPoint in dropingPoints" ng-class="dropingPoint.active?'':'bg-danger'">
-                                    <td data-title="'Droping Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ dropingPoint.name }}</td>
-                                    <td data-title="'Provide Stop'" class="clickable-item col-md-4">
+                                    <td data-title="'Droping Point Names'" sortable="'name'" class="col-md-6">{{ dropingPoint.name }}</td>
+                                    <td data-title="'Provide Stop'" class="col-md-2">
                                         <input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
                                     </td>
-                                    <td data-title="'Departure Time'">
+                                    <td data-title="'Departure Time'" class="col-md-2">
                                         <div ng-show="dropingPoint.active">
                                             <input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
                                         </div>
                                     </td>
-                                    <td data-title="'Day'"></td>
+                                    <td data-title="'Day'"  class="col-md-2">0</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                 </div>
-
-                <!-- <table class="table table-bordered table-condensed table-hover" style="width: 80%" ng-table="">
-                   <tr ng-repeat="routeCity in busServiceEditCtrl.routeCities">
-                       <td data-title="'Station Name'">{{routeCity.name}}</td>
-                       <td data-title="'Provide Stop'"><input type="checkbox" data-ng-checked="routeCity.provideStop" class="form-control" data-ng-model="routeCity.provideStop"></td>
-                       <td data-title="'Departure Time'">
-                           <select class="form-control" data-ng-options="n for n in [] | range:1:12"
-                                   data-ng-model="routeCity.hour" style="width:75px; display:inline"></select>
-                           <select class="form-control" data-ng-options="n for n in [] | range:1:60"
-                                   data-ng-model="routeCity.minutes" style="width:75px; display:inline"></select>
-                           <select class="form-control" data-ng-options="n for n in ['AM', 'PM']"
-                                   data-ng-model="routeCity.meridian" style="width:75px; display:inline"></select>
-                       </td>
-                       <td data-title="'Day'"><select class="form-control" data-ng-options="n for n in [] | range:1:60"
-                                   data-ng-model="routeCity.day" ></select> </td>
-                   </tr>
-               </table> -->
-            </div>
-
+      		 </div>
+	         
         </div>
     </form>
 
