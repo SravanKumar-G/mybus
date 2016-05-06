@@ -101,56 +101,76 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.serviceFares=[];
         	
         }
-
-        busServiceEditCtrl.getRouteCities = function() {
+        busServiceEditCtrl.getRouteCities = function(){
         	var routeId = busServiceEditCtrl.route.id;
         	console.log('route id -' + routeId);
         	busServiceEditCtrl.busService.routeId=routeId;
-        	console.log('route name -' +busServiceEditCtrl.route.name);
-        	routesManager.getRoutes(function(data){
-        		angular.forEach(data, function(value, key) {
-        			console.log('value ' + value.id);
-        			console.log('value name - ' + value.name);
-            		if (busServiceEditCtrl.route.name === value.name){
-                		console.log('via cities -' + value.viaCities);
-                		busServiceEditCtrl.routeCities = [];
-                		cityManager.getCities(function(data){
-                            var cities = data;
-                            angular.forEach(cities,function(city){
-                            	if(value.toCity===city.id){
-                            		$scope.dropingPoints=$filter('filter')(city.boardingPoints,true);
-                            		angular.forEach($scope.dropingPoints,function(bp){
-                            			if(bp.active){
-                            				bp.active=false;
-                            			}
-                            		});
-                            	}
-                            	if(value.fromCity===city.id){
-                            		$scope.boardingPoints=$filter('filter')(city.boardingPoints,true);
-                            		
-                            		angular.forEach($scope.boardingPoints,function(dp){
-                            			if(dp.active){
-                            				dp.active=false;
-                            			}
-                            		});
-                            	}
-                            });
-                            angular.forEach(value.viaCities,function(existingCityId) {
-                                angular.forEach(cities,function(city){
-                                    if(existingCityId == city.id){
-                                    	var routCity = {provideStop:false, hour:'', minutes:'', meridian:'', day:0};
-                                    	routCity.name = city.name;
-                                    	busServiceEditCtrl.routeCities.push(routCity);
-                                    }
-                                });
-                            });
-                        });
-                        //break;
-            		}
+        	
+        	busServiceManager.busServiceConfig(busServiceEditCtrl.busService,function(data){
+        		console.log("service config -"+data);
+        		busServiceEditCtrl.busService = data;
+        		busServiceEditCtrl.routeCities = [];
+        		
+        		cityManager.getCities(function(data){
+        			var cities = data;
+        			$scope.serviceFares = [];
+        			$scope.dropingPoints=[];
+        			$scope.boardingPoints=[];
+        				
+        			
+        			
+        			angular.forEach(busServiceEditCtrl.busService.serviceFares,function(serviceFare,index){
+        				
+        				var destinationCityId = $filter('filter')(cities,serviceFare.destinationCityId);
+        				var sourceCityId = $filter('filter')(cities,serviceFare.sourceCityId); 
+        				
+        				if(serviceFare.active){
+        					$scope.serviceFares.push({
+        						sourceCityId:sourceCityId[0],
+        						destinationCityId:destinationCityId[0],
+        						active:true
+        					})
+        				}else {
+        					$scope.serviceFares.push({
+        						sourceCityId:sourceCityId[0],
+        						destinationCityId:destinationCityId[0],
+        						active:false
+        					})
+        				}
+        				
+        			});
+        			
+    				angular.forEach(busServiceEditCtrl.busService.boardingPoints,function(bpid){
+
+    					var bpCityTem = $filter('filter')(cities,bpid.boardingPointId);
+    					
+    					angular.forEach(bpCityTem[0].boardingPoints,function(bp){
+    						if(bp.id==bpid.boardingPointId){
+        						bp.active = false
+        						$scope.boardingPoints.push(bp);
+    						}
+    					})
+    					
+                    });
+    				
+    				angular.forEach(busServiceEditCtrl.busService.dropingPoints,function(dpid){
+
+    					var dpCityTem = $filter('filter')(cities,dpid.droppingPointId);
+    					
+    					angular.forEach(dpCityTem[0].boardingPoints,function(dp){
+    						if(dp.id==dpid.droppingPointId){
+        						dp.active = false
+        						$scope.dropingPoints.push(dp);
+    						}
+    					})
+                    });
+        				
+        				
+        			
         		});
-            });
-        };
-        
+        	});
+		};
+		
         busServiceEditCtrl.doService = function (){
             initialize();
             // service css class
@@ -183,26 +203,30 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         }
         
         $scope.weeklyDays = function(checkedOrUnchecked,index) {
-       	  if(busServiceEditCtrl.busService.weeklyDays==undefined){
-       		  busServiceEditCtrl.busService.weeklyDays=[];
-          }
-       	  if(checkedOrUnchecked){
-       		  busServiceEditCtrl.busService.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
-       	  }else{
-       		  busServiceEditCtrl.busService.weeklyDays.splice(busServiceEditCtrl.busService.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]), 1);
-       	  }        	  
-       };
+
+        	busServiceEditCtrl.busService.specialServiceDates = [];
+        	if(busServiceEditCtrl.busService.weeklyDays==undefined){
+        		busServiceEditCtrl.busService.weeklyDays=[];
+        	}
+        	if(checkedOrUnchecked){
+        		busServiceEditCtrl.busService.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
+        	}else{
+        		busServiceEditCtrl.busService.weeklyDays.splice(busServiceEditCtrl.busService.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]), 1);
+        	}        	  
+        };
        
        $scope.specialServiceDates = function(specialServiceDate) {
-        	  if(busServiceEditCtrl.busService.specialServiceDates==undefined){
-        		  busServiceEditCtrl.busService.specialServiceDates=[];
-        		  busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
-        		  $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
-        	  }else{
-        		  busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
-        		  $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
-        	  }        	  
-        };
+    	   
+    	   busServiceEditCtrl.busService.weeklyDays=[];
+    	   if(busServiceEditCtrl.busService.specialServiceDates==undefined){
+    		   busServiceEditCtrl.busService.specialServiceDates=[];
+    		   busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+    		   $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+    	   }else{
+    		   busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+    		   $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+    	   }        	  
+       };
         $scope.removeSpecialServiceDatesFromList = function(specialServiceDate) {
       	  if(busServiceEditCtrl.busService.specialServiceDates==undefined){
       		busServiceEditCtrl.busService.specialServiceDates=[];
@@ -255,6 +279,35 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			}
         };
         
+        $scope.addServiceFare = function(sourceCityId,destinationCityId,fieldValue,fieldName) {
+        	if(busServiceEditCtrl.busService.serviceFares.length>0){
+        		angular.forEach(busServiceEditCtrl.busService.serviceFares,function(sf){
+        			if(sf.destinationCityId==destinationCityId && sf.sourceCityId==sourceCityId){
+        				switch (fieldName) {
+						case "at":
+							sf['arrivalTime'] = $filter('date')(fieldValue,'HH:mm');
+							break;
+						case "dt":
+							sf['departureTime']= $filter('date')(fieldValue,'HH:mm');
+							break;
+						case "fare":
+							sf['fare'] =fieldValue;
+							break;
+						case "active":
+							sf['active'] =fieldValue;
+							break;
+						default:
+							break;
+						}
+        			}
+        		})
+        	}
+        	
+        }
+        $scope.dailyService = function(){
+        	busServiceEditCtrl.busService.specialServiceDates = [];
+        	busServiceEditCtrl.busService.weeklyDays=[];
+        }
         return busServiceEditCtrl;
 
   })

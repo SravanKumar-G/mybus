@@ -91,4 +91,12 @@ public class BusServiceController extends MyBusBaseController{
 		return busServiceManager.publishBusService(id);
 	}
 
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "serviceConfig" ,method = RequestMethod.PUT)
+	@ResponseBody
+	@ApiOperation(value="Update Service configuration")
+	public BusService updateServiceConfiguration(HttpServletRequest request, 
+			@ApiParam(value = "bus service Configuration") @RequestBody final BusService service){
+		return busServiceManager.updateServiceConfiguration(service);
+	}
 }

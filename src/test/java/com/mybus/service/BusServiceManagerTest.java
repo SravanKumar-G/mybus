@@ -69,7 +69,7 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		Assert.assertNotSame(0, service.getBoardingPoints());
 		Assert.assertNotSame(0, service.getDropingPoints());
 		
-		Assert.assertEquals(6, service.getServiceFares().size());
+		Assert.assertEquals(3, service.getServiceFares().size());
 		Assert.assertEquals(4, service.getBoardingPoints().size());
 		Assert.assertEquals(4, service.getDropingPoints().size());
 	}
@@ -91,14 +91,20 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 
 		Set<String> viaCitySet = new HashSet<String>();
 		City viaCity = new City("ViaCity", "TestState", true, new ArrayList<>());
-		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp1", "landmark", "123", false,false));
-		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp2", "landmark", "123", false,false));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp1", "landmark", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp2", "landmark", "123", true,true));
 		viaCity = cityManager.saveCity(viaCity);
 		viaCitySet.add(viaCity.getId());
 
-		viaCity = new City("ViaCity2", "TestState2", true, new ArrayList<>());
+		viaCity = new City("ViaCity2", "TestState2", false, new ArrayList<>());
 		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp1", "landmark2", "123", true,true));
 		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp2", "landmark2", "123", true,true));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+		
+		viaCity = new City("ViaCity3", "TestState3", false, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity3-bp1", "landmark3", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity3-bp2", "landmark3", "123", true,true));
 		viaCity = cityManager.saveCity(viaCity);
 		viaCitySet.add(viaCity.getId());
 		
