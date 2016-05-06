@@ -8,7 +8,7 @@
     <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
-    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/ui-router/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-touch/angular-touch.min.js"></script>
     <script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
@@ -81,26 +81,30 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li  data-match-route="/dashboard"><a href="#/dashboard">Home</a></li>
+
+                <li><a ui-sref='dashboard'>Home</a></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">Configuration
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li data-match-route="/cities"><a href="#/cities">Cities</a></li>
-                        <li data-match-route="/routes"><a href="#/routes">Routes</a></li>
-                        <li data-match-route="/roles"><a href="#/roles">Roles</a></li>
-                        <li data-match-route="/layouts"><a href="#/layouts">Layouts</a></li>
-                        <li data-match-route="/vehicles"><a href="#/vehicles">Vehicles</a></li>
-                        <li data-match-route="/services"><a href="#/services">Services</a></li>
-                        <li data-match-route="/trip"><a href="#/trip">Trip</a></li>
-                        <li data-match-route="/plans"><a href="#/plans">Agent Plan Type</a></li>
+
+                        <li><a ui-sref='cities'>Cities</a></li>
+                        <li><a ui-sref='routes'>Routes</a></li>
+                        <li><a ui-sref='roles'>Roles</a></li>
+                        <li><a ui-sref='layouts'>Layouts</a></li>
+                        <li><a ui-sref='vehicles'>Vehicles</a></li>
+                        <li><a ui-sref='services'>Services</a></li>
+                        <li><a ui-sref='trip'>Trip</a></li>
+                        <li><a ui-sref='plans'>Agent Plan Type</a></li>
 
                     </ul>
-                <li data-match-route="/persons"><a href="#/persons">Persons</a></li>
-                <li data-match-route="/expenses"><a href="#/expenses">Expenses</a></li>
-                <li data-match-route="/reports"><a href="#/reports">Reports</a></li>
-                <li data-match-route="/users"><a href="#/users">Users</a></li>
-                <li data-match-route="/payment"><a href="#/payment">Payment</a></li>
+
+                <li><a ui-sref='persons'>Persons</a></li>
+                <li><a ui-sref='expenses'>Expenses</a></li>
+                <li><a ui-sref='reports'>Reports</a></li>
+                <li><a ui-sref='users'>Users</a></li>
+                <li><a ui-sref='payment'>Payment</a></li>
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
@@ -112,8 +116,8 @@
 
 <div class="container">
     <div class="view-container">
-        <div ng-view class="view-frame">
-
+        <div class="view-frame">
+            <ui-view>Select from Menu</ui-view>
         </div>
     </div>
 </div>
