@@ -6,7 +6,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
   //
   // ============================= List All ===================================
   //
-    .controller('UsersController', function($scope, $http, $log, $filter, ngTableParams, $location, usSpinnerService,userManager,$rootScope) {
+    .controller('UsersController', function($scope,$state, $http, $log, $filter, ngTableParams, $location, usSpinnerService,userManager,$rootScope) {
       console.log("in UsersController");
       $scope.headline = "Users";
       //$scope.users = [];
@@ -59,11 +59,11 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         });
 
         $scope.addUser = function () {
-            $location.url('/user');
+            $state.go('user');
         };
 
-        $scope.editUser = function(id){
-            $location.url('/user/'+id);
+        $scope.editUser = function(userId){
+            $state.go('userEdit',{'idParam':userId});
         };
         $scope.deleteUser = function(id){
             userManager.deleteUser(id)
@@ -128,9 +128,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope, $location, $http, $log, $modal,$routeParams,userManager,$window) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window) {
         $scope.headline = "Edit User";
-        $scope.id=$routeParams.id;
+        $scope.id=$stateParams.idParam;
         $scope.user={};
 
         $scope.loadUserWithId = function(){

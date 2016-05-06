@@ -3,7 +3,7 @@
 /* App Module */
 
 var myBus = angular.module('myBus', [
-  'ngRoute',
+    'ui.router',
   'ngAnimate',
   'ngTouch',
   'ngTable',
@@ -29,105 +29,127 @@ var myBus = angular.module('myBus', [
   'myBus.tripModule'
 ]);
 
-myBus.config(['$routeProvider',
-  function ($routeProvider) {
-    $routeProvider.
-        when('/dashboard', {
-          templateUrl: 'partials/home.tpl.html',
-          controller: 'HomeController'
-        }).
-        when('/cities', {
-          templateUrl: 'partials/cities-list.tpl.html',
-          controller: 'CitiesController'
-        })
-        .when('/routes', {
-          templateUrl: 'partials/routes-list.tpl.html',
-          controller: 'RoutesController'
-        })
-        .when('/persons', {
-          templateUrl: 'partials/person.html',
-          controller: 'PersonController'
-        })
-        .
-        when('/states', {
-          templateUrl: 'partials/states.html',
-          controller: 'CitiesController'
-        }).
-        when('/expenses', {
-          templateUrl: 'partials/expenses-list.tpl.html',
-          controller: 'ExpensesController'
-        }).
-        when('/city/:id', {
-          templateUrl: 'partials/boardingpoints-list.tpl.html',
-          controller: 'BoardingPointsListController'
-        }).
-        when('/vehicles', {
-            templateUrl: 'partials/vehicle-list.tpl.html',
-            controller: 'VehicleController'
-        }).
-        when('/layouts', {
-          templateUrl: 'partials/buslayout.tpl.html',
-          controller: 'BusLayoutController as busLayoutCtrl'
-        }).
-        when('/layouts/:id', {
-          templateUrl: 'partials/buslayoutedit.tpl.html',
-          controller: 'BusLayoutEditController as busLayoutEditCtrl'
-        }).
-        when('/services', {
-            templateUrl: 'partials/busService.tpl.html',
-            controller: 'BusServiceController as busServiceCtrl'
-        }).
-        when('/services/:id', {
-              templateUrl: 'partials/busServiceEdit.tpl.html',
-              controller: 'BusServiceEditController as busServiceEditCtrl',
-              resolve : busServiceEditResolver,
-        }).          
-        when('/busdetails', {
-          templateUrl: 'partials/busdetails.tpl.html',
-          controller: 'BusDetailsController'
-        }).
-        when('/users', {
-          templateUrl: 'partials/users.tpl.html',
-          controller: 'UsersController'
-        }).
-        when('/user', {
-          templateUrl: 'partials/user-details.tpl.html',
-          controller: 'UserAddController'
-        }).
-        when('/user/:id', {
-            templateUrl: 'partials/user-editDetails.tpl.html',
-            controller: 'UpdateUserController'
-        }).
+myBus.config(['$stateProvider','$urlRouterProvider',
+    function ($stateProvider, $urlRouterProvider) {
+        $stateProvider.
+            state('dashboard', {
+                url:'/dashboard',
+                templateUrl: 'partials/home.tpl.html',
+                controller: 'HomeController'
+            }).
+            state('cities', {
+                url:'/cities',
+                templateUrl: 'partials/cities-list.tpl.html',
+                controller: 'CitiesController'
+            })
+            .state('routes', {
+                url:'/routes',
+                templateUrl: 'partials/routes-list.tpl.html',
+                controller: 'RoutesController'
+            })
+            .state('persons', {
+                url:'/persons',
+                templateUrl: 'partials/person.html',
+                controller: 'PersonController'
+            })
+            .
+            state('states', {
+                url:'/states',
+                templateUrl: 'partials/states.html',
+                controller: 'CitiesController'
+            }).
+            state('expenses', {
+                url:'/expenses',
+                templateUrl: 'partials/expenses-list.tpl.html',
+                controller: 'ExpensesController'
+            }).
+            state('city/:id', {
+                url:'/city/:id',
+                templateUrl: 'partials/boardingpoints-list.tpl.html',
+                controller: 'BoardingPointsListController'
+            }).
+            state('vehicles', {
+                url:'/vehicles',
+                templateUrl: 'partials/vehicle-list.tpl.html',
+                controller: 'VehicleController'
+            }).
+            state('layouts', {
+                url:'/layouts',
+                templateUrl: 'partials/buslayout.tpl.html',
+                controller: 'BusLayoutController as busLayoutCtrl'
+            }).
+            state('layouts/:id', {
+                url:'/layouts/:id',
+                templateUrl: 'partials/buslayoutedit.tpl.html',
+                controller: 'BusLayoutEditController as busLayoutEditCtrl'
+            }).
+            state('services', {
+                url:'/services',
+                templateUrl: 'partials/busService.tpl.html',
+                controller: 'BusServiceController as busServiceCtrl'
+            }).
+            state('services/:id', {
+                url:'/services/:id',
+                templateUrl: 'partials/busServiceEdit.tpl.html',
+                controller: 'BusServiceEditController as busServiceEditCtrl',
+                resolve : busServiceEditResolver
+            }).
+            state('busdetails', {
+                url:'/busdetails',
+                templateUrl: 'partials/busdetails.tpl.html',
+                controller: 'BusDetailsController'
+            }).
+            state('users', {
+                url:'/users',
+                templateUrl: 'partials/users.tpl.html',
+                controller: 'UsersController'
+            }).
+            state('user', {
+                url:'/user',
+                templateUrl: 'partials/user-details.tpl.html',
+                controller: 'UserAddController'
+            }).
+            state('userEdit', {
+                url:'/user/',
+                params:{
+                    idParam : null
+                },
+                templateUrl: 'partials/user-editDetails.tpl.html',
+                controller: 'UpdateUserController'
+            }).
 
-        when('/plans', {
-            templateUrl: 'partials/agentPlan-details.tpl.html',
-            controller: 'AgentPlanController'
-        }).
-        when('/plan', {
-            templateUrl: 'partials/agentPlanEdit-details.tpl.html',
-            controller: 'AddAgentPlanTypeController'
-        }).
-        when('/docs', {
-          templateUrl: 'partials/api-docs.tpl.html',
-          controller: 'APIDocsController'
-        }).
-        when('/account', {
-          templateUrl: 'partials/account.tpl.html',
-          controller: 'AccountController'
-        }).
-        when('/trip',{
-        	templateUrl: 'partials/trip.tpl.html',
-        	controller: 'TripController'
-        })
-        .
-        when('/payment',{
-        	templateUrl: 'partials/payment.tpl.html',
-        	controller: 'PaymentController'
-        })
-        .otherwise({
-          redirectTo: '/'
-        });
-  }]);
+            state('plans', {
+                url:'/plans',
+                templateUrl: 'partials/agentPlan-details.tpl.html',
+                controller: 'AgentPlanController'
+            }).
+            state('plan', {
+                url:'/plan',
+                templateUrl: 'partials/agentPlanEdit-details.tpl.html',
+                controller: 'AddAgentPlanTypeController'
+            }).
+            state('docs', {
+                url:'/docs',
+                templateUrl: 'partials/api-docs.tpl.html',
+                controller: 'APIDocsController'
+            }).
+            state('account', {
+                url:'/account',
+                templateUrl: 'partials/account.tpl.html',
+                controller: 'AccountController'
+            }).
+            state('payment',{
+                url:'/payment',
+                templateUrl: 'partials/payment.tpl.html',
+                controller: 'PaymentController'
+            }).
+            state('trip',{
+                url:'/trip',
+                templateUrl: 'partials/trip.tpl.html',
+                controller: 'TripController'
+            });
+        $urlRouterProvider.otherwise( '/');
+    }]);
 
 	var busServiceEditResolver = {
 			layoutNamesPromise : ['busLayoutManager', function(busLayoutManager){
@@ -139,7 +161,7 @@ myBus.config(['$routeProvider',
 	};
 
 
-myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
+myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager) {
   appConfigManager.fetchAppSettings(function (err, cfg) {
     $rootScope.appConfigManager = appConfigManager;
   }, true);
@@ -153,6 +175,9 @@ myBus.run(function ($rootScope, $location, appConfigManager, userManager) {
   $rootScope.searchPOIs = function () {
     $location.url('/businesses?name=' + $rootScope.poiSearchText);
   };
+  $rootScope.$on('$stateChangeSuccess', function() {
+     console.log('Current state name: ' + $state.$current.name);
+  });
   //categoriesManager.reloadCategoryData();
   //classificationsManager.reloadClassificationData();
   //citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
