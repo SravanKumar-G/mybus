@@ -69,7 +69,11 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private ServiceFrequency frequency;
-	
+
+	@Getter
+	@Setter
+	private Set<Amenity> amenities;
+
 	@Getter
 	@Setter
 	private Set<ServiceBoardingPoint> boardingPoints;

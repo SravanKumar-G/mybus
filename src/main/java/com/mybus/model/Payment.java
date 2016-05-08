@@ -10,56 +10,12 @@ import lombok.Setter;
  * We use this object for transfer data to client
  * example : generated hash code,paymentGateway information, merchantRefNo etc..
  */
-public class Payment {
-	
-	@Setter
-	@Getter
-	private String emailID;
-	
-	@Setter
-	@Getter
-	private String phoneNo;
-	
-	@Setter
-	@Getter
-	private String firstName;
-	
-	@Setter
-	@Getter
-	private String lastName;
-	
+public class Payment extends AbstractDocument{
+
 	@Setter
 	@Getter
 	private String paymentType;
-	
-	@Setter
-	@Getter
-	private String address;
-	
-	@Setter
-	@Getter
-	private String city;
-	
-	@Setter
-	@Getter
-	private String state;
-	
-	@Setter
-	@Getter
-	private String country;
-	
-	@Setter
-	@Getter
-	private String postalCode;
-	
-	@Setter
-	@Getter
-	private float amount;
-	
-	@Setter
-	@Getter
-	private String paymentId;
-	
+
 	@Setter
 	@Getter
 	private String merchantRefNo;
