@@ -59,7 +59,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         roleDAO.save(role);
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Role already exists with this same name");
+        expectedEx.expectMessage("Role already exists with the same name");
         roleManager.saveRole(duplicateRole);
     }
 
@@ -67,15 +67,12 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
     public void testUpdateRole() throws Exception {
         Role role = createRole();
         Role role1 = roleManager.saveRole(new Role("test1"));
-       // roleDAO.findOne(role.getId());
         ArrayList roles = (ArrayList) IteratorUtils.toList(roleDAO.findAll().iterator());
         Assert.assertEquals(2, roles.size());
-       // role.setName("kee");
         role1.setName("test");
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Role already exists with this same name");
+        expectedEx.expectMessage("Role already exists with the same name");
         roleManager.saveRole(role1);
-        //roleDAO.save(role1);
         Assert.assertEquals("test", role.getName());
     }
 

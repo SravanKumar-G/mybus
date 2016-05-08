@@ -53,7 +53,7 @@ public class RoleController extends MyBusBaseController {
 
     @RequestMapping(value = "role/{id}", method = RequestMethod.PUT)
     @ApiOperation(value ="Update role", response = Role.class)
-    public ResponseEntity updateRole(HttpServletRequest request,
+    public ResponseEntity<Role> updateRole(HttpServletRequest request,
                                      @ApiParam(value = "Id of the Role to be found") @PathVariable final String id,
                                      @ApiParam(value = "Role JSON") @RequestBody final Role role) {
         logger.debug("update role called");

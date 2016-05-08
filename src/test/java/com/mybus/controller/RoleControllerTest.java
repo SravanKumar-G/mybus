@@ -94,7 +94,8 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
         actions = mockMvc.perform(asUser(post("/api/v1/createRole").content(getObjectMapper()
                 .writeValueAsBytes(role)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isBadRequest());
-        actions.andExpect(jsonPath("$.message").value("Role already exists with this same name"));
+        actions.andExpect(jsonPath("$.message").value("Role already exists with the same name"));
+
 
     }
 
