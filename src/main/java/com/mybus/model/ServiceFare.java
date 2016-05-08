@@ -3,12 +3,10 @@
  */
 package com.mybus.model;
 
-import java.math.BigDecimal;
-
-import org.joda.time.DateTime;
-
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 /**
  * @author  schanda on 02/13/16.
@@ -26,16 +24,21 @@ public class ServiceFare {
 	
 	@Getter
 	@Setter
-	private BigDecimal fare;
+	private double fare;
 	
 	@Getter
 	@Setter
-	private String arrivalTime;
-	
-	@Getter
-	@Setter
-	private String departureTime;
+	private DateTime arrivalTime;
 
+	@Getter
+	@Setter
+	private DateTime departureTime;
+
+	@Getter
+	@Setter
+	@ApiModelProperty(notes = "The cut off time in minutes, copied from service configuration")
+	private int cutOffTimeInMinutes;
+	
 	@Getter
 	@Setter
 	private int journeyDuration;
