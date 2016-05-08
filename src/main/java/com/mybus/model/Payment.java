@@ -79,7 +79,7 @@ public class Payment extends AbstractDocument {
 	
 	@Setter
 	@Getter
-	private PaymentGateways paymentGateways;
+	private PaymentGateway paymentGateways;
 	
 	@Setter
 	@Getter
