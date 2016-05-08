@@ -95,8 +95,6 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
                 .writeValueAsBytes(role)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isBadRequest());
         actions.andExpect(jsonPath("$.message").value("Role already exists with the same name"));
-
-
     }
 
     @Test
@@ -131,7 +129,6 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
         Assert.assertEquals(true, roleDAO.findAll().iterator().hasNext());
         roles = IteratorUtils.toList(roleDAO.findAll().iterator());
         Assert.assertEquals(1, roles.size());
-
     }
 
     @Test
@@ -143,6 +140,5 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.name").value(role.getName()));
         List<Role> roles = IteratorUtils.toList(roleDAO.findAll().iterator());
         Assert.assertEquals(1, roles.size());
-
     }
 }

@@ -83,7 +83,6 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Assert.assertNotNull(role.getId());
         roleDAO.delete(role);
         Assert.assertNull(roleDAO.findOne(role.getId()));
-
     }
 
     @Test
@@ -93,7 +92,5 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Assert.assertNotNull(role.getId());
         roleDAO.findOne(role.getId());
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
-
-
     }
 }
