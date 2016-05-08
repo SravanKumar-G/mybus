@@ -3,12 +3,10 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.impl.LayoutMongoDAO;
-import com.mybus.model.City;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.model.Row;
 import com.mybus.model.Seat;
-
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

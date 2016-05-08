@@ -3,19 +3,18 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.RoleDAO;
 import com.mybus.model.Role;
-import com.mybus.model.User;
 import com.mybus.service.RoleManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 

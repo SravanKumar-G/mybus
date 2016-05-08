@@ -1,25 +1,18 @@
 package com.mybus.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.Trip;
+import com.mybus.service.TripManager;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Trip;
-import com.mybus.service.TripManager;
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletRequest;
 /**
  * 
  * @author yks-Srinivas

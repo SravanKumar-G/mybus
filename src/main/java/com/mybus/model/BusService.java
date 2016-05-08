@@ -5,12 +5,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
-
-import org.joda.time.DateTime;
 
 /**
  * Created by skandula on 12/30/15.

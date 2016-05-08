@@ -1,10 +1,9 @@
 package com.mybus.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.mybus.dao.BookingTrakingDAO;
 import com.mybus.model.BookingTracking;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BookingTrackingManager {

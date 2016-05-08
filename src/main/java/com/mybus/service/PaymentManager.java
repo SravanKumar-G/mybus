@@ -1,5 +1,21 @@
 package com.mybus.service;
 
+import com.mybus.SystemProperties;
+import com.mybus.dao.PaymentResponseDAO;
+import com.mybus.model.*;
+import com.mybus.util.Constants;
+import com.mybus.util.Status;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,35 +24,7 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.mybus.util.Status;
-
-import com.mybus.SystemProperties;
-import com.mybus.dao.PaymentResponseDAO;
-import com.mybus.model.BookingTracking;
-import com.mybus.model.CancellationPolicy;
-import com.mybus.model.Payment;
-import com.mybus.model.PaymentGateways;
-import com.mybus.util.Constants;
-import com.mybus.model.PaymentResponse;
-import com.mybus.model.RefundResponse;
-
-import org.codehaus.jackson.type.TypeReference;
-import org.joda.time.DateTime;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import java.util.*;
 /**
  * 
  * @author yks-Srinivas
@@ -67,7 +55,8 @@ public class PaymentManager {
 		pg.setPaymentType("PG");
 		pg.setPgName("PAYU");
 		String merchantRefNo =  getRandamNo();
-		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+ payment.getFirstName() +"|"+ payment.getEmailID() +"|||||||||||"+pg.getPgKey();
+		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+
+				payment.getFirstName() +"|"+ payment.getEmail() +"|||||||||||"+pg.getPgKey();
 		LOGGER.info("hashSequence - "+hashSequence);		
 		String hash = hashCal(Constants.SHA_512,hashSequence);
 		LOGGER.info("secured hash - "+hash);
@@ -195,9 +184,11 @@ public class PaymentManager {
 	}
 
 	/**
-	 * @param paymentResponse
+	 * This is the common method for refund amount to all payment gateways
+	 * @param pID
+	 * @param refundAmount
+	 * @param disc
 	 * @return
-	 * This is the common method for refund amount to all payment gateways 
 	 */
 	public RefundResponse refundProcessToPaymentGateways(String pID,double refundAmount,String disc) {
 		
@@ -388,7 +379,7 @@ public class PaymentManager {
 	public String hashForEbs(Payment payment){
 		
 		String md5HashData = "";
-		md5HashData = payment.getPaymentGateways().getPgKey()+"|"+payment.getPaymentGateways().getPgAccountID()+"|"+payment.getAddress()+"|"+payment.getAlgo()+"|"+(int)payment.getAmount()+"|"+payment.getChannel()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getCurrency()+"|"+payment.getDescription()+"|"+payment.getEmailID()+"|"+payment.getMode()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getMerchantRefNo()+"|"+payment.getPaymentGateways().getPgCallbackUrl()+"|"+payment.getAddress()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getState()+"|"+payment.getState();
+		md5HashData = payment.getPaymentGateways().getPgKey()+"|"+payment.getPaymentGateways().getPgAccountID()+"|"+payment.getAddress()+"|"+payment.getAlgo()+"|"+(int)payment.getAmount()+"|"+payment.getChannel()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getCurrency()+"|"+payment.getDescription()+"|"+payment.getEmail()+"|"+payment.getMode()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getMerchantRefNo()+"|"+payment.getPaymentGateways().getPgCallbackUrl()+"|"+payment.getAddress()+"|"+payment.getCity()+"|"+payment.getCountry()+"|"+payment.getFirstName()+"|"+payment.getPhoneNo()+"|"+payment.getPostalCode()+"|"+payment.getState()+"|"+payment.getState();
 		LOGGER.info("md5HashData :: "+md5HashData);
 		String hash = md5(md5HashData);
 		LOGGER.info("hash"+hash);

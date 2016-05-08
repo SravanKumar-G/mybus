@@ -3,10 +3,9 @@
  */
 package com.mybus.model;
 
-import org.joda.time.DateTime;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 /**
  * @author  schanda on 02/13/16.

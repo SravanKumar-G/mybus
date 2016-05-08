@@ -1,17 +1,13 @@
 package com.mybus.controller;
 
-import java.util.Map;
-
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.model.Layout;
 import com.mybus.model.LayoutType;
 import com.mybus.service.LayoutManager;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/api/v1/")
