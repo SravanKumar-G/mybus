@@ -31,7 +31,7 @@ public class RoleManager {
             //duplicateRole =123, name=test
 
             if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {
-                throw new RuntimeException("Role  already exists with this same name");
+                throw new RuntimeException("Role already exists with this same name");
             }
             if(logger.isDebugEnabled()) {
                 logger.debug("Saving role: [{}]", role);
@@ -41,17 +41,31 @@ public class RoleManager {
 
 
     public Role updateRole(Role role) {
-        //id = 123, name =test
+        //id = 1234, name =test
 
         Preconditions.checkNotNull(role, "The role can not be null");
         Preconditions.checkNotNull(role.getId(), "Unknown role for update");
-        Role loadedRole = roleDAO.findOne(role.getId());//123,test
-        try {
-            loadedRole.merge(role);
-        }catch (Exception e) {
-            logger.error("Error merging role", e);
-            throw new BadRequestException("Error merging role info");
-        }
+
+        Role loadedRole = roleDAO.findOne(role.getId());//1234,test , 2nd obj test
+
+        if(loadedRole != null && loadedRole.getName().equals(role.getName())) {
+            throw new RuntimeException("Role already exists with this same name in DB");
+            //if (loadedRole != null && loadedRole.getName().equals(role.getName())) {
+        } else{
+                try {
+                    saveRole(loadedRole);
+                    saveRole(role);
+                    loadedRole.merge(role);
+                } catch (Exception e) {
+                    logger.error("Error merging role", e);
+                    throw new BadRequestException("Error merging role info");
+                }
+            }
+        //}
+        /*else{
+            throw new RuntimeException("Role already exists with this same name");
+        }*/
+
         return saveRole(loadedRole);
     }
 
@@ -69,6 +83,7 @@ public class RoleManager {
         }
         return true;
     }
+
 
     public Role getRole(String roleId){
         Preconditions.checkNotNull(roleId, "The role id can not be null");

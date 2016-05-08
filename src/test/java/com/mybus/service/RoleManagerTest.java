@@ -22,8 +22,6 @@ import static org.junit.Assert.*;
 public class RoleManagerTest extends AbstractControllerIntegrationTest{
 
 
-    private Role currentRole;
-
     @Autowired
     private RoleDAO roleDAO;
 
@@ -61,7 +59,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         roleDAO.save(role);
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Role  already exists with this same name");
+        expectedEx.expectMessage("Role already exists with this same name");
         roleManager.saveRole(duplicateRole);
 
     }
@@ -70,14 +68,21 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testUpdateRole() throws Exception {
         Role role = createRole();
-        Role r = roleDAO.findOne(role.getId());
+        Role role1 = new Role("test1");
+        roleDAO.save(role1);
+       // roleDAO.findOne(role.getId());
         ArrayList roles = (ArrayList) IteratorUtils.toList(roleDAO.findAll().iterator());
-        Assert.assertEquals(1, roles.size());
-        role.setName("kee");
-        Assert.assertNotNull(r);
-        roleDAO.save(r);
-        Assert.assertEquals("kee", role.getName());
-        
+        Assert.assertEquals(2, roles.size());
+       // role.setName("kee");
+        role1.setName("test");
+        //Assert.assertNotNull(role);
+        roleDAO.save(role1);
+        Assert.assertEquals("test", role1.getName());
+        expectedEx.expect(RuntimeException.class);
+        expectedEx.expectMessage("Role already exists with this same name in DB");
+        roleDAO.save(role);
+        //roleDAO.save(role1);
+        Assert.assertEquals("test", role.getName());
     }
 
     @Test
