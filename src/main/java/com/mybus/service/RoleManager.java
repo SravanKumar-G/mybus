@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by CrazyNaveen on 4/27/16.
  */
@@ -30,6 +32,9 @@ public class RoleManager {
             if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {
                 throw new RuntimeException("Role already exists with this same name");
             }
+            if (duplicateRole != null && duplicateRole.getName().equals(role.getName())) {
+                throw new RuntimeException("Role already exists with the same name in DB");
+            }
             if(logger.isDebugEnabled()) {
                 logger.debug("Saving role: [{}]", role);
             }
@@ -38,31 +43,21 @@ public class RoleManager {
 
 
     public Role updateRole(Role role) {
-        //id = 1234, name =test
 
         Preconditions.checkNotNull(role, "The role can not be null");
         Preconditions.checkNotNull(role.getId(), "Unknown role for update");
 
-        Role loadedRole = roleDAO.findOne(role.getId());//1234,test , 2nd obj test
-
-        if(loadedRole != null && loadedRole.getName().equals(role.getName())) {
-            throw new RuntimeException("Role already exists with this same name in DB");
-            //if (loadedRole != null && loadedRole.getName().equals(role.getName())) {
-        } else{
+        Role loadedRole = roleDAO.findOneByName(role.getName());
+        if((loadedRole != null) && (loadedRole.getName().equals(role.getName()))){
+            throw new RuntimeException("cannot update role with the same name");
+        }else {
                 try {
-                    saveRole(loadedRole);
-                    saveRole(role);
                     loadedRole.merge(role);
                 } catch (Exception e) {
                     logger.error("Error merging role", e);
                     throw new BadRequestException("Error merging role info");
                 }
             }
-        //}
-        /*else{
-            throw new RuntimeException("Role already exists with this same name");
-        }*/
-
         return saveRole(loadedRole);
     }
 
