@@ -4,13 +4,10 @@ import com.google.common.base.Preconditions;
 import com.mybus.dao.RoleDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Role;
-import com.mybus.model.User;
-import com.mybus.model.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 /**
  * Created by CrazyNaveen on 4/27/16.
@@ -27,7 +24,7 @@ public class RoleManager {
         //1234,test
             Preconditions.checkNotNull(role, "The role can not be null");
             Preconditions.checkNotNull(role.getName(), "role name can not be null");
-            Role duplicateRole = (Role) roleDAO.findOneByName(role.getName());
+            Role duplicateRole = roleDAO.findOneByName(role.getName());
             //duplicateRole =123, name=test
 
             if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {

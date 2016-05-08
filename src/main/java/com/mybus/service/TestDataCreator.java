@@ -2,7 +2,10 @@ package com.mybus.service;
 
 import com.mybus.SystemProperties;
 import com.mybus.controller.UserController;
+import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.model.PaymentGateway;
+import com.mybus.model.PaymentGateways;
 import com.mybus.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +22,9 @@ public class TestDataCreator {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private PaymentGatewayDAO paymentGatewayDAO;
 
     @Autowired
     private SystemProperties systemProperties;
@@ -38,6 +44,26 @@ public class TestDataCreator {
                 userDAO.save(user);
             } else {
                 logger.debug("Test data already created");
+            }
+            PaymentGateway payuGateway = paymentGatewayDAO.findByName("PAYU");
+            if(payuGateway == null) {
+                PaymentGateway pg = new PaymentGateway();
+                pg.setApiKey("eCwWELxi"); //payu  salt
+                pg.setAccountId("gtKFFx"); //payu key
+                pg.setGetwayUrl("https://test.payu.in/_payment");
+                pg.setPaymentType("PG");
+                pg.setName("PAYU");
+                paymentGatewayDAO.save(pg);
+            }
+            payuGateway = paymentGatewayDAO.findByName("EBS");
+            if(payuGateway == null) {
+                PaymentGateway pg = new PaymentGateway();
+                pg.setApiKey("ebs key"); //ebs secret key
+                pg.setAccountId("gtKFFx"); //ebs accountId
+                pg.setGetwayUrl("https://secure.ebs.in/pg/ma/payment/request");
+                pg.setPaymentType("PG");
+                pg.setName("EBS");
+                paymentGatewayDAO.save(pg);
             }
         } else {
             logger.debug("Skipping test data creation");

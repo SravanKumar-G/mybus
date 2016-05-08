@@ -26,7 +26,6 @@ public class ApplicationDataConfig extends AbstractApplicationDataConfig {
     
     @Autowired 
     private CoreAppConfig config;
-    
 
     @Bean
     @Override
@@ -38,7 +37,4 @@ public class ApplicationDataConfig extends AbstractApplicationDataConfig {
     String getHomeDirPropertiesFilename() {
         return HOME_DIR_PROPS_FILENAME;
     }
-
-
-   
 }

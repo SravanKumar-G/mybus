@@ -155,7 +155,7 @@ function formSubmitterDirective($timeout) {
     	    	'<input type="hidden" name="productinfo" value="bus" size="64"/>'+
     	    	'<input type="hidden" name="amount" value="{{ paymentForm.amount }}" />'+
     	    	'<input type="hidden" name="pg" value="" />'+
-    	    	'<input type="hidden" name="email" value="{{ paymentForm.emailID }}" />'+
+    	    	'<input type="hidden" name="email" value="{{ paymentForm.email }}" />'+
     	    	'<input type="hidden" name="Bankcode" value="" />'+
     	    	'<input type="hidden" name="enforce_paymethod" value="creditcard|debitcard|netbanking|cashcard|Emi" />'+
     	    	'</form>',
@@ -190,7 +190,7 @@ function ebsFormSubmitterDirective($timeout) {
 	        '<input type="hidden" name="country" value="{{paymentEbsForm.country}}"/>'+
 	        '<input type="hidden" name="currency" value="{{paymentEbsForm.currency}}"/>'+
 	        '<input type="hidden" name="description" value="{{paymentEbsForm.description}}"/>'+
-	        '<input type="hidden" name="email" value="{{paymentEbsForm.emailID}}"/>'+
+	        '<input type="hidden" name="email" value="{{paymentEbsForm.email}}"/>'+
 	        '<input type="hidden" name="mode" value="{{paymentEbsForm.mode}}"/>'+
 	        '<input type="hidden" name="name" value="{{paymentEbsForm.firstName}}"/>'+
 	        '<input type="hidden" name="phone" value="{{paymentEbsForm.phoneNo}}"/>'+

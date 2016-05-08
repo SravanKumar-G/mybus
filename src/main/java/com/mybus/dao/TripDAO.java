@@ -1,8 +1,7 @@
 package com.mybus.dao;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-
 import com.mybus.model.Trip;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface TripDAO extends PagingAndSortingRepository<Trip, String> {
 	

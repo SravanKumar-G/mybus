@@ -1,7 +1,12 @@
 package com.mybus.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.Booking;
+import com.mybus.model.Payment;
+import com.mybus.model.PaymentResponse;
+import com.mybus.model.RefundResponse;
+import com.mybus.service.PaymentManager;
+import io.swagger.annotations.ApiOperation;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import io.swagger.annotations.ApiOperation;
-
-import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Payment;
-import com.mybus.service.PaymentManager;
-import com.mybus.model.PaymentResponse;
-import com.mybus.model.RefundResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -33,7 +27,7 @@ import com.mybus.model.RefundResponse;
  *
  */
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1")
 public class PaymentController {
 
@@ -46,9 +40,8 @@ public class PaymentController {
 	@RequestMapping(value = "payment", method = RequestMethod.POST, 
 							produces = ControllerUtils.JSON_UTF8,
 							consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	@ApiOperation(value = "Payment request")
-	public Payment getPayuHasCode(HttpServletRequest request,@RequestBody final Payment payment) {
+	@ApiOperation(value = "Initiate booking")
+	public Payment initiateBooking(HttpServletRequest request,@RequestBody final Payment payment) {
 		LOGGER.info("Got request to payment process");
 		if(payment.getPaymentType().equalsIgnoreCase("EBS")){
 			return paymentManager.getEBSPaymentGatewayDetails(payment);
@@ -84,7 +77,7 @@ public class PaymentController {
 			@RequestParam("pID") String pID,
 			@RequestParam("seatFare") double seatFare) {
 		
-		DateTime busStartTime = new DateTime(2016,05,25,11,30);
+		DateTime busStartTime = new DateTime();
 		return paymentManager.refundAmount(busStartTime,seatFare);
     }
 	

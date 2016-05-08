@@ -46,6 +46,9 @@ public class Booking extends AbstractDocument{
     @Setter
     @Getter
     private String postalCode;
+    @Setter
+    @Getter
+    private String paymentType;
 
     @Setter
     @Getter

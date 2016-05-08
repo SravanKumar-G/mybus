@@ -1,12 +1,11 @@
 package com.mybus.service;
 
 import com.mybus.dao.BusServiceDAO;
+import com.mybus.dao.TripDAO;
 import com.mybus.model.BusService;
+import com.mybus.model.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.mybus.dao.TripDAO;
-import com.mybus.model.Trip;
 
 /**
  * 
