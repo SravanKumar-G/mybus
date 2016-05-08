@@ -53,11 +53,10 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
     createCity : function (city,callback) {
       $http.post('/api/v1/city',city)
           .success(function (data) {
-            callback(data);
+              callback(data);
               swal("Great", "Your City has been successfully added", "success");
           }).error(function(err,status) {
               sweetAlert("Error",err.message,"error");
-
           });
     },
     getCity: function (id, callback) {

@@ -3,10 +3,10 @@
 /*global angular,_*/
 
 angular.module('myBus.boardingPointModule', [])
-            .controller('BoardingPointsListController', function ($scope, $http, $log, ngTableParams, $route,$routeParams,$modal, $filter, cityManager) {
+            .controller('BoardingPointsListController', function ($scope, $http, $log, ngTableParams,$state,$stateParams, $modal, $filter, cityManager) {
             $log.debug('BoardingPointsListController');
             $scope.headline = "Boarding Points";
-            $scope.cityId = $routeParams.id;
+            $scope.cityId = $stateParams.id;
             $scope.currentPageOfBoardingPoints = [];
                 var loadTableData = function (tableParams, $defer) {
                 var data=cityManager.getCity($scope.cityId, function(data) {
@@ -67,13 +67,13 @@ angular.module('myBus.boardingPointModule', [])
         $scope. deleteBpOnClick = function(id) {
             cityManager.deleteBp($scope.cityId,id,function(data){
                 console.log("in deleteBP"+data.name);
-                $route.reload();
+                $state.go($state.$current, null, { reload: true });
             });
          }
          })
 
     // ========================== Modal - Boarding point controller =================================
-    .controller('AddBoardingPointController', function ($scope, $modalInstance, $http,$log,$route,cityId, cityManager) {
+    .controller('AddBoardingPointController', function ($scope, $modalInstance, $http,$log,cityId, cityManager) {
         $scope.boardingPoint = {};
         $scope.ok = function () {
             if ($scope.boardingPoint.name === null || $scope.boardingPoint.contact === null || $scope.boardingPoint.landmark === null) {
@@ -81,7 +81,7 @@ angular.module('myBus.boardingPointModule', [])
                 $modalInstance.close(null);
             }
             cityManager. createBordingPoint(cityId,$scope.boardingPoint, function(data){
-                $route.reload();
+                $state.go($state.$current, null, { reload: true });
                 $modalInstance.close(data);
             });
         };
@@ -95,7 +95,7 @@ angular.module('myBus.boardingPointModule', [])
         };
     })
 //======================Model - updateBpController=============================================
-    .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http,$route,BpId,cityId, $log,cityManager) {
+    .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http,BpId,cityId, $log,cityManager) {
         $scope.setBpIntoView = function(cityId,BpId){
             cityManager.getBp(cityId,BpId,function(data){
                     $scope.boardingPoint=data;
@@ -104,7 +104,7 @@ angular.module('myBus.boardingPointModule', [])
         $scope.setBpIntoView (cityId,BpId);
         $scope.ok = function (BpId) {
                     cityManager.updateBp(cityId,$scope.boardingPoint, function(data) {
-                        $route.reload();
+                        $state.go($state.$current, null, { reload: true });
                         $modalInstance.close(data);
                     })
         }
