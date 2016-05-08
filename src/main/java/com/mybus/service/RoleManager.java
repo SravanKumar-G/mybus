@@ -22,22 +22,22 @@ public class RoleManager {
     private RoleDAO roleDAO;
 
     public Role saveRole(Role role) {
-            //role.id =123, role.name=test
+        //role.id =123, role.name=test
         //1234,test
-            Preconditions.checkNotNull(role, "The role can not be null");
-            Preconditions.checkNotNull(role.getName(), "role name can not be null");
-            Role duplicateRole = roleDAO.findOneByName(role.getName());
-            //duplicateRole =123, name=test
+        Preconditions.checkNotNull(role, "The role can not be null");
+        Preconditions.checkNotNull(role.getName(), "role name can not be null");
+        Role duplicateRole = roleDAO.findOneByName(role.getName());
+        //duplicateRole =123, name=test
 
-            if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {
-                throw new RuntimeException("Role already exists with this same name");
-            }
-            if (duplicateRole != null && duplicateRole.getName().equals(role.getName())) {
-                throw new RuntimeException("Role already exists with the same name in DB");
-            }
-            if(logger.isDebugEnabled()) {
-                logger.debug("Saving role: [{}]", role);
-            }
+        if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {
+            throw new RuntimeException("Role already exists with the same name");
+        }
+        if (duplicateRole != null && duplicateRole.getName().equals(role.getName())) {
+            throw new RuntimeException("Role already exists with the same name in DB");
+        }
+        if(logger.isDebugEnabled()) {
+            logger.debug("Saving role: [{}]", role);
+        }
         return roleDAO.save(role);
     }
 
