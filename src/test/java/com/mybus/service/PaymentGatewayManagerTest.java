@@ -48,7 +48,7 @@ public class PaymentGatewayManagerTest extends AbstractControllerIntegrationTest
     }
 
 
-    public PaymentGateway createPaymentGateway(){
+    public PaymentGateway createPaymentGatewayObject(){
 
             PaymentGateway pg = new PaymentGateway();
             pg.setPgKey("eCwWELxi"); //payu  salt
@@ -56,65 +56,62 @@ public class PaymentGatewayManagerTest extends AbstractControllerIntegrationTest
             pg.setPgRequestUrl("https://test.payu.in/_payment");
             pg.setPaymentType("PG");
             pg.setName("PAYU");
-            payGWDAO.save(pg);
+            payGWManager.savePaymentGateway(pg);
 
-      /*  payuGateway = paymentGatewayDAO.findByName("EBS");
-        if(payuGateway == null) {
-            PaymentGateway pg = new PaymentGateway();
-            pg.setPgKey("ebs key"); //ebs secret key
-            pg.setPgAccountID("gtKFFx"); //ebs accountId
-            pg.setPgRequestUrl("https://secure.ebs.in/pg/ma/payment/request");
-            pg.setPaymentType("PG");
-            pg.setUserName("EBS");
-            paymentGatewayDAO.save(pg);
-        }*/
         return pg;
     }
 
 
     @Test
     public void testSavePaymentGateway() throws Exception {
-        PaymentGateway pgData = createPaymentGateway();
+        PaymentGateway pgData = createPaymentGatewayObject();
+        payGWManager.savePaymentGateway(pgData);
+        Assert.assertNotNull(payGWManager.getPaymentGateWayById(pgData.getId()));
+        PaymentGateway pg = new PaymentGateway();
+        pg.setPgKey("eCwWELxi"); //payu  salt
+        pg.setPgAccountID("gtKFFx"); //payu key
+        pg.setPgRequestUrl("https://test.payu.in/_payment");
+        pg.setPaymentType("PG");
+        pg.setName("PAYU");
+        payGWDAO.save(pg);
+        Assert.assertNotNull(payGWDAO.findOne(pg.getId()));
+        expectedEx.expect(RuntimeException.class);
+        expectedEx.expectMessage("A payment gateway already exists with same name");
+        payGWManager.savePaymentGateway(pg);
 
-        Assert.assertNotNull(payGWDAO.findOne(pgData.getId()));
-       // expectedEx.expect(RuntimeException.class);
-        //expectedEx.expectMessage("Role already exists with this same name");
-       // payGWManager.savePaymentGateway(duplicatePgData);
     }
 
-    /*  @Test
-     public void testUpdateRole() throws Exception {
-        PaymentGateway pgData = createPaymentGateway();
-        Role role1 = roleManager.saveRole(new Role("test1"));
-        // roleDAO.findOne(role.getId());
-        ArrayList roles = (ArrayList) IteratorUtils.toList(roleDAO.findAll().iterator());
-        Assert.assertEquals(2, roles.size());
-        // role.setName("kee");
-        role1.setName("test");
-        expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Role already exists with this same name");
-        roleManager.saveRole(role1);
-        //roleDAO.save(role1);
-        Assert.assertEquals("test", role.getName());
-    }*/
+
 
     @Test
     public void testDeletePaymentGateway() throws Exception {
-        PaymentGateway pgData = createPaymentGateway();
+        PaymentGateway pgData = createPaymentGatewayObject();
+
         Assert.assertNotNull(pgData);
         Assert.assertNotNull(pgData.getId());
-        payGWDAO.delete(pgData);
-        Assert.assertNull(payGWDAO.findOne(pgData.getId()));
+        payGWManager.deletePaymentGateway(pgData.getId());
+        Assert.assertNull(payGWManager.getPaymentGateWayById(pgData.getId()));
 
     }
 
     @Test
-    public void getPaymentGateway() throws Exception {
-        PaymentGateway pgData = createPaymentGateway();
+    public void getPaymentGatewayByID() throws Exception {
+        PaymentGateway pgData = createPaymentGatewayObject();
+
         Assert.assertNotNull(pgData);
         Assert.assertNotNull(pgData.getId());
-        payGWDAO.findOne(pgData.getId());
-        Assert.assertNotNull(payGWDAO.findOne(pgData.getId()));
+        Assert.assertNotNull(payGWManager.getPaymentGateWayById(pgData.getId()));
+
+
+    }
+
+    @Test
+    public void getPaymentGatewayByName() throws Exception {
+        PaymentGateway pgData = createPaymentGatewayObject();
+
+        Assert.assertNotNull(pgData);
+        Assert.assertNotNull(pgData.getId());
+        Assert.assertNotNull(payGWManager.getPaymentGateWayByName(pgData.getName()));
 
 
     }

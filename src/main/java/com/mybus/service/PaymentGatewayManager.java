@@ -24,9 +24,34 @@ public class PaymentGatewayManager {
     private PaymentGatewayMongoDAO payGWMonDAO;
     public PaymentGateway savePaymentGateway(PaymentGateway payGW){
         //Preconditions.checkNotNull(payGW, "The city can not be null");
-        Preconditions.checkNotNull(payGW.getName(), "The city name can not be null");
+        Preconditions.checkNotNull(payGW.getName(), "The payment gateway name can not be null");
        // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
+        PaymentGateway matchingPG = payGWDAO.findByName(payGW.getName());
+        if(matchingPG != null && !payGW.getId().equals(matchingPG.getId())) {
+            throw new BadRequestException("A payment gateway already exists with same name");
+        }
         return payGWDAO.save(payGW);
+
+    }
+
+    public PaymentGateway getPaymentGateWayByName(String name){
+        //Preconditions.checkNotNull(payGW, "The city can not be null");
+        Preconditions.checkNotNull(name, "The payment gateway name can not be null");
+        // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
+        PaymentGateway paymentGatewayInfo = payGWDAO.findByName(name);
+
+        return paymentGatewayInfo;
+
+    }
+
+    public PaymentGateway getPaymentGateWayById(String Id){
+        //Preconditions.checkNotNull(payGW, "The city can not be null");
+        Preconditions.checkNotNull(Id, "The payment gateway id can not be null");
+        // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
+        PaymentGateway paymentGatewayInfo = payGWDAO.findOne(Id);
+
+        return paymentGatewayInfo;
+
     }
 
     public boolean updatePaymentGateWay(PaymentGateway payGW) {
