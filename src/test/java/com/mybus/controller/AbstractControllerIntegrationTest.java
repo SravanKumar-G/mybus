@@ -1,14 +1,13 @@
 package com.mybus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.mybus.config.ApplicationDataTestConfig;
 import com.mybus.config.CoreAppConfig;
 import com.mybus.config.WebApplicationConfig;
 import com.mybus.model.User;
 import com.mybus.service.SessionManager;
 import lombok.Getter;
-import org.bson.types.ObjectId;
+
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +19,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import static java.lang.String.format;
 
 @ActiveProfiles("test")
