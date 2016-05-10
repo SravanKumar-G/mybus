@@ -106,6 +106,20 @@ public class PaymentGatewayManagerTest extends AbstractControllerIntegrationTest
     }
 
     @Test
+    public void getPaymentGateways() throws Exception {
+        PaymentGateway pgData = createPaymentGatewayObject();
+        Assert.assertNotNull(payGWManager.getPaymentGateWayById(pgData.getId()));
+        PaymentGateway pg = new PaymentGateway();
+        pg.setPgKey("eCwWELxi1"); //payu  salt
+        pg.setPgAccountID("gtKFFxq"); //payu key
+        pg.setPgRequestUrl("https://test.mayu.in/_payment");
+        pg.setPaymentType("PG1");
+        pg.setName("PAYU1");
+        payGWManager.savePaymentGateway(pg);
+        Assert.assertNotNull(payGWManager.getAllPaymentGateways());
+    }
+
+    @Test
     public void getPaymentGatewayByName() throws Exception {
         PaymentGateway pgData = createPaymentGatewayObject();
 

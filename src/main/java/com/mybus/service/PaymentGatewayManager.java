@@ -54,6 +54,10 @@ public class PaymentGatewayManager {
 
     }
 
+    public Iterable<PaymentGateway>  getAllPaymentGateways() {
+            return     payGWDAO.findAll();
+    }
+
     public boolean updatePaymentGateWay(PaymentGateway payGW) {
         Preconditions.checkNotNull(payGW.getName(), "The payment gateway name can not be null");
         PaymentGateway matchingPG = payGWDAO.findByName(payGW.getName());
