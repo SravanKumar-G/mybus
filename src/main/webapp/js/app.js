@@ -39,11 +39,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             }).
             state('cities', {
                 url:'/cities',
+                level: 1,
                 templateUrl: 'partials/cities-list.tpl.html',
                 controller: 'CitiesController'
             })
             .state('routes', {
                 url:'/routes',
+                level: 1,
                 templateUrl: 'partials/routes-list.tpl.html',
                 controller: 'RoutesController'
             })
@@ -55,6 +57,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             .
             state('states', {
                 url:'/states',
+                level: 1,
                 templateUrl: 'partials/states.html',
                 controller: 'CitiesController'
             }).
@@ -87,24 +90,29 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/services',
                 templateUrl: 'partials/busService.tpl.html',
                 controller: 'BusServiceController as busServiceCtrl'
-            }).
-            state('services/:id', {
+            })
+            .state('services/:id', {
                 url:'/services/:id',
                 templateUrl: 'partials/busServiceEdit.tpl.html',
                 controller: 'BusServiceEditController as busServiceEditCtrl',
                 resolve : busServiceEditResolver
-            }).
-            state('busdetails', {
+            })
+            .state('busdetails', {
                 url:'/busdetails',
                 templateUrl: 'partials/busdetails.tpl.html',
                 controller: 'BusDetailsController'
-            }).
-            state('users', {
+            })
+            .state('users', {
                 url:'/users',
                 templateUrl: 'partials/users.tpl.html',
                 controller: 'UsersController'
-            }).
-            state('user', {
+            })
+            .state('roles', {
+                url:'/roles',
+                templateUrl: 'partials/roles.tpl.html',
+                controller: 'RolesController'
+            })
+            .state('user', {
                 url:'/user',
                 templateUrl: 'partials/user-details.tpl.html',
                 controller: 'UserAddController'

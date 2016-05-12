@@ -3,6 +3,7 @@ package com.mybus.model;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.simple.JSONObject;
 
 /**
  * Created by CrazyNaveen on 4/27/16.
@@ -14,6 +15,9 @@ public class Role extends AbstractDocument {
     @Setter
     private String name;
 
+    @Getter
+    @Setter
+    private JSONObject permissions;
 
     public Role(final String roleName) {
        this.name = roleName;
