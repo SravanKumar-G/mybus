@@ -1,6 +1,7 @@
 package com.mybus.service;
  
 import com.mybus.controller.AbstractControllerIntegrationTest;
+import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.RouteDAO;
@@ -40,11 +41,14 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 
 	@Autowired
 	private LayoutDAO layoutDAO;
-
+	@Autowired
+	private BusServiceDAO busServiceDAO;
+	
 	private void cleanup(){
 		cityDAO.deleteAll();
 		routeDAO.deleteAll();
 		layoutDAO.deleteAll();
+		busServiceDAO.deleteAll();
 	}
 
 	@Before

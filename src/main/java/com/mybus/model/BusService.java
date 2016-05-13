@@ -70,7 +70,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Set<Amenity> amenities;
+	private Set<ServiceAmenity> amenities;
 
 	@Getter
 	@Setter
