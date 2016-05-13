@@ -39,6 +39,8 @@
     <script src="js/controllers/routesController.js"></script>
     <script src="js/controllers/paymentController.js"></script>
     <script src="js/controllers/tripController.js"></script>
+    <script src="js/controllers/rolesController.js"></script>
+    
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
@@ -51,9 +53,10 @@
     <script src="js/services/paymentManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/services/tripManager.js"></script>
+    <script src="js/services/roleManager.js"></script>
+    
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
-
 
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
