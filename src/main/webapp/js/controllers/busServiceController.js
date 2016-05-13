@@ -45,7 +45,11 @@ angular.module('myBus.serviceModules', ['ngTable', 'ui.bootstrap'])
         $scope.$on('servicesInitComplete', function (e, value) {
             loadTableData(busServiceCtrl.serviceContentTableParams);
         });
-
+        
+        $scope.$on('servicesInitStart', function (e, value) {
+        	busServiceManager.fetchAllBusServices();
+        });
+        
         $scope.$on('servicesDeleteComplete', function (e, value) {
             loadTableData(busServiceCtrl.serviceContentTableParams);
         });
@@ -55,7 +59,7 @@ angular.module('myBus.serviceModules', ['ngTable', 'ui.bootstrap'])
         busServiceCtrl.addNewBusService = function(){
             $location.url('/services/' + 'create');
         }
-
+        
         busServiceCtrl.serviceContentTableParams = new ngTableParams({
             page: 1,
             count: 50,

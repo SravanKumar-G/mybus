@@ -54,15 +54,17 @@ public class BusServiceManager {
 
 	public BusService updateBusService(BusService busService) {
 		validateBusService(busService);
-		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
-			busService.setId(null);
-		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Updating bus service :[{}]" + busService);
 		}
 		BusService busServiceUpdated = null;
 		try {
-			busServiceUpdated = busServiceMongoDAO.update(busService);
+			if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busServiceDAO.findOne(busService.getId()).getStatus())){
+				busService.setId(null);
+				busServiceUpdated = busServiceMongoDAO.save(busService);
+			}else{
+				busServiceUpdated = busServiceMongoDAO.update(busService);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException("error updating bus service ", e);
 		}

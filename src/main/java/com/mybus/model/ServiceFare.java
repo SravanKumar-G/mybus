@@ -28,11 +28,20 @@ public class ServiceFare {
 	
 	@Getter
 	@Setter
-	private DateTime arrivalTime;
+	private String arrivalTime;
 
 	@Getter
 	@Setter
-	private DateTime departureTime;
+	private String departureTime;
+	
+
+	@Getter
+	@Setter
+	private DateTime arrivalTimeInDate;
+
+	@Getter
+	@Setter
+	private DateTime departureTimeInDate;
 
 	@Getter
 	@Setter

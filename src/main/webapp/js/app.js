@@ -163,6 +163,9 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 			}],
 			routeNamesPromise : ['routesManager', function(routesManager){
 				return routesManager.getActiveRouteNames();
+			}],
+			amenitiesNamesPromise : ['amenitiesManager', function(amenitiesManager){
+				return amenitiesManager.getAmenitiesName();
 			}]
 	};
 

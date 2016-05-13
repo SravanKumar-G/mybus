@@ -24,7 +24,14 @@ portalApp.factory("amenitiesManager",function($rootScope,$http,$window,$log){
 				swal("oops", error, "error");
 			})
 		},
-		
+		getAmenitiesName : function() {
+        	return $http(
+        			{
+        				method:'GET', 
+        				url:'/api/v1/amenities'	
+        			}
+        	);
+        },
 		addAmenity: function(amenity,callback) {
 			$http.post("/api/v1/amenity",amenity).success(function(data){
 				callback(data);
