@@ -39,6 +39,7 @@
     <script src="js/controllers/routesController.js"></script>
     <script src="js/controllers/paymentController.js"></script>
     <script src="js/controllers/tripController.js"></script>
+    <script src="js/controllers/amenitiesController.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>
@@ -51,6 +52,7 @@
     <script src="js/services/paymentManager.js"></script>
     <script src="js/services/expensesManager.js"></script>
     <script src="js/services/tripManager.js"></script>
+    <script src="js/services/amenitiesManager.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
 
@@ -89,6 +91,7 @@
                     <ul class="dropdown-menu">
 
                         <li><a ui-sref='cities'>Cities</a></li>
+                        <li><a ui-sref='amenities'>Amenities</a></li>
                         <li><a ui-sref='routes'>Routes</a></li>
                         <li><a ui-sref='roles'>Roles</a></li>
                         <li><a ui-sref='layouts'>Layouts</a></li>

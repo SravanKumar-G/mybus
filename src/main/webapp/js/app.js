@@ -3,7 +3,7 @@
 /* App Module */
 
 var myBus = angular.module('myBus', [
-    'ui.router',
+  'ui.router',
   'ngAnimate',
   'ngTouch',
   'ngTable',
@@ -26,7 +26,8 @@ var myBus = angular.module('myBus', [
   'myBus.userModule',
   'myBus.agentPlanModule',
   'myBus.paymentModule',
-  'myBus.tripModule'
+  'myBus.tripModule',
+  'myBus.amenitiesModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -142,6 +143,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/payment',
                 templateUrl: 'partials/payment.tpl.html',
                 controller: 'PaymentController'
+            }).
+            state('amenities',{
+                url:'/amenities',
+                templateUrl: 'partials/amenities.tpl.html',
+                controller: 'AmenitiesController'
             }).
             state('trip',{
                 url:'/trip',
