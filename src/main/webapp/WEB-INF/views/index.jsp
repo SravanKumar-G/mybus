@@ -94,6 +94,7 @@
                         <li><a ui-sref='amenities'>Amenities</a></li>
                         <li><a ui-sref='routes'>Routes</a></li>
                         <li><a ui-sref='roles'>Roles</a></li>
+                        <li><a ui-sref='managingRoles'>Managing Roles</a></li>
                         <li><a ui-sref='layouts'>Layouts</a></li>
                         <li><a ui-sref='vehicles'>Vehicles</a></li>
                         <li><a ui-sref='services'>Services</a></li>

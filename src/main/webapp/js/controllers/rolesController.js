@@ -111,4 +111,79 @@ angular.module('myBus.roleModules', ['ngTable', 'ui.bootstrap'])
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
 	};
+})
+.controller('ManagingRolesController', function ($scope, $log, $state, roleManager) {
+	$scope.headline = "Managing Roles";
+	$scope.updateAllManagingRoles = [];
+	$scope.isEditable = false; 
+	$scope.getPermissions = function(){
+		roleManager.getAllRoles(function(data){
+			$scope.roles=data;
+			$scope.menus = [];
+			
+			angular.forEach($scope.roles,function(role){
+				$scope.updateAllManagingRoles[role.name]={'id':role.id,'name':role.name,'menus':role.menus};
+			});
+			
+			angular.forEach($state.get(),function(eachState){
+				if(eachState.level === 1) {
+					$scope.menus.push({'name':eachState.name});
+				}
+			});
+			angular.forEach($scope.menus,function(menu){
+				angular.forEach($scope.roles,function(role){
+					if(!menu.permissions){
+						menu.permissions = [];
+					}
+					if(!role.menus) {
+						role.menus=[];
+					}
+					
+					if(role.menus.indexOf(menu.name)!=-1){
+						menu.permissions.push({'id':role.id,'roleName':role.name, 'allowed':true});
+					}else {
+						menu.permissions.push({'id':role.id,'roleName':role.name, 'allowed':false});
+					}
+				});
+			});
+			//menus=[{name:'menu1',permissions:[admin:true,employee:false]}, ]
+		});
+	};
+	$log.debug($scope.updateAllManagingRoles +"$scope.updateAllManagingRoles");
+	$scope.getPermissions();
+
+	$scope.addOrRemovefromRoles = function(checkedOrUnchecked,menuName,roleName){
+		if(checkedOrUnchecked) { 
+			if($scope.updateAllManagingRoles[roleName]){
+				if(!$scope.updateAllManagingRoles[roleName].menus){
+					$scope.updateAllManagingRoles[roleName].menus=[];
+					$scope.updateAllManagingRoles[roleName].menus.push(menuName);
+				}else{
+					$scope.updateAllManagingRoles[roleName].menus.push(menuName);
+				}
+			}else {
+				$scope.updateAllManagingRoles[roleName].name=roleName
+				$scope.updateAllManagingRoles[roleName].menus=[];
+				$scope.updateAllManagingRoles[roleName].menus.push(roleName);
+			}
+		}else {
+			var index = $scope.updateAllManagingRoles[roleName].menus.indexOf(menuName);
+			$scope.updateAllManagingRoles[roleName].menus.splice(index,1)
+		}
+		$log.debug("checkedOrUnchecked : "+checkedOrUnchecked+" menuName : "+menuName+"  roleName :"+roleName)
+	}
+	$scope.updateManagingRoles = function(){
+		$log.debug("update managing roles");
+		$scope.isEditable = false;
+		angular.forEach($scope.roles,function(role){
+			var manageRoles = $scope.updateAllManagingRoles[role.name];
+			roleManager.updateManageingRole(manageRoles.id,manageRoles,function(data){
+			})
+		})
+	}
+	$scope.editManagingRoles = function(){
+		$scope.isEditable = $scope.isEditable?false:true;
+		$log.debug("edit managing roles");
+	}
 });
+;

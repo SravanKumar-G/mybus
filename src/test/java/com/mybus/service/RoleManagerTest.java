@@ -98,4 +98,18 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         roleDAO.findOne(role.getId());
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
     }
+    
+    @Test
+    public void updateManagingRole(){
+    	Role role = createRole();
+    	Set<String> menus = role.getMenus(); 
+    	menus.add("persons");
+    	menus.add("config");
+    	role.setMenus(menus);
+    	Role roleTest = roleManager.updateManagingRoles(role);
+    	Assert.assertNotNull(roleTest);
+    	Assert.assertNotNull(roleTest.getMenus());
+    	Assert.assertEquals(4,roleTest.getMenus().size());
+    }
+   
 }

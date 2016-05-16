@@ -83,6 +83,23 @@ public class RoleManager {
         Role role =  roleDAO.findOne(roleId);
         return role;
     }
-
+    
+    public Role updateManagingRoles(Role role){
+    	Preconditions.checkNotNull(role, "The role can not be null");
+    	Preconditions.checkNotNull(role.getId(), "The role id not be null");
+    	Preconditions.checkNotNull(role.getName(), "The role can not be null");
+    	Role roleFromDB = roleDAO.findOne(role.getId());
+    	if(roleFromDB.getName().equalsIgnoreCase(role.getName())) {
+    		try {
+				roleFromDB.merge(role);
+			} catch (Exception e) {
+				 throw new BadRequestException("Error merging role info",e);
+			}
+    		
+    	}else {
+    		 throw new BadRequestException(" role info is invalid");
+    	}
+    	return roleDAO.save(roleFromDB);
+    }
 
 }

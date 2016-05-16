@@ -73,10 +73,15 @@ public class RoleController extends MyBusBaseController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "role/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Role getRole(HttpServletRequest request, @PathVariable final String id
-    ) {
+    public Role getRole(HttpServletRequest request, @PathVariable final String id) {
         Role  role = (Role)roleDAO.findOne(id);
         return role;
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "manageingrole/{id}", method = RequestMethod.PUT)
+    public boolean updateManagingRoles(HttpServletRequest request,@ApiParam(value = "JSON for Role to be created") @RequestBody final Role role){
+    	roleManager.updateManagingRoles(role);
+    	return true;
     }
 }
 

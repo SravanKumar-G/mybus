@@ -141,4 +141,24 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
         List<Role> roles = IteratorUtils.toList(roleDAO.findAll().iterator());
         Assert.assertEquals(1, roles.size());
     }
+    
+    @Test
+    public void testUpdatemanagingRole() throws Exception {
+        JSONObject role = new JSONObject();
+        role.put("name", "test");
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/createRole")
+                .content(getObjectMapper().writeValueAsBytes(role))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+                actions.andExpect(status().isOk());
+        role.put("name", "test1");
+        String menus = "['home','Menu','Partner']";
+        role.put("menus", menus);
+        mockMvc.perform(asUser(put(format("/api/v1/manageingrole/%s", role.get("id")))
+                .content(getObjectMapper().writeValueAsBytes(role))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        List<Role> roles = IteratorUtils.toList(roleDAO.findAll().iterator());
+        Assert.assertEquals(1,roles.size());
+        Assert.assertEquals("test1", role.get("name"));
+    }
+
 }

@@ -181,6 +181,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/trip',
                 templateUrl: 'partials/trip.tpl.html',
                 controller: 'TripController'
+            }).
+            state('managingRoles',{
+            	level:2,
+                url:'/managingRoles',
+                templateUrl: 'partials/managing-roles.tpl.html',
+                controller: 'ManagingRolesController'
             });
         $urlRouterProvider.otherwise( '/');
     }]);

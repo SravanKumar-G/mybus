@@ -79,6 +79,17 @@ portalApp.factory('roleManager', function ($rootScope, $http) {
 			}).error(function(err) {
 				sweetAlert("Error",err.message,"error");
 			});
+		},
+		updateManageingRole : function (roleID,role,callback) {
+			$http.put('/api/v1/manageingrole/'+roleID,role)
+			.success(function (data) {
+				callback(data);
+				swal("Great", "Roles has been updated successfully", "success");
+				$rootScope.$broadcast("roleInit");
+			}).error(function(err) {
+				callback(err);
+				sweetAlert("Error",err.message,"error");
+			});
 		}
 	};
 })
