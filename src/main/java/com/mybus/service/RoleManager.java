@@ -52,6 +52,7 @@ public class RoleManager {
             throw new RuntimeException("cannot update role with the same name");
         }else {
                 try {
+                	loadedRole = roleDAO.findOne(role.getId());
                     loadedRole.merge(role);
                 } catch (Exception e) {
                     logger.error("Error merging role", e);

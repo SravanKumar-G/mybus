@@ -1,5 +1,7 @@
 package com.mybus.model;
 
+import java.util.Set;
+
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +16,19 @@ public class Role extends AbstractDocument {
     @Setter
     private String name;
 
+    @Getter
+    @Setter
+    private Set<String> menus;
 
+    public Role(final String roleName,Set<String> menus) {
+        this.name = roleName;
+        this.menus = menus;
+     }
+    
     public Role(final String roleName) {
        this.name = roleName;
-
     }
-
+    
     public Role() {
 
     }
