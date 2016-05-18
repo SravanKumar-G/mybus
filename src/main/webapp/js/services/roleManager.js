@@ -4,7 +4,7 @@
 
 var portalApp = angular.module('myBus');
 
-portalApp.factory('roleManager', function ($rootScope, $http) {
+portalApp.factory('roleManager', function ($rootScope, $http,$filter) {
 	var roles=[];
 	return {
 		fechAllRoles : function(){
@@ -28,6 +28,7 @@ portalApp.factory('roleManager', function ($rootScope, $http) {
 			});
 		},
 		createRole : function (role,callback) {
+			role.name = $filter('uppercase')(role.name);
 			$http.post('/api/v1/createRole',role)
 			.success(function (data) {
 				callback(data);
@@ -39,6 +40,7 @@ portalApp.factory('roleManager', function ($rootScope, $http) {
 			});
 		},
 		updateRole : function (roleID,role,callback) {
+			role.name = $filter('uppercase')(role.name);
 			$http.put('/api/v1/role/'+roleID,role)
 			.success(function (data) {
 				callback(data);
@@ -74,6 +76,14 @@ portalApp.factory('roleManager', function ($rootScope, $http) {
 		},
 		getRoleById : function (roleID,callback) {
 			$http.get('/api/v1/role/'+roleID)
+			.success(function (data) {
+				callback(data);
+			}).error(function(err) {
+				sweetAlert("Error",err.message,"error");
+			});
+		},
+		getRoleByRoleName : function (rolesName,callback) {
+			$http.get('/api/v1/roleByName/'+rolesName)
 			.success(function (data) {
 				callback(data);
 			}).error(function(err) {

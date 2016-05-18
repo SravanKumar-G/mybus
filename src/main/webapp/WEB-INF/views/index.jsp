@@ -59,6 +59,7 @@
     <script src="js/directives/pwCheck.js"></script>
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
+    <script src="js/directives/myMenu.js"></script>
     <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
@@ -82,33 +83,31 @@
             </button>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-
-                <li><a ui-sref='dashboard'>Home</a></li>
-                <li class="dropdown">
+        	<ul class="nav navbar-nav">
+	          <my-menu label="DashBoard" class="nav navbar-nav navbar-left"></my-menu>
+	          <li><a></a></li>
+              <li class="nav navbar-nav navbar-left dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">Configuration
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-
-                        <li><a ui-sref='cities'>Cities</a></li>
-                        <li><a ui-sref='amenities'>Amenities</a></li>
-                        <li><a ui-sref='routes'>Routes</a></li>
-                        <li><a ui-sref='roles'>Roles</a></li>
-                        <li><a ui-sref='managingRoles'>Managing Roles</a></li>
-                        <li><a ui-sref='layouts'>Layouts</a></li>
-                        <li><a ui-sref='vehicles'>Vehicles</a></li>
-                        <li><a ui-sref='services'>Services</a></li>
-                        <li><a ui-sref='trip'>Trip</a></li>
-                        <li><a ui-sref='plans'>Agent Plan Type</a></li>
-
+                      	<my-menu label="Cities" class="nav navbar-nav col-md-12 "></my-menu>                        
+                      	<my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
+                        <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="ManagingRoles" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Layouts" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Services" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Trip" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="Plans" class="nav navbar-nav col-md-12"></my-menu>
                     </ul>
-
-                <li><a ui-sref='persons'>Persons</a></li>
-                <li><a ui-sref='expenses'>Expenses</a></li>
-                <li><a ui-sref='reports'>Reports</a></li>
-                <li><a ui-sref='users'>Users</a></li>
-                <li><a ui-sref='payment'>Payment</a></li>
-
+                </li>
+                <my-menu label="Persons" class="navbar-left nav navbar-nav"></my-menu>
+                <my-menu label="Expenses" class="navbar-left nav navbar-nav"></my-menu>
+                <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
+                <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
+                <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
+ 
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>

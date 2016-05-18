@@ -41,13 +41,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'HomeController'
             }).
             state('cities', {
-            	level:2,
+            	level:1,
                 url:'/cities',
                 templateUrl: 'partials/cities-list.tpl.html',
                 controller: 'CitiesController'
             })
             .state('routes', {
-            	level:2,
+            	level:1,
                 url:'/routes',
                 templateUrl: 'partials/routes-list.tpl.html',
                 controller: 'RoutesController'
@@ -60,7 +60,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             })
             .
             state('states', {
-            	level:2,
+            	level:1,
                 url:'/states',
                 templateUrl: 'partials/states.html',
                 controller: 'CitiesController'
@@ -72,31 +72,31 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'ExpensesController'
             }).
             state('city/:id', {
-            	level:3,
+            	level:2,
                 url:'/city/:id',
                 templateUrl: 'partials/boardingpoints-list.tpl.html',
                 controller: 'BoardingPointsListController'
             }).
             state('vehicles', {
-            	level:2,
+            	level:1,
                 url:'/vehicles',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
             }).
             state('layouts', {
-            	level:2,
+            	level:1,
                 url:'/layouts',
                 templateUrl: 'partials/buslayout.tpl.html',
                 controller: 'BusLayoutController as busLayoutCtrl'
             }).
             state('layouts/:id', {
-            	level:3,
+            	level:2,
                 url:'/layouts/:id',
                 templateUrl: 'partials/buslayoutedit.tpl.html',
                 controller: 'BusLayoutEditController as busLayoutEditCtrl'
             }).
             state('services', {
-            	level:3,
+            	level:1,
                 url:'/services',
                 templateUrl: 'partials/busService.tpl.html',
                 controller: 'BusServiceController as busServiceCtrl'
@@ -109,7 +109,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 resolve : busServiceEditResolver
             }).
             state('busdetails', {
-            	level:2,
+            	level:1,
                 url:'/busdetails',
                 templateUrl: 'partials/busdetails.tpl.html',
                 controller: 'BusDetailsController'
@@ -126,7 +126,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/user-details.tpl.html',
                 controller: 'UserAddController'
             }).
-            state('userEdit', {
+            state('useredit', {
             	level:3,
                 url:'/user/',
                 params:{
@@ -182,7 +182,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/trip.tpl.html',
                 controller: 'TripController'
             }).
-            state('managingRoles',{
+            state('managingroles',{
             	level:2,
                 url:'/managingRoles',
                 templateUrl: 'partials/managing-roles.tpl.html',
@@ -204,25 +204,27 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 	};
 
 
-myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager) {
-  appConfigManager.fetchAppSettings(function (err, cfg) {
-    $rootScope.appConfigManager = appConfigManager;
-  }, true);
-  userManager.getCurrentUser(function (err) {
-    if (!err) {
-      userManager.getGroupsForCurrentUser();
-    }
-  });
-  $rootScope.userManager = userManager;
-  $rootScope.poiSearchText = '';
-  $rootScope.searchPOIs = function () {
-    $location.url('/businesses?name=' + $rootScope.poiSearchText);
-  };
-  $rootScope.$on('$stateChangeSuccess', function() {
-     console.log('Current state name: ' + $state.$current.name);
-  });
-  //categoriesManager.reloadCategoryData();
-  //classificationsManager.reloadClassificationData();
-  //citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
+	myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager,roleManager) {
+		$rootScope.menus=[];
+		appConfigManager.fetchAppSettings(function (err, cfg) {
+			$rootScope.appConfigManager = appConfigManager;
+		}, true);
+		userManager.getCurrentUser(function (err) {
+			if (!err) {
+				userManager.getGroupsForCurrentUser();
+			}
+		});
+		$rootScope.userManager = userManager;
+
+		$rootScope.poiSearchText = '';
+		$rootScope.searchPOIs = function () {
+			$location.url('/businesses?name=' + $rootScope.poiSearchText);
+		};
+		$rootScope.$on('$stateChangeSuccess', function() {
+			console.log('Current state name: ' + $state.$current.name);
+		});
+		//categoriesManager.reloadCategoryData();
+		//classificationsManager.reloadClassificationData();
+		//citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
 });
 
