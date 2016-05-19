@@ -63,7 +63,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.editUser = function(userId){
-            $state.go('userEdit',{'idParam':userId});
+            $state.go('useredit',{'idParam':userId});
         };
         $scope.deleteUser = function(id){
             userManager.deleteUser(id)

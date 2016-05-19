@@ -11,10 +11,7 @@
 <tr ng-repeat="menu in menus">
 <td>{{menu.name | uppercase}}</td>
 <td ng-repeat="permission in menu.permissions">
-	<div class="col-md-3">
-		<!-- <input type="checkbox" ng-model="permission.allowed" class="form-control" ng-click()/> -->
-		<input type="checkbox" ng-disabled="!isEditable" data-ng-checked="{{permission.allowed}}" ng-model='checkedOrUnchecked' class="form-control" checklist-value="{{permission.allowed}}" ng-click="addOrRemovefromRoles(checkedOrUnchecked,menu.name,permission.roleName)"/>
-	</div>
+		<input type="checkbox" ng-disabled="!isEditable" data-ng-checked="{{permission.allowed}}" ng-model='checkedOrUnchecked' checklist-value="{{permission.allowed}}" ng-click="addOrRemovefromRoles(checkedOrUnchecked,menu.name,permission.roleName)"/>
 </td>
 </tr>
 </table>
