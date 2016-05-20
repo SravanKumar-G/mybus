@@ -5,6 +5,8 @@ import com.mybus.controller.UserController;
 import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.User;
+import com.mybus.model.UserType;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,7 @@ public class TestDataCreator {
                 user.setLastName("Lname");
                 user.setPassword("123");
                 user.setUserName("bill");
+                user.setUserType(UserType.ADMIN);
                 userDAO.save(user);
             } else {
                 logger.debug("Test data already created");

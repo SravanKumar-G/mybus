@@ -13,6 +13,8 @@ import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -47,7 +49,10 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
 
 
     public Role createRole(){
-        Role role = new Role("test");
+        Set<String> menus = new HashSet<String>();
+        menus.add("home");
+        menus.add("User");
+        Role role = new Role("test",menus);
         return roleDAO.save(role);
     }
 
@@ -93,4 +98,18 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         roleDAO.findOne(role.getId());
         Assert.assertNotNull(roleDAO.findOne(role.getId()));
     }
+    
+    @Test
+    public void updateManagingRole(){
+    	Role role = createRole();
+    	Set<String> menus = role.getMenus(); 
+    	menus.add("persons");
+    	menus.add("config");
+    	role.setMenus(menus);
+    	Role roleTest = roleManager.updateManagingRoles(role);
+    	Assert.assertNotNull(roleTest);
+    	Assert.assertNotNull(roleTest.getMenus());
+    	Assert.assertEquals(4,roleTest.getMenus().size());
+    }
+   
 }

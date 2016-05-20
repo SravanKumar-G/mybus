@@ -82,11 +82,12 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Type</label>
                 <div class="col-sm-6">
-                    <label class="radio-inline" for="editRadioAgent"><input type="radio" id="editRadioAgent" name="radioAgent" ng-model="user.userType" value="AGENT">Agent</label>
+                	<label class="radio-inline" ng-repeat="role in roles"><input type="radio" ng-model="user.userType" value="{{role.name | uppercase}}">{{role.name}}</label>
+                   <!--  <label class="radio-inline" for="editRadioAgent"><input type="radio" id="editRadioAgent" name="radioAgent" ng-model="user.userType" value="AGENT">Agent</label>
                     <label class="radio-inline" for="editRadioEmployee"><input type="radio" id="editRadioEmployee" name="radioEmployee" ng-model="user.userType" value="EMPLOYEE">Employee</label>
                     <label class="radio-inline" for="editRadioAdmin"><input type="radio" id="editRadioAdmin" name="radioAdmin" ng-model="user.userType" value="ADMIN">Admin</label>
                     <label class="radio-inline" for="editRadioUser"><input type="radio" id="editRadioUser" name="radioUser" ng-model="user.userType" value="USER">User</label>
-
+ -->
                 </div>
             </div>
 
@@ -103,7 +104,9 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label checkbox" for="editActiveInput">Active</label>
                 <div class="col-xs-1">
-                    <input type="checkbox" id="editActiveInput" class="form-control" ng-model="user.active">
+                	<div class="col-sm-8">
+                    	<input type="checkbox" id="editActiveInput" class="form-control" ng-model="user.active">
+                    </div>
                 </div>
             </div>
 
