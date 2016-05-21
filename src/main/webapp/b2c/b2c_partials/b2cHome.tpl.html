@@ -1,0 +1,57 @@
+<legend></legend>
+
+<div class = "col-md-6 bg-success">
+	</br>
+	<div class="form-group">
+		<div class = "col-md-12">
+			<h4>{{ headline }}</h4>
+		</div>
+	</div>
+	</br>
+	<form name="searchForbus" class="form-horizontal ng-pristine ng-scope ng-invalid ng-invalid-required ng-valid-minlength ng-valid-maxlength" autocomplete="off" role="form" unsaved-warning-form="">	
+	
+	<div class="form-group">
+		<div class = "col-md-6">
+			<input type="radio"  data-ng-checked="true" ng-model="journeyType" value="ONE_WAY"> One Way  
+		
+			<input type="radio"  ng-model="journeyType" value="TWO_WAY"> Two Way
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label" ng-model="fromCity" for="fromInput" >From </label>
+		<div class = "col-md-8">
+			<input type="text" class="form-control" typeahead="city.name for city in allCities | filter:$viewValue | limitTo:8" typeahead-min-length="2" ng-model="fromCity"
+			typeahead-on-select="selectFromCity($item)" typeahead-select-on-exact="true"/>
+		</div>
+	</div>
+	</br>
+	<div class="form-group">
+			<label  class="col-sm-4 control-label" ng-model="toCity" for="toInput" >To</label>
+		<div class = "col-md-8">
+		<input type="text" class="form-control" typeahead="city.name for city in allCities | filter:$viewValue | limitTo:8" typeahead-min-length="2" ng-model="toCity"
+			typeahead-on-select="selectToCity($item)" typeahead-select-on-exact="true"/>
+		</div>
+	</div>
+	</br>
+	<div class="form-group">
+			<label  class="col-sm-4 control-label" for="dateOfJourneyInput">Date of Journey</label>
+		<div class = "col-md-8">
+			<input type="date" class="form-control" ng-model="dateOfJourney"/>
+		</div>
+	</div>
+	</br>
+	<div class="form-group" ng-if="journeyType=='TWO_WAY'">
+			<label class="col-sm-4 control-label" for="returnJourneyInput" >Return Journey</label>
+		<div class = "col-md-8">
+			<input type="date" class="form-control" ng-model="returnJourney"/>
+		</div>
+	</div>
+	</form>
+	</br>
+	<div class="col-md-4">
+		<button class="btn btn-sm btn-primary"><h4> Search For Bus </h4></button>
+	</div>
+	</br>
+	</br><div>&nbsp;</div>
+	
+</div>
