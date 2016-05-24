@@ -1,38 +1,81 @@
 package com.mybus.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
- * Created by skandula on 5/7/16.
+ * 
+ * @author yks-Srinivas
+ *
+ * entity class
  */
-public class PaymentGateway extends AbstractDocument {
-    @Getter
-    @Setter
-    private String apiKey;
+public class PaymentGateway extends AbstractDocument{
 
-    @Getter
-    @Setter
-    private String accountId;
-
-    @Getter
-    @Setter
-    private String getwayUrl;
-
-    @Getter
-    @Setter
-    @ApiModelProperty(notes = "PayU, EBS etc")
-    private String gatewayType;
-
-    @Getter
-    @Setter
-    @ApiModelProperty(notes = "Gateway, Wallet etc")
-    private String paymentType;
-
-    @Getter
-    @Setter
-    @Indexed(unique=true)
-    private String name;
+	@Setter
+	@Getter
+	private String name;
+	
+	@Setter
+	@Getter
+	private String pgValue;
+	
+	@Setter
+	@Getter
+	private String pgAccountID;
+	
+	@Setter
+	@Getter
+	private String pgKey;
+	
+	@Setter
+	@Getter
+	private String pgRequestUrl;
+	
+	@Setter
+	@Getter
+	private String pgCallbackUrl;
+	
+	@Setter
+	@Getter
+	private String pgRefundRequestUrl;
+	
+	@Setter
+	@Getter
+	private String pgPaymentSearchUrl;
+	
+	@Setter
+	@Getter
+	private boolean status;
+	
+	@Setter
+	@Getter
+	private String currentOffer;
+	
+	@Setter
+	@Getter
+	private String paymentType;
+	
+	@Setter
+	@Getter
+	private boolean isPartnerEnabled;
+	
+	@Setter
+	@Getter
+	private boolean isB2CEnabled;
+	
+	@Setter
+	@Getter
+	private boolean isEnabledForInternalUsers;
+	
+	@Setter
+	@Getter
+	private String userName;
+	
+	@Setter
+	@Getter
+	private String password;
+	
+	@Setter
+	@Getter
+	private String description;
 }

@@ -82,11 +82,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Type</label>
         <div class="col-sm-6">
-            <label class="radio-inline" for="radioAgent"><input type="radio" id="radioAgent" name="radioAgent" ng-model="user.userType" value="AGENT">Agent</label>
-            <label class="radio-inline" for="radioEmployee"><input type="radio" id="radioEmployee" name="radioEmployee" ng-model="user.userType" value="EMPLOYEE">Employee</label>
-            <label class="radio-inline" for="radioAdmin"><input type="radio" id="radioAdmin" name="radioAdmin" ng-model="user.userType" value="ADMIN">Admin</label>
-            <label class="radio-inline" for="radioUser"><input type="radio" id="radioUser" name="radioUser" ng-model="user.userType" value="USER">User</label>
-
+        	<label class="radio-inline" ng-repeat="role in roles"><input type="radio" ng-model="user.userType" value="{{role.name | uppercase}}">{{role.name}}</label>
         </div>
     </div>
 
@@ -103,7 +99,9 @@
     <div class="form-group">
         <label class="col-sm-2 control-label checkbox" for="activeInput">Active</label>
         <div class="col-xs-1">
-            <input type="checkbox" id="activeInput" class="form-control" ng-model="user.active">
+        	<div class="col-sm-8">
+            	<input type="checkbox" id="activeInput" class="form-control" ng-model="user.active">
+            </div>
         </div>
     </div>
 

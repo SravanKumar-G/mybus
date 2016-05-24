@@ -1,0 +1,119 @@
+<legend>{{ headline }}</legend>
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddAmenity()">
+    	<span class="glyphicon glyphicon-plus"></span> Add Amenity
+    </button>
+</div>
+<br/>
+<br/>
+<table class="table table-bordered table-condensed table-hover" ng-table="amenityContentTableParams">
+    <tr ng-repeat="amenity in currentPageOfAmenity">
+        <td data-title="'Amenity'"  sortable="'amenity'" class="clickable-item col-md-6" >{{ amenity.name }}</td>
+        <td data-title="'Status'" class="clickable-item col-md-4"><span ng-if="!amenity.active">InActive</span><span ng-if="amenity.active">Active</span></td>
+        <td class="col-md-2">
+	        <md-button>
+	            <md-icon type="button" class="btn" ng-click="handleClickUpdateAmenity(amenity.id)">
+	            <span class="glyphicon glyphicon-pencil"></span></md-icon>
+	        </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="deleteAmenityById(amenity.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!amenities || amenities.length === 0">
+        <td colspan="4">No Amenities exist.  Please add some.</td>
+    </tr>
+</table>
+
+
+<!-- modal popup for adding Amenity -->
+
+<script type="text/ng-template" id="add-Amenity-modal.html">
+    
+	<div class="modal-header">
+		<div class="row">
+            <div class="col-sm-11">
+        		<h3 class="modal-title">Add Amenity</h3>
+    		</div>
+ 			<div class="col-sm-1">
+        		<md-button>
+            		<md-icon type="button" class="btn-sm" ng-click="cancel()">
+               			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+           		</md-button>
+        	</div>
+		</div>
+	</div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="amenityForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                 <div class="col-sm-7 col-xs-offset-2">
+                     <input type="text" id="amenityInput" class="form-control" ng-model="amenity.name" placeholder="Amenity Name">
+                 </div>
+            </div>
+
+         	<div class="form-group">
+               <label class="col-sm-4 control-label checkbox" for="activeInactive">Active</label> 
+               <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="amenity.active">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="addAmenity()" ng-disabled="!isInputValid()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+
+<!-- modal popup for Updating Amenity -->
+
+<script type="text/ng-template" id="update-amenity-modal.html">
+    
+	<div class="modal-header">
+		<div class="row">
+            <div class="col-sm-11">
+        		<h3 class="modal-title">Update Amenity</h3>
+    		</div>
+ 			<div class="col-sm-1">
+        		<md-button>
+            		<md-icon type="button" class="btn-sm" ng-click="cancel()">
+               			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+           		</md-button>
+        	</div>
+		</div>
+	</div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="amenityUpdateForm" class="form-horizontal" role="form">
+
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="amenityNameUpdate" class="form-control" ng-model="amenity.name" placeholder="Amenity Name">
+                </div>
+            </div>
+
+            <div class="form-group">
+               <label class="col-sm-4 control-label checkbox" for="activeInactive">Active</label> 
+               <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="amenity.active">
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="updateAmenity()" ng-disabled="!isInputValid()">Update</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

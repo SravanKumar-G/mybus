@@ -2,10 +2,10 @@
 /*global angular,_*/
 
 angular.module('myBus.vehicleModule', [])
-    .controller('VehicleController', function ($scope, $http, $log, ngTableParams, $modal, $filter,$route,$routeParams, vehicleManager, $location) {
+    .controller('VehicleController', function ($scope, $http, $log, ngTableParams, $modal, $filter,$stateParams, vehicleManager, $location) {
         $log.debug('vehicleController');
         $scope.currentPageOfVehicles = [];
-        $scope.id = $routeParams.id;
+        $scope.id = $stateParams.id;
         var loadTableData = function (tableParams, $defer) {
             var data=vehicleManager.getVehicles(function(data) {
                 $scope.vehicles = data;
@@ -40,7 +40,7 @@ angular.module('myBus.vehicleModule', [])
         };
         $scope.deleteVehicleOnClick = function(id) {
             vehicleManager.deleteVehicle(id,function(data) {
-                $route.reload();
+                //$route.reload();
             })
         }
         $scope.updateVehicleOnClick = function(id) {

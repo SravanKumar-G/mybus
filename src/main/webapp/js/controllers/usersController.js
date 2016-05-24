@@ -6,7 +6,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
   //
   // ============================= List All ===================================
   //
-    .controller('UsersController', function($scope,$state, $http, $log, $filter, ngTableParams, $location, usSpinnerService,userManager,$rootScope) {
+    .controller('UsersController', function($scope,$state, $http, $log, $filter, ngTableParams, $location, usSpinnerService,userManager ,$rootScope) {
       console.log("in UsersController");
       $scope.headline = "Users";
       //$scope.users = [];
@@ -63,7 +63,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.editUser = function(userId){
-            $state.go('userEdit',{'idParam':userId});
+            $state.go('useredit',{'idParam':userId});
         };
         $scope.deleteUser = function(id){
             userManager.deleteUser(id)
@@ -75,13 +75,20 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,agentPlanManager) {
+    .controller('UserAddController', function($scope,userManager,$window,$log,agentPlanManager, roleManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
         $scope.user = {};
         $scope.planTypes = [];
-
+        $scope.roles =[];
+        $scope.rolesInit = function(){
+        	roleManager.getAllRoles(function(data){
+        		$scope.roles = data;
+        	});
+        }
+        $scope.rolesInit();
+        $log.debug("roles"+$scope.roles);
         $scope.usersFromManager=[];
         $scope.onMouseLeave = function(userNameFromUI){
             userManager.getUsers(function(data){
@@ -128,11 +135,18 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window,roleManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.idParam;
         $scope.user={};
-
+        
+        $scope.roles =[];
+        $scope.rolesInit = function(){
+        	roleManager.getAllRoles(function(data){
+        		$scope.roles = data;
+        	});
+        }
+        $scope.rolesInit();
         $scope.loadUserWithId = function(){
             userManager.getUserWithId($scope.id,function(data){
                 $scope.user=data;

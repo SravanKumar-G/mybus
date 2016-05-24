@@ -1,0 +1,21 @@
+<legend>{{ headline }}</legend>
+
+<div class="toolbar-button-div pull-right">
+</div>
+
+<table class="table table-bordered table-condensed table-hover">
+	<tr>
+		<th class="clickable-item col-md-2" />
+		<th ng-repeat="role in roles" class="clickable-item col-md-1" >{{role.name}}</th>
+	</tr>	
+<tr ng-repeat="menu in menus">
+<td>{{menu.name | uppercase}}</td>
+<td ng-repeat="permission in menu.permissions">
+		<input type="checkbox" ng-disabled="!isEditable" data-ng-checked="{{permission.allowed}}" ng-model='checkedOrUnchecked' checklist-value="{{permission.allowed}}" ng-click="addOrRemovefromRoles(checkedOrUnchecked,menu.name,permission.roleName)"/>
+</td>
+</tr>
+</table>
+<div class="text-right">
+	<button class="btn btn-warning" ng-click="editManagingRoles()">Edit Roles</button>
+	<button class="btn btn-primary" ng-disabled="!isEditable" ng-click="updateManagingRoles()">UpDate Roles</button>
+</div>

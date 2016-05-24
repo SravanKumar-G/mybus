@@ -42,7 +42,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 			$log.debug("fetching services data ...");
 			$http.get('/api/v1/services')
 			.success(function (data) {
-				$rootScope.$broadcast('servicesCreateComplete');
+				$rootScope.$broadcast('servicesInitStart');
 				callback(data);
 			})
 			.error(function (error) {
@@ -69,9 +69,15 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 		},
 		updateService: function(service,callback) {
 			$http.put('/api/v1/service',service).success(function (data) {
-				callback(data);
+				//callback(data);
+				sweetAlert("success","Bus Service has been updated successfully","success");
 				$rootScope.$broadcast('servicesCreateComplete');
-			});
+			})
+			.error(function (err) {
+				var errorMsg = "error adding new service info. " + (err && err.message ? err.message : '');
+				$log.error(errorMsg);
+				 sweetAlert("Error",errorMsg,"error");
+			});;
 		},
 		deleteService: function(id) {
 			 swal({
@@ -85,7 +91,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 	                	
 	                	$http.delete('/api/v1/service/'+id).success(function (data) {
 	        				swal("Deleted!", "Bus Service was successfully deleted!", "success");
-	        				$rootScope.$broadcast('servicesDeleteComplete');
+	        				$rootScope.$broadcast('servicesInitStart');
 	        			}).error(function () {
 	                       swal("Oops", "We couldn't connect to the server!", "error");
 	                    });
@@ -105,7 +111,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 	                confirmButtonColor: "#ec6c62"},function(){
 	                	
 	                	$http.get('/api/v1/publish/'+id).success(function (data) {
-	        				$rootScope.$broadcast('servicesPublished');
+	        				$rootScope.$broadcast('servicesInitStart');
 	        				swal("Published!", "Bus Service was successfully published!", "success");
 	        				callback(data);
 	        			}).error(function (error) {

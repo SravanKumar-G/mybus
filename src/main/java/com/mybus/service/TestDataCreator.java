@@ -4,12 +4,13 @@ import com.mybus.SystemProperties;
 import com.mybus.controller.UserController;
 import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.PaymentGateway;
-import com.mybus.model.PaymentGateways;
 import com.mybus.model.User;
+import com.mybus.model.UserType;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.mybus.model.PaymentGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ public class TestDataCreator {
                 user.setLastName("Lname");
                 user.setPassword("123");
                 user.setUserName("bill");
+                user.setUserType(UserType.ADMIN);
                 userDAO.save(user);
             } else {
                 logger.debug("Test data already created");
@@ -48,21 +50,21 @@ public class TestDataCreator {
             PaymentGateway payuGateway = paymentGatewayDAO.findByName("PAYU");
             if(payuGateway == null) {
                 PaymentGateway pg = new PaymentGateway();
-                pg.setApiKey("eCwWELxi"); //payu  salt
-                pg.setAccountId("gtKFFx"); //payu key
-                pg.setGetwayUrl("https://test.payu.in/_payment");
+                pg.setPgKey("eCwWELxi"); //payu  salt
+                pg.setPgAccountID("gtKFFx"); //payu key
+                pg.setPgRequestUrl("https://test.payu.in/_payment");
                 pg.setPaymentType("PG");
-                pg.setName("PAYU");
+                pg.setUserName("PAYU");
                 paymentGatewayDAO.save(pg);
             }
             payuGateway = paymentGatewayDAO.findByName("EBS");
             if(payuGateway == null) {
                 PaymentGateway pg = new PaymentGateway();
-                pg.setApiKey("ebs key"); //ebs secret key
-                pg.setAccountId("gtKFFx"); //ebs accountId
-                pg.setGetwayUrl("https://secure.ebs.in/pg/ma/payment/request");
+                pg.setPgKey("ebs key"); //ebs secret key
+                pg.setPgAccountID("gtKFFx"); //ebs accountId
+                pg.setPgRequestUrl("https://secure.ebs.in/pg/ma/payment/request");
                 pg.setPaymentType("PG");
-                pg.setName("EBS");
+                pg.setUserName("EBS");
                 paymentGatewayDAO.save(pg);
             }
         } else {

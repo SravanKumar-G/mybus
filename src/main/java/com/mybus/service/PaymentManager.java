@@ -47,13 +47,13 @@ public class PaymentManager {
 	public Payment getPayuPaymentGatewayDetails(Payment payment){
 
 		LOGGER.info("PaymentManager :: getPayuPaymentGatewayDetails");
-		PaymentGateways pg = new PaymentGateways();
+		PaymentGateway pg = new PaymentGateway();
 		pg.setPgKey("eCwWELxi"); //payu  salt
 		pg.setPgAccountID("gtKFFx"); //payu key
 		pg.setPgRequestUrl("https://test.payu.in/_payment");
 		pg.setPgCallbackUrl("http://localhost:8081/payUResponse");
 		pg.setPaymentType("PG");
-		pg.setPgName("PAYU");
+		pg.setName("PAYU");
 		String merchantRefNo =  getRandamNo();
 		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+
 				payment.getFirstName() +"|"+ payment.getEmail() +"|||||||||||"+pg.getPgKey();
@@ -67,7 +67,7 @@ public class PaymentManager {
 		PaymentResponse paymentRespose= new PaymentResponse();
 		paymentRespose.setAmount(payment.getAmount());
 		paymentRespose.setMerchantrefNo(payment.getMerchantRefNo());
-		paymentRespose.setPaymentName(payment.getPaymentGateways().getPgName());
+		paymentRespose.setPaymentName(payment.getPaymentGateways().getName());
 		paymentRespose.setPaymentType(payment.getPaymentGateways().getPaymentType());
 		Status status = new Status();
 		status.setSuccess(true);
@@ -82,13 +82,13 @@ public class PaymentManager {
 	public Payment getEBSPaymentGatewayDetails(Payment payment){
 		
 		LOGGER.info("PaymentManager :: getEBSPaymentGatewayDetails");
-		PaymentGateways pg = new PaymentGateways();
+		PaymentGateway pg = new PaymentGateway();
 		pg.setPgKey("ebs Secret Key");
 		pg.setPgAccountID("account id");
 		pg.setPgRequestUrl("https://secure.ebs.in/pg/ma/payment/request");
 		pg.setPgCallbackUrl("http://localhost:8081/eBSResponse");
 		pg.setPaymentType("PG");
-		pg.setPgName("EBS");
+		pg.setName("EBS");
 		String merchantRefNo =  getRandamNo();
 		payment.setAlgo("MD5");
 		payment.setChannel("0");
@@ -101,7 +101,7 @@ public class PaymentManager {
 		PaymentResponse paymentRespose= new PaymentResponse();
 		paymentRespose.setAmount(payment.getAmount());
 		paymentRespose.setMerchantrefNo(payment.getMerchantRefNo());
-		paymentRespose.setPaymentName(payment.getPaymentGateways().getPgName());
+		paymentRespose.setPaymentName(payment.getPaymentGateways().getName());
 		paymentRespose.setPaymentType(payment.getPaymentGateways().getPaymentType());
 		Status status = new Status();
 		status.setSuccess(true);
