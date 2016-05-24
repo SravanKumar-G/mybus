@@ -1,6 +1,7 @@
 package com.mybus.controller;
 
 import com.google.common.base.Preconditions;
+import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
@@ -33,7 +34,7 @@ public class CityController extends MyBusBaseController{
     @Autowired
     private CityManager cityManager;
 
-
+    @RequiresAuthorizedUser(value=false)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
