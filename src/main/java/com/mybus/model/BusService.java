@@ -57,6 +57,10 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
+	private String routeName;
+
+	@Getter
+	@Setter
 	//yyyy-MM-dd
 	private DateTime effectiveFrom;
 

@@ -146,10 +146,11 @@
             <div class="row">
                 <div class="col-sm-4">
                 
-                    <label for="sel1">Route Name : </label>
-                    <select class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-options="route as route.name for route in busServiceEditCtrl.routes track by route.id"
-                            data-ng-model="busServiceEditCtrl.route" ng-change="busServiceEditCtrl.getRouteCities()">
-                    </select>
+                    <label for="route">Route Name : </label>
+                    <input id="route" list="routes" ng-model="busServiceEditCtrl.busService.routeName" name="route" class="form-control" placeholder="Route Name">
+                    <datalist id="routes">
+                        <option ng-repeat="route in busServiceEditCtrl.routes" data-value="{{route.id}}">{{route.name}}</option>
+                    </datalist>
                     <br>
                 </div>
                   <div class="col-sm-4">

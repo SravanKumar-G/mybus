@@ -33,14 +33,14 @@ var myBus = angular.module('myBus', [
 
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
-        $stateProvider.
-            state('dashboard', {
+        $stateProvider
+            .state('dashboard', {
             	level:1,
                 url:'/dashboard',
                 templateUrl: 'partials/home.tpl.html',
                 controller: 'HomeController'
-            }).
-            state('cities', {
+            })
+            .state('cities', {
             	url:'/cities',
                 level: 1,
                 templateUrl: 'partials/cities-list.tpl.html',
@@ -58,44 +58,43 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/person.html',
                 controller: 'PersonController'
             })
-            .
-            state('states', {
+            .state('states', {
             	url:'/states',
                 level: 1,
                 templateUrl: 'partials/states.html',
                 controller: 'CitiesController'
-            }).
-            state('expenses', {
+            })
+            .state('expenses', {
             	level:1,
                 url:'/expenses',
                 templateUrl: 'partials/expenses-list.tpl.html',
                 controller: 'ExpensesController'
-            }).
-            state('city/:id', {
+            })
+            .state('city/:id', {
             	level:2,
                 url:'/city/:id',
                 templateUrl: 'partials/boardingpoints-list.tpl.html',
                 controller: 'BoardingPointsListController'
-            }).
-            state('vehicles', {
+            })
+            .state('vehicles', {
             	level:1,
                 url:'/vehicles',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
-            }).
-            state('layouts', {
+            })
+            .state('layouts', {
             	level:1,
                 url:'/layouts',
                 templateUrl: 'partials/buslayout.tpl.html',
                 controller: 'BusLayoutController as busLayoutCtrl'
-            }).
-            state('layouts/:id', {
+            })
+            .state('layouts/:id', {
             	level:2,
                 url:'/layouts/:id',
                 templateUrl: 'partials/buslayoutedit.tpl.html',
                 controller: 'BusLayoutEditController as busLayoutEditCtrl'
-            }).
-            state('services', {
+            })
+            .state('services', {
             	level:1,
                 url:'/services',
                 templateUrl: 'partials/busService.tpl.html',
@@ -107,16 +106,6 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/busServiceEdit.tpl.html',
                 controller: 'BusServiceEditController as busServiceEditCtrl',
                 resolve : busServiceEditResolver
-            })
-            .state('busdetails', {
-                url:'/busdetails',
-                templateUrl: 'partials/busdetails.tpl.html',
-                controller: 'BusDetailsController'
-            })
-            .state('users', {
-                url:'/users',
-                templateUrl: 'partials/users.tpl.html',
-                controller: 'UsersController'
             })
             .state('roles', {
                 url:'/roles',
@@ -149,55 +138,49 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 },
                 templateUrl: 'partials/user-editDetails.tpl.html',
                 controller: 'UpdateUserController'
-            }).
-            state('plans', {
+            })
+            .state('plans', {
             	level:2,
                 url:'/plans',
                 templateUrl: 'partials/agentPlan-details.tpl.html',
                 controller: 'AgentPlanController'
-            }).
-            state('plan', {
+            })
+            .state('plan', {
             	level:3,
                 url:'/plan',
                 templateUrl: 'partials/agentPlanEdit-details.tpl.html',
                 controller: 'AddAgentPlanTypeController'
-            }).
-            state('docs', {
+            })
+            .state('docs', {
             	level:1,
                 url:'/docs',
                 templateUrl: 'partials/api-docs.tpl.html',
                 controller: 'APIDocsController'
-            }).
-            state('account', {
+            })
+            .state('account', {
             	level:2,
                 url:'/account',
                 templateUrl: 'partials/account.tpl.html',
                 controller: 'AccountController'
-            }).
-            state('payment',{
+            })
+            .state('payment',{
             	level:1,
                 url:'/payment',
                 templateUrl: 'partials/payment.tpl.html',
                 controller: 'PaymentController'
-            }). 
-            state('roles',{
-            	level:2,
-                url:'/roles',
-                templateUrl: 'partials/role.tpl.html',
-                controller: 'RolesController'
-            }).
-            state('amenities',{
+            })
+            .state('amenities',{
                 url:'/amenities',
                 templateUrl: 'partials/amenities.tpl.html',
                 controller: 'AmenitiesController'
-            }).
-            state('trip',{
+            })
+            .state('trip',{
             	level:2,
                 url:'/trip',
                 templateUrl: 'partials/trip.tpl.html',
                 controller: 'TripController'
-            }).
-            state('managingroles',{
+            })
+            .state('managingroles',{
             	level:2,
                 url:'/managingRoles',
                 templateUrl: 'partials/managing-roles.tpl.html',

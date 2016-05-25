@@ -42,7 +42,13 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         }
         busServiceEditCtrl.layouts = layoutNamesPromise.data;
         busServiceEditCtrl.routes = routeNamesPromise.data;
-        busServiceEditCtrl.amenities = amenitiesNamesPromise.data;
+		busServiceEditCtrl.routesMap = {};
+		//create map data
+		for(var rt in routeNamesPromise.data){
+			busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].id] = busServiceEditCtrl.routes[rt].name;
+			busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].name] = busServiceEditCtrl.routes[rt].id;
+		}
+		busServiceEditCtrl.amenities = amenitiesNamesPromise.data;
         busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         busServiceEditCtrl.specialDays = [{'date':''}]
         busServiceEditCtrl.taxModes  = [
@@ -103,13 +109,17 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.boardingPoints=[];
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
-        	
+			busServiceEditCtrl.busService.routesMap = {};
+
         }
+		$scope.$watch('busServiceEditCtrl.busService.routeName', function() {
+			if(busServiceEditCtrl.routesMap && busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName]){
+				busServiceEditCtrl.busService.routeId = busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName];
+				busServiceEditCtrl.getRouteCities();
+			}
+		});
+
         busServiceEditCtrl.getRouteCities = function(){
-        	var routeId = busServiceEditCtrl.route.id;
-        	console.log('route id -' + routeId);
-        	busServiceEditCtrl.busService.routeId=routeId;
-        	
         	busServiceManager.busServiceConfig(busServiceEditCtrl.busService,function(data){
         		console.log("service config -"+data);
         		busServiceEditCtrl.busService = data;

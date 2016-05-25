@@ -132,11 +132,10 @@ public class BusServiceManager {
 	}
 
 	public BusService updateServiceConfiguration(BusService service) {
-		
 		Route route = routeDAO.findOne(service.getRouteId());
-		
+		Preconditions.checkNotNull(route, "Invalid route found");
 		City fromCity = cityDAO.findOne(route.getFromCity());
-		Set<ServiceBoardingPoint> boardingPointsSet = new LinkedHashSet<ServiceBoardingPoint>();
+		Set<ServiceBoardingPoint> boardingPointsSet = new LinkedHashSet<>();
 		ServiceBoardingPoint sbp = null;
 		for(BoardingPoint bp :fromCity.getBoardingPoints()){
 			if(bp.isActive()) {
