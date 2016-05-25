@@ -1,0 +1,81 @@
+<style type="text/css">
+    
+    table tr td span.seat{
+    	background:url("/images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+	    width: 40px;
+    	height: 43px;
+    	position: absolute;
+    }
+    table tr td{
+    	width:50px;
+    	height: 50px;
+    }
+    
+</style>
+
+
+
+<div class=" form-group bg-success col-md-12">
+	<div class="col-md-2"><label>Onward Journey:</label></div>
+	<div class="col-md-2">{{busJourney.fromCity}}</div>
+	<div class="col-md-2">{{busJourney.toCity}}</div>
+	<div class="col-md-2">{{busJourney.dateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">{{busJourney.rdateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">
+		<input type="button" class="btn btn-primary form-control" ng-click="modifySearchEvent()" value="Modify Search">
+	</div>
+</div>
+
+<div class="form-group"> 
+
+	<div ng-if="modifySearch" class="col-md-12">
+		<div class = "col-md-2">
+			<input type="radio"  data-ng-checked="true" ng-model="busJourney.journeyType" value="ONE_WAY"> One Way  
+			<input type="radio"  ng-model="busJourney.journeyType" value="TWO_WAY"> Two Way
+		</div>
+		<div class="col-md-2">
+			<input type="text" ng-model="busJourney.toCity" class="form-control"> 
+		</div>
+		<div class="col-md-2">
+			<input type="text" ng-model="busJourney.fromCity" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="date" ng-model="busJourney.dateOfJourney" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="date" ng-model="busJourney.rdateOfJourney" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="button" value="Buses Search" class="btm btn-primary form-control">
+		</div>
+	</div>
+	
+</div>
+
+<div class="form-group ">
+	<div class="row bg-info">
+		<div class="col-md-2 bg-info">Service Name</div>
+		<div class="col-md-2 bg-info">Bus Type</div>
+		<div class="col-md-2 bg-info">Timing</div>
+		<div class="col-md-2 bg-info">Arrival</div>
+		<div class="col-md-2 bg-info">Fare</div>
+		<div class="col-md-2 bg-info">Availability</div>
+	</div>
+	
+	<div class="row table-striped" ng-repeat="trip in trips">
+		<div class="col-md-2">{{trip.fromCityId}} to {{trip.toCityId}}</div>
+		<div class="col-md-2">2+1 AC Sleeper</div>
+		<div class="col-md-2">9:30 PM</div>
+		<div class="col-md-2">6:00 AM</div>
+		<div class="col-md-2">{{trip.serviceFares}}</div>
+		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout({{trip.serviceId}})"/> </div>
+		<div class="col-md-12">
+			<table  class="holder" id="seatLayout-{{trip.serviceId}}">
+			<!-- 	<tr ng-repeat="seats in rows">
+			        <td ng-repeat="seat in seats"><span class="seat"></span></td>
+			    </tr> -->
+			</table>
+		</div>
+	</div>
+
+</div>

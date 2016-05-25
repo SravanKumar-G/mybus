@@ -56,12 +56,12 @@ angular.module('myBus.vehicleModule', [])
         }
     })
     // ========================== Modal - addVehicle controller =================================
-    .controller('AddVehicleController', function ($scope, $modalInstance, $http,$log,$route, vehicleManager) {
+    .controller('AddVehicleController', function ($scope, $modalInstance, $http,$log, vehicleManager) {
         $scope.vehicle = {};
         $scope.ok = function () {
             vehicleManager.createVehicle($scope.vehicle, function(data){
                 $modalInstance.close(data);
-                $route.reload();
+                //$route.reload();
             });
         };
         $scope.cancel = function () {
@@ -74,7 +74,7 @@ angular.module('myBus.vehicleModule', [])
         };
     })
     // ========================== Modal - updateVehicle controller =================================
-    .controller('UpdateVehicleModalController', function ($scope, $modalInstance, $http,$log,$route,vehicleId, vehicleManager) {
+    .controller('UpdateVehicleModalController', function ($scope, $modalInstance, $http,$log,vehicleId, vehicleManager) {
         $scope.vehicle = {};
         $scope.setVehicleIntoModal = function(vehicleId){
             vehicleManager.getVehicleById(vehicleId,function(data){
@@ -87,7 +87,7 @@ angular.module('myBus.vehicleModule', [])
         $scope.ok = function () {
             vehicleManager.updateVehicle(vehicleId,$scope.vehicle,function(data){
                 $modalInstance.close(data);
-                $route.reload();
+                //$route.reload();
             })
         };
         $scope.cancel = function () {

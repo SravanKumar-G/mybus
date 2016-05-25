@@ -16,7 +16,21 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.totalSeats = 0;
         
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
+        
 
+        var date = new Date();
+        $scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
+        $scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
+        
+        $scope.onSelectDateOfJourney = function(dateOfJourney){
+   	     if(dateOfJourney!=''){
+   	    	 $scope.rminDate = $filter('date')(dateOfJourney,'yyyy-MM-dd');
+   	     }else{
+   	    	 $scope.rminDate = $scope.minDate; 
+   	     }
+        }
+
+        
         $scope.headline = "Service Details";
         $scope.sSDates=[];
         $scope.amenitiesForUi=[];

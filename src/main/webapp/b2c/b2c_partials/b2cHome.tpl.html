@@ -12,44 +12,56 @@
 	
 	<div class="form-group">
 		<div class = "col-md-6">
-			<input type="radio"  data-ng-checked="true" ng-model="journeyType" value="ONE_WAY"> One Way  
-		
-			<input type="radio"  ng-model="journeyType" value="TWO_WAY"> Two Way
+			<input type="radio"  data-ng-checked="true" ng-model="busJourney.journeyType" value="ONE_WAY"> One Way  
+			<input type="radio"  ng-model="busJourney.journeyType" value="TWO_WAY"> Two Way
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-sm-4 control-label" ng-model="fromCity" for="fromInput" >From </label>
+	
+			<div  ng-show="searchForbus.fromCity.$touched && searchForbus.fromCity.$invalid" class="alert alert-danger col-md-10 col-offset-2">
+				Please Select From City.
+		 	</div>
+			<div  ng-show="searchForbus.toCity.$touched && searchForbus.toCity.$invalid" class="alert alert-danger col-md-10 col-offset-2">
+				Please Select To City.
+		 	</div>
+	
+		<label class="col-sm-4 control-label" for="fromInput" >From </label>
 		<div class = "col-md-8">
-			<input type="text" class="form-control" typeahead="city.name for city in allCities | filter:$viewValue | limitTo:8" typeahead-min-length="2" ng-model="fromCity"
-			typeahead-on-select="selectFromCity($item)" typeahead-select-on-exact="true"/>
+			<input type="text" list="fromCity" name="fromCity" class="form-control" ng-model="busJourney.fromCity" required/>
+			
+			<datalist id="fromCity">
+			  	<option ng-repeat="city in allCities" value="{{city.name}}">
+			</datalist>
 		</div>
 	</div>
 	</br>
 	<div class="form-group">
-			<label  class="col-sm-4 control-label" ng-model="toCity" for="toInput" >To</label>
+			<label  class="col-sm-4 control-label" for="toInput" >To</label>
 		<div class = "col-md-8">
-		<input type="text" class="form-control" typeahead="city.name for city in allCities | filter:$viewValue | limitTo:8" typeahead-min-length="2" ng-model="toCity"
-			typeahead-on-select="selectToCity($item)" typeahead-select-on-exact="true"/>
+		<input type = "text" class = "form-control" list = "toCity" name = "toCity" ng-model="busJourney.toCity"  required/>
+			<datalist id= "toCity">
+			  	<option ng-repeat="city in allCities" value="{{city.name}}">
+			</datalist>
 		</div>
 	</div>
 	</br>
 	<div class="form-group">
-			<label  class="col-sm-4 control-label" for="dateOfJourneyInput">Date of Journey</label>
+			<label  class="col-sm-4 control-label" for="busJourney.dateOfJourneyInput">Date of Journey</label>
 		<div class = "col-md-8">
-			<input type="date" class="form-control" ng-model="dateOfJourney"/>
+			<input type="date" class="form-control" ng-model="busJourney.dateOfJourney"  placeholder="yyyy-MM-dd" min="{{minDate}}" max="{{manDate}}"  ng-change="onSelectDateOfJourney()" required />
 		</div>
 	</div>
 	</br>
-	<div class="form-group" ng-if="journeyType=='TWO_WAY'">
+	<div class="form-group" ng-if="busJourney.journeyType=='TWO_WAY'">
 			<label class="col-sm-4 control-label" for="returnJourneyInput" >Return Journey</label>
 		<div class = "col-md-8">
-			<input type="date" class="form-control" ng-model="returnJourney"/>
+			<input type="date" class="form-control" ng-model="busJourney.returnJourney"  placeholder="yyyy-MM-dd" min="{{rminDate}}" max="{{manDate}}" required />
 		</div>
 	</div>
 	</form>
 	</br>
 	<div class="col-md-4">
-		<button class="btn btn-sm btn-primary"><h4> Search For Bus </h4></button>
+		<button class="btn btn-sm btn-primary" ng-click="searchBuses()"><h4> Search For Bus </h4></button>
 	</div>
 	</br>
 	</br><div>&nbsp;</div>
