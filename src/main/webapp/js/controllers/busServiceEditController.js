@@ -63,6 +63,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].name] = busServiceEditCtrl.routes[rt].id;
 		}
 		busServiceEditCtrl.amenities = amenitiesNamesPromise.data;
+		angular.forEach(busServiceEditCtrl.amenities,function(amenity){
+			amenity.active = false;
+		})
         busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         busServiceEditCtrl.specialDays = [{'date':''}]
         busServiceEditCtrl.taxModes  = [
@@ -74,34 +77,21 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
       if($stateParams.id != "create" && serviceId !== ''){
     	  $scope.updateServiceButton = true;
       }
-      if(serviceId !== ''){
+      if($stateParams.id != "create" && serviceId !== ''){
     	  var cache = $cacheFactory.get($rootScope.id);
     	  if(cache){
     		  busServiceEditCtrl.busService = cache.get(serviceId);
+    		  busServiceEditCtrl.busService.effectiveFrom = new Date(busServiceEditCtrl.busService.effectiveFrom);
+    		  busServiceEditCtrl.busService.effectiveTo = new Date(busServiceEditCtrl.busService.effectiveTo);
+    		  angular.forEach(busServiceEditCtrl.amenities,function(amts){
+    			  angular.forEach(busServiceEditCtrl.busService.amenities,function(amt){
+	    			  if(amt.name === amts.name){
+	    				 amts.active=true 
+	    			  }
+    			  });
+    		  });
+    		
     	  }
-    	  /*if(busServiceEditCtrl.busService && busServiceEditCtrl.busService.id !== ''){
-    		  
-    	  }else{
-    		 
-    		  busServiceEditCtrl.busService = {
-    		        	active:false,
-    					serviceName:null,
-    					serviceNumber:null,
-    					phoneEnquiry:null,
-    					cutoffTime:null,
-    		        	serviceTaxType:null,
-    		        	serviceTax:null, 
-    		        	layoutId:null,
-    			        effectiveFrom:null,
-    		        	effectiveTo:null,
-    		        	frequency:null,
-    		        	weeklyDays:[],
-    		        	specialServiceDates:[],
-    		        	boardingPoints:[],
-    		        	dropingPoints:[],
-    		        	serviceFares:[]
-    		        }
-    	  }*/
       }
 
         function initialize(){
@@ -156,16 +146,20 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         					$scope.serviceFares.push({
         						sourceCityId:sourceCityId[0],
         						destinationCityId:destinationCityId[0],
+        						departureTime:serviceFare.departureTime,
+        						arrivalTime:serviceFare.arrivalTime,
         						active:true
         					})
         				}else {
         					$scope.serviceFares.push({
         						sourceCityId:sourceCityId[0],
         						destinationCityId:destinationCityId[0],
+        						departureTime:serviceFare.departureTime,
+        						arrivalTime:serviceFare.arrivalTime,
         						active:false
         					})
         				}
-        				
+        				$log.debug("arrivalTime:serviceFare.arrivalTime,"+serviceFare.arrivalTime)
         			});
         			
     				angular.forEach(busServiceEditCtrl.busService.boardingPoints,function(bpid){
@@ -237,7 +231,6 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         $scope.saveService = function (){
         	busServiceEditCtrl.busService.effectiveFrom = $filter('date')(busServiceEditCtrl.busService.effectiveFrom,'yyyy-MM-dd');
         	busServiceEditCtrl.busService.effectiveTo = $filter('date')(busServiceEditCtrl.busService.effectiveTo,'yyyy-MM-dd');
-        	
         	busServiceManager.createService(busServiceEditCtrl.busService)
         };
         
@@ -384,3 +377,4 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         return busServiceEditCtrl;
 
   })
+;

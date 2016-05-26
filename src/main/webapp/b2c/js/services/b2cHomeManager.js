@@ -1,5 +1,5 @@
 /**
- * Created by svanik on 1/20/2016.
+ * Created by yks_srinu.
  */
 
 var portalApp = angular.module('myBusB2c');

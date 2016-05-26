@@ -31,6 +31,14 @@ public class Trip extends AbstractDocument {
 
     @Getter
     @Setter
+    private String serviceName;
+
+    @Getter
+    @Setter
+    private String serviceNumber;
+
+    @Getter
+    @Setter
     @ApiModelProperty(notes = "Copied from the service")
     private List<ServiceFare> serviceFares;
 
@@ -77,7 +85,7 @@ public class Trip extends AbstractDocument {
 
     @Getter
     @Setter
-    private Set<Amenity> amenities;
+    private Set<ServiceAmenity> amenities;
 
     @Getter
     @Setter

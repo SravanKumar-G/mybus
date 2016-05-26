@@ -45,6 +45,6 @@ angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
      
      $scope.searchBuses = function(){
 	    $log.debug("$scope.busJourney -"+$scope.busJourney);
-	    $state.go('results');
+	    $location.url('/results/'+$scope.busJourney);
      }
 });
