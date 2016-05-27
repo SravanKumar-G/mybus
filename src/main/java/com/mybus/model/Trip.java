@@ -36,7 +36,15 @@ public class Trip extends AbstractDocument {
     @Getter
     @Setter
     private String serviceNumber;
+    
+    @Getter
+	@Setter
+	private String arrivalTime;
 
+	@Getter
+	@Setter
+	private String departureTime;
+	
     @Getter
     @Setter
     @ApiModelProperty(notes = "Copied from the service")
