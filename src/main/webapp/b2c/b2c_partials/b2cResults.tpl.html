@@ -1,0 +1,128 @@
+<style type="text/css">
+    .holder{
+    height:300px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
+    }
+
+    .bigbus{
+    height:400px;
+    width:750px;
+    background-color:#F5F5F5;
+    border:1px solid #A4A4A4;
+    margin-left:10px;
+    }
+
+    table tr td.seat{
+    																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											background:url("/images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
+    height:77px;
+    //width:40px;
+    }
+
+    table tr td.sleeper{
+    background:url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
+    height:77px;
+    //width:40px;
+    }
+
+    #place .selectedSeat
+    {
+    background-image:url("/images/booked_seat_img.gif");
+    }
+    #place .selectingSeat
+    {
+    background-image:url("/images/selected_seat_img.gif");
+    }
+    .seatDescription{
+    padding-left : 5px;
+    font-size : 10px;
+    }
+
+</style>
+
+
+
+<div class=" form-group bg-success col-md-12">
+	<div class="col-md-2"><label>Onward Journey:</label></div>
+	<div class="col-md-2">{{busJourney.fromCity}}</div>
+	<div class="col-md-2">{{busJourney.toCity}}</div>
+	<div class="col-md-2">{{busJourney.dateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">{{busJourney.rdateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">
+		<input type="button" class="btn btn-primary form-control" ng-click="modifySearchEvent()" value="Modify Search">
+	</div>
+</div>
+
+<div class="form-group"> 
+
+	<div ng-if="modifySearch" class="col-md-12">
+		<div class = "col-md-2">
+			<input type="radio"  data-ng-checked="true" ng-model="busJourney.journeyType" value="ONE_WAY"> One Way  
+			<input type="radio"  ng-model="busJourney.journeyType" value="TWO_WAY"> Two Way
+		</div>
+		<div class="col-md-2">
+			<input type="text" ng-model="busJourney.toCity" class="form-control"> 
+		</div>
+		<div class="col-md-2">
+			<input type="text" ng-model="busJourney.fromCity" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="date" ng-model="busJourney.dateOfJourney" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="date" ng-model="busJourney.rdateOfJourney" class="form-control">
+		</div>
+		<div class="col-md-2">
+			<input type="button" value="Buses Search" class="btm btn-primary form-control">
+		</div>
+	</div>
+	
+</div>
+
+<div class="form-group ">
+	<div class="row bg-info">
+		<div class="col-md-2 bg-info">Service Name</div>
+		<div class="col-md-2 bg-info">Bus Type</div>
+		<div class="col-md-2 bg-info">Timing</div>
+		<div class="col-md-2 bg-info">Arrival</div>
+		<div class="col-md-2 bg-info">Fare</div>
+		<div class="col-md-2 bg-info">Availability</div>
+	</div>
+	
+	<div class="row table-striped" ng-repeat="trip in trips">
+		<div class="col-md-2">{{trip.serviceName}}</div>
+		<div class="col-md-2">{{trip.serviceName}}</div>
+		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.arrivalTime}}</span></div>
+		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.departureTime}}</span></div>
+		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.fare}}</span></div>
+		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout(trip.layoutId)"/> </div>
+		<div class="col-md-12" ng-if="seatlayout">
+		
+			<table ng-if="!issleeper"  class="holder">
+				 <tr ng-repeat="seats in seatlayout.rows">
+					<td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input ng-disabled="true" type="text" style="width:35px" ng-if="seat.number"  data-ng-model="seat.number" /></td>
+				 </tr>
+			</table>
+			
+			
+			<span>{{busLayoutEditCtrl.busLayout.upperHeader}}</span>
+			
+			<table ng-if="issleeper" class="holder">
+			    <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.upper">
+			        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+			    </tr>
+			</table>
+			
+			<span>{{busLayoutEditCtrl.busLayout.lowerHeader}}</span>
+			
+			<table ng-if="issleeper" class="holder">
+			    <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.lower">
+			        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
+			    </tr>
+			</table>
+		</div>
+	</div>
+
+</div>

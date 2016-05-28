@@ -73,7 +73,7 @@ angular.module('myBus.boardingPointModule', [])
          })
 
     // ========================== Modal - Boarding point controller =================================
-    .controller('AddBoardingPointController', function ($scope, $modalInstance, $http,$log,cityId, cityManager) {
+    .controller('AddBoardingPointController', function ($scope, $modalInstance,$state, $http,$log,cityId, cityManager) {
         $scope.boardingPoint = {};
         $scope.ok = function () {
             if ($scope.boardingPoint.name === null || $scope.boardingPoint.contact === null || $scope.boardingPoint.landmark === null) {
@@ -95,7 +95,7 @@ angular.module('myBus.boardingPointModule', [])
         };
     })
 //======================Model - updateBpController=============================================
-    .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $http,BpId,cityId, $log,cityManager) {
+    .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $state,$http,BpId,cityId, $log,cityManager) {
         $scope.setBpIntoView = function(cityId,BpId){
             cityManager.getBp(cityId,BpId,function(data){
                     $scope.boardingPoint=data;
