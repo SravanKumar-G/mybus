@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
@@ -64,11 +65,12 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		Assert.assertNotNull(service.getId());
 	}
 
+
 	@Test
 	public void testUpdateServiceConfiguration() {
 		
 		BusService service = createBusService();
-		service = busServiceManager.updateServiceConfiguration(service);
+		service = busServiceManager.updateRouteConfiguration(service);
 		Assert.assertNotNull(service);
 		Assert.assertNotSame(0, service.getBoardingPoints());
 		Assert.assertNotSame(0, service.getDropingPoints());
@@ -137,5 +139,27 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		return service;
 	}
 
+	@Test
+	public void testAddBoardingPointsToService() {
+		List<BoardingPoint> boardingPoints = new ArrayList<>();
+		for(int i=0; i<3; i++) {
+			boardingPoints.add(new BoardingPoint("Bp"+i, "Contact", "landmark", true));
+		}
+		boardingPoints.get(0).setActive(false);
+		BusService service = new BusService();
+		service.addBoardingPoints(boardingPoints);
+		Assert.assertEquals(2, service.getBoardingPoints().size());
+	}
 
+	@Test
+	public void testAddDroppingPointsToService() {
+		List<BoardingPoint> boardingPoints = new ArrayList<>();
+		for(int i=0; i<3; i++) {
+			boardingPoints.add(new BoardingPoint("Bp"+i, "Contact", "landmark", true, true));
+		}
+		boardingPoints.get(0).setActive(false);
+		BusService service = new BusService();
+		service.addDroppingPoints(boardingPoints);
+		Assert.assertEquals(2, service.getDropingPoints().size());
+	}
 }

@@ -24,5 +24,8 @@ public class ServiceDropingPoint {
 	@Getter
 	@Setter
 	private DateTime droppingTimeInDate;
+	public ServiceDropingPoint(BoardingPoint bp) {
+		this.droppingPointId = bp.getId();
+	}
 	
 }

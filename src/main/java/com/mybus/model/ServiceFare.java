@@ -5,6 +5,7 @@ package com.mybus.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.joda.time.DateTime;
 
@@ -12,6 +13,7 @@ import org.joda.time.DateTime;
  * @author  schanda on 02/13/16.
  *
  */
+@NoArgsConstructor
 public class ServiceFare {
 
 	@Getter
@@ -55,4 +57,10 @@ public class ServiceFare {
 	@Getter
 	@Setter
 	private boolean active;
+
+	public ServiceFare(String sourceCityId, String destinationCityId, boolean active) {
+		this.sourceCityId = sourceCityId;
+		this.destinationCityId = destinationCityId;
+		this.active = active;
+	}
 }
