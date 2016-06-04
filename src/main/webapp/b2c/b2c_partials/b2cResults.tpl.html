@@ -1,7 +1,7 @@
 <style type="text/css">
     .holder{
-    height:300px;
-    width:750px;
+    height:260px;
+    width:570px;
     background-color:#F5F5F5;
     border:1px solid #A4A4A4;
     margin-left:10px;
@@ -17,27 +17,37 @@
 
     table tr td.seat{
     																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											background:url("/images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
-    height:77px;
-    //width:40px;
+    height:100px;
+    
     }
 
     table tr td.sleeper{
     background:url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
-    height:77px;
+    //height:100px;
     //width:40px;
     }
 
-    #place .selectedSeat
-    {
-    background-image:url("/images/booked_seat_img.gif");
+    table tr td.selectedSleeper{
+	    background:url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
     }
-    #place .selectingSeat
-    {
-    background-image:url("/images/selected_seat_img.gif");
+    
+    table tr td.bookedSleeper{
+    	background:url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
     }
-    .seatDescription{
-    padding-left : 5px;
-    font-size : 10px;
+
+    table tr td.bookedSeat
+    {
+    	background-image:url("/images/booked_seat_img.jpg");
+        background-repeat: no-repeat;
+    }
+    table tr td.selectedSeat
+    {
+    	background-image:url("/images/selected_seat_img.jpg");
+        background-repeat: no-repeat;
+    }
+    table tr td.seatDescription{
+	    padding-left : 5px;
+    	font-size : 10px;
     }
 
 </style>
