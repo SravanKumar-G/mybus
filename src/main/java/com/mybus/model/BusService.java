@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.joda.time.DateTime;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -74,15 +75,15 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Set<ServiceAmenity> amenities;
+	private Set<ServiceAmenity> amenities = new LinkedHashSet<>();
 
 	@Getter
 	@Setter
-	private Set<ServiceBoardingPoint> boardingPoints;
+	private Set<ServiceBoardingPoint> boardingPoints = new LinkedHashSet<>();
 
 	@Getter
 	@Setter
-	private Set<ServiceDropingPoint> dropingPoints;
+	private Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<>();
 
 	@Getter
 	@Setter
@@ -106,5 +107,14 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private double fare;
-	
+
+	public void addBoardingPoints(List<BoardingPoint> list) {
+		list.stream().filter(bp -> bp.isActive()).forEach(bp -> {
+			this.getBoardingPoints().add(new ServiceBoardingPoint(bp));
+		});
+	}
+	public void addDroppingPoints(List<BoardingPoint> list) {
+		list.stream().filter(bp -> bp.isDroppingPoint() && bp.isActive()).
+				forEach(dp -> this.getDropingPoints().add(new ServiceDropingPoint(dp)));
+	}
 }

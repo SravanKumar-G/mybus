@@ -119,11 +119,11 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 		$scope.$watch('busServiceEditCtrl.busService.routeName', function() {
 			if(busServiceEditCtrl.routesMap && busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName]){
 				busServiceEditCtrl.busService.routeId = busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName];
-				busServiceEditCtrl.getRouteCities();
+				busServiceEditCtrl.updateServiceConfig();
 			}
 		});
 
-        busServiceEditCtrl.getRouteCities = function(){
+        busServiceEditCtrl.updateServiceConfig = function(){
         	busServiceManager.busServiceConfig(busServiceEditCtrl.busService,function(data){
         		console.log("service config -"+data);
         		busServiceEditCtrl.busService = data;

@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static java.lang.String.format;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by schanda on 02/02/16.
@@ -131,90 +133,45 @@ public class BusServiceManager {
 		return busServiceDAO.save(busService);
 	}
 
-	public BusService updateServiceConfiguration(BusService service) {
+	public BusService updateRouteConfiguration(BusService service) {
 		Route route = routeDAO.findOne(service.getRouteId());
 		Preconditions.checkNotNull(route, "Invalid route found");
+		Preconditions.checkArgument(route.isActive(), format("Route %s is not active", route.getName()));
 		City fromCity = cityDAO.findOne(route.getFromCity());
-		Set<ServiceBoardingPoint> boardingPointsSet = new LinkedHashSet<>();
-		ServiceBoardingPoint sbp = null;
-		for(BoardingPoint bp :fromCity.getBoardingPoints()){
-			if(bp.isActive()) {
-				sbp = new ServiceBoardingPoint();
-				sbp.setBoardingPointId(bp.getId());
-				boardingPointsSet.add(sbp);
-			}
-		}
-		
-		
+		Preconditions.checkNotNull(fromCity, "From City not found");
+		Preconditions.checkArgument(fromCity.isActive(), format("FromCity %s is not active", fromCity.getName()));
+		service.addBoardingPoints(fromCity.getBoardingPoints().stream()
+				.filter(bp -> bp.isActive()).collect(Collectors.toList()));
 		City toCity = cityDAO.findOne(route.getToCity());
+		Preconditions.checkNotNull(toCity, "ToCity not found");
+		Preconditions.checkArgument(toCity.isActive(), format("ToCity %s is not active", toCity.getName()));
+
 		Set<ServiceDropingPoint> dropingPointsSet = new LinkedHashSet<ServiceDropingPoint>();
-		ServiceDropingPoint sdp = null; 
-		for(BoardingPoint dp :toCity.getBoardingPoints()) {
-			if(dp.isActive() && dp.isDroppingPoint()) {
-				sdp = new ServiceDropingPoint();
-				sdp.setDroppingPointId(dp.getId());
-				dropingPointsSet.add(sdp);
-			}
-		}
+		service.addDroppingPoints(toCity.getBoardingPoints());
 		
 		//Assumed via cities is in source to destination order in List
 		City viaCity = null;
-		
-		ServiceFare sf = null;
-		List<ServiceFare> sfList =  new ArrayList<ServiceFare>();
-		List<City> preViaCityList = new LinkedList<City>();
+
+		List<ServiceFare> sfList =  new ArrayList<>();
+		List<City> preViaCityList = new LinkedList<>();
+		sfList.add(new ServiceFare(route.getFromCity(), route.getToCity(), true));
+
 		for(String cityID:route.getViaCities()) {
 			viaCity = cityDAO.findOne(cityID);
 			if(viaCity.isActive()) {
-				
-				sf = new ServiceFare();
-				sf.setSourceCityId(route.getFromCity());
-				sf.setDestinationCityId(viaCity.getId());
-				sf.setActive(false);
-				sfList.add(sf);
-				
-				sf = new ServiceFare();
-				sf.setSourceCityId(viaCity.getId());
-				sf.setDestinationCityId(route.getToCity());
-				sf.setActive(false);
-				sfList.add(sf);
-				
-				sf = new ServiceFare();
+				sfList.add(new ServiceFare(route.getFromCity(), viaCity.getId(), false));
+				sfList.add(new ServiceFare(viaCity.getId(), route.getToCity(), false));
 				if(preViaCityList.size()>=0){
 					for(City preViaCity:preViaCityList){
-						sf.setSourceCityId(preViaCity.getId());
-						sf.setDestinationCityId(viaCity.getId());
-						sf.setActive(false);
-						sfList.add(sf);
+						sfList.add(new ServiceFare(preViaCity.getId(), viaCity.getId(), false));
 					}
 				}
-				
-				for(BoardingPoint bp :viaCity.getBoardingPoints()){
-					if(bp.isActive()) {
-						sbp = new ServiceBoardingPoint();
-						sbp.setBoardingPointId(bp.getId());
-						boardingPointsSet.add(sbp);
-					}
-					if(bp.isActive() && bp.isDroppingPoint()) {
-						sdp = new ServiceDropingPoint();
-						sdp.setDroppingPointId(bp.getId());
-						dropingPointsSet.add(sdp);
-					}
-				}
+				service.addBoardingPoints(viaCity.getBoardingPoints());
+				service.addDroppingPoints(viaCity.getBoardingPoints());
 				preViaCityList.add(viaCity);
 			}
 		}
-		
-		sf = new ServiceFare();
-		sf.setSourceCityId(route.getFromCity());
-		sf.setDestinationCityId(route.getToCity());
-		sf.setActive(true);
-		sfList.add(sf);
-		
-		service.setBoardingPoints(boardingPointsSet);
-		service.setDropingPoints(dropingPointsSet);
 		service.setServiceFares(sfList);
-		
 		return service;
 	}
 }

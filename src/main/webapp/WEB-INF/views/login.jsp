@@ -26,20 +26,28 @@
 	color: #31708f;
 	background-color: #d9edf7;
 	border-color: #bce8f1;
+	
 }
  
 #login-box {
-	width: 300px;
+	width: 350px;
 	padding: 20px;
-	margin: 100px auto;
+	margin: 120px auto;
 	background: #fff;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
-	border: 1px solid #000;
+	
+	box-shadow:10px 5px 20px #333;
+	border-radius:10px;
+}
+.btn{
+	border-radius:5px;
+	color:white;height:25px;
+	background-color:#8d8d8d;
 }
 </style>
 </head>
-<body onload='document.loginForm.username.focus();'>
+<body style="background-color:#ccc;" onload='document.loginForm.username.focus();'>
  
 	<div id="login-box">
  
@@ -54,18 +62,18 @@
  
 		<form name='loginForm' action="<c:url value='/login' />" method='POST'>
  
-		    <table>
+		    <table align=center>
 			<tr>
 				<td>User this is:</td>
-				<td><input type='text' name='username' value=''></td>
+				<td><input type='text' name='username' value='' ></td>
 			</tr>
 			<tr>
 				<td>Password:</td>
 				<td><input type='password' name='password' /></td>
 			</tr>
 			<tr>
-			        <td colspan='2'>
-                                <input name="submit" type="submit" value="submit" />
+			        <td colspan='2' align='right'>
+                                <input name="submit" type="submit" value="submit" class="btn" />
                                 </td>
 			</tr>
 		   </table>
