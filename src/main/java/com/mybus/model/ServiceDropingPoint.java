@@ -4,6 +4,7 @@
 package com.mybus.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.joda.time.DateTime;
 
@@ -11,11 +12,16 @@ import org.joda.time.DateTime;
  * @author  schanda on 02/13/16.
  *
  */
+@NoArgsConstructor
 public class ServiceDropingPoint {
 
 	@Getter
 	@Setter
 	private String droppingPointId;
+
+	@Getter
+	@Setter
+	private String droppingName;
 
 	@Getter
 	@Setter

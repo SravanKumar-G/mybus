@@ -194,12 +194,12 @@
                                     <td data-title="'Boarding Point Names'" sortable="'name'" class="clickable-item col-md-6">{{ boardingPoint.name }}</td>
                                     <td data-title="'Provide Stop'" class="clickable-item col-md-2">
                                     	<div class="col-sm-5">
-                                        	<input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+                                        	<input type="checkbox" data-ng-checked="boardingPoint.active" class="form-control" data-ng-model="boardingPoint.active" ng-click="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index,boardingPoint.name)">
                                         </div>
                                     </td>
                                     <td data-title="'Departure Time'" class="col-md-2">
                                         <div ng-show="boardingPoint.active">
-                                            <input type="time" class="form-control " ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index)">
+                                            <input type="time" class="form-control " ng-model="boardingPoint.time" ng-change="addOrRemoveDropingtime(boardingPoint.id,boardingPoint.active,'bp',boardingPoint.time,$index,boardingPoint.name)">
                                         </div>
                                     </td>
                                     <td data-title="'Day'" class="col-md-2">0</td>
@@ -212,12 +212,12 @@
                                     <td data-title="'Droping Point Names'" sortable="'name'" class="col-md-6">{{ dropingPoint.name }}</td>
                                     <td data-title="'Provide Stop'" class="col-md-2">
                                     	<div class="col-sm-5">
-                                        	<input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+                                        	<input type="checkbox" data-ng-checked="dropingPoint.active" class="form-control" data-ng-model="dropingPoint.active" ng-click="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index,dropingPoint.name)">
                                         </div>
                                     </td>
                                     <td data-title="'Departure Time'" class="col-md-2">
                                         <div ng-show="dropingPoint.active">
-                                            <input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index)">
+                                            <input type="time" class="form-control" ng-model="dropingPoint.time" ng-change="addOrRemoveDropingtime(dropingPoint.id,dropingPoint.active,'dp',dropingPoint.time,$index,dropingPoint.name)">
                                         </div>
                                     </td>
                                     <td data-title="'Day'"  class="col-md-2">0</td>

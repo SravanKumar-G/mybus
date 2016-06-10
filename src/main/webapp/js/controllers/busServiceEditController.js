@@ -164,10 +164,10 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         			
     				angular.forEach(busServiceEditCtrl.busService.boardingPoints,function(bpid){
 
-    					var bpCityTem = $filter('filter')(cities,bpid.boardingPointId);
+    					var bpCityTem = $filter('filter')(cities,bpid.refId);
     					
     					angular.forEach(bpCityTem[0].boardingPoints,function(bp){
-    						if(bp.id==bpid.boardingPointId){
+    						if(bp.id==bpid.refId){
         						bp.active = false
         						$scope.boardingPoints.push(bp);
     						}
@@ -284,18 +284,18 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
       	  return '';
       };
         
-        $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index){
+        $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index,name){
         	switch (bpOrdb) {
 			case 'bp':
 				if(active){ 
 					var boardPoint = $filter('filter')(busServiceEditCtrl.busService.boardingPoints, bpOrdbID)
 					if(boardPoint.length>0){
-						boardPoint[0].pickupTime = $filter('date')(time,'HH:mm a');
+						boardPoint[0].time = $filter('date')(time,'HH:mm a');
 					}else{
-
 						busServiceEditCtrl.busService.boardingPoints.push({
-							boardingPointId:bpOrdbID,
-							pickupTime : $filter('date')(time,'HH:mm a')
+							refId:bpOrdbID,
+							bpName:name,
+							time : $filter('date')(time,'HH:mm a')
 						});
 					}
 				}else{
@@ -311,6 +311,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 					}else{
 						busServiceEditCtrl.busService.dropingPoints.push({
 							droppingPointId:bpOrdbID,
+							droppingName:name,
 							droppingTime:$filter('date')(time,'HH:mm a')
 						})
 					}

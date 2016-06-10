@@ -13,19 +13,30 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 
 	$log.debug("B2cDetailsPaymentController");
 	
-	 $scope.paymentButtonClicked = function(){
-		 
-		 $http.post('/api/v1/payment',$scope.payment).success(function(data){
-			 console.log('Payment response',data);
-		 		if(data.paymentType == "EBS")
-		 			EBSFormSubmitter.ebsSubmit(data)
-		 		else {
-		 			FormSubmitter.payuSubmit(data)
-		 		}
-			}).error(function (err,status) {
-				sweetAlert("Error",err.message,"error");
-			});
-	    };
+	$scope.paymentButtonClicked = function(){
+		$scope.payment = {
+				address: "kphp",
+				amount: 1200,
+				city: "hyderabad",
+				country: "IND",
+				email: "srinu.yks@gmail.com",
+				firstName: "Srini",
+				lastName: "M",
+				phoneNo: 9492541342,
+				postalCode: 500072,
+				state: "Telangana"
+		}
+		$http.post('/api/v1/payment',$scope.payment).success(function(data){
+			console.log('Payment response',data);
+			if(data.paymentType == "EBS")
+				EBSFormSubmitter.ebsSubmit(data)
+				else {
+					FormSubmitter.payuSubmit(data)
+				}
+		}).error(function (err,status) {
+			sweetAlert("Error",err.message,"error");
+		});
+	};
 });
 
 function FormSubmitter($rootScope, $sce) {

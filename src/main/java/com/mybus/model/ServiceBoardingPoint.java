@@ -22,6 +22,10 @@ public class ServiceBoardingPoint {
 	@Getter
 	@Setter
 	private String time;
+	
+	@Getter
+	@Setter
+	private String bpName;
 
 	@Getter
 	@Setter
