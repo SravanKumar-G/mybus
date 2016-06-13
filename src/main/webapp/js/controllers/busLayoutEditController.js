@@ -199,7 +199,10 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                         if(angular.equals(middleseat, true) && angular.equals(j, parseInt(busLayoutEditCtrl.totalRows.id))){
                             if(!sleeper){
                                 busLayoutEditCtrl.totalSeats = busLayoutEditCtrl.totalSeats + 1;
-                                seats.push({number : number, [number]: number});
+                                seats.push({
+                                	number : number, 
+                                	[number]: number
+                                });
                             }
                         }else{
                             seats.push({number : null, [number]: null});
@@ -233,21 +236,71 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
 
         busLayoutEditCtrl.saveLayout = function (){
             var rows = [];
-            angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
-                var seats = [];
-                angular.forEach(row, function(busseats, key) {
-                    angular.forEach(busseats, function(busseat, key) {
-                        var seat = {
-                            number : null,
-                            displayName : null
-                        };
-                        seat.number = busseat.number;
-                        seat.displayName = busseat[seat.number];
-                        seats.push(seat);
-                    });
-                });
-                rows.push({seats: seats});
-            });
+            
+            if(busLayoutEditCtrl.type.id === 'SLEEPER'){
+            	
+            	angular.forEach(busLayoutEditCtrl.busLayout.upper, function(row, key) {
+            		var seats = [];
+            		angular.forEach(row, function(busseats, key) {
+            			angular.forEach(busseats, function(busseat, key) {
+            				var seat = {
+            						number : null,
+            						displayName : null,
+            						upperDeck:true,
+            						sleeper:true,
+            						seatStatus:"UNAVAILABLE"
+            				};
+            				seat.number = busseat.number;
+            				seat.displayName = busseat[seat.number];
+            				if(busseat.number)
+            					seat.seatStatus="AVAILABLE"
+            				seats.push(seat);
+            			});
+            		});
+            		rows.push({seats: seats});
+            	});
+            	
+            	angular.forEach( busLayoutEditCtrl.busLayout.lower, function(row, key) {
+            		var seats = [];
+            		angular.forEach(row, function(busseats, key) {
+            			angular.forEach(busseats, function(busseat, key) {
+            				var seat = {
+            						number : null,
+            						displayName : null,
+            						upperDeck:false,
+            						sleeper:true,
+            						seatStatus:"UNAVAILABLE"
+            				};
+            				seat.number = busseat.number;
+            				if(busseat.number)
+            					seat.seatStatus="AVAILABLE"
+            				seat.displayName = busseat[seat.number];
+            				seats.push(seat);
+            			});
+            		});
+            		rows.push({seats: seats});
+            	});
+            	
+            }else{
+            	angular.forEach(busLayoutEditCtrl.busLayout.rows, function(row, key) {
+            		var seats = [];
+            		angular.forEach(row, function(busseats, key) {
+            			angular.forEach(busseats, function(busseat, key) {
+            				var seat = {
+            						number : null,
+            						displayName : null,
+            						seatStatus:"UNAVAILABLE"
+            				};
+            				seat.number = busseat.number;
+            				if(busseat.number)
+            					seat.seatStatus="AVAILABLE"
+            				seat.displayName = busseat[seat.number];
+            				seats.push(seat);
+            			});
+            		});
+            		rows.push({seats: seats});
+            	});
+            }
             var layoutToSave = {
                 name : busLayoutEditCtrl.name,
                 type: busLayoutEditCtrl.type.id,

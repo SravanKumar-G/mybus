@@ -65,7 +65,8 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
     createLayout : function (layout, callback) {
         $http.post('/api/v1/layout', layout)
           .success(function (data) {
-            $rootScope.$broadcast('layoutsCreateComplete');
+        	  swal("Great", ":Layout has been successfully created", "success");
+        	  $rootScope.$broadcast('layoutsCreateComplete');
             //callback(data);
           })
           .error(function (err) {
@@ -77,12 +78,14 @@ portalApp.factory('busLayoutManager', function ($rootScope, $http, $log, $window
     updateLayout: function(layout,callback) {
      $http.put('/api/v1/layout',layout).success(function (data) {
        //callback(data);
+    	 swal("Great", ":Layout has been successfully Update", "success");
        $rootScope.$broadcast('layoutsCreateComplete');
      });
    },
     deleteLayout: function(name) {
      $http.delete('/api/v1/layout/'+name).success(function (data) {
-       $rootScope.$broadcast('layoutsDeleteComplete');
+    	 swal("Great", ":Layout has been successfully deleted", "success");
+    	 $rootScope.$broadcast('layoutsDeleteComplete');
      });
    }
   };

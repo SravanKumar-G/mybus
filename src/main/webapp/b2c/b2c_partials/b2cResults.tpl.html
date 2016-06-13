@@ -1,45 +1,73 @@
 <style type="text/css">
-    .holder{
-    height:300px;
-    width:750px;
-    background-color:#F5F5F5;
-    border:1px solid #A4A4A4;
-    margin-left:10px;
-    }
+.holder {
+	height: 260px;
+	width: 570px;
+	background-color: #F5F5F5;
+	border: 1px solid #A4A4A4;
+	margin-left: 10px;
+}
 
-    .bigbus{
-    height:400px;
-    width:750px;
-    background-color:#F5F5F5;
-    border:1px solid #A4A4A4;
-    margin-left:10px;
-    }
+.bigbus {
+	height: 400px;
+	width: 750px;
+	background-color: #F5F5F5;
+	border: 1px solid #A4A4A4;
+	margin-left: 10px;
+}
 
-    table tr td.seat{
-    																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											background:url("/images/available_seat_img.gif") no-repeat scroll 0 0 transparent;
-    height:77px;
-    //width:40px;
-    }
+table tr td.seat {
+	background: url("/images/available_seat_img.gif") no-repeat scroll 0 0
+		transparent;
+	height: 100px;
+}
 
-    table tr td.sleeper{
-    background:url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
-    height:77px;
-    //width:40px;
-    }
+table tr td.sleeper {
+	background: url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
+	//
+	height: 100px; //
+	width: 40px;
+}
 
-    #place .selectedSeat
-    {
-    background-image:url("/images/booked_seat_img.gif");
-    }
-    #place .selectingSeat
-    {
-    background-image:url("/images/selected_seat_img.gif");
-    }
-    .seatDescription{
-    padding-left : 5px;
-    font-size : 10px;
-    }
+table tr td.selectedSleeper {
+	background: url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
+	height: 100px;
+}
 
+table tr td.bookedSleeper {
+	background: url("/images/sleeper.png") no-repeat scroll 0 0 transparent;
+	height: 100px;
+}
+
+table tr td.bookedSeat {
+	background-image: url("/images/booked_seat_img.jpg");
+	background-repeat: no-repeat;
+	height: 100px;
+}
+
+table tr td.selectedSeat {
+	background-image: url("/images/selected_seat_img.jpg");
+	background-repeat: no-repeat;
+	height: 100px;
+}
+
+table tr td.seatDescription {
+	padding-left: 5px;
+	font-size: 10px;
+}
+
+table.bpDptop {
+	position: absolute;
+	top: 0px;
+	width: 240px;
+	border: 1px solid #cccccc;
+	background-color: #fff;
+}
+table.bp-pull{
+    right: 183px;;
+}
+table.dp-pull{
+    right: 183px;
+}
 </style>
 
 
@@ -94,34 +122,20 @@
 	<div class="row table-striped" ng-repeat="trip in trips">
 		<div class="col-md-2">{{trip.serviceName}}</div>
 		<div class="col-md-2">{{trip.serviceName}}</div>
-		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.arrivalTime}}</span></div>
-		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.departureTime}}</span></div>
+		<div class="col-md-2"><span class="clickable-item" ng-repeat="serviceFare in trip.serviceFares"  ng-mouseover="showBoardingPoints(trip.dropingPoints,trip.serviceNumber)" ng-mouseleave="hideBoardingPoints(trip.serviceNumber)" >{{serviceFare.arrivalTime}}</span>
+			<div id="boardingPoint-{{trip.serviceNumber}}"></div>
+		</div>
+			<div class="col-md-2"><span class="clickable-item" ng-repeat="serviceFare in trip.serviceFares" ng-mouseover="showDropingPoints(trip.dropingPoints,trip.serviceNumber)" ng-mouseleave="hideDropingPoints(trip.serviceNumber)" >{{serviceFare.departureTime}}</span>
+			<div id="dropingPoint-{{trip.serviceNumber}}"></div>			
+		</div>
 		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.fare}}</span></div>
-		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout(trip.layoutId)"/> </div>
-		<div class="col-md-12" ng-if="seatlayout">
-		
-			<table ng-if="!issleeper"  class="holder">
-				 <tr ng-repeat="seats in seatlayout.rows">
-					<td ng-class="{'seat': seat.number}" ng-repeat="seat in seats.seats"><input ng-disabled="true" type="text" style="width:35px" ng-if="seat.number"  data-ng-model="seat.number" /></td>
-				 </tr>
-			</table>
-			
-			
-			<span>{{busLayoutEditCtrl.busLayout.upperHeader}}</span>
-			
-			<table ng-if="issleeper" class="holder">
-			    <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.upper">
-			        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
-			    </tr>
-			</table>
-			
-			<span>{{busLayoutEditCtrl.busLayout.lowerHeader}}</span>
-			
-			<table ng-if="issleeper" class="holder">
-			    <tr ng-repeat="seats in busLayoutEditCtrl.busLayout.lower">
-			        <td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats.seats"><input type="text" style="width:35px" ng-if="seat.number" data-ng-init="mycol=busLayoutEditCtrl.getSeatName(seat);" data-ng-model="seat[mycol]" /></td>
-			    </tr>
-			</table>
+		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout(trip)"/> </div>
+		<div class="col-md-12">
+			<div id="busSeatLayout-{{trip.serviceNumber}}" class="col-md-10">
+			&nbsp;
+			 </div>
+			 <div class="co-md-2">
+			 </div>
 		</div>
 	</div>
 

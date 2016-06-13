@@ -1,10 +1,19 @@
 package com.mybus.controller;
 
 import com.mybus.dao.BusServiceDAO;
+import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.BusService;
+import com.mybus.model.City;
+import com.mybus.model.Layout;
+import com.mybus.model.Route;
 import com.mybus.model.User;
 import com.mybus.service.BusServiceManager;
+import com.mybus.service.CityManager;
+import com.mybus.service.RouteManager;
+
+import junit.framework.Assert;
+
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -16,7 +25,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import org.apache.commons.collections.IteratorUtils;
+import org.bson.types.ObjectId;
 
 public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
 
@@ -25,10 +42,19 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
 
     @Autowired
     private BusServiceDAO busServiceDAO;
+    
+    @Autowired
+    private LayoutDAO layoutDAO;
 
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    public CityManager cityManager;
+    
+    @Autowired
+    public RouteManager routeManager;
+    
     private MockMvc mockMvc;
     private User currentUser;
 
@@ -48,19 +74,46 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
         userDAO.deleteAll();
         busServiceDAO.deleteAll();
     }
+    
+    public Layout saveLayout(){
+    	Layout layout = new Layout();
+    	layout.setActive(true);
+    	layout.setMiddleRowLastSeat(true);
+    	layout.setMiddleRowPosition(1);
+    	layout.setName("sleeper");
+    	layout.setSeatsPerRow(11);
+    	layout = layoutDAO.save(layout);
+    	return layout;
+    }
+    private Route createTestRoute() {
+        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
+        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
 
+        cityManager.saveCity(fromCity);
+        cityManager.saveCity(toCity);
+        Route route = new Route("TestRoute"+new ObjectId().toString(), fromCity.getId(),
+                toCity.getId(), new LinkedHashSet<>(), true);
+        return routeManager.saveRoute(route);
+    }
     @Test
     public void testCreateBusService() throws Exception {
 
 
         JSONObject service = new JSONObject();
+        
+        service.put("active", true);
         service.put("serviceName", "TestName");
         service.put("serviceNumber", "1234");
         service.put("phoneEnquiry", "1234");
+        service.put("cutoffTime", "3");
+        service.put("serviceTaxType", "PERCENTAGE");
+        
         service.put("effectiveFrom", "2016-01-02");
         service.put("effectiveTo", "2017-01-03");
-
-
+        service.put("layoutId", saveLayout().getId());
+        service.put("routeId", createTestRoute().getId());
+        service.put("frequency", "DAILY");
+        
         /*
         Preconditions.checkNotNull(busService, "The bus service can not be null");
 		Preconditions.checkNotNull(busService.getServiceName(), "The bus service name can not be null");
@@ -78,6 +131,9 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
          */
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/service")
                 .content(service.toJSONString()).contentType(MediaType.APPLICATION_JSON), currentUser));
-        //actions.andExpect(status().isOk());
+        actions.andExpect(status().isOk());
+        List<BusService> busServiceList = IteratorUtils.toList(busServiceDAO.findAll().iterator());
+        Assert.assertEquals(1, busServiceList.size());
+        //actions.andExpect(jsonPath("$.name").value(busServiceList.get));
     }
 }

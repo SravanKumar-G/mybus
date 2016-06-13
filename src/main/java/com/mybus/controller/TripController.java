@@ -33,13 +33,6 @@ public class TripController {
 	@Autowired
 	private TripManager tripManager;
 	
-	@Autowired
-	private BusServiceDAO busServiceDAO;
-
-	@Autowired
-	private LayoutDAO layoutDAO;
-	
-	
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "trips", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
@@ -65,48 +58,4 @@ public class TripController {
 			@ApiParam(value = "Id of the trip to be found") @PathVariable final String id) {
 		return tripManager.getTripByID(id);
 	}
-	
-	@RequiresAuthorizedUser(value=false)
-	@RequestMapping(value = "availabletrip", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
-	@ApiOperation(value ="Get the trip JSON", response = Trip.class, responseContainer = "List")
-	public List<Trip> getVailableTrip(HttpServletRequest request) {
-		return availableTrips(null,null);
-	}
-	public List<Trip> availableTrips(String fromCityId,String ToCity){
-		List<Trip> trips = new ArrayList<Trip>();
-		Iterable<BusService> busAllServie =busServiceDAO.findAll();
-		busAllServie.forEach(bs->{
-			Trip t = new Trip();
-			t.setActive(true);
-			t.setServiceName(bs.getServiceName());
-			t.setServiceNumber(bs.getServiceNumber());
-			t.setAmenities(bs.getAmenities());
-			t.setServiceFares(bs.getServiceFares());
-			t.setServiceId(bs.getServiceNumber());
-			t.setRouteId(bs.getRouteId());
-			t.setLayoutId(bs.getLayoutId());
-			t.setBoardingPoints(bs.getBoardingPoints());
-			t.setDropingPoints(bs.getDropingPoints());
-			
-			trips.add(t);
-		});
-		return trips;
-		
-	}
-	@RequiresAuthorizedUser(value=false)
-	@RequestMapping(value = "busLayout/{layoutId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
-	@ApiOperation(value ="Get the trip JSON", response = Trip.class)
-	public Trip getTripLayout(HttpServletRequest request,@ApiParam(value = "Id of the trip to be found") @PathVariable final String layoutId) {
-		return tripLayout(layoutId);
-	}
-	
-	public Trip tripLayout(String layoutId){
-		Trip t = new Trip();
-		Layout layout = layoutDAO.findOne(layoutId);
-		t.setRows(layout.getRows());
-		return t; 
-	}
-
 }

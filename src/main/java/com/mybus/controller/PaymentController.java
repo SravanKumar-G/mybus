@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Booking;
 import com.mybus.model.Payment;
@@ -35,7 +36,8 @@ public class PaymentController {
 	
 	@Autowired
 	public PaymentManager paymentManager;
-
+	
+	@RequiresAuthorizedUser(value=false)
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "payment", method = RequestMethod.POST, 
 							produces = ControllerUtils.JSON_UTF8,

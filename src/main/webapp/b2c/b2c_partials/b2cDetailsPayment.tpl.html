@@ -1,0 +1,152 @@
+<div class="col-md-8">
+	
+	<div class="col-md-10">
+		<label>Give us your email address</label>
+	</div>
+	
+	<div class="col-md-10">
+		<div class="col-md-6">
+			<input type="text" name="name" class="form-control" ng-model="customerName" placeholder="Name">
+		</div>
+		<div class="col-md-6">
+			<input type="text" name="customerPhoneNo" class="form-control" ng-model="customerPhoneNo" placeholder="Phone No">
+		</div>
+	<br/>
+	<br>
+	</div>
+	<div class="col-md-10">
+		<div class="col-md-6">
+			<input type="email" name="customerEmail" class="form-control" ng-model="customerEmail" placeholder="Email">
+		</div>
+		<div class="col-md-6">
+			<input name="customerAddress" class="form-control" ng-model="customerAddress" placeholder="Address">
+		</div>
+		<br/>
+		<br>
+	</div>
+
+	<div class="col-md-10">
+	<br>
+		<label>Onward Passenger Details </label>
+	</div>
+	<div class="col-md-12">
+	
+		<label class="col-md-2">Passenger1:</label>
+		<div class="col-md-3"> 
+			<input type="radio" ng-model="passengerGender" value="male"> Male 
+			<input type="radio" ng-model="passengerGender" value="female"> Female
+		</div>
+		<div class="col-md-3"> 
+			<input type="text" class="form-control" ng-model="passengerName" placeholder="Name">
+		</div>
+		<div class="col-md-2"> 
+			<input type="number" class="form-control" ng-model="passengerAge" placeholder="Age"> 
+		</div>
+		<div class="col-md-2"><input type="text" class="form-control" ng-disabled="true" ng-model="passengerSeatNo" ng-init="passengerSeatNo='L1'" ></div>
+		<br/>
+	<br>
+	<br/>
+	<br>
+	</div>
+
+ 	<div class="col-md-10">
+	 	<div class="col-md-1">
+	 		
+	 		<input type="checkbox" ng-model="acceptTerms" value="terms">
+	 		
+	 	</div>
+	 	<div class="col-md-10"> 
+	 	I agree to all the Terms and Conditions.
+	 	</div>
+ 	</div>
+ 	<input type="button" class="btn btn-primary pull-left" ng-click="paymentButtonClicked()" value=" PayNow">
+</div>
+<div class="col-md-4">
+	<div class="col-md-12 text-primary">
+		<label >Onward Journey Ticket Details</label>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>From</label>
+		</div>
+		<div class="col-md-9">Hyderabad</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>To</label>
+		</div>
+		<div class="col-md-9">Bangalore</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Journey Date </label>
+		</div>
+		<div class="col-md-9">04-06-2016</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Service No </label>
+		</div>
+		<div class="col-md-9">SKT-555A</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Bus Type </label>
+		</div>
+		<div class="col-md-9">Multiaxle B9R VOLVO AC Semi Sleeper</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Seat Selection </label>
+		</div>
+		<div class="col-md-9">L21</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Boarding Point </label>
+		</div>
+		<div class="col-md-9">JNTU - 09:45 PM</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Fare </label>
+		</div>
+		<div class="col-md-9">Rs.890.00</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>10.00% Discount</label>
+		</div>
+		<div class="col-md-9">Rs.89.00</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<label>Net Amount</label>
+		</div>
+		<div class="col-md-9">Rs.801.00</div>
+	</div>
+
+
+	<div class="col-md-12 text-primary">
+		<label>Total Amount Payable</label>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<label>Net Amount</label>
+		</div>
+		<div class="col-md-9">Rs.801.00</div>
+	</div>
+</div>
+<!-- This is a payu form directive which need to be submitted to payu payment gateway -->
+<form-submitter></form-submitter>

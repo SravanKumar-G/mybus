@@ -75,15 +75,15 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Set<ServiceAmenity> amenities = new LinkedHashSet<>();
+	private Set<ServiceAmenity> amenities = new LinkedHashSet<ServiceAmenity>();
 
 	@Getter
 	@Setter
-	private Set<ServiceBoardingPoint> boardingPoints = new LinkedHashSet<>();
+	private Set<ServiceBoardingPoint> boardingPoints = new LinkedHashSet<ServiceBoardingPoint>();
 
 	@Getter
 	@Setter
-	private Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<>();
+	private Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<ServiceDropingPoint>();
 
 	@Getter
 	@Setter

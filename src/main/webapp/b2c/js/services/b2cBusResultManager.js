@@ -5,14 +5,30 @@
 var portalApp = angular.module('myBusB2c');
 
 portalApp.factory('b2cBusResultsManager', function ($rootScope, $http, $log, $window) {
-	
+	var busJourney = {};
 	return {
-		getAvailableTrips:function(callback){
-			$http.get("/api/v1/availabletrip")
+		
+		getbusJourney:function(callback){
+			$http.get("/api/v1/getsearchForBus")
 			.success(function(data){
+				busJourney = data;
 				callback(data);
 			}).
 			error(function(error){
+
+			});
+		},
+		
+		/*getbusJourney:function(){
+			return busJourney;
+		},
+		*/
+		getAvailableTrips:function(journeyType,callback){
+			$http.get("/api/v1/availabletrip?journeyType="+journeyType)
+			.success(function(data){
+				callback(data);
+			})
+			.error(function(error){
 				
 			});
 		},
@@ -25,6 +41,16 @@ portalApp.factory('b2cBusResultsManager', function ($rootScope, $http, $log, $wi
 			error(function(error){
 				
 			});
+		},
+		blockSeat:function(busJourney,callback){
+			
+			$http.post('/api/v1/blockSeat',busJourney)
+	          .success(function (data) {
+	              callback(data);
+	              $log.debug(data)
+	          }).error(function(err,status) {
+	        	  $log.debug(err)
+	          });
 		}
 	}
 	

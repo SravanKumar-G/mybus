@@ -12,7 +12,7 @@
 	
 	<div class="form-group">
 		<div class = "col-md-6">
-			<input type="radio"  data-ng-checked="true" ng-model="busJourney.journeyType" value="ONE_WAY"> One Way  
+			<input type="radio"  data-ng-checked="true" ng-model="busJourney.journeyType" value="ONE_WAY" ng-init="busJourney.journeyType='ONE_WAY'"> One Way  
 			<input type="radio"  ng-model="busJourney.journeyType" value="TWO_WAY"> Two Way
 		</div>
 	</div>
@@ -55,7 +55,7 @@
 	<div class="form-group" ng-if="busJourney.journeyType=='TWO_WAY'">
 			<label class="col-sm-4 control-label" for="returnJourneyInput" >Return Journey</label>
 		<div class = "col-md-8">
-			<input type="date" class="form-control" ng-model="busJourney.returnJourney"  placeholder="yyyy-MM-dd" min="{{rminDate}}" max="{{manDate}}" required />
+			<input type="date" class="form-control" ng-model="busJourney.returnJourney"  placeholder="yyyy-MM-dd" min="{{rminDate}}" max="{{manDate}}"  required />
 		</div>
 	</div>
 	</form>

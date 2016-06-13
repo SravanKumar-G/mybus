@@ -45,6 +45,12 @@ angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
      
      $scope.searchBuses = function(){
 	    $log.debug("$scope.busJourney -"+$scope.busJourney);
-	    $location.url('/results/'+$scope.busJourney);
+	    if($scope.busJourney.journeyType=='ONE_WAY')
+	    	$scope.busJourney.returnJourney=$filter('date')(angular.copy($scope.busJourney.dateOfJourney),'yyyy-MM-dd');
+	    
+	    $scope.busJourney.dateOfJourney =  $filter('date')($scope.busJourney.dateOfJourney,'yyyy-MM-dd');
+	    b2cHomeManager.getSearchForBus($scope.busJourney,function(data){
+	    	$location.url('/results/'+data);
+	    })
      }
 });

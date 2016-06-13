@@ -13,7 +13,8 @@ var myBusB2c = angular.module('myBusB2c', [
                                         'angularSpinner',
                                         'myBusB2c.b2cHome',
                                         'myBusB2c.b2cStatic',
-                                        'myBusB2c.b2cResults'
+                                        'myBusB2c.b2cResults',
+                                        'myBusB2c.b2cDetailsPayment',
                                         ]);
 myBusB2c.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$urlRouterProvider){
 	 $stateProvider.
@@ -51,7 +52,13 @@ myBusB2c.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$
      	 url:'/results/:busJourney',
          templateUrl: 'b2c_partials/b2cResults.tpl.html',
          controller: 'B2cResultsController'
+     }).
+     state('detailsPayment', {
+     	 url:'/detailsPayment',
+         templateUrl: 'b2c_partials/b2cDetailsPayment.tpl.html',
+         controller: 'B2cDetailsPaymentController'
      });
+     
      ;
 	 $urlRouterProvider.otherwise( '/');
 }]);

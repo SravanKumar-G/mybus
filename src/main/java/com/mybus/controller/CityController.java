@@ -34,7 +34,6 @@ public class CityController extends MyBusBaseController{
     @Autowired
     private CityManager cityManager;
 
-    @RequiresAuthorizedUser(value=false)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
