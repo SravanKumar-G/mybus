@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 import com.google.common.base.Preconditions;
-import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;

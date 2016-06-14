@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +30,7 @@ import com.mybus.model.Layout;
 import com.mybus.model.Trip;
 import com.mybus.service.BookingSessionInfo;
 import com.mybus.service.BookingSessionManager;
+import com.mybus.service.BusTicketBookingManager;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -53,7 +54,10 @@ public class BusTicketBookingController {
 	private LayoutDAO layoutDAO;
 	
 	@Autowired
-	private BookingSessionManager bookingSessionManager; 
+	private BookingSessionManager bookingSessionManager;
+	
+	@Autowired
+	private BusTicketBookingManager busTicketBookingManager;
 	
 	@RequiresAuthorizedUser(value=false)
     @ResponseStatus(value = HttpStatus.OK)
@@ -142,14 +146,17 @@ public class BusTicketBookingController {
 	@RequiresAuthorizedUser(value=false)
 	@RequestMapping(value = "blockSeat", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
-	public BusJourney blockSeat(HttpServletRequest request,@RequestBody BusJourney busJourney) {
+	public List<BusJourney> blockSeat(HttpServletRequest request,@RequestBody JSONObject busJourney) {
 		BookingSessionInfo BookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		List<BusJourney> busJourneyList = BookingSessionInfo.getBusJournies();
-		if(JourneyType.ONE_WAY.equals(busJourney.getJourneyType())){
-			 BusJourney busJourneyFromSession = busJourneyList.get(0);
-			 busJourneyFromSession= busJourney;
-		}
-		return busJourney;
+		busJourneyList = busTicketBookingManager.blockSeatUpDateBookingSessionInfo(busJourney,busJourneyList);
+		return busJourneyList;
 	}
 	
+	@RequiresAuthorizedUser(value=false)
+	@RequestMapping(value = "getblockInfo", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ResponseBody
+	public BookingSessionInfo blockSeatInfo(HttpServletRequest request) {
+		return bookingSessionManager.getBookingSessionInfo();
+	}
 }

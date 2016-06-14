@@ -6,7 +6,11 @@ package com.mybus.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.LinkedHashMap;
+
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
 
 /**
  * @author  schanda on 02/13/16.
@@ -33,5 +37,17 @@ public class ServiceBoardingPoint {
 
 	public ServiceBoardingPoint(BoardingPoint bp){
 		this.refId = bp.getId();
+	}
+	
+	public ServiceBoardingPoint(LinkedHashMap bpMap){
+		if(bpMap.containsKey("refId")){
+			this.refId = bpMap.get("refId").toString();
+		}
+		if(bpMap.containsKey("time")){
+			this.time = bpMap.get("time").toString();
+		}
+		if(bpMap.containsKey("bpName")){
+			this.bpName = bpMap.get("bpName").toString();
+		}
 	}
 }

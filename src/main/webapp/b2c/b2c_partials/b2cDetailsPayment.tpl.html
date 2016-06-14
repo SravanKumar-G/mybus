@@ -6,20 +6,20 @@
 	
 	<div class="col-md-10">
 		<div class="col-md-6">
-			<input type="text" name="name" class="form-control" ng-model="customerName" placeholder="Name">
+			<input type="text" name="name" class="form-control" ng-model="payment.firstName" placeholder="Name">
 		</div>
 		<div class="col-md-6">
-			<input type="text" name="customerPhoneNo" class="form-control" ng-model="customerPhoneNo" placeholder="Phone No">
+			<input type="text" name="customerPhoneNo" class="form-control" ng-model="payment.phoneNo" placeholder="Phone No">
 		</div>
 	<br/>
 	<br>
 	</div>
 	<div class="col-md-10">
 		<div class="col-md-6">
-			<input type="email" name="customerEmail" class="form-control" ng-model="customerEmail" placeholder="Email">
+			<input type="email" name="customerEmail" class="form-control" ng-model="payment.email" placeholder="Email">
 		</div>
 		<div class="col-md-6">
-			<input name="customerAddress" class="form-control" ng-model="customerAddress" placeholder="Address">
+			<input name="customerAddress" class="form-control" ng-model="payment.address" placeholder="Address">
 		</div>
 		<br/>
 		<br>
@@ -29,7 +29,8 @@
 	<br>
 		<label>Onward Passenger Details </label>
 	</div>
-	<div class="col-md-12">
+	
+	<div class="col-md-12" ng-repeat="sNo in busJourney.seatNumbers">
 	
 		<label class="col-md-2">Passenger1:</label>
 		<div class="col-md-3"> 
@@ -42,14 +43,28 @@
 		<div class="col-md-2"> 
 			<input type="number" class="form-control" ng-model="passengerAge" placeholder="Age"> 
 		</div>
-		<div class="col-md-2"><input type="text" class="form-control" ng-disabled="true" ng-model="passengerSeatNo" ng-init="passengerSeatNo='L1'" ></div>
+		<div class="col-md-2"><input type="text" class="form-control" ng-disabled="true" ng-model="passengerSeatNo" ng-init="passengerSeatNo=sNo" ></div>
 		<br/>
-	<br>
-	<br/>
-	<br>
+		<br>
+
 	</div>
 
- 	<div class="col-md-10">
+	<div class="col-md-10">
+		<br>
+		<div class="col-md-7">
+			<label>select Payment type</label>
+		</div>
+	  	<div class="col-md-5">
+	  		<select class="form-control" ng-model="payment.paymentType">
+		 		<option value="" selected="selected">-- pament type --</option>
+		 		<option value="EBS">EBS</option>
+		 		<option value="PAYU">PAYU</option>
+		 	</select>
+	  	</div>
+	 	<br>
+	</div>
+
+   	<div class="col-md-10"> 
 	 	<div class="col-md-1">
 	 		
 	 		<input type="checkbox" ng-model="acceptTerms" value="terms">
@@ -67,73 +82,80 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>From</label>
 		</div>
-		<div class="col-md-9">Hyderabad</div>
+		<div class="col-md-7">{{busJourney.fromCity}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>To</label>
 		</div>
-		<div class="col-md-9">Bangalore</div>
+		<div class="col-md-7">{{busJourney.toCity}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Journey Date </label>
 		</div>
-		<div class="col-md-9">04-06-2016</div>
+		<div class="col-md-7">{{busJourney.dateOfJourney}}</div>
 	</div>
-
+	
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Service No </label>
 		</div>
-		<div class="col-md-9">SKT-555A</div>
+		<div class="col-md-7">{{busJourney.serviceNumber}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Bus Type </label>
 		</div>
-		<div class="col-md-9">Multiaxle B9R VOLVO AC Semi Sleeper</div>
+		<div class="col-md-7">{{busJourney.serviceName}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Seat Selection </label>
 		</div>
-		<div class="col-md-9">L21</div>
+		<div class="col-md-7"><span ng-repeat="sNo in busJourney.seatNumbers">{{sNo}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Boarding Point </label>
 		</div>
-		<div class="col-md-9">JNTU - 09:45 PM</div>
+		<div class="col-md-7">{{busJourney.boardingPoints.bpName}}-{{busJourney.boardingPoints.time}}</div>
+	</div>
+
+	<div class="row" ng-if="busJourney.dropingPoints">
+		<div class="col-md-5">
+			<label>Droping Point </label>
+		</div>
+		<div class="col-md-7">{{busJourney.dropingPoints.droppingName}}-{{busJourney.dropingPoints.droppingTime}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Fare </label>
 		</div>
-		<div class="col-md-9">Rs.890.00</div>
+		<div class="col-md-7">{{busJourney.fare}}</div>
 	</div>
-
+	
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>10.00% Discount</label>
 		</div>
-		<div class="col-md-9">Rs.89.00</div>
+		<div class="col-md-7">{{busJourney.discount}}</div>
 	</div>
 
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Net Amount</label>
 		</div>
-		<div class="col-md-9">Rs.801.00</div>
+		<div class="col-md-7">{{busJourney.fare}}</div>
 	</div>
 
 
@@ -142,10 +164,10 @@
 	</div>
 	
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-5">
 			<label>Net Amount</label>
 		</div>
-		<div class="col-md-9">Rs.801.00</div>
+		<div class="col-md-7">{{busJourney.totalFare}}</div>
 	</div>
 </div>
 <!-- This is a payu form directive which need to be submitted to payu payment gateway -->

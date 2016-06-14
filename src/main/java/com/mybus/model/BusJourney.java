@@ -43,20 +43,23 @@ public class BusJourney {
 	
 	@Setter
 	@Getter
-	private Set<String> seatsNumber;
+	private Set<String> seatNumbers;
 	
 	@Setter
 	@Getter
 	private String serviceName;
 	
+	@Setter
+	@Getter
+	private double discount = 0.0;
+	
+    @Getter
+    @Setter
+    private ServiceBoardingPoint boardingPoints;
 
     @Getter
     @Setter
-    private Set<ServiceBoardingPoint> boardingPoints;
-
-    @Getter
-    @Setter
-    private Set<ServiceDropingPoint> dropingPoints;
+    private ServiceDropingPoint dropingPoints;
 	
 	public BusJourney(String fromCity,String toCity, String dateOfJourney,JourneyType journeyType){
 		this.fromCity=fromCity;
