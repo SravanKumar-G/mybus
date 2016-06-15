@@ -26,7 +26,13 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        String userName = ((UserDetails) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal()).getUsername();
-        return userDAO.findOneByUserName(userName).getId();
+        String username = null;
+        if (authentication.getPrincipal() instanceof String) {
+            username = String.valueOf(authentication.getPrincipal());
+            return username;
+        } else {
+            username = ((UserDetails) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal()).getUsername();
+        }
+        return userDAO.findOneByUserName(username).getId();
     }
 }

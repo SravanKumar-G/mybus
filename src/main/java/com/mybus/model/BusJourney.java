@@ -55,11 +55,11 @@ public class BusJourney {
 	
     @Getter
     @Setter
-    private ServiceBoardingPoint boardingPoints;
+    private ServiceBoardingPoint boardingPoint;
 
     @Getter
     @Setter
-    private ServiceDropingPoint dropingPoints;
+    private ServiceDropingPoint dropingPoint;
 	
 	public BusJourney(String fromCity,String toCity, String dateOfJourney,JourneyType journeyType){
 		this.fromCity=fromCity;

@@ -49,11 +49,11 @@ public class BusTicketBookingManager {
 		if(json.containsKey("seatNumbers")) {
 			busJourney.setSeatNumbers(new HashSet<>((List)json.get("seatNumbers")));
 		}
-		if(json.containsKey("boardingPoints")) {
-			busJourney.setBoardingPoints(new ServiceBoardingPoint((LinkedHashMap)json.get("boardingPoints")));
+		if(json.containsKey("boardingPoint")) {
+			busJourney.setBoardingPoint(new ServiceBoardingPoint((LinkedHashMap)json.get("boardingPoint")));
 		}
-		if(json.containsKey("dropingPoints")) {
-			busJourney.setDropingPoints(new ServiceDropingPoint((LinkedHashMap)json.get("dropingPoints")));
+		if(json.containsKey("dropingPoint")) {
+			busJourney.setDropingPoint(new ServiceDropingPoint((LinkedHashMap)json.get("dropingPoint")));
 		}
 		return busJourney;
 	}

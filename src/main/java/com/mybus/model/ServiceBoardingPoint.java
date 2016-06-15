@@ -50,4 +50,7 @@ public class ServiceBoardingPoint {
 			this.bpName = bpMap.get("bpName").toString();
 		}
 	}
+	public ServiceBoardingPoint(String id){
+		this.refId = id;
+	}
 }

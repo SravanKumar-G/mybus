@@ -167,14 +167,14 @@ table.dp-pull{
 				</table>
 			</div>
 			<div class="col-sm-4">
-					<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.boardingPoints" required>
+					<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.boardingPoint" required>
 	        			<option value="" selected="selected">-- Boarding Points --</option>
-	        			<option ng-repeat="bp in CurrentTrips[tripIndex].boardingPoints" value="{{bp}}">{{bp.bpName}}-{{bp.time}}</option>
+	        			<option ng-repeat="bp in CurrentTrips[tripIndex].boardingPoints" value="{{bp.id}}">{{bp.bpName}}-{{bp.time}}</option>
         			</select>
         			<br/>
-        			<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.dropingPoints" required>
+        			<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.dropingPoint" required>
 	        			<option value="" selected="selected">-- Droping Points --</option>
-	        			<option ng-repeat="bp in CurrentTrips[tripIndex].dropingPoints" value="{{bp}}">{{bp.droppingName}}-{{bp.droppingTime}}</option>
+	        			<option ng-repeat="bp in CurrentTrips[tripIndex].dropingPoints" value="{{bp.id}}">{{bp.droppingName}}-{{bp.droppingTime}}</option>
         			</select>{{busJourney[tripIndex].busJourney.seatNumbers}}
         			<div> <label>seats :</label><span ng-repeat="seatNumber in busJourney[tripIndex].busJourney.seatNumbers">{{seatNumber}} &nbsp;,</span></div>
         			<div> <label>Fare :</label><span>{{busJourney[tripIndex].busJourney.fare}} &nbsp;,</span></div>

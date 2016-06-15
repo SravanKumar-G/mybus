@@ -15,7 +15,7 @@ angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
 		b2cBusResultsManager.getbusJourney(function(data){
 			$scope.bJny = data.busJournies[0];
 			$scope.getAvailableTrips($scope.bJny.journeyType);
-			if(data.bJny.length==2)
+			if(data.bJny && data.bJny.length==2)
 				$scope.bJny['returnJourney']=data.bJny[0].returnJourney
 		});
 	}
@@ -128,8 +128,6 @@ angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
 	}
 	$scope.continueToPayment = function(busJourney){
 		$log.debug(busJourney)
-		busJourney.boardingPoints = JSON.parse(busJourney.boardingPoints)
-		busJourney.dropingPoints = JSON.parse(busJourney.dropingPoints)
 		b2cBusResultsManager.blockSeat(busJourney,function(data){
 			$location.url('/detailsPayment');
 		})
