@@ -1,5 +1,7 @@
 package com.mybus.model;
 
+import java.util.List;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -105,4 +107,7 @@ public class Payment extends AbstractDocument {
 	@Setter
 	private String channel;
 	
+	@Getter
+	@Setter
+	private List<PassengerInfo> passengerInfo;
 }

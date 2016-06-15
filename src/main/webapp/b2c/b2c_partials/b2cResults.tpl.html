@@ -74,10 +74,10 @@ table.dp-pull{
 
 <div class=" form-group bg-success col-md-12">
 	<div class="col-md-2"><label>Onward Journey:</label></div>
-	<div class="col-md-2">{{busJourney.fromCity}}</div>
-	<div class="col-md-2">{{busJourney.toCity}}</div>
-	<div class="col-md-2">{{busJourney.dateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
-	<div class="col-md-2">{{busJourney.rdateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">{{bJny.fromCity}}</div>
+	<div class="col-md-2">{{bJny.toCity}}</div>
+	<div class="col-md-2">{{bJny.dateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
+	<div class="col-md-2">{{bJny.rdateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
 	<div class="col-md-2">
 		<input type="button" class="btn btn-primary form-control" ng-click="modifySearchEvent()" value="Modify Search">
 	</div>
@@ -119,7 +119,7 @@ table.dp-pull{
 		<div class="col-md-2 bg-info">Availability</div>
 	</div>
 	
-	<div class="row table-striped" ng-repeat="trip in trips">
+	<div class="row table-striped" ng-repeat="trip in trips" ng-init="tripIndex = $index">
 		<div class="col-md-2">{{trip.serviceName}}</div>
 		<div class="col-md-2">{{trip.serviceName}}</div>
 		<div class="col-md-2"><span class="clickable-item" ng-repeat="serviceFare in trip.serviceFares"  ng-mouseover="showBoardingPoints(trip.dropingPoints,trip.serviceNumber)" ng-mouseleave="hideBoardingPoints(trip.serviceNumber)" >{{serviceFare.arrivalTime}}</span>
@@ -129,13 +129,59 @@ table.dp-pull{
 			<div id="dropingPoint-{{trip.serviceNumber}}"></div>			
 		</div>
 		<div class="col-md-2"><span ng-repeat="serviceFare in trip.serviceFares">{{serviceFare.fare}}</span></div>
-		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout(trip)"/> </div>
+		<div class="col-md-2"><input type="button" class="btn btn-primary" value="{{trip.availableSeats}} Seats" ng-click="seatLayout(trip,$index);check[$index]= true;"/> </div>
 		<div class="col-md-12">
 			<div id="busSeatLayout-{{trip.serviceNumber}}" class="col-md-10">
 			&nbsp;
 			 </div>
 			 <div class="co-md-2">
 			 </div>
+		</div>
+		<div ng-show = "check[$index]" class="col-sm-12">
+			<div class="row pull-right">
+	    		<md-button>
+	        		<md-icon type="button" class="btn-sm" ng-click="check[$index] = false">
+	           			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+	       		</md-button>
+	    	</div>
+	    	<div class="row">
+			 <div class="col-sm-8" ng-show="sleeper[$index] && check[$index]"><span>Upper</span> 
+						<table class="holder">
+						 	<tr ng-repeat="seats in upper[$index]">
+						 		<td ng-class="{'sleeper': seat.number}" ng-repeat="seat in seats" ng-click="seatSelect(seat,CurrentTrips[tripIndex],tripIndex)" ><input ng-disabled="true" type="text" ng-if="seat.number" data-ng-model="seat.number" style="width:35px" /></td>
+						 	</tr>
+						</table>
+						<span>Lower</span>
+						<table class="holder">
+						  <tr ng-repeat="seats in lower[$index]">
+						  <td ng-class="{'sleeper' : seat.seatStatus=='AVAILABLE','selectedSleeper' : seat.seatStatus=='BOOKING_INPROGRSS','bookedSleeper' : seat.seatStatus=='BOOKED'}" ng-repeat="seat in seats" ng-click="seatSelect(seat,CurrentTrips[tripIndex],tripIndex)" ><input ng-disabled="true" type="text" ng-if="seat.number" data-ng-model="seat.number" style="width:35px" /></td>
+						    </tr>
+						</table>
+			</div>
+			<div class="col-sm-8"  ng-show="!sleeper[$index] && check[$index]">
+				<table  class="holder">
+				 	<tr ng-repeat="seats in seatlayout.rows">
+					<td class="clickable-item" ng-class="{'seat' : seat.seatStatus=='AVAILABLE','selectedSeat' : seat.seatStatus=='BOOKING_INPROGRSS','bookedSeat' : seat.seatStatus=='BOOKED'}" ng-repeat="seat in seats.seats" ng-click="seatSelect(seat,CurrentTrips[tripIndex],tripIndex)" id="selectSeat-seat.number-'+serviceNumber+'"><input ng-disabled="true" type="text" style="width:35px" ng-if="seat.number"  data-ng-model="seat.number"/></td>
+				 </tr>
+				</table>
+			</div>
+			<div class="col-sm-4">
+					<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.boardingPoints" required>
+	        			<option value="" selected="selected">-- Boarding Points --</option>
+	        			<option ng-repeat="bp in CurrentTrips[tripIndex].boardingPoints" value="{{bp}}">{{bp.bpName}}-{{bp.time}}</option>
+        			</select>
+        			<br/>
+        			<select class="form-control" data-ng-model="busJourney[tripIndex].busJourney.dropingPoints" required>
+	        			<option value="" selected="selected">-- Droping Points --</option>
+	        			<option ng-repeat="bp in CurrentTrips[tripIndex].dropingPoints" value="{{bp}}">{{bp.droppingName}}-{{bp.droppingTime}}</option>
+        			</select>{{busJourney[tripIndex].busJourney.seatNumbers}}
+        			<div> <label>seats :</label><span ng-repeat="seatNumber in busJourney[tripIndex].busJourney.seatNumbers">{{seatNumber}} &nbsp;,</span></div>
+        			<div> <label>Fare :</label><span>{{busJourney[tripIndex].busJourney.fare}} &nbsp;,</span></div>
+        			<div> <label>Total Fare :</label><span>{{busJourney[tripIndex].busJourney.totalFare}} &nbsp;,</span></div>
+        			<input type="button" value="Continue to Payment" class="btn btn-primary" ng-click="continueToPayment(busJourney[tripIndex].busJourney)">
+			</div>
+			</div>
 		</div>
 	</div>
 

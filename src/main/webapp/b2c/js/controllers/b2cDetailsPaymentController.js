@@ -9,12 +9,27 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 .factory('EBSFormSubmitter', EBSFormSubmitter)
 .directive('formSubmitter', formSubmitterDirective)
 .directive('ebsFormSubmitter', ebsFormSubmitterDirective)
-.controller("B2cDetailsPaymentController",function($log,$rootScope, $http,$scope,$modal,FormSubmitter,EBSFormSubmitter){
+.controller("B2cDetailsPaymentController",function($log,$rootScope, $http,$scope,$modal,FormSubmitter,EBSFormSubmitter,b2cDetailsPaymentManager){
 
 	$log.debug("B2cDetailsPaymentController");
+	$scope.busJourneyies = {}
+	$scope.busJourney = {}
+	$scope.payment = {
+			amount: 1200,
+			city: "hyderabad",
+			country: "IND",
+			lastName: "xxs",
+			postalCode: 500072,
+			state: "Telangana",
+	}
+	b2cDetailsPaymentManager.getbusJourney(function(data){
+		$scope.busJourneyies = data;
+		$scope.busJourney = data.busJournies[0]
+	});
 	
 	$scope.paymentButtonClicked = function(){
-		$scope.payment = {
+		
+		/*$scope.payment = {
 				address: "kphp",
 				amount: 1200,
 				city: "hyderabad",
@@ -24,8 +39,9 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 				lastName: "M",
 				phoneNo: 9492541342,
 				postalCode: 500072,
-				state: "Telangana"
-		}
+				state: "Telangana",
+				paymentType:"PAYU"
+		}*/
 		$http.post('/api/v1/payment',$scope.payment).success(function(data){
 			console.log('Payment response',data);
 			if(data.paymentType == "EBS")
