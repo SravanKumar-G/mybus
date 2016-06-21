@@ -150,6 +150,7 @@ public class BusTicketBookingController {
 		BookingSessionInfo BookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		List<BusJourney> busJourneyList = BookingSessionInfo.getBusJournies();
 		busJourneyList = busTicketBookingManager.blockSeatUpDateBookingSessionInfo(busJourney,busJourneyList);
+		busJourneyList.forEach(busJ->{BookingSessionInfo.setFinalFare(BookingSessionInfo.getFinalFare()+busJ.getTotalFare());});
 		return busJourneyList;
 	}
 	

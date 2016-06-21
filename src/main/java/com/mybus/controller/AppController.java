@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.service.PaymentManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,7 @@ public class AppController {
 	 * this is call back response from payu payment gateways.
 	 *
 	 */
+    @RequiresAuthorizedUser(value=false)
 	@RequestMapping(value = "/payUResponse", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView payment(HttpServletRequest request,HttpServletResponse response) {
 		Enumeration<String> paramNames = request.getParameterNames();
@@ -104,7 +106,7 @@ public class AppController {
 		LOGGER.info("response from payu paymentStatus");
 		paymentManager.paymentResponseFromPayu(map,id);
 		ModelAndView model = new ModelAndView();
-		model.setViewName("../../index");
+		model.setViewName("../../b2c/index.html?payID="+id);
 		return model;
 	}
 	/**

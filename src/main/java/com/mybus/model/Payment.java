@@ -1,9 +1,13 @@
 package com.mybus.model;
 
 import java.util.List;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
  * 
@@ -13,15 +17,16 @@ import lombok.Setter;
  * We use this object for transfer data to client
  * example : generated hash code,paymentGateway information, merchantRefNo etc..
  */
+@NoArgsConstructor
 public class Payment extends AbstractDocument {
 
 	@Setter
 	@Getter
 	@ApiModelProperty(notes = "Id of the trip")
 	private String tripId;
-	@Setter
+	/*@Setter
 	@Getter
-	private String seatId;
+	private String seatId;*/
 
 	@Setter
 	@Getter
@@ -109,5 +114,68 @@ public class Payment extends AbstractDocument {
 	
 	@Getter
 	@Setter
-	private List<PassengerInfo> passengerInfo;
+	private List<PassengerInfo> passengerInfoOneWay;
+	
+	@Getter
+	@Setter
+	private List<PassengerInfo> passengerInfoTwoWay;
+	
+	public Payment(JSONObject palmentJson){
+		if(palmentJson.containsKey("tripId")) {
+			this.tripId = (String)palmentJson.get("tripId");
+		}
+		if(palmentJson.containsKey("email")) {
+			this.email = (String)palmentJson.get("email");
+		}
+		if(palmentJson.containsKey("phoneNo")) {
+			this.phoneNo = (String)palmentJson.get("phoneNo");
+		}
+		if(palmentJson.containsKey("firstName")) {
+			this.firstName = (String)palmentJson.get("firstName");
+		}
+		if(palmentJson.containsKey("lastName")) {
+			this.lastName = (String)palmentJson.get("lastName");
+		}
+		if(palmentJson.containsKey("paymentType")) {
+			this.paymentType = (String)palmentJson.get("paymentType");
+		}
+		if(palmentJson.containsKey("address")) {
+			this.address = (String)palmentJson.get("address");
+		}
+		if(palmentJson.containsKey("city")) {
+			this.city = (String)palmentJson.get("city");
+		}
+		if(palmentJson.containsKey("state")) {
+			this.state = (String)palmentJson.get("state");
+		}
+		if(palmentJson.containsKey("country")) {
+			this.country = (String)palmentJson.get("country");
+		}
+		if(palmentJson.containsKey("postalCode")) {
+			this.postalCode = ""+(int)palmentJson.get("postalCode");
+		}
+		/*if(palmentJson.containsKey("amount")) {
+			this.amount = (float)palmentJson.get("amount");
+		}
+		if(palmentJson.containsKey("paymentId")) {
+			this.paymentId = (String)palmentJson.get("paymentId");
+		}
+		if(palmentJson.containsKey("merchantRefNo")) {
+			this.merchantRefNo = (String)palmentJson.get("merchantRefNo");
+		}
+		if(palmentJson.containsKey("paymentDate")) {
+			this.paymentDate = (String)palmentJson.get("paymentDate");
+		}
+		
+		if(palmentJson.containsKey("")) {
+			this. = (String)palmentJson.get("");
+		}*/
+		if(palmentJson.containsKey("passengerInfoOneWay")) {
+			this.passengerInfoOneWay = (List)palmentJson.get("passengerInfoOneWay");
+		}
+		if(palmentJson.containsKey("passengerInfoTwoWay")) {
+			this.passengerInfoTwoWay = (List)palmentJson.get("passengerInfoTwoWay");
+		}
+		
+	}
 }

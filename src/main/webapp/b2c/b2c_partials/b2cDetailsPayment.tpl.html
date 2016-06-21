@@ -24,31 +24,32 @@
 		<br/>
 		<br>
 	</div>
-
-	<div class="col-md-10">
-	<br>
-		<label>Onward Passenger Details </label>
-	</div>
+	<div class="col-md-10" ng-repeat = "busJ in busJourneyies.busJournies" ng-init='oneWayAndTwoWay.passengerInfo[busJ.journeyType]=[]'>
 	
-	<div class="col-md-12" ng-repeat="sNo in busJourney.seatNumbers">
-	
-		<label class="col-md-2">Passenger1:</label>
-		<div class="col-md-3"> 
-			<input type="radio" ng-model="passengerGender" value="male"> Male 
-			<input type="radio" ng-model="passengerGender" value="female"> Female
-		</div>
-		<div class="col-md-3"> 
-			<input type="text" class="form-control" ng-model="passengerName" placeholder="Name">
-		</div>
-		<div class="col-md-2"> 
-			<input type="number" class="form-control" ng-model="passengerAge" placeholder="Age"> 
-		</div>
-		<div class="col-md-2"><input type="text" class="form-control" ng-disabled="true" ng-model="passengerSeatNo" ng-init="passengerSeatNo=sNo" ></div>
-		<br/>
 		<br>
-
+		<label ng-if="busJ.journeyType=='ONE_WAY'">Onward Passenger Details </label>
+		<label ng-if="busJ.journeyType=='TWO_WAY'">Return Passenger Details </label>
+	
+	
+		<div class="col-md-12" ng-repeat="s in busJ.seatNumbers" ng-init='oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index]=[]'>
+		
+			<label class="col-md-2">Passenger{{$index+1}}:</label>
+			<div class="col-md-3"> 
+				<input type="radio" ng-model="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].gender" value="male"> Male 
+				<input type="radio" ng-model="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].gender" value="female"> Female
+			</div>
+			<div class="col-md-3"> 
+				<input type="text" class="form-control" ng-model="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].passengerName" placeholder="Name">
+			</div>
+			<div class="col-md-2"> 
+				<input type="number" class="form-control" ng-model="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].passengerAge" placeholder="Age"> 
+			</div>
+			<div class="col-md-2"><input type="text" class="form-control" ng-disabled="true" ng-model="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].seatNumber" ng-init="oneWayAndTwoWay.passengerInfo[busJ.journeyType][$index].seatNumber=s" ></div>
+			<br/>
+			<br>
+	
+		</div>
 	</div>
-
 	<div class="col-md-10">
 		<br>
 		<div class="col-md-7">
@@ -74,11 +75,14 @@
 	 	I agree to all the Terms and Conditions.
 	 	</div>
  	</div>
- 	<input type="button" class="btn btn-primary pull-left" ng-click="paymentButtonClicked()" value=" PayNow">
+ 	<input type="button" class="btn btn-primary pull-left" ng-disabled="ok()" ng-click="paymentButtonClicked()" value=" PayNow">
 </div>
 <div class="col-md-4">
+{{busJourneyies.busJourney}}
+<div  ng-repeat="busJourney in busJourneyies.busJournies">
 	<div class="col-md-12 text-primary">
-		<label >Onward Journey Ticket Details</label>
+		<label  ng-if="busJourney.journeyType=='ONE_WAY'" >Onward Journey Ticket Details</label>
+		<label  ng-if="busJourney.journeyType=='TWO_WAY'" >Return Journey Ticket Details</label>
 	</div>
 
 	<div class="row">
@@ -127,14 +131,14 @@
 		<div class="col-md-5">
 			<label>Boarding Point </label>
 		</div>
-		<div class="col-md-7">{{busJourney.boardingPoints.bpName}}-{{busJourney.boardingPoints.time}}</div>
+		<div class="col-md-7">{{busJourney.boardingPoint.bpName}}-{{busJourney.boardingPoint.time}}</div>
 	</div>
 
-	<div class="row" ng-if="busJourney.dropingPoints">
+	<div class="row" ng-if="busJourney.dropingPoint">
 		<div class="col-md-5">
 			<label>Droping Point </label>
 		</div>
-		<div class="col-md-7">{{busJourney.dropingPoints.droppingName}}-{{busJourney.dropingPoints.droppingTime}}</div>
+		<div class="col-md-7">{{busJourney.dropingPoint.droppingName}}-{{busJourney.dropingPoint.droppingTime}}</div>
 	</div>
 
 	<div class="row">
@@ -155,8 +159,12 @@
 		<div class="col-md-5">
 			<label>Net Amount</label>
 		</div>
-		<div class="col-md-7">{{busJourney.fare}}</div>
+		<div class="col-md-7">{{busJourney.totalFare}}</div>
 	</div>
+
+</div>
+
+<div>
 
 
 	<div class="col-md-12 text-primary">
@@ -167,8 +175,9 @@
 		<div class="col-md-5">
 			<label>Net Amount</label>
 		</div>
-		<div class="col-md-7">{{busJourney.totalFare}}</div>
+		<div class="col-md-7">{{busJourneyies.finalFare}}</div>
 	</div>
+</div>
 </div>
 <!-- This is a payu form directive which need to be submitted to payu payment gateway -->
 <form-submitter></form-submitter>

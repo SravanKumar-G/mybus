@@ -6,7 +6,8 @@
 
 angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
 .controller('B2cHomeController',function($scope, $log, $modal,$state, $filter, ngTableParams,$location, $rootScope,b2cHomeManager) {
-	
+
+    
 	$log.debug("in myBusB2c.b2cHome at B2cHomeController");
 	$scope.headline = "Buy Your Tickets Now!";
 	$scope.allCities =[];
@@ -29,28 +30,43 @@ angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
      
      var date = new Date();
      $scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
-     $scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
+     $scope.manDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
      
      $scope.onSelectDateOfJourney = function(){
-	     if($scope.dateOfJourney!=''){
-	    	 $scope.rminDate = $filter('date')($scope.dateOfJourney,'yyyy-MM-dd');
+	     if($scope.busJourney.dateOfJourney!=''){
+	    	 $scope.rminDate = $filter('date')($scope.busJourney.dateOfJourney,'yyyy-MM-dd');
 	     }else{
 	    	 $scope.rminDate = $scope.minDate; 
 	     }
      }
-    
-     $scope.handleClickUpdateRoute = function(routeId){
-       
-     };
-     
      $scope.searchBuses = function(){
 	    $log.debug("$scope.busJourney -"+$scope.busJourney);
-	    if($scope.busJourney.journeyType=='ONE_WAY')
-	    	$scope.busJourney.returnJourney=$filter('date')(angular.copy($scope.busJourney.dateOfJourney),'yyyy-MM-dd');
-	    
-	    $scope.busJourney.dateOfJourney =  $filter('date')($scope.busJourney.dateOfJourney,'yyyy-MM-dd');
-	    b2cHomeManager.getSearchForBus($scope.busJourney,function(data){
+	    var sendDAta = angular.copy($scope.busJourney);
+	    b2cHomeManager.getSearchForBus(sendDAta,function(data){
 	    	$location.url('/results/'+data);
 	    })
+     }
+     $scope.ok = function(){
+    	 var result = true;
+    	 	 
+    	 if((($scope.busJourney.fromCity|| '') !== '')&& (($scope.busJourney.toCity|| '') !== '') && (($scope.busJourney.dateOfJourney|| '') !== '')){
+    		 var result = false;
+    	 }
+    	 	
+    	 if($scope.busJourney.journeyType==='TWO_WAY' && ($scope.busJourney.returnJourney|| '') == ''){
+    		 result = true;
+    	 }
+    	 if((($scope.busJourney.fromCity|| '') !== '')&& (($scope.busJourney.toCity|| '') !== '') && ($scope.busJourney.fromCity === $scope.busJourney.toCity)){
+			result = true;
+		 }
+    	 if((($scope.busJourney.dateOfJourney|| '') !== '')&& (($scope.busJourney.returnJourney|| '') !== '')){
+    		 var dateOfJourney = new Date($scope.busJourney.dateOfJourney)
+    		 var returnJourney = new Date($scope.busJourney.returnJourney)
+    		 if(dateOfJourney>returnJourney){
+    			 result = true;
+    		 }
+    	 }
+    	 
+    	 return result
      }
 });

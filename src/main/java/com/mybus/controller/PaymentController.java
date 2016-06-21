@@ -9,6 +9,7 @@ import com.mybus.model.RefundResponse;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,10 @@ public class PaymentController {
 	@RequestMapping(value = "payment", method = RequestMethod.POST, 
 							produces = ControllerUtils.JSON_UTF8,
 							consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Initiate booking")
-	public Payment initiateBooking(HttpServletRequest request,@RequestBody final Payment payment) {
+	@ApiOperation(value = "Initiate booking")//@RequestBody JSONObject busJourney
+	public Payment initiateBooking(HttpServletRequest request,@RequestBody JSONObject  paymentJson) {
 		LOGGER.info("Got request to payment process");
+		Payment payment = new Payment(paymentJson);
 		if(payment.getPaymentType().equalsIgnoreCase("EBS")){
 			return paymentManager.getEBSPaymentGatewayDetails(payment);
 		}else {

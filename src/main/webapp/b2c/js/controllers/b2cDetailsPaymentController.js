@@ -13,7 +13,7 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 
 	$log.debug("B2cDetailsPaymentController");
 	$scope.busJourneyies = {}
-	$scope.busJourney = {}
+	$scope.oneWayAndTwoWay=[];
 	$scope.payment = {
 			amount: 1200,
 			city: "hyderabad",
@@ -24,10 +24,17 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 	}
 	b2cDetailsPaymentManager.getbusJourney(function(data){
 		$scope.busJourneyies = data;
-		$scope.busJourney = data.busJournies[0]
+		
 	});
 	
 	$scope.paymentButtonClicked = function(){
+		if($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY){
+			$scope.payment['passengerInfoOneWay']=$scope.oneWayAndTwoWay.passengerInfo.ONE_WAY;
+		}
+		
+		if($scope.oneWayAndTwoWay.passengerInfo.TWO_WAY){
+			$scope.payment['passengerInfoTwoWay']=$scope.oneWayAndTwoWay.passengerInfo.TWO_WAY;
+		}
 		
 		/*$scope.payment = {
 				address: "kphp",
@@ -53,6 +60,48 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 			sweetAlert("Error",err.message,"error");
 		});
 	};
+	
+	$scope.ok = function(){
+		var returnResult = true; 
+		if((($scope.payment.firstName||'')!='')&&(($scope.payment.phoneNo||'')!='')&&(($scope.payment.email||'')!='')&&(($scope.payment.address||'')!='') && (($scope.payment.paymentType||'')!='') && $scope.acceptTerms){
+			if($scope.oneWayAndTwoWay.passengerInfo && $scope.oneWayAndTwoWay.passengerInfo.ONE_WAY){
+				if($scope.oneWayAndTwoWay.passengerInfo && !$scope.oneWayAndTwoWay.passengerInfo.TWO_WAY){
+				  angular.forEach($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY,function(psinfo){
+					  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+						  returnResult=false;
+					  }
+					  if(returnResult)
+							  return returnResult;
+					  
+				  })
+				}else{
+					 angular.forEach($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY,function(psinfo){
+						  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+							  returnResult=false;
+						  }else{
+							  returnResult=true;
+						  }
+						  if(returnResult)
+								  return returnResult;
+						  
+					  })
+					   angular.forEach($scope.oneWayAndTwoWay.passengerInfo.TWO_WAY,function(psinfo){
+					  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+						  returnResult=false;
+					  }else{
+						  returnResult=true;
+					  }
+					  if(returnResult)
+							  return returnResult;
+					  
+				  })
+					
+				}
+			}
+		}
+		
+		return returnResult;
+	}
 });
 
 function FormSubmitter($rootScope, $sce) {
