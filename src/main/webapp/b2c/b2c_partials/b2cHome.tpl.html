@@ -24,7 +24,10 @@
 			<div  ng-show="searchForbus.toCity.$touched && searchForbus.toCity.$invalid" class="alert alert-danger col-md-10 col-offset-2">
 				Please Select To City.
 		 	</div>
-	
+		 	
+		 	<div  ng-if=" (busJourney.fromCity && busJourney.toCity) && busJourney.fromCity == busJourney.toCity" class="alert alert-danger col-md-10 col-offset-2">
+				From city and To city can't be same
+		 	</div>
 		<label class="col-sm-4 control-label" for="fromInput" >From </label>
 		<div class = "col-md-8">
 			<input type="text" list="fromCity" name="fromCity" class="form-control" ng-model="busJourney.fromCity" required/>
@@ -43,6 +46,7 @@
 			  	<option ng-repeat="city in allCities" value="{{city.name}}">
 			</datalist>
 		</div>
+		
 	</div>
 	</br>
 	<div class="form-group">
@@ -61,7 +65,7 @@
 	</form>
 	</br>
 	<div class="col-md-4">
-		<button class="btn btn-sm btn-primary" ng-click="searchBuses()"><h4> Search For Bus </h4></button>
+		<button class="btn btn-sm btn-primary" ng-click="searchBuses()" ng-disabled="ok()"><h4> Search For Bus </h4></button>
 	</div>
 	</br>
 	</br><div>&nbsp;</div>

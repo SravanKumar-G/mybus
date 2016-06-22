@@ -5,18 +5,28 @@
 /*global angular, _*/
 
 angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
-.controller('B2cResultsController',function($scope, $log, $modal, $filter, ngTableParams,$location, $rootScope,$compile,b2cBusResultsManager) {
+.controller('B2cResultsController',function($scope, $log, $modal, $filter, ngTableParams,$location, $rootScope,$compile,b2cHomeManager,b2cBusResultsManager) {
 	$scope.trips=[];
 	$scope.selectedSeat = [];
-	$scope.bJny 
+	$scope.bJny ;
+	$scope.bJnys;
 	$scope.selectedSeates = [];
 	$scope.modifySearch = false;
+	$scope.returnJourneyMesg = 'ONE_WAY';
+	$scope.allCities =[];
+	$scope.getAllCities = function(){
+		b2cHomeManager.getAllcites(function(data){
+			$scope.allCities = data;
+		})
+	}
+	$scope.getAllCities();
 	$scope.getBusJourney=function(){
 		b2cBusResultsManager.getbusJourney(function(data){
+			$scope.bJnys = data;
 			$scope.bJny = data.busJournies[0];
 			$scope.getAvailableTrips($scope.bJny.journeyType);
-			if(data.bJny && data.bJny.length==2)
-				$scope.bJny['returnJourney']=data.bJny[0].returnJourney
+			if(data.busJournies && data.busJournies.length==2)
+				$scope.bJny['returnJourney']=data.busJournies[1].dateOfJourney
 		});
 	}
 	$scope.getBusJourney();
@@ -26,6 +36,8 @@ angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
 	}
 	$scope.getAvailableTrips = function(journeyType){
 		b2cBusResultsManager.getAvailableTrips(journeyType,function(data){
+			if($scope.returnJourneyMesg!='TWO_WAY')
+				$scope.returnJourneyMesg = 'ONE_WAY';
 			$scope.trips = data;
 		})
 	}
@@ -89,47 +101,87 @@ angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
 		$scope.bpsViews = bps;
 		var boardingPoint = 'boardingPoint-'+serviceNumber;
 		var temp ='<table class="bpDptop bp-pull"><tr><td>Boarding Point</td><td>Time</td></tr>'+
-		'<tr  ng-repeat="bpv in bpsViews"  in bpsViews"><td>{{bpv.droppingName}}</td><td>{{bpv.droppingTime}}</td></tr></table>'
+		'<tr  ng-repeat="bpv in bpsViews"  in bpsViews"><td>{{bpv.bpName}}</td><td>{{bpv.time}}</td></tr></table>'
 		angular.element(document.getElementById(boardingPoint)).append($compile(temp)($scope));
 	}
 	$scope.hideBoardingPoints = function(serviceNumber){
 		var boardingPoint = 'boardingPoint-'+serviceNumber
 		angular.element(document.getElementById(boardingPoint)).empty();
 	}
-	$scope.busJourney = [];
+	$scope.busJourney =new Array();
 	$scope.seatSelect = function(seat,trip,tripIndex){
 		var serviceNumber = trip.serviceNumber;
 		$scope.busJourney[tripIndex] = $scope.busJourney[tripIndex] ? $scope.busJourney[tripIndex] : [];
-		$scope.busJourney[tripIndex].busJourney=$scope.bJny;
-		$scope.busJourney[tripIndex].busJourney.fare = trip.serviceFares[0].fare;
-		$scope.busJourney[tripIndex].busJourney.serviceName = trip.serviceName;
-		$scope.busJourney[tripIndex].busJourney.serviceNumber = trip.serviceNumber;
-		if(!$scope.busJourney[tripIndex].busJourney.seatNumbers)
-			$scope.busJourney[tripIndex].busJourney.seatNumbers= [];
+		$scope.busJourney[tripIndex][$scope.returnJourneyMesg] = $scope.busJourney[tripIndex][$scope.returnJourneyMesg] ? $scope.busJourney[tripIndex][$scope.returnJourneyMesg] : [];
+		/*$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney=$scope.bJny;*/
+		
+		$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney= $scope.returnJourneyMesg=='ONE_WAY' ? $scope.bJnys.busJournies[0] : $scope.bJnys.busJournies[1];
+		
+		$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.fare = trip.serviceFares[0].fare;
+		$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.serviceName = trip.serviceName;
+		$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.serviceNumber = trip.serviceNumber;
+		if(!$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers)
+			$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers= [];
 		if(seat.seatStatus=="BOOKED"||seat.seatStatus=="UNAVAILABLE"){
 		}else{
 			if(seat.seatStatus=="AVAILABLE"){
 				$scope.seatTotalFare=seat
 				$scope.seatSelected = true;
-				$scope.busJourney[tripIndex].busJourney.seatNumbers.push(seat.number);
-				$scope.busJourney[tripIndex].busJourney.totalFare=( $scope.busJourney[tripIndex].busJourney.totalFare ? $scope.busJourney[tripIndex].busJourney.totalFare :  0 ) + $scope.busJourney[tripIndex].busJourney.fare;
+				$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers.push(seat.number);
+				$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.totalFare=( $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.totalFare ? $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.totalFare :  0 ) + $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.fare;
 				seat.seatStatus = 'BOOKING_INPROGRSS';
 			}else{
 				seat.seatStatus = 'AVAILABLE';
-				var index = $scope.busJourney[tripIndex].busJourney.seatNumbers.indexOf(seat.number)
+				var index = $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers.indexOf(seat.number)
 				if(index>=0){
-					$scope.busJourney[tripIndex].busJourney.seatNumbers.splice(index, 1);
-					$scope.busJourney[tripIndex].busJourney.totalFare-=$scope.busJourney[tripIndex].busJourney.fare;
+					$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers.splice(index, 1);
+					$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.totalFare-=$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.fare;
 				}
 				if($scope.selectedSeates.lenght<=0)
 					$scope.seatSelected = false;
 			}	
 		}
 	}
+	$scope.continueToReturn=function(busJourney){
+		$log.debug(busJourney +"|" +$scope.bJnys);
+		busJourney.boardingPoint = angular.fromJson(busJourney.boardingPoint);
+		busJourney.dropingPoint = angular.fromJson(busJourney.dropingPoint);
+		b2cBusResultsManager.blockSeat(busJourney,function(data){
+			$scope.returnJourneyMesg = 'TWO_WAY';
+			$scope.getAvailableTrips($scope.bJnys.busJournies[1].journeyType,function(data){
+				$scope.trips = data;
+			})
+		})
+	}
 	$scope.continueToPayment = function(busJourney){
 		$log.debug(busJourney)
+		busJourney.boardingPoint = angular.fromJson(busJourney.boardingPoint);
+		busJourney.dropingPoint = angular.fromJson(busJourney.dropingPoint);
 		b2cBusResultsManager.blockSeat(busJourney,function(data){
 			$location.url('/detailsPayment');
 		})
+	}
+	$scope.searchBuses = function(){
+		$scope.trips=[];
+		b2cHomeManager.getSearchForBus($scope.bJny,function(data){
+			$scope.getAvailableTrips($scope.bJny.journeyType);
+			if(data.bJny && data.bJny.length==2)
+				$scope.bJny['returnJourney']=data.bJny[0].returnJourney
+		})
+	}
+	
+	$scope.ok=function(tripIndex){
+		var result= true;
+		if($scope.busJourney[tripIndex]){
+			if($scope.busJourney[tripIndex][$scope.returnJourneyMesg]){
+				if($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers&&$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers.length>0){
+					if($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.boardingPoint && $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.dropingPoint){
+						$log.debug($scope.busJourney[tripIndex][$scope.returnJourneyMesg]);
+						result = false
+					}
+				}
+			}
+		}
+		return result;
 	}
 });

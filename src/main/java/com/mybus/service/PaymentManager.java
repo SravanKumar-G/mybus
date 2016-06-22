@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.SystemProperties;
+import com.mybus.dao.BookingSessionInfoDAO;
 import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.*;
 import com.mybus.util.Constants;
@@ -42,6 +43,12 @@ public class PaymentManager {
 	PaymentResponseDAO paymentResponseDAO;
 	
 	@Autowired
+	private BookingSessionManager bookingSessionManager;
+	
+	@Autowired
+	private BookingSessionInfoDAO bookingSessionInfoDAO;
+	
+	@Autowired
 	private BookingTrackingManager bookingTrackingManager;
 
 	public Payment getPayuPaymentGatewayDetails(Payment payment){
@@ -74,7 +81,11 @@ public class PaymentManager {
 		status.setStatusCode(Constants.SUCCESS_CODE);
 		status.setStatusMessage("Payment request in progress");
 		paymentRespose.setStatus(status);
+		paymentRespose.setPayment(payment);
 		paymentRespose = paymentResponseDAO.save(paymentRespose);
+		BookingSessionInfo bookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
+		bookingSessionInfo.setBookingId(paymentRespose.getId());
+		bookingSessionInfoDAO.save(bookingSessionInfo);
 		payment.getPaymentGateways().setPgCallbackUrl(payment.getPaymentGateways().getPgCallbackUrl()+"?payID="+paymentRespose.getId());
 		return payment;
 	}

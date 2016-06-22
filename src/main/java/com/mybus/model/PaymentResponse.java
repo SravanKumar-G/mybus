@@ -53,7 +53,11 @@ public class PaymentResponse extends AbstractDocument {
 	@Setter
 	@Getter
 	private RefundResponse refundResponse;
-
+	
+	@Setter
+	@Getter
+	private Payment payment;
+	
 	@Setter
 	@Getter
 	private JSONObject responseParams;
