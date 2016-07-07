@@ -1,8 +1,14 @@
 package com.mybus.model;
 
+import java.util.LinkedHashMap;
+
+import org.json.simple.JSONObject;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 public class PassengerInfo {
 	
 	@Setter
@@ -21,5 +27,30 @@ public class PassengerInfo {
 	@Getter
 	private String seatNumber;
 	
+	@Setter
+	@Getter
+	private double seatFare;
+	
+	/**
+	 * {seatNumber=L1, gender=male, name=chinna, age=23, seatFare = 100}
+	 */
+	
+	public PassengerInfo(LinkedHashMap passengerInfoMap){
+		if(passengerInfoMap.containsKey("name")) {
+			this.name = (String)passengerInfoMap.get("name");
+		}
+		if(passengerInfoMap.containsKey("age")) {
+			this.age = (int)passengerInfoMap.get("age");
+		}
+		if(passengerInfoMap.containsKey("gender")) {
+			this.gender = (String)passengerInfoMap.get("gender");
+		}
+		if(passengerInfoMap.containsKey("seatNumber")) {
+			this.seatNumber = (String)passengerInfoMap.get("seatNumber");
+		}
+		if(passengerInfoMap.containsKey("seatFare")) {
+			this.seatFare = (double)((Integer)passengerInfoMap.get("seatFare"));
+		}
+	}
 	
 }

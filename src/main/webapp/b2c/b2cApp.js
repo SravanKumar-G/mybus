@@ -15,6 +15,7 @@ var myBusB2c = angular.module('myBusB2c', [
                                         'myBusB2c.b2cStatic',
                                         'myBusB2c.b2cResults',
                                         'myBusB2c.b2cDetailsPayment',
+                                        'myBusB2c.b2cEticket'
                                         ]);
 myBusB2c.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$urlRouterProvider){
 	 $stateProvider.
@@ -57,8 +58,11 @@ myBusB2c.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$
      	 url:'/detailsPayment',
          templateUrl: 'b2c_partials/b2cDetailsPayment.tpl.html',
          controller: 'B2cDetailsPaymentController'
+     }).
+     state('eticket', {
+     	 url:'/eticket',
+         templateUrl: 'b2c_partials/b2cEticket.tpl.html',
+         controller: 'B2cEticketController'
      });
-     
-     ;
 	 $urlRouterProvider.otherwise( '/');
 }]);
