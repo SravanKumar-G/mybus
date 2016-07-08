@@ -1,5 +1,7 @@
 package com.mybus.model;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,11 +116,26 @@ public class Payment extends AbstractDocument {
 	
 	@Getter
 	@Setter
-	private List<PassengerInfo> passengerInfoOneWay;
+	private List<PassengerInfo> passengerInfoOneWay = new ArrayList<PassengerInfo>();
 	
 	@Getter
 	@Setter
-	private List<PassengerInfo> passengerInfoTwoWay;
+	private List<PassengerInfo> passengerInfoTwoWay = new ArrayList<PassengerInfo>();;
+	
+	private void setPassengerInfoOneWayAndTwo(Map passengerinfoOneWayAndTwoWay){
+		passengerinfoOneWayAndTwoWay.forEach((key,passengerinfo)->{
+			if(key.equals(JourneyType.ONE_WAY.name())){
+				((List)passengerinfo).forEach(passInfo->{
+					this.passengerInfoOneWay.add(new PassengerInfo((LinkedHashMap)passInfo));
+				});
+			}
+			if(key.equals(JourneyType.TWO_WAY.name())){
+				((List)passengerinfo).forEach(passInfo->{
+					this.passengerInfoTwoWay.add(new PassengerInfo((LinkedHashMap)passInfo));
+				});
+			}
+		});
+	}
 	
 	public Payment(JSONObject palmentJson){
 		if(palmentJson.containsKey("tripId")) {
@@ -154,28 +171,8 @@ public class Payment extends AbstractDocument {
 		if(palmentJson.containsKey("postalCode")) {
 			this.postalCode = ""+(int)palmentJson.get("postalCode");
 		}
-		/*if(palmentJson.containsKey("amount")) {
-			this.amount = (float)palmentJson.get("amount");
+		if(palmentJson.containsKey("passengerInfo")) {
+			setPassengerInfoOneWayAndTwo((LinkedHashMap)palmentJson.get("passengerInfo"));
 		}
-		if(palmentJson.containsKey("paymentId")) {
-			this.paymentId = (String)palmentJson.get("paymentId");
-		}
-		if(palmentJson.containsKey("merchantRefNo")) {
-			this.merchantRefNo = (String)palmentJson.get("merchantRefNo");
-		}
-		if(palmentJson.containsKey("paymentDate")) {
-			this.paymentDate = (String)palmentJson.get("paymentDate");
-		}
-		
-		if(palmentJson.containsKey("")) {
-			this. = (String)palmentJson.get("");
-		}*/
-		if(palmentJson.containsKey("passengerInfoOneWay")) {
-			this.passengerInfoOneWay = (List)palmentJson.get("passengerInfoOneWay");
-		}
-		if(palmentJson.containsKey("passengerInfoTwoWay")) {
-			this.passengerInfoTwoWay = (List)palmentJson.get("passengerInfoTwoWay");
-		}
-		
 	}
 }

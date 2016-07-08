@@ -1,8 +1,18 @@
 package com.mybus.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mybus.SystemProperties;
-import com.mybus.interceptors.AuthenticationInterceptor;
+import static springfox.documentation.builders.PathSelectors.regex;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Executor;
+
+import javax.mail.internet.MimeMessage;
+import javax.xml.transform.Source;
+
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.VelocityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -24,9 +34,11 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -44,19 +56,17 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybus.SystemProperties;
+import com.mybus.SystemProperties.SysProps;
+import com.mybus.interceptors.AuthenticationInterceptor;
+
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import javax.xml.transform.Source;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-
-import static com.mybus.SystemProperties.SysProps;
-import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableWebMvc
@@ -266,5 +276,14 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     public SpringSecurityAuditorAware springSecurityAuditorAware() {
         return (SpringSecurityAuditorAware) applicationContext.getBean("springSecurityAuditorAware");
     }
-
+   
+    @Bean
+	public VelocityEngine velocityEngine() throws VelocityException, IOException{
+		VelocityEngineFactoryBean factory = new VelocityEngineFactoryBean();
+		Properties props = new Properties();
+		props.put("resource.loader", "class");
+		props.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader." +"ClasspathResourceLoader");
+		factory.setVelocityProperties(props);
+		return factory.createVelocityEngine();
+	}
 }

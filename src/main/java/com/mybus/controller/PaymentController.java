@@ -3,9 +3,12 @@ package com.mybus.controller;
 import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Booking;
+import com.mybus.model.PassengerInfo;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentResponse;
 import com.mybus.model.RefundResponse;
+import com.mybus.service.BookingSessionInfo;
+import com.mybus.service.BookingSessionManager;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
 import org.joda.time.DateTime;
@@ -38,6 +41,9 @@ public class PaymentController {
 	@Autowired
 	public PaymentManager paymentManager;
 	
+	@Autowired
+	private BookingSessionManager bookingSessionManager;
+	
 	@RequiresAuthorizedUser(value=false)
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "payment", method = RequestMethod.POST, 
@@ -47,6 +53,9 @@ public class PaymentController {
 	public Payment initiateBooking(HttpServletRequest request,@RequestBody JSONObject  paymentJson) {
 		LOGGER.info("Got request to payment process");
 		Payment payment = new Payment(paymentJson);
+		BookingSessionInfo bookingSessionInfo = bookingSessionManager.getBookingSessionInfo(); 
+		payment.setAmount((float)bookingSessionInfo.getFinalFare());
+		payment.setFirstName(((PassengerInfo)payment.getPassengerInfoOneWay().get(0)).getName());
 		if(payment.getPaymentType().equalsIgnoreCase("EBS")){
 			return paymentManager.getEBSPaymentGatewayDetails(payment);
 		}else {
@@ -84,5 +93,4 @@ public class PaymentController {
 		DateTime busStartTime = new DateTime();
 		return paymentManager.refundAmount(busStartTime,seatFare);
     }
-	
 }

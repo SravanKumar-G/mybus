@@ -1,11 +1,19 @@
 package com.mybus.service;
 
-import com.mybus.SystemProperties;
-import com.mybus.dao.BookingSessionInfoDAO;
-import com.mybus.dao.PaymentResponseDAO;
-import com.mybus.model.*;
-import com.mybus.util.Constants;
-import com.mybus.util.Status;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -17,15 +25,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import com.mybus.SystemProperties;
+import com.mybus.dao.BookingSessionInfoDAO;
+import com.mybus.dao.PaymentDAO;
+import com.mybus.dao.PaymentResponseDAO;
+import com.mybus.model.BookingTracking;
+import com.mybus.model.CancellationPolicy;
+import com.mybus.model.Payment;
+import com.mybus.model.PaymentGateway;
+import com.mybus.model.PaymentResponse;
+import com.mybus.model.RefundResponse;
+import com.mybus.util.Constants;
+import com.mybus.util.Status;
 /**
  * 
  * @author yks-Srinivas
@@ -38,6 +49,9 @@ public class PaymentManager {
 	
 	@Autowired
 	private SystemProperties systemProperties;
+	
+	@Autowired
+	private PaymentDAO paymentDAO;
 	
 	@Autowired
 	PaymentResponseDAO paymentResponseDAO;
@@ -70,7 +84,6 @@ public class PaymentManager {
 		payment.setHashCode(hash);
 		payment.setPaymentGateways(pg);
 		payment.setMerchantRefNo(merchantRefNo);
-		
 		PaymentResponse paymentRespose= new PaymentResponse();
 		paymentRespose.setAmount(payment.getAmount());
 		paymentRespose.setMerchantrefNo(payment.getMerchantRefNo());
@@ -81,12 +94,14 @@ public class PaymentManager {
 		status.setStatusCode(Constants.SUCCESS_CODE);
 		status.setStatusMessage("Payment request in progress");
 		paymentRespose.setStatus(status);
-		paymentRespose.setPayment(payment);
+		payment = paymentDAO.save(payment);
+		paymentRespose.setPaymentUserInfoId(payment.getId());
 		paymentRespose = paymentResponseDAO.save(paymentRespose);
 		BookingSessionInfo bookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		bookingSessionInfo.setBookingId(paymentRespose.getId());
 		bookingSessionInfoDAO.save(bookingSessionInfo);
 		payment.getPaymentGateways().setPgCallbackUrl(payment.getPaymentGateways().getPgCallbackUrl()+"?payID="+paymentRespose.getId());
+		bookingSessionManager.setBookingSessionInfo(bookingSessionInfo);
 		return payment;
 	}
 	
@@ -118,6 +133,8 @@ public class PaymentManager {
 		status.setSuccess(true);
 		status.setStatusCode(Constants.SUCCESS_CODE);
 		status.setStatusMessage("Payment request in progress");
+		payment = paymentDAO.save(payment);
+		paymentRespose.setPaymentUserInfoId(payment.getId());
 		paymentRespose.setStatus(status);
 		paymentRespose = paymentResponseDAO.save(paymentRespose);
 		payment.getPaymentGateways().setPgCallbackUrl(payment.getPaymentGateways().getPgCallbackUrl()+"?payID="+paymentRespose.getId());
@@ -401,6 +418,7 @@ public class PaymentManager {
         
         PaymentResponse pr = paymentResponseDAO.findOne(paymentResponse.getId());
         try {
+        	paymentResponse.setPaymentUserInfoId(pr.getPaymentUserInfoId());
         	pr.merge(paymentResponse);
         	paymentResponseDAO.save(pr);
         } catch (Exception e) {

@@ -24,6 +24,13 @@ public class PaymentResponse extends AbstractDocument {
 	@Getter
 	private String paymentId;
 	
+/**
+ * We are storing payment request user information id  
+ */
+	@Setter
+	@Getter
+	private String paymentUserInfoId;
+	
 	@Setter
 	@Getter
 	private String merchantrefNo;

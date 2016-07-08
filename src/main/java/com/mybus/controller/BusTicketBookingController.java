@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,15 +23,20 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.LayoutDAO;
+import com.mybus.dao.PaymentDAO;
+import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.BusJourney;
 import com.mybus.model.BusService;
 import com.mybus.model.City;
 import com.mybus.model.JourneyType;
 import com.mybus.model.Layout;
+import com.mybus.model.Payment;
+import com.mybus.model.PaymentResponse;
 import com.mybus.model.Trip;
 import com.mybus.service.BookingSessionInfo;
 import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
+import com.mybus.service.PaymentManager;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -54,10 +60,16 @@ public class BusTicketBookingController {
 	private LayoutDAO layoutDAO;
 	
 	@Autowired
+	private PaymentDAO paymentDAO; 
+	
+	@Autowired
 	private BookingSessionManager bookingSessionManager;
 	
 	@Autowired
 	private BusTicketBookingManager busTicketBookingManager;
+
+	@Autowired
+	PaymentResponseDAO paymentResponseDAO;
 	
 	@RequiresAuthorizedUser(value=false)
     @ResponseStatus(value = HttpStatus.OK)
@@ -160,4 +172,36 @@ public class BusTicketBookingController {
 	public BookingSessionInfo blockSeatInfo(HttpServletRequest request) {
 		return bookingSessionManager.getBookingSessionInfo();
 	}
+	
+	@RequiresAuthorizedUser(value=false)
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getBookedTicket", method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "booked ticket request")
+	public BookingSessionInfo getBookedTicket(HttpServletRequest request) {
+		return bookingSessionManager.getBookingSessionInfo();
+    }
+	
+	@RequiresAuthorizedUser(value=false)
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getTicketPaymentInfo", method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "booked ticket payment")
+	public PaymentResponse getPaymentInfo(HttpServletRequest request) {
+		bookingSessionManager.getBookingSessionInfo();
+		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
+		return paymentResponse;
+    }
+	
+
+	@RequiresAuthorizedUser(value=false)
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getTicketPassengerInfo", method = RequestMethod.GET)
+	@ResponseBody
+	@ApiOperation(value = "booked ticket passenger info request")
+	public Payment getPassingerInfo(HttpServletRequest request) {
+		bookingSessionManager.getBookingSessionInfo();
+		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
+		return paymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
+    }
 }

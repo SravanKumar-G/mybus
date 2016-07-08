@@ -15,12 +15,11 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 	$scope.busJourneyies = {}
 	$scope.oneWayAndTwoWay=[];
 	$scope.payment = {
-			amount: 1200,
 			city: "hyderabad",
 			country: "IND",
 			lastName: "xxs",
 			postalCode: 500072,
-			state: "Telangana",
+			state: "Telangana"
 	}
 	b2cDetailsPaymentManager.getbusJourney(function(data){
 		$scope.busJourneyies = data;
@@ -28,27 +27,20 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 	});
 	
 	$scope.paymentButtonClicked = function(){
-		if($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY){
-			$scope.payment['passengerInfoOneWay']=$scope.oneWayAndTwoWay.passengerInfo.ONE_WAY;
+		if($scope.oneWayAndTwoWay.ONE_WAY){
+			angular.forEach($scope.oneWayAndTwoWay.ONE_WAY,function(passengerinfo){
+				$scope.payment.passengerInfoOneWay.push(passengerinfo)
+			});
 		}
 		
-		if($scope.oneWayAndTwoWay.passengerInfo.TWO_WAY){
-			$scope.payment['passengerInfoTwoWay']=$scope.oneWayAndTwoWay.passengerInfo.TWO_WAY;
+		if($scope.oneWayAndTwoWay.TWO_WAY){
+			
+			angular.forEach($scope.oneWayAndTwoWay.ONE_WAY,function(passinfo){
+				$log.debug(passinfo);
+				$scope.payment.passengerInfoTwoWay.push(angular.copy(passinfo))
+			})
 		}
-		
-		/*$scope.payment = {
-				address: "kphp",
-				amount: 1200,
-				city: "hyderabad",
-				country: "IND",
-				email: "srinu.yks@gmail.com",
-				firstName: "Srini",
-				lastName: "M",
-				phoneNo: 9492541342,
-				postalCode: 500072,
-				state: "Telangana",
-				paymentType:"PAYU"
-		}*/
+	
 		$http.post('/api/v1/payment',$scope.payment).success(function(data){
 			console.log('Payment response',data);
 			if(data.paymentType == "EBS")
@@ -60,14 +52,15 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 			sweetAlert("Error",err.message,"error");
 		});
 	};
+
 	
 	$scope.ok = function(){
 		var returnResult = true; 
 		if((($scope.payment.firstName||'')!='')&&(($scope.payment.phoneNo||'')!='')&&(($scope.payment.email||'')!='')&&(($scope.payment.address||'')!='') && (($scope.payment.paymentType||'')!='') && $scope.acceptTerms){
-			if($scope.oneWayAndTwoWay.passengerInfo && $scope.oneWayAndTwoWay.passengerInfo.ONE_WAY){
-				if($scope.oneWayAndTwoWay.passengerInfo && !$scope.oneWayAndTwoWay.passengerInfo.TWO_WAY){
-				  angular.forEach($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY,function(psinfo){
-					  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+			if($scope.payment.passengerInfo && $scope.payment.passengerInfo['ONE_WAY']){
+				if($scope.oneWayAndTwoWay && !$scope.payment.passengerInfo['TWO_WAY']){
+				  angular.forEach($scope.payment.passengerInfo['ONE_WAY'],function(psinfo){
+					  if(((psinfo.gender||'')!='') && ((psinfo.name||'')!='') && ((psinfo.age||'')!='') && ((psinfo.seatNumber||'')!='')){
 						  returnResult=false;
 					  }
 					  if(returnResult)
@@ -75,8 +68,8 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 					  
 				  })
 				}else{
-					 angular.forEach($scope.oneWayAndTwoWay.passengerInfo.ONE_WAY,function(psinfo){
-						  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+					 angular.forEach($scope.payment.passengerInfo['ONE_WAY'],function(psinfo){
+						  if(((psinfo.gender||'')!='') && ((psinfo.name||'')!='') && ((psinfo.age||'')!='') && ((psinfo.seatNumber||'')!='')){
 							  returnResult=false;
 						  }else{
 							  returnResult=true;
@@ -85,8 +78,8 @@ angular.module('myBusB2c.b2cDetailsPayment', ['ngTable', 'ui.bootstrap'])
 								  return returnResult;
 						  
 					  })
-					   angular.forEach($scope.oneWayAndTwoWay.passengerInfo.TWO_WAY,function(psinfo){
-					  if(((psinfo.gender||'')!='') && ((psinfo.passengerName||'')!='') && ((psinfo.passengerAge||'')!='') && ((psinfo.seatNumber||'')!='')){
+					   angular.forEach($scope.payment.passengerInfo['TWO_WAY'],function(psinfo){
+					  if(((psinfo.gender||'')!='') && ((psinfo.name||'')!='') && ((psinfo.age||'')!='') && ((psinfo.seatNumber||'')!='')){
 						  returnResult=false;
 					  }else{
 						  returnResult=true;
