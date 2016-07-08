@@ -17,6 +17,14 @@ angular.module('myBusB2c.b2cEticket', ['ngTable', 'ui.bootstrap'])
 		})
 	}
 	$scope.getbookedTicket();
+
+    $scope.setTab = function(newTab){
+      $scope.tab = newTab;
+    };
+
+    $scope.isSet = function(tabNum){
+      return $scope.tab === tabNum;
+    };
 });
 
 

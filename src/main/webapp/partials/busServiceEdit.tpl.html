@@ -68,12 +68,12 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Journey From Date :</label>
-                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened" min="{{minDate}}" max="{{maxDate}}"  ng-change="onSelectDateOfJourney(busServiceEditCtrl.busService.effectiveFrom)"/>
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened"  ng-change="onSelectDateOfJourney(busServiceEditCtrl.busService.effectiveFrom)"/>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Journey To Date :</label>
-                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened" min="{{rminDate}}" max="{{maxDate}}"/>
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened"/>
                     <br>
                 </div>
             </div>

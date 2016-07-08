@@ -175,7 +175,7 @@ angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
 		if($scope.busJourney[tripIndex]){
 			if($scope.busJourney[tripIndex][$scope.returnJourneyMesg]){
 				if($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers&&$scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.seatNumbers.length>0){
-					if($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.boardingPoint && $scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.dropingPoint){
+					if(($scope.CurrentTrips[tripIndex].boardingPoints.length<=0 || angular.isString($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.boardingPoint)) && ($scope.CurrentTrips[tripIndex].dropingPoints.length<=0 || angular.isString($scope.busJourney[tripIndex][$scope.returnJourneyMesg].busJourney.dropingPoint))){
 						$log.debug($scope.busJourney[tripIndex][$scope.returnJourneyMesg]);
 						result = false
 					}

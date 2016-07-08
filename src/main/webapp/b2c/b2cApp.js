@@ -50,7 +50,7 @@ myBusB2c.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$
          controller: 'B2cHomeController'
      }).
      state('results', {
-     	 url:'/results/:busJourney',
+     	 url:'/results',
          templateUrl: 'b2c_partials/b2cResults.tpl.html',
          controller: 'B2cResultsController'
      }).
