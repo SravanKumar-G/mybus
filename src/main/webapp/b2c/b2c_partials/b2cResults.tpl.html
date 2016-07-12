@@ -179,12 +179,13 @@ table.dp-pull{
 					</table>
 				</div>
 				<div class="col-sm-4">
-						<select class="form-control" data-ng-model="busJourney[tripIndex][returnJourneyMesg].busJourney.boardingPoint" required>
+						<select ng-if="CurrentTrips[tripIndex].boardingPoints.length>0" class="form-control" data-ng-model="busJourney[tripIndex][returnJourneyMesg].busJourney.boardingPoint" required>
 		        			<option value="" selected="selected">-- Boarding Points --</option>
 		        			<option ng-repeat="bp in CurrentTrips[tripIndex].boardingPoints" value="{{bp}}">{{bp.bpName}}-{{bp.time}}</option>
 	        			</select>
 	        			<br/>
-	        			<select class="form-control" data-ng-model="busJourney[tripIndex][returnJourneyMesg].busJourney.dropingPoint" required>
+	        			
+	        			<select ng-if="CurrentTrips[tripIndex].dropingPoints.length>0" class="form-control" data-ng-model="busJourney[tripIndex][returnJourneyMesg].busJourney.dropingPoint" required>
 		        			<option value="" selected="selected">-- Droping Points --</option>
 		        			<option ng-repeat="bp in CurrentTrips[tripIndex].dropingPoints" value="{{bp}}">{{bp.droppingName}}-{{bp.droppingTime}}</option>
 	        			</select>

@@ -127,6 +127,12 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceManager.busServiceConfig(busServiceEditCtrl.busService,function(data){
         		console.log("service config -"+data);
         		busServiceEditCtrl.busService = data;
+        		if(angular.isNumber(busServiceEditCtrl.busService.effectiveFrom)){
+        			busServiceEditCtrl.busService.effectiveFrom = new Date(busServiceEditCtrl.busService.effectiveFrom);
+        		}
+        		if(angular.isNumber(busServiceEditCtrl.busService.effectiveTo)){
+        			busServiceEditCtrl.busService.effectiveTo = new Date(busServiceEditCtrl.busService.effectiveTo);
+        		}
         		busServiceEditCtrl.routeCities = [];
         		
         		cityManager.getCities(function(data){
@@ -229,16 +235,18 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         });
 
         $scope.saveService = function (){
-        	busServiceEditCtrl.busService.effectiveFrom = $filter('date')(busServiceEditCtrl.busService.effectiveFrom,'yyyy-MM-dd');
-        	busServiceEditCtrl.busService.effectiveTo = $filter('date')(busServiceEditCtrl.busService.effectiveTo,'yyyy-MM-dd');
-        	busServiceManager.createService(busServiceEditCtrl.busService)
+        	var service = angular.copy(busServiceEditCtrl.busService)
+        	service.effectiveFrom = $filter('date')(service.effectiveFrom,'yyyy-MM-dd');
+        	service.effectiveTo = $filter('date')(service.effectiveTo,'yyyy-MM-dd');
+        	busServiceManager.createService(service)
         };
         
         $scope.updateService = function (){
-        	busServiceEditCtrl.busService.effectiveFrom = $filter('date')(busServiceEditCtrl.busService.effectiveFrom,'yyyy-MM-dd');
-        	busServiceEditCtrl.busService.effectiveTo = $filter('date')(busServiceEditCtrl.busService.effectiveTo,'yyyy-MM-dd');
+        	var serviceUpdate = angular.copy(busServiceEditCtrl.busService)
+        	serviceUpdate.effectiveFrom = $filter('date')(serviceUpdate.effectiveFrom,'yyyy-MM-dd');
+        	serviceUpdate.effectiveTo = $filter('date')(serviceUpdate.effectiveTo,'yyyy-MM-dd');
         	
-        	busServiceManager.updateService(busServiceEditCtrl.busService)
+        	busServiceManager.updateService(serviceUpdate)
         };
         
         $scope.editPublishedService=function(){
@@ -258,8 +266,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	}        	  
         };
        
-       $scope.specialServiceDates = function(specialServiceDate) {
-    	   
+       $scope.specialServiceDates = function(specialServiceDateUI) {
+    	   var specialServiceDate = angular.copy(specialServiceDateUI)
     	   busServiceEditCtrl.busService.weeklyDays=[];
     	   if(busServiceEditCtrl.busService.specialServiceDates==undefined){
     		   busServiceEditCtrl.busService.specialServiceDates=[];
@@ -284,7 +292,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
       	  return '';
       };
         
-        $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,time,index,name){
+        $scope.addOrRemoveDropingtime = function(bpOrdbID,active,bpOrdb,timeFromUI,index,name){
+        	var time = angular.copy(timeFromUI);
         	switch (bpOrdb) {
 			case 'bp':
 				if(active){ 
@@ -331,10 +340,12 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         			if(sf.destinationCityId==destinationCityId && sf.sourceCityId==sourceCityId){
         				switch (fieldName) {
 						case "at":
-							sf['arrivalTime'] = $filter('date')(fieldValue,'HH:mm a');
+							var temp = angular.copy(fieldValue);
+							sf['arrivalTime'] = $filter('date')(temp,'HH:mm a');
 							break;
 						case "dt":
-							sf['departureTime']= $filter('date')(fieldValue,'HH:mm a');
+							var temp = angular.copy(fieldValue);
+							sf['departureTime']= $filter('date')(temp,'HH:mm a');
 							break;
 						case "fare":
 							sf['fare'] =fieldValue;

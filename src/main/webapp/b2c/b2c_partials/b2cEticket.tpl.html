@@ -1,15 +1,16 @@
 <div class="row">
 	<div class="col-md-9">
-		<div ng-init="tab=1">
-			<ul class ="list-unstyled">
-				<li class="tab" ng-class="{active:tab==1}">
-					<a href ng-click="tab = 1">One Way Journey</a>
-				</li>
-				<li class="tab" ng-if="ticketinfo.busJournies.journeyType=='TWO_WAY'" ng-class="{active:tab==2}">
-					<a href ng-click="tab = 2">Two Way Journey</a>
-				</li>
-			</ul>
-			<div class="" ng-repeat="journey in ticketinfo.busJournies" >
+		<div ng-init="tab='ONE_WAY'">
+			
+				<label class="tab" ng-class="{active:tab=='ONE_WAY'}">
+					<a href ng-click="setTab('ONE_WAY')">One Way Journey</a>
+				</label>
+				<label class="tab" ng-if="ticketinfo.busJournies.length==2" ng-class="{active:tab=='TWO_WAY'}">
+				<strong> &nbsp;|&nbsp;</strong>
+					<a href ng-click="setTab('TWO_WAY')">Two Way Journey</a>
+				</label>
+			
+			<div ng-repeat="journey in ticketinfo.busJournies" ng-show="isSet(journey.journeyType)">
 					<div class="col-md-12">
 					
 						<div class="row">
@@ -97,7 +98,14 @@
 								<th> SeatFare </th>
 							</tr>
 							
-							<tr  ng-repeat="passinfo in passengerData.passengerInfoOneWay">
+							<tr ng-if=" journey.journeyType == 'ONE_WAY'" ng-repeat="passinfo in passengerData.passengerInfoOneWay">
+								<td> {{passinfo.name}} </td>
+								<td> {{passinfo.gender}} </td>
+								<td> {{passinfo.age}} </td>
+								<td>{{passinfo.seatNumber}}</td>
+								<td>{{passinfo.seatFare}}</td>
+							</tr>
+							<tr ng-if=" journey.journeyType == 'TWO_WAY'" ng-repeat="passinfo in passengerData.passengerInfoTwoWay">
 								<td> {{passinfo.name}} </td>
 								<td> {{passinfo.gender}} </td>
 								<td> {{passinfo.age}} </td>

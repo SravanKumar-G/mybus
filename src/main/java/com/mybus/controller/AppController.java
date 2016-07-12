@@ -106,7 +106,7 @@ public class AppController {
 		LOGGER.info("response from payu paymentStatus");
 		paymentManager.paymentResponseFromPayu(map,id);
 		ModelAndView model = new ModelAndView();
-		model.setViewName("/b2c/index.html?payID="+id);
+		model.setViewName("eticket");
 		return model;
 	}
 	/**
@@ -131,11 +131,12 @@ public class AppController {
 		LOGGER.info("response from ebs paymentStatus"+map);
 		paymentManager.paymentResponseFromEBS(map,id);
 		ModelAndView model = new ModelAndView();
-		model.setViewName("../../index");
+		model.setViewName("eticket");
 		return model;
 	}
 	@RequestMapping(value = "/eticket", method = {RequestMethod.GET,RequestMethod.POST})
 	public String cofimTicket(){
+		System.out.println("*************** eticket ****************");
 		return "eticket";
 	}
 }

@@ -43,7 +43,7 @@ angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
 	    $log.debug("$scope.busJourney -"+$scope.busJourney);
 	    var sendDAta = angular.copy($scope.busJourney);
 	    b2cHomeManager.getSearchForBus(sendDAta,function(data){
-	    	$location.url('/results/'+data);
+	    	$state.go('results');
 	    })
      }
      $scope.ok = function(){
