@@ -1,15 +1,21 @@
 package com.mybus.service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.mybus.model.BusJourney;
+import com.mybus.model.EmailData;
 import com.mybus.model.JourneyType;
 import com.mybus.model.ServiceBoardingPoint;
 import com.mybus.model.ServiceDropingPoint;
@@ -19,6 +25,9 @@ public class BusTicketBookingManager {
 	
 	@Autowired
 	private CommunicationManager CommunicationManager;
+	
+	@Autowired
+	private VelocityEngine velocityEngine; 
 	
 	public List<BusJourney> blockSeatUpDateBookingSessionInfo(JSONObject json,List<BusJourney> busJourneyList){
 		BusJourney busJourney = null;
@@ -57,11 +66,19 @@ public class BusTicketBookingManager {
 		}
 		return busJourney;
 	}
-	public void sendActivationMail(){
-		String toAddress = "srinu.yks@gmail.com";
-		String fromAddress = "srinu.yks@gmail.com";
-		String subject = "testing";
-		String msgBody = "this is body";
-		CommunicationManager.sendEmail(toAddress, fromAddress, subject, msgBody);
+	public void ComplateSeatBooking(){
+		sendEticket();
+	}
+	public void sendEticket(){
+		Map<String,Object> mailMap=new Hashtable<String, Object>();
+		String mailBody = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"velocity/eticket.html",mailMap);
+		EmailData emailData=	EmailData.getBuilder().from("mybus@gmail.com")
+				.to(Arrays.asList("SRINU.YKS@GMAIL.COM"))
+				.subject("WELCOME TO MYBUS ")
+				.body(mailBody)
+				.cc(Collections.<String> emptyList())
+				.bcc(Collections.<String> emptyList())
+				.build();
+		CommunicationManager.sendMail(emailData,null);
 	}
 }

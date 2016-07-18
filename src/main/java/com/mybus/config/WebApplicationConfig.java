@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import javax.mail.internet.MimeMessage;
 import javax.xml.transform.Source;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -34,7 +33,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -285,5 +284,20 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
 		props.put("class.resource.loader.class","org.apache.velocity.runtime.resource.loader." +"ClasspathResourceLoader");
 		factory.setVelocityProperties(props);
 		return factory.createVelocityEngine();
+	}
+    @Bean
+    public JavaMailSenderImpl getJavaMailSenderImpl(){
+		JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
+		javaMailSenderImpl.setHost("");
+		javaMailSenderImpl.setPort(1);
+		javaMailSenderImpl.setUsername("");
+		javaMailSenderImpl.setPassword("");
+		Properties javaMailProperties = new Properties();
+		javaMailProperties.put("mail.smtp.auth", true);
+		javaMailProperties.put("mail.smtp.starttls.enable", false);
+		javaMailProperties.put("mail.smtp.quitwait", false);
+		javaMailProperties.put("mail.smtp.ssl.trust","");
+		javaMailSenderImpl.setJavaMailProperties(javaMailProperties);
+		return javaMailSenderImpl;
 	}
 }

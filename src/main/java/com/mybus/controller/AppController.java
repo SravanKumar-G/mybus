@@ -1,7 +1,12 @@
 package com.mybus.controller;
 
-import com.mybus.annotations.RequiresAuthorizedUser;
-import com.mybus.service.PaymentManager;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import com.mybus.annotations.RequiresAuthorizedUser;
+import com.mybus.model.PaymentResponse;
+import com.mybus.service.BusTicketBookingManager;
+import com.mybus.service.PaymentManager;
+import com.mybus.util.Status;
 
 @Controller
 public class AppController {
@@ -23,6 +28,9 @@ public class AppController {
 
 	@Autowired
 	PaymentManager paymentManager;
+	
+	@Autowired
+	BusTicketBookingManager busTicketBookingManager;
 	
 	@RequestMapping(value = { "/", "/helloworld**" }, method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
@@ -104,7 +112,11 @@ public class AppController {
 			map.put(paramName, mapData.get(paramName)[0]);
 		}
 		LOGGER.info("response from payu paymentStatus");
-		paymentManager.paymentResponseFromPayu(map,id);
+		PaymentResponse paymentResponse = paymentManager.paymentResponseFromPayu(map,id);
+		Status status = paymentResponse.getStatus();
+		if(status.getStatusCode()==100 && status.isSuccess()){
+			busTicketBookingManager.ComplateSeatBooking();
+		}
 		ModelAndView model = new ModelAndView();
 		model.setViewName("eticket");
 		return model;
@@ -129,7 +141,11 @@ public class AppController {
 			map.put(paramName, mapData.get(paramName)[0]);
 		}
 		LOGGER.info("response from ebs paymentStatus"+map);
-		paymentManager.paymentResponseFromEBS(map,id);
+		PaymentResponse paymentResponse = paymentManager.paymentResponseFromEBS(map,id);
+		Status status = paymentResponse.getStatus();
+		if(status.getStatusCode()==100 && status.isSuccess()){
+			busTicketBookingManager.ComplateSeatBooking();
+		}
 		ModelAndView model = new ModelAndView();
 		model.setViewName("eticket");
 		return model;
