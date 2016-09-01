@@ -27,6 +27,9 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private CityTestService cityTestService;
+
     private User currentUser;
 
     @Autowired
@@ -51,8 +54,7 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testAddBoardingPointToCity() throws Exception {
-        City city = new City("TextCity", "TestState", true, new ArrayList<>());
-        city = cityDAO.save(city);
+        City city = cityTestService.createTestCity();
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         Assert.assertEquals(0, city.getBoardingPoints().size());
         city = cityManager.addBoardingPointToCity(city.getId(), bp);
