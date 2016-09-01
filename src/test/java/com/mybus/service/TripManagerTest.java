@@ -3,13 +3,17 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.*;
 import com.mybus.model.*;
+import com.mybus.exception.BadRequestException;
+import com.mybus.model.Trip;
 import junit.framework.Assert;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.DayOfWeek;
 import java.util.*;
@@ -55,7 +59,10 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 
 	@Autowired
 	private TripTestService tripTestService;
-	
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+
+
 	private void cleanup(){
 		cityDAO.deleteAll();
 		routeDAO.deleteAll();
@@ -249,5 +256,26 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
         Assert.assertEquals(1, tripManager.findTrips(null, null, dateTime).size());
 		dateTime = dateTime.plusDays(-3);
         Assert.assertEquals(0, tripManager.findTrips(null, toCityIds.get(0), dateTime).size());
+    }
+
+
+    @Test
+    public void testFindTripsWithInvalidParams() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Bad query params found");
+        tripManager.findTrips(null, null, null);
+    }
+    @Test
+    public void testFindTripsWrongFromCityId() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Invalid id for fromCity");
+        tripManager.findTrips("123",null, null);
+    }
+
+    @Test
+    public void testFindTripsWrongToCityId() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Invalid id for toCity");
+        tripManager.findTrips(null, "123", null);
     }
 }
