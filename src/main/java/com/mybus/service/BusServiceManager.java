@@ -1,20 +1,29 @@
 package com.mybus.service;
 
+import static java.lang.String.format;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.RouteDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
-import com.mybus.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import static java.lang.String.format;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import com.mybus.model.BusService;
+import com.mybus.model.BusServicePublishStatus;
+import com.mybus.model.City;
+import com.mybus.model.Route;
+import com.mybus.model.ServiceFare;
+import com.mybus.model.ServiceFrequency;
 
 /**
  * Created by schanda on 02/02/16.
@@ -89,16 +98,16 @@ public class BusServiceManager {
 		Preconditions.checkNotNull(busService.getLayoutId(), "The bus service layout can not be null");
 		Preconditions.checkNotNull(layoutDAO.findOne(busService.getLayoutId()), "Invalid layout id");
 		Preconditions.checkNotNull(routeDAO.findOne(busService.getRouteId()), "Invalid route id");
-		Preconditions.checkNotNull(busService.getEffectiveFrom(), "The bus service start date can not be null");
-		Preconditions.checkNotNull(busService.getEffectiveTo(), "The bus service end date not be null");
-		if(busService.getEffectiveFrom().isAfter(busService.getEffectiveTo())){
+		Preconditions.checkNotNull(busService.getSchedule().getStartDate(), "The bus service start date can not be null");
+		Preconditions.checkNotNull(busService.getSchedule().getEndDate(), "The bus service end date not be null");
+		if(busService.getSchedule().getStartDate().isAfter(busService.getSchedule().getEndDate())){
 			throw new RuntimeException("Invalid service dates. FROM date can not be after TO date");
 		}
-		Preconditions.checkNotNull(busService.getFrequency(), "The bus service frequency can not be null");
-		if(busService.getFrequency().equals(ServiceFrequency.WEEKLY)){
-			Preconditions.checkNotNull(busService.getWeeklyDays(), "Weekly days can not be null");
-		} else if(busService.getFrequency().equals(ServiceFrequency.SPECIAL)){
-			Preconditions.checkNotNull(busService.getSpecialServiceDates(), "Weekly days can not be null");
+		Preconditions.checkNotNull(busService.getSchedule().getFrequency(), "The bus service frequency can not be null");
+		if(busService.getSchedule().getFrequency().equals(ServiceFrequency.WEEKLY)){
+			Preconditions.checkNotNull(busService.getSchedule().getWeeklyDays(), "Weekly days can not be null");
+		} else if(busService.getSchedule().getFrequency().equals(ServiceFrequency.SPECIAL)){
+			Preconditions.checkNotNull(busService.getSchedule().getSpecialServiceDates(), "Weekly days can not be null");
 		}
 
 		//TODO: validate the service fares
@@ -129,6 +138,7 @@ public class BusServiceManager {
 		} else if(BusServicePublishStatus.IN_ACTIVE.name().equalsIgnoreCase(busService.getStatus())){
 			throw new RuntimeException("This bus service is in In-Active State,You Can not publish !");
 		}
+		//TODO:after trip creation this will change or now?
 		busService.setStatus(BusServicePublishStatus.PUBLISHED.name());
 		return busServiceDAO.save(busService);
 	}
@@ -146,7 +156,6 @@ public class BusServiceManager {
 		Preconditions.checkNotNull(toCity, "ToCity not found");
 		Preconditions.checkArgument(toCity.isActive(), format("ToCity %s is not active", toCity.getName()));
 
-		Set<ServiceDropingPoint> dropingPointsSet = new LinkedHashSet<ServiceDropingPoint>();
 		service.addDroppingPoints(toCity.getBoardingPoints());
 		
 		//Assumed via cities is in source to destination order in List
@@ -174,4 +183,5 @@ public class BusServiceManager {
 		service.setServiceFares(sfList);
 		return service;
 	}
+	
 }

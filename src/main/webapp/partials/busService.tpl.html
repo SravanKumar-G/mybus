@@ -6,8 +6,8 @@
     <tr ng-repeat="service in busServiceCtrl.services">
         <td data-title="'Service Name'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.serviceName}}</td>
         <td data-title="'Service Number'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.serviceNumber}}</td>
-        <td data-title="'From Date'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.effectiveFrom | date: "yyyy-MM-dd"}}</td>
-        <td data-title="'To Date'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.effectiveTo | date: "yyyy-MM-dd"}}</td>
+        <td data-title="'From Date'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.schedule.startDate | date: "yyyy-MM-dd"}}</td>
+        <td data-title="'To Date'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">{{service.schedule.endDate | date: "yyyy-MM-dd"}}</td>
         <td data-title="'Total Seats'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">N/A</td>
         <td data-title="'Bus Type'" class="clickable-item" ng-click="busServiceCtrl.goToBusService(service.id)">12</td>
         <td class="col-md-2">

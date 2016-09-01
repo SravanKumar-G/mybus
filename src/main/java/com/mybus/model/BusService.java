@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,19 +61,10 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private String routeName;
-
+	
 	@Getter
 	@Setter
-	//yyyy-MM-dd
-	private DateTime effectiveFrom;
-
-	@Getter
-	@Setter
-	private DateTime effectiveTo;
-
-	@Getter
-	@Setter
-	private ServiceFrequency frequency;
+	private Schedule schedule;
 
 	@Getter
 	@Setter
@@ -84,16 +77,6 @@ public class BusService extends AbstractDocument {
 	@Getter
 	@Setter
 	private Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<ServiceDropingPoint>();
-
-	@Getter
-	@Setter
-	@ApiModelProperty(notes = "Days of the week to run the service")
-	private List<String> weeklyDays;
-
-	@Getter
-	@Setter
-	@ApiModelProperty(notes = "Dates for the service to be run, incase Frequency = 'Special' ")
-	private List<DateTime> specialServiceDates;
 
 	@Getter
 	@Setter
@@ -117,4 +100,5 @@ public class BusService extends AbstractDocument {
 		list.stream().filter(bp -> bp.isDroppingPoint() && bp.isActive()).
 				forEach(dp -> this.getDropingPoints().add(new ServiceDropingPoint(dp)));
 	}
+	
 }

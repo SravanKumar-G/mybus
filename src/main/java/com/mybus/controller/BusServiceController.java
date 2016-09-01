@@ -4,6 +4,8 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.model.BusService;
 import com.mybus.service.BusServiceManager;
+import com.mybus.service.TripManager;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,6 +33,9 @@ public class BusServiceController extends MyBusBaseController{
 
 	@Autowired
 	private BusServiceManager busServiceManager;
+	
+	@Autowired
+	private TripManager tripManager;
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "services", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -88,6 +93,8 @@ public class BusServiceController extends MyBusBaseController{
 	public BusService pubulishBusService(HttpServletRequest request, 
 			@ApiParam(value = "id of the bus service to be publish ") @PathVariable final String id){
 		logger.debug("publish bus service id :{}",id);
+		//TODO: This will become asyncrounous call
+		tripManager.publishService(id);
 		return busServiceManager.publishBusService(id);
 	}
 

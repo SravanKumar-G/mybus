@@ -11,16 +11,21 @@ import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BusServiceManagerTest.class);
 	
 	@Autowired
 	private BusServiceManager busServiceManager;
@@ -129,9 +134,8 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		service.setCutoffTime(30);
 		DateTime fromDate = new DateTime();
 		DateTime toDate = fromDate.plusDays(10);
-		service.setEffectiveFrom(fromDate);
-		service.setEffectiveTo(toDate);
-		service.setFrequency(ServiceFrequency.DAILY);
+		Schedule schedule = new Schedule(fromDate, toDate, ServiceFrequency.DAILY);
+		service.setSchedule(schedule);
 		service.setPhoneEnquiry("1232432");
 		service.setServiceName("TestService");
 		service.setServiceNumber("1231");

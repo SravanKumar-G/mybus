@@ -68,23 +68,23 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Journey From Date :</label>
-                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.effectiveFrom" options="dateOptions" class="form-control" opened="opened"  ng-change="onSelectDateOfJourney(busServiceEditCtrl.busService.effectiveFrom)"/>
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Journey From Date" ng-model="busServiceEditCtrl.busService.schedule.startDate" options="dateOptions" class="form-control" opened="opened"  ng-change="onSelectDateOfJourney(busServiceEditCtrl.busService.effectiveFrom)"/>
                     <br>
                 </div>
                 <div class="col-sm-4">
                     <label for="sel1">Journey To Date :</label>
-                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.effectiveTo" options="dateOptions" class="form-control" opened="opened"/>
+                    <input type="date" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" popup="d MMM yyyy" ng-model="busServiceEditCtrl.busService.schedule.endDate" options="dateOptions" class="form-control" opened="opened"/>
                     <br>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <label for="sel1">Service Mode :</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="DAILY" ng-click="dailyService()">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.schedule.frequency" value="DAILY" ng-click="dailyService()">
                     <label>Daily</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="WEEKLY">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.schedule.frequency" value="WEEKLY">
                     <label>Weekly</label>
-                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.frequency" value="SPECIAL">
+                    <input type="radio" name="serviceMode" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.busService.schedule.frequency" value="SPECIAL">
                     <label>Special</label>
                     <br>
                 </div>
@@ -98,21 +98,21 @@
                 </div>
             </div>
             <div class="row" >
-                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.frequency=='DAILY'">
+                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.schedule.frequency=='DAILY'">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" data-ng-checked="true" disabled="true" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" checklist-model="busServiceEditCtrl.busService.frequency.DAILY" checklist-value="{{day}}">
                 	 	{{day}}
                 	 </span>
                 </div>
             
-                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.frequency=='WEEKLY'">
+                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.schedule.frequency=='WEEKLY'">
                 	<span ng-repeat="day in busServiceEditCtrl.weeklyDays">
                 	 	<input type="checkbox" name="{{day}}" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model='checkedOrUnchecked' checklist-model="busServiceEditCtrl.busService.frequency.weeklyDays" checklist-value="{{day}}" ng-click=weeklyDays(checkedOrUnchecked,$index)>
                 	 	{{day}}
                 	 </span>
                 </div>
            
-                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.frequency=='SPECIAL'">
+                <div class="col-sm-4" ng-show="busServiceEditCtrl.busService.schedule.frequency=='SPECIAL'">
                 	 	<span>
                 	 		<input type="date" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model="busServiceEditCtrl.specialServiceDate">
                 	 		<input type="submit" class="btn btn-primary btn-xs" ng-disabled="!busServiceEditCtrl.specialServiceDate" value="add" ng-click="busServiceEditCtrl.specialServiceDate = specialServiceDates(busServiceEditCtrl.specialServiceDate)" >
@@ -231,7 +231,7 @@
         </div>
     </form>
     <div ng-if="!updateServiceButton" >
-    	<input type="submit" class="btn btn-primary" ng-disabled="serviceForm.$invalid" ng-click="saveService()" value="Save Service" />
+    	<input type="submit" class="btn btn-primary" ng-disabled="busServiceEditCtrl.$valid" ng-click="saveService()" value="Save Service" />
     </div>
     <div ng-if="updateServiceButton">
     	<input type="submit" class="btn btn-warning" ng-if="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="editPublishedService()" value="Edit Service" />
