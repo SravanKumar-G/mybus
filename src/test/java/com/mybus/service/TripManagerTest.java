@@ -224,7 +224,6 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		return trip;
 	}
 
-
     @Test
     public void testFindTrips() {
 		DateTime dateTime = DateTime.now();
@@ -258,7 +257,6 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
         Assert.assertEquals(0, tripManager.findTrips(null, toCityIds.get(0), dateTime).size());
     }
 
-
     @Test
     public void testFindTripsWithInvalidParams() {
         expectedEx.expect(BadRequestException.class);
@@ -271,7 +269,6 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
         expectedEx.expectMessage("Invalid id for fromCity");
         tripManager.findTrips("123",null, null);
     }
-
     @Test
     public void testFindTripsWrongToCityId() {
         expectedEx.expect(BadRequestException.class);
