@@ -11,7 +11,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         $log.debug('BusServiceController loading');
         var busServiceEditCtrl = this;
 
-        busServiceEditCtrl.valid = false;
+        busServiceEditCtrl.valid = true;
 
         busServiceEditCtrl.totalSeats = 0;
         
@@ -44,11 +44,13 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	serviceTaxType:null,
         	serviceTax:null, 
         	routeId:null,
-	        effectiveFrom:null,
-        	effectiveTo:null,
-        	frequency:null,  
-        	weeklyDays:[],
-        	specialServiceDates:[],
+	        schedule : {
+	        	startDate:null,
+	        	endDate:null,
+	        	frequency:null,  
+	        	weeklyDays:[],
+	        	specialServiceDates:[]
+	        },
         	boardingPoints:[],
         	dropingPoints:[],
         	serviceFares:[],
@@ -81,8 +83,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     	  var cache = $cacheFactory.get($rootScope.id);
     	  if(cache){
     		  busServiceEditCtrl.busService = cache.get(serviceId);
-    		  busServiceEditCtrl.busService.effectiveFrom = new Date(busServiceEditCtrl.busService.effectiveFrom);
-    		  busServiceEditCtrl.busService.effectiveTo = new Date(busServiceEditCtrl.busService.effectiveTo);
+    		  busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
+    		  busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
     		  angular.forEach(busServiceEditCtrl.amenities,function(amts){
     			  angular.forEach(busServiceEditCtrl.busService.amenities,function(amt){
 	    			  if(amt.name === amts.name){
@@ -106,14 +108,15 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.layoutId=null;
         	busServiceEditCtrl.busService.routeId=null;
         	
-        	busServiceEditCtrl.busService.effectiveFrom=null;
-        	busServiceEditCtrl.busService.effectiveTo=null;
-        	busServiceEditCtrl.busService.weeklyDays=[];
-        	busServiceEditCtrl.busService.specialServiceDates=[];
+        	busServiceEditCtrl.busService.schedule.startDate=null;
+        	busServiceEditCtrl.busService.schedule.endDate=null;
+        	busServiceEditCtrl.busService.schedule.weeklyDays=[];
+        	busServiceEditCtrl.busService.schedule.specialServiceDates=[];
         	busServiceEditCtrl.busService.boardingPoints=[];
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
 			busServiceEditCtrl.busService.routesMap = {};
+			
 
         }
 		$scope.$watch('busServiceEditCtrl.busService.routeName', function() {
@@ -255,38 +258,38 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         
         $scope.weeklyDays = function(checkedOrUnchecked,index) {
 
-        	busServiceEditCtrl.busService.specialServiceDates = [];
-        	if(busServiceEditCtrl.busService.weeklyDays==undefined){
-        		busServiceEditCtrl.busService.weeklyDays=[];
+        	busServiceEditCtrl.busService.schedule.specialServiceDates = [];
+        	if(busServiceEditCtrl.busService.schedule.weeklyDays==undefined){
+        		busServiceEditCtrl.busService.schedule.weeklyDays=[];
         	}
         	if(checkedOrUnchecked){
-        		busServiceEditCtrl.busService.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
+        		busServiceEditCtrl.busService.schedule.weeklyDays.push(busServiceEditCtrl.weeklyDays[index]);
         	}else{
-        		busServiceEditCtrl.busService.weeklyDays.splice(busServiceEditCtrl.busService.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]), 1);
+        		busServiceEditCtrl.busService.schedule.weeklyDays.splice(busServiceEditCtrl.busService.schedule.weeklyDays.indexOf(busServiceEditCtrl.weeklyDays[index]), 1);
         	}        	  
         };
        
        $scope.specialServiceDates = function(specialServiceDateUI) {
     	   var specialServiceDate = angular.copy(specialServiceDateUI)
-    	   busServiceEditCtrl.busService.weeklyDays=[];
-    	   if(busServiceEditCtrl.busService.specialServiceDates==undefined){
-    		   busServiceEditCtrl.busService.specialServiceDates=[];
+    	   busServiceEditCtrl.busService.schedule.weeklyDays=[];
+    	   if(busServiceEditCtrl.busService.schedule.specialServiceDates==undefined){
+    		   busServiceEditCtrl.busService.schedule.specialServiceDates=[];
     		  /* busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
     		   $scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));*/
     	   }
-    	   var index = busServiceEditCtrl.busService.specialServiceDates.indexOf($filter('date')(specialServiceDate,'yyyy-MM-dd'))
+    	   var index = busServiceEditCtrl.busService.schedule.specialServiceDates.indexOf($filter('date')(specialServiceDate,'yyyy-MM-dd'))
     	   if(index==-1){
-    	   		busServiceEditCtrl.busService.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
+    	   		busServiceEditCtrl.busService.schedule.specialServiceDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
     	   		$scope.sSDates.push($filter('date')(specialServiceDate,'yyyy-MM-dd'));
     	   }   	  
        };
         $scope.removeSpecialServiceDatesFromList = function(specialServiceDate) {
-      	  if(busServiceEditCtrl.busService.specialServiceDates==undefined){
-      		busServiceEditCtrl.busService.specialServiceDates=[];
+      	  if(busServiceEditCtrl.busService.schedule.specialServiceDates==undefined){
+      		busServiceEditCtrl.busService.schedule.specialServiceDates=[];
       	  }else{
-      		var index = busServiceEditCtrl.busService.specialServiceDates.indexOf(specialServiceDate)
+      		var index = busServiceEditCtrl.busService.schedule.specialServiceDates.indexOf(specialServiceDate)
       		if(index!=-1)
-      			busServiceEditCtrl.busService.specialServiceDates.splice(index, 1);
+      			busServiceEditCtrl.busService.schedule.specialServiceDates.splice(index, 1);
       			$scope.sSDates.splice(index, 1);
       	  }
       	  return '';
@@ -362,8 +365,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	
         }
         $scope.dailyService = function(){
-        	busServiceEditCtrl.busService.specialServiceDates = [];
-        	busServiceEditCtrl.busService.weeklyDays=[];
+        	busServiceEditCtrl.busService.schedule.specialServiceDates = [];
+        	busServiceEditCtrl.busService.schedule.weeklyDays=[];
         }
         $scope.addOrRemoveAmenitiesToService = function(checkedOrUnchecked,amenityName){
         	if(busServiceEditCtrl.busService.amenities==undefined){

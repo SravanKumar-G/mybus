@@ -39,11 +39,11 @@ public class Trip extends AbstractDocument {
     
     @Getter
 	@Setter
-	private String arrivalTime;
+	private DateTime arrivalTime;
 
 	@Getter
 	@Setter
-	private String departureTime;
+	private DateTime departureTime;
 	
     @Getter
     @Setter
@@ -99,5 +99,5 @@ public class Trip extends AbstractDocument {
     @Setter
     @ApiModelProperty(notes = "The vehicle allotment id, this is set")
     private String vehicleAllotmentId;
-
+    
 }

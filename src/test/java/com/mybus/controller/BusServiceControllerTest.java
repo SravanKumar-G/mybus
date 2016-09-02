@@ -108,11 +108,17 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
         service.put("cutoffTime", "3");
         service.put("serviceTaxType", "PERCENTAGE");
         
-        service.put("effectiveFrom", "2016-01-02");
-        service.put("effectiveTo", "2017-01-03");
+        JSONObject schedule = new JSONObject();
+        schedule.put("startDate", "2016-01-02");
+        schedule.put("endDate", "2017-01-03");
+        schedule.put("frequency", "DAILY");
+        
+        service.put("schedule", schedule);
         service.put("layoutId", saveLayout().getId());
         service.put("routeId", createTestRoute().getId());
-        service.put("frequency", "DAILY");
+        
+        
+        
         
         /*
         Preconditions.checkNotNull(busService, "The bus service can not be null");

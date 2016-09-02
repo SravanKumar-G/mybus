@@ -1,17 +1,237 @@
 package com.mybus.service;
 
-import com.mybus.controller.AbstractControllerIntegrationTest;
-import org.junit.Test;
+import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.mybus.controller.AbstractControllerIntegrationTest;
+import com.mybus.dao.BusServiceDAO;
+import com.mybus.dao.CityDAO;
+import com.mybus.dao.LayoutDAO;
+import com.mybus.dao.RouteDAO;
+import com.mybus.dao.TripDAO;
+import com.mybus.model.BoardingPoint;
+import com.mybus.model.BusService;
+import com.mybus.model.City;
+import com.mybus.model.Layout;
+import com.mybus.model.Route;
+import com.mybus.model.Row;
+import com.mybus.model.Schedule;
+import com.mybus.model.Seat;
+import com.mybus.model.SeatStatus;
+import com.mybus.model.ServiceBoardingPoint;
+import com.mybus.model.ServiceDropingPoint;
+import com.mybus.model.ServiceFrequency;
+import com.mybus.model.Trip;
+
+import junit.framework.Assert;
 
 /**
  * Created by skandula on 5/3/16.
  */
 public class TripManagerTest extends AbstractControllerIntegrationTest{
 
-    @Test
-    public void testPublishService() throws Exception {
+	@Autowired
+	private TripManager tripManager;
+	
+	@Autowired
+	private CityManager cityManager;
 
-    }
+	@Autowired
+	private RouteManager routeManager;
+
+	@Autowired
+	private LayoutManager layoutManager;
+	
+	@Autowired
+	private BusServiceManager busServiceManager;
+	
+	@Autowired
+	private BusServiceDAO busServiceDAO;
+
+	@Autowired
+	private RouteDAO routeDAO;
+	
+	@Autowired
+	private CityDAO cityDAO;
+	
+	@Autowired
+	private LayoutDAO layoutDAO;
+	
+	@Autowired
+	private TripDAO tripDAO;
+	
+	private void cleanup(){
+		cityDAO.deleteAll();
+		routeDAO.deleteAll();
+		layoutDAO.deleteAll();
+		busServiceDAO.deleteAll();
+		tripDAO.deleteAll();
+	}
+
+	@Before
+	@After
+	public void setup(){
+		cleanup();
+	}
+	
+	@Test
+	public void testCreateTrip() {
+		Trip trip = createTrip();
+		trip  = tripManager.createTrip(trip);
+		Assert.assertNotNull(trip.getId());
+	}
+	
+    @Test
+	public void testGetTripDates_FrequencyDaily() {
+		BusService service = new BusService();
+		DateTime fromDate = new DateTime();
+		DateTime toDate = fromDate.plusDays(10);
+		Schedule schedule = new Schedule(fromDate, toDate, ServiceFrequency.DAILY);
+		service.setSchedule(schedule);
+		Set<DateTime> tripDates = tripManager.getTripDates(service);
+		Assert.assertEquals(11, tripDates.size());
+	}
+	
+	@Test
+	public void testGetTripDates_FrequencyWeekly() {
+		BusService service = new BusService();
+		DateTime fromDate = new DateTime(2016,8,29,12,0);
+		DateTime toDate = fromDate.plusDays(10);
+		Schedule schedule = new Schedule(fromDate, toDate, ServiceFrequency.WEEKLY);
+		Set<DayOfWeek> weeklyDays = new HashSet<>();
+		weeklyDays.add(DayOfWeek.SUNDAY);
+		weeklyDays.add(DayOfWeek.SATURDAY);
+		schedule.setWeeklyDays(weeklyDays);
+		service.setSchedule(schedule);
+		Set<DateTime> tripDates = tripManager.getTripDates(service);
+		Assert.assertEquals(2, tripDates.size());
+	}
+	
+	@Test
+	public void testPublishBusService() {
+		BusService service = createBusService();
+		service = busServiceManager.saveBusService(service);
+		tripManager.publishService(service.getId());
+		Assert.assertEquals(11, List.class.cast(tripManager.getAllTrips()).size());
+	}
+	
+	private BusService createBusService() {
+		
+		BusService service = new BusService();
+
+		City fromCity = new City("FromCity", "TestState", true, new ArrayList<>());
+		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp1", "landmark", "123", true,true));
+		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp2", "landmark", "123", true,true));
+		fromCity = cityManager.saveCity(fromCity);
+
+		City toCity = new City("ToCity", "TestState", true, new ArrayList<>());
+		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp1", "landmark", "123", true,true));
+		toCity.getBoardingPoints().add(new BoardingPoint("tocity-bp2", "landmark", "123", true,true));
+		toCity = cityManager.saveCity(toCity);
+
+		Set<String> viaCitySet = new HashSet<String>();
+		City viaCity = new City("ViaCity", "TestState", true, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp1", "landmark", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity-bp2", "landmark", "123", true,true));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+
+		viaCity = new City("ViaCity2", "TestState2", false, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp1", "landmark2", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity2-bp2", "landmark2", "123", true,true));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+		
+		viaCity = new City("ViaCity3", "TestState3", false, new ArrayList<>());
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity3-bp1", "landmark3", "123", true,true));
+		viaCity.getBoardingPoints().add(new BoardingPoint("Viacity3-bp2", "landmark3", "123", true,true));
+		viaCity = cityManager.saveCity(viaCity);
+		viaCitySet.add(viaCity.getId());
+		
+		JSONObject routeJSON = new JSONObject();
+		routeJSON.put("name", "To to From");
+		routeJSON.put("fromCity", fromCity.getId());
+		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("viaCities",viaCitySet);
+		Route route = routeManager.saveRoute(new Route(routeJSON));
+		service.setRouteId(route.getId());
+
+		Layout layout = new Layout();
+		layout.setName("AC Sleeper");
+		layout = layoutManager.saveLayout(layout);
+		service.setLayoutId(layout.getId());
+		service.setCutoffTime(30);
+		DateTime fromDate = new DateTime();
+		DateTime toDate = fromDate.plusDays(10);
+		Schedule schedule = new Schedule(fromDate, toDate, ServiceFrequency.DAILY);
+		service.setSchedule(schedule);
+		service.setPhoneEnquiry("1232432");
+		service.setServiceName("TestService"+Math.random());
+		service.setServiceNumber("1231");
+		service.setServiceTax(10.0);
+		return service;
+	}
+	
+	private Trip createTrip() {
+		Trip trip = new Trip();
+		trip.setActive(true);
+		//trip.setAmenities(busService.getAmenities());
+		trip.setArrivalTime(DateTime.now());
+		trip.setDepartureTime(DateTime.now());
+		
+		trip.setAvailableSeats(45);
+		
+		Set<ServiceBoardingPoint> boardingPoints = new LinkedHashSet<>();
+		ServiceBoardingPoint sb1 = new ServiceBoardingPoint(new BoardingPoint("fromcity-bp1", "landmark", "123", true,true));
+		ServiceBoardingPoint sb2 = new ServiceBoardingPoint(new BoardingPoint("fromcity-bp2", "landmark", "123", true,true));
+		boardingPoints.add(sb1);
+		boardingPoints.add(sb2);
+		trip.setBoardingPoints(boardingPoints);
+		
+		Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<>();
+		ServiceDropingPoint sd1 = new ServiceDropingPoint(new BoardingPoint("tocity-bp1", "landmark", "123", true,true));
+		ServiceDropingPoint sd2 = new ServiceDropingPoint(new BoardingPoint("tocity-bp2", "landmark", "123", true,true));
+		dropingPoints.add(sd1);
+		dropingPoints.add(sd2);
+		
+		trip.setDropingPoints(dropingPoints);
+		
+		trip.setFromCityId("cityId1"); //this has to come from via city
+		trip.setLayoutId("layoutId1");
+		trip.setRouteId("routeId1");
+		
+		List<Row> rows = new ArrayList<>();
+		List<Seat> seats = new ArrayList<>();
+		seats.add(new Seat("1","A",false,false,"male",false,"b123",null,SeatStatus.AVAILABLE,false,true));
+		seats.add(new Seat("2","B",false,false,"male",false,"b123",null,SeatStatus.AVAILABLE,false,true));
+		seats.add(new Seat("3","C",false,false,"male",false,"b123",null,SeatStatus.AVAILABLE,false,true));
+		Row row1 = new Row(seats,false,true,false);
+		Row row2 = new Row(seats,false,true,false);
+		rows.add(row1);
+		rows.add(row2);
+		trip.setRows(rows);
+		//trip.setServiceFares(serviceFares);//This has to come from via city
+		trip.setServiceId("serviceId1");
+		trip.setServiceName("testServiceName");
+		trip.setServiceNumber("testServiceNumber");
+		trip.setToCityId("toCityId1");
+		trip.setTotalSeats(45);
+		trip.setTripDate(DateTime.now());
+		trip.setVehicleAllotmentId("1111");
+		
+		return trip;
+	}
+    
+    
 }
