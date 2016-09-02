@@ -1,51 +1,28 @@
 package com.mybus.service;
 
-import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.mybus.controller.AbstractControllerIntegrationTest;
+import com.mybus.dao.*;
+import com.mybus.model.*;
+import com.mybus.exception.BadRequestException;
+import com.mybus.model.Trip;
+import junit.framework.Assert;
+import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.mybus.controller.AbstractControllerIntegrationTest;
-import com.mybus.dao.BusServiceDAO;
-import com.mybus.dao.CityDAO;
-import com.mybus.dao.LayoutDAO;
-import com.mybus.dao.RouteDAO;
-import com.mybus.dao.TripDAO;
-import com.mybus.model.BoardingPoint;
-import com.mybus.model.BusService;
-import com.mybus.model.City;
-import com.mybus.model.Layout;
-import com.mybus.model.Route;
-import com.mybus.model.Row;
-import com.mybus.model.Schedule;
-import com.mybus.model.Seat;
-import com.mybus.model.SeatStatus;
-import com.mybus.model.ServiceBoardingPoint;
-import com.mybus.model.ServiceDropingPoint;
-import com.mybus.model.ServiceFrequency;
-import com.mybus.model.Trip;
-
-import junit.framework.Assert;
+import java.time.DayOfWeek;
+import java.util.*;
 
 /**
  * Created by skandula on 5/3/16.
  */
-public class TripManagerTest extends AbstractControllerIntegrationTest{
 
-	@Autowired
-	private TripManager tripManager;
-	
-	@Autowired
-	private CityManager cityManager;
+public class TripManagerTest extends AbstractControllerIntegrationTest{
 
 	@Autowired
 	private RouteManager routeManager;
@@ -70,13 +47,30 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 	
 	@Autowired
 	private TripDAO tripDAO;
-	
+
+	@Autowired
+	private CityTestService cityTestService;
+
+	@Autowired
+	private TripManager tripManager;
+
+	@Autowired
+	private CityManager cityManager;
+
+	@Autowired
+	private TripTestService tripTestService;
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+
+
 	private void cleanup(){
 		cityDAO.deleteAll();
 		routeDAO.deleteAll();
 		layoutDAO.deleteAll();
 		busServiceDAO.deleteAll();
 		tripDAO.deleteAll();
+		cityManager.deleteAll();
+		tripManager.deleteAll();
 	}
 
 	@Before
@@ -91,7 +85,7 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		trip  = tripManager.createTrip(trip);
 		Assert.assertNotNull(trip.getId());
 	}
-	
+
     @Test
 	public void testGetTripDates_FrequencyDaily() {
 		BusService service = new BusService();
@@ -127,9 +121,7 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 	}
 	
 	private BusService createBusService() {
-		
 		BusService service = new BusService();
-
 		City fromCity = new City("FromCity", "TestState", true, new ArrayList<>());
 		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp1", "landmark", "123", true,true));
 		fromCity.getBoardingPoints().add(new BoardingPoint("fromcity-bp2", "landmark", "123", true,true));
@@ -166,7 +158,6 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());
-
 		Layout layout = new Layout();
 		layout.setName("AC Sleeper");
 		layout = layoutManager.saveLayout(layout);
@@ -232,6 +223,56 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		
 		return trip;
 	}
-    
-    
+
+    @Test
+    public void testFindTrips() {
+		DateTime dateTime = DateTime.now();
+        List<String> fromCityIds = new ArrayList<>();
+        List<String> toCityIds = new ArrayList<>();
+        for (int i=0; i<3; i++) {
+            Trip trip = tripTestService.createTestTrip();
+            trip.setTripDate(dateTime);
+            trip = tripManager.saveTrip(trip);
+            fromCityIds.add(trip.getFromCityId());
+            toCityIds.add(trip.getToCityId());
+			dateTime = dateTime.plusDays(1);
+        }
+        List<Trip> trips = IteratorUtils.toList(tripManager.findAll().iterator());
+        Assert.assertEquals(3, trips.size());
+		dateTime = dateTime.plusDays(-3);
+        for (int i=0; i<3; i++) {
+            trips = tripManager.findTrips(fromCityIds.get(i), toCityIds.get(i), dateTime);
+            Assert.assertEquals(1, trips.size());
+			dateTime = dateTime.plusDays(1);
+        }
+		dateTime = dateTime.plusDays(-3);
+        Assert.assertEquals(1, tripManager.findTrips(null, toCityIds.get(0), null).size());
+        Assert.assertEquals(1, tripManager.findTrips(fromCityIds.get(0), null, null).size());
+        Assert.assertEquals(1, tripManager.findTrips(fromCityIds.get(0), null, dateTime).size());
+        Assert.assertEquals(1, tripManager.findTrips(fromCityIds.get(0), toCityIds.get(0), null).size());
+        Assert.assertEquals(1, tripManager.findTrips(null, toCityIds.get(0), null).size());
+        Assert.assertEquals(1, tripManager.findTrips(null, toCityIds.get(0), dateTime).size());
+        Assert.assertEquals(1, tripManager.findTrips(null, null, dateTime).size());
+		dateTime = dateTime.plusDays(-3);
+        Assert.assertEquals(0, tripManager.findTrips(null, toCityIds.get(0), dateTime).size());
+    }
+
+    @Test
+    public void testFindTripsWithInvalidParams() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Bad query params found");
+        tripManager.findTrips(null, null, null);
+    }
+    @Test
+    public void testFindTripsWrongFromCityId() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Invalid id for fromCity");
+        tripManager.findTrips("123",null, null);
+    }
+    @Test
+    public void testFindTripsWrongToCityId() {
+        expectedEx.expect(BadRequestException.class);
+        expectedEx.expectMessage("Invalid id for toCity");
+        tripManager.findTrips(null, "123", null);
+    }
 }

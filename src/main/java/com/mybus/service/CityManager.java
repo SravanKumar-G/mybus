@@ -31,6 +31,9 @@ public class CityManager {
     @Autowired
     private CityDAO cityDAO;
 
+    public City findCityByName(String name) {
+        return cityDAO.findOneByName(name);
+    }
     public boolean deleteCity(String id) {
         Preconditions.checkNotNull(id, "The city id can not be null");
         if (logger.isDebugEnabled()) {
@@ -72,8 +75,6 @@ public class CityManager {
         }
         return cityMongoDAO.updateCity(city);
     }
-
-
 
     public City addBoardingPointToCity(String cityId, BoardingPoint bp) {
         Preconditions.checkNotNull(cityId, "The city id can not be null");
@@ -157,5 +158,12 @@ public class CityManager {
         Map<String, String> map = cities.stream().collect(
                 Collectors.toMap(City::getId, city -> city.getName()));
         return map;
+    }
+
+    public Iterable<City> findAll(){
+        return cityDAO.findAll();
+    }
+    public void deleteAll() {
+        cityDAO.deleteAll();
     }
 }

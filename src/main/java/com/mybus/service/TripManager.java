@@ -1,23 +1,20 @@
 package com.mybus.service;
 
-import java.time.DayOfWeek;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.google.common.base.Preconditions;
+import com.mybus.dao.*;
+import com.mybus.exception.BadRequestException;
+import com.mybus.model.*;
+import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.common.base.Preconditions;
-import com.mybus.dao.BusServiceDAO;
-import com.mybus.dao.LayoutDAO;
-import com.mybus.dao.RouteDAO;
-import com.mybus.dao.TripDAO;
-import com.mybus.model.BusService;
-import com.mybus.model.Layout;
-import com.mybus.model.Route;
-import com.mybus.model.ServiceFrequency;
-import com.mybus.model.Trip;
+import java.time.DayOfWeek;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -27,6 +24,8 @@ import com.mybus.model.Trip;
 @Service
 public class TripManager {
 
+	private static final Logger logger = LoggerFactory.getLogger(TripManager.class);
+
 	@Autowired
 	private TripDAO tripDAO;
 
@@ -35,6 +34,9 @@ public class TripManager {
 
 	@Autowired
 	private RouteDAO routeDAO;
+
+	@Autowired
+	private CityDAO cityDAO;
 
 	@Autowired
 	private BusServiceDAO busServiceDAO;
@@ -119,5 +121,70 @@ public class TripManager {
 			tripDates.addAll(busService.getSchedule().getSpecialServiceDates());
 		}
 		return tripDates;
+	}
+
+	/**
+	 * Module to find
+	 * @param fromCityId
+	 * @param toCityId
+	 * @param travelDate
+	 * @return
+	 */
+	public List<Trip> findTrips(String fromCityId, String toCityId, DateTime travelDate) {
+		if (fromCityId == null && toCityId == null && travelDate == null) {
+			throw new BadRequestException("Bad query params found");
+		}
+		City fromCity = null;
+		City toCity = null;
+		if(fromCityId != null) {
+			fromCity = cityDAO.findOne(fromCityId);
+		}
+		if (fromCityId != null && fromCity == null) {
+			throw new BadRequestException("Invalid id for fromCity");
+		}
+		if(toCityId != null) {
+			toCity = cityDAO.findOne(toCityId);
+		}
+		if (toCityId != null && toCity == null) {
+			throw new BadRequestException("Invalid id for toCity");
+		}
+
+		List<Trip> trips = null;
+		if (fromCity != null && toCity != null && travelDate != null) {
+			logger.info("Finding trips using tripDAO.findTripsByFromCityIdAndToCityIdAndTripDate()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByFromCityIdAndToCityIdAndTripDate
+					(fromCityId, toCityId, travelDate).iterator());
+		} else if(fromCity != null && toCity == null && travelDate == null) {
+			logger.info("Finding trips using tripDAO.findTripsByFromCityId()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByFromCityId(fromCityId).iterator());
+		} else if(fromCity != null && toCity != null && travelDate == null) {
+			logger.info("Finding trips using tripDAO.findTripsByFromCityIdAndToCityId()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByFromCityIdAndToCityId(fromCityId, toCityId).iterator());
+		} else if(fromCity != null && toCity == null && travelDate != null) {
+			logger.info("Finding trips using tripDAO.findTripsByFromCityIdAndTripDate()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByFromCityIdAndTripDate(fromCityId, travelDate).iterator());
+		} else if(fromCityId == null && toCity != null && travelDate == null) {
+			logger.info("Finding trips using tripDAO.findTripsByToCityId()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByToCityId(toCityId).iterator());
+		} else if(fromCityId == null && toCity != null && travelDate != null) {
+			logger.info("Finding trips using tripDAO.findTripsByToCityIdAndTripDate()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByToCityIdAndTripDate(toCityId, travelDate).iterator());
+		} else if(fromCityId == null && toCity == null && travelDate != null) {
+			logger.info("Finding trips using tripDAO.findTripsByTripDate()");
+			trips = IteratorUtils.toList(tripDAO.findTripsByTripDate(travelDate).iterator());
+		}
+		return trips;
+	}
+
+	public Iterable<Trip> findAll() {
+		return tripDAO.findAll();
+	}
+	public void deleteAll() {
+		tripDAO.deleteAll();
+	}
+
+
+	public Trip saveTrip(Trip trip) {
+		return tripDAO.save(trip);
 	}
 }

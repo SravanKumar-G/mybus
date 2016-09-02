@@ -1,32 +1,25 @@
 package com.mybus.controller;
 
-import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.BusServiceDAO;
-import com.mybus.dao.LayoutDAO;
-import com.mybus.model.BusService;
-import com.mybus.model.Layout;
 import com.mybus.model.Trip;
 import com.mybus.service.TripManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 /**
  * 
  * @author yks-Srinivas
  *
  */
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 public class TripController {
 
@@ -58,4 +51,16 @@ public class TripController {
 			@ApiParam(value = "Id of the trip to be found") @PathVariable final String id) {
 		return tripManager.getTripByID(id);
 	}
+
+
+	@RequestMapping(value = "buses", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ResponseBody
+	@ApiOperation(value ="Get the trips for a route and date", response = List.class)
+	public List<Trip> findBuses(HttpServletRequest request,
+							@ApiParam(value = "Id of the fromCity") @PathVariable final String fromCityId,
+						  @ApiParam(value = "Id of the toCity") @PathVariable final String toCityId,
+						  @ApiParam(value = "Date of travel") @PathVariable final DateTime travelDate) {
+		return tripManager.findTrips(fromCityId, toCityId, travelDate);
+	}
+
 }
