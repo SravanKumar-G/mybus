@@ -152,7 +152,7 @@
             <div class="row" ng-if="busServiceEditCtrl.routeCities">
 				<br>	         
 	            <div class="col-md-9">
-	            	<label  for="sel1">Vai Cities</label>
+	            	<label  for="sel1">Service Fares</label>
 	            	  <table class="table table-bordered table-condensed table-hover" ng-table="">
 		            	  <tr ng-repeat="viaCities in serviceFares">
 		            	  	<td data-title="'Source City'" sortable="'name'" class="col-md-2">{{viaCities.sourceCityId.name}}</td>
@@ -229,14 +229,18 @@
       		 </div>
 	         
         </div>
+        <div ng-if="!updateServiceButton" >
+            <input type="submit" class="btn btn-primary" ng-disabled="busServiceEditCtrl.$valid" ng-click="saveService()" value="Save Service" />
+            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm.$dirty)" value="Cancel" />
+        </div>
+        <div ng-if="updateServiceButton">
+            <input type="submit" class="btn btn-warning" ng-if="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="editPublishedService()" value="Edit Service" />
+            <input type="submit" class="btn btn-primary" ng-click="updateService()" value="UpDate Service" />
+            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm.$dirty)" value="Cancel" />
+        </div>
+
+        <hr>
     </form>
-    <div ng-if="!updateServiceButton" >
-    	<input type="submit" class="btn btn-primary" ng-disabled="busServiceEditCtrl.$valid" ng-click="saveService()" value="Save Service" />
-    </div>
-    <div ng-if="updateServiceButton">
-    	<input type="submit" class="btn btn-warning" ng-if="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="editPublishedService()" value="Edit Service" />
-    	<input type="submit" class="btn btn-primary" ng-click="updateService()" value="UpDate Service" />
-    <hr>
-    </div>
+
 
 </div>
