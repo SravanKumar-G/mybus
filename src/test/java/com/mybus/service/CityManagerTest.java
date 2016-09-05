@@ -8,6 +8,7 @@ import com.mybus.model.City;
 import com.mybus.model.User;
 import com.mybus.service.CityManager;
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,10 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
         City city = cityTestService.createTestCity();
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
         Assert.assertEquals(0, city.getBoardingPoints().size());
+        DateTime time = city.getUpdatedAt();
+        Thread.sleep(1000);
         city = cityManager.addBoardingPointToCity(city.getId(), bp);
+
         Assert.assertEquals(1, city.getBoardingPoints().size());
         Assert.assertNotNull(city.getBoardingPoints().iterator().next().getId());
     }

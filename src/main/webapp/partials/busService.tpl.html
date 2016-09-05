@@ -1,5 +1,5 @@
 <div class="toolbar-button-div pull-right">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="busServiceCtrl.addNewBusService()"><span class="glyphicon glyphicon-plus"></span> Add New Service</button>
+    <button type="button" class="btn btn-sm btn-primary" ng-click="busServiceCtrl.addNewBusService()"><span class="glyphicon glyphicon-plus"></span>Add New Service</button>
 </div>
 
 <table class="table table-bordered table-condensed table-hover" ng-table="busServiceCtrl.serviceContentTableParams">
@@ -32,6 +32,6 @@
         </td>
     </tr>
     <tr ng-if="!busServiceCtrl.currentPageOfServices || busServiceCtrl.currentPageOfServices.length === 0">
-        <td colspan="4">No details exist.</td>
+        <td colspan="4">No Services created.</td>
     </tr>
 </table>

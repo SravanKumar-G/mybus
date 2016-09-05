@@ -121,7 +121,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 	            })
 			
 		},
-		busServiceConfig : function(service,callback){
+		updateServiceConfig : function(service,callback){
 			$http.put('/api/v1/update/serviceConfig',service)
 			.success(function(data) {
 				callback(data);
