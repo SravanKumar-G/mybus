@@ -87,6 +87,9 @@ public class BusServiceManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Saving bus service :[{}]" + busService);
 		}
+		if ( busService.getRouteId() != null) {
+			updateRouteConfiguration(busService);
+		}
 		return busServiceDAO.save(busService);
 	}
 
@@ -175,8 +178,6 @@ public class BusServiceManager {
 						sfList.add(new ServiceFare(preViaCity.getId(), viaCity.getId(), false));
 					}
 				}
-				service.addBoardingPoints(viaCity.getBoardingPoints());
-				service.addDroppingPoints(viaCity.getBoardingPoints());
 				preViaCityList.add(viaCity);
 			}
 		}

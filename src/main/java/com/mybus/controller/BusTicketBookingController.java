@@ -129,7 +129,6 @@ public class BusTicketBookingController {
 			t.setServiceName(bs.getServiceName());
 			t.setServiceNumber(bs.getServiceNumber());
 			t.setAmenities(bs.getAmenities());
-			t.setServiceFares(bs.getServiceFares());
 			t.setServiceId(bs.getServiceNumber());
 			t.setRouteId(bs.getRouteId());
 			t.setLayoutId(bs.getLayoutId());

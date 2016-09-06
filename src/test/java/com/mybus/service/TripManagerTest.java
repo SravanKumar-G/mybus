@@ -174,6 +174,8 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		return service;
 	}
 	
+	
+	
 	private Trip createTrip() {
 		Trip trip = new Trip();
 		trip.setActive(true);

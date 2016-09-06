@@ -52,7 +52,7 @@ public class ServiceFare {
 	
 	@Getter
 	@Setter
-	private int journeyDuration;
+	private double journeyDuration;
 	
 	@Getter
 	@Setter
