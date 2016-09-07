@@ -175,8 +175,6 @@ public class BusServiceManager {
 						sfList.add(new ServiceFare(preViaCity.getId(), viaCity.getId(), false));
 					}
 				}
-				service.addBoardingPoints(viaCity.getBoardingPoints());
-				service.addDroppingPoints(viaCity.getBoardingPoints());
 				preViaCityList.add(viaCity);
 			}
 		}
