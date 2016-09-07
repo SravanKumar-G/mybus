@@ -75,9 +75,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import({CoreAppConfig.class })
 //@PropertySource(name = "redisProperties", value = "classpath:redis-config.properties")
 @EnableAsync
-@EnableMongoAuditing(
-        auditorAwareRef = "springSecurityAuditorAware"
-)
+@EnableMongoAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableSwagger2
 public class WebApplicationConfig extends WebMvcConfigurerAdapter implements AsyncConfigurer {
 

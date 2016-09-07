@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value = "BusServiceController", description = "Management of the Bus Services ")
 public class BusServiceController extends MyBusBaseController{
@@ -39,7 +39,6 @@ public class BusServiceController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "services", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
 	@ApiOperation(value = "Get all the bus services available", response = BusService.class, responseContainer = "List")
 	public Iterable<BusService> getServices(HttpServletRequest request) {
 		return busServiceDAO.findAll();
@@ -47,7 +46,6 @@ public class BusServiceController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "service", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Create a bus service", response = BusService.class)
 	public ResponseEntity createService(HttpServletRequest request,
 			@ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
@@ -56,7 +54,6 @@ public class BusServiceController extends MyBusBaseController{
 	}
 
 	@RequestMapping(value = "service/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
 	@ApiOperation(value = "Get the BusService JSON", response = BusService.class)
 	public BusService getService(HttpServletRequest request,
 			@ApiParam(value = "Id of the BusService to be found") @PathVariable final String id) {
@@ -66,7 +63,6 @@ public class BusServiceController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "service/{id}", method = RequestMethod.DELETE)
-	@ResponseBody
 	@ApiOperation(value = "Delete a BusService")
 	public JSONObject deleteService(HttpServletRequest request,
 			@ApiParam(value = "Id of the bus service to be deleted") @PathVariable final String id) {
@@ -78,7 +74,6 @@ public class BusServiceController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "service", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Update a BusService", response = BusService.class)
 	public BusService updateService(HttpServletRequest request,
 			@ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
@@ -88,7 +83,6 @@ public class BusServiceController extends MyBusBaseController{
 	
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "publish/{id}" ,method = RequestMethod.GET)
-	@ResponseBody
 	@ApiOperation(value="service publish")
 	public BusService pubulishBusService(HttpServletRequest request, 
 			@ApiParam(value = "id of the bus service to be publish ") @PathVariable final String id){
@@ -100,7 +94,6 @@ public class BusServiceController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "update/serviceConfig" ,method = RequestMethod.PUT)
-	@ResponseBody
 	@ApiOperation(value="Update Service configuration after selecting/changing the route on it")
 	public BusService updateServiceConfiguration(HttpServletRequest request, 
 			@ApiParam(value = "bus service Configuration") @RequestBody final BusService service){

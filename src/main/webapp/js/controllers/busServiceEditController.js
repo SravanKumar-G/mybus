@@ -7,7 +7,11 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusServiceEditController   ================================================
   // ==================================================================================================================
 
-  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busServiceManager, routesManager,cityManager, amenitiesManager, layoutNamesPromise, routeNamesPromise, amenitiesNamesPromise, $location, $cacheFactory,$stateParams) {
+  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter,
+													busServiceManager, routesManager,cityManager,
+													amenitiesManager, layoutNamesPromise,
+													routeNamesPromise, amenitiesNamesPromise,
+													$location, $stateParams) {
 		$log.debug('BusServiceController loading');
         var busServiceEditCtrl = this;
 
@@ -78,19 +82,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 		var serviceId = $stateParams.id;
 		if($stateParams.id != "create" && serviceId !== ''){
 			$scope.updateServiceButton = true;
-			var cache = $cacheFactory.get($rootScope.id);
-			if(cache){
-				busServiceEditCtrl.busService = cache.get(serviceId);
-				busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
-				busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
-				angular.forEach(busServiceEditCtrl.amenities,function(amts){
-				  angular.forEach(busServiceEditCtrl.busService.amenities,function(amt){
-					  if(amt.name === amts.name){
-						 amts.active=true
-					  }
-				  });
-				});
-			}
+			busServiceManager.getService(serviceId, function(service) {
+				busServiceEditCtrl.busService = service;
+			});
 		}
 
         function initialize(){
@@ -374,8 +368,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         		
         	}
         }
-		$scope.cancelServiceEdit = function(isFormDirty) {
-			if(isFormDirty) {
+		$scope.cancelServiceEdit = function(theForm) {
+			console.log("dirty " + theForm.$dirty + "  presitine "+ theForm.$pristine);
+			if(theForm.$dirty) {
 				swal({   title: "You want to stop creating service?",   text: "You'll loose the unsaved data!",   type: "warning",
 					showCancelButton: true,
 					confirmButtonColor: "#DD6B55",
@@ -384,12 +379,16 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 					function(isConfirm) {
 						if (isConfirm) {
 							$location.url('/services');
-							$scope.$apply();
+							if (!$scope.$$phase && !$scope.$root.$$phase){
+								$scope.$apply();
+							}
 						}
 					});
 			} else {
 				$location.url('/services');
-				$scope.$apply()
+				if (!$scope.$$phase && !$scope.$root.$$phase) {
+					$scope.$apply()
+				}
 			}
 		}
         return busServiceEditCtrl;
