@@ -231,12 +231,12 @@
         </div>
         <div ng-if="!updateServiceButton" >
             <input type="submit" class="btn btn-primary" ng-disabled="busServiceEditCtrl.$valid" ng-click="saveService()" value="Save Service" />
-            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm.$dirty)" value="Cancel" />
+            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm)" value="Cancel" />
         </div>
         <div ng-if="updateServiceButton">
             <input type="submit" class="btn btn-warning" ng-if="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-click="editPublishedService()" value="Edit Service" />
             <input type="submit" class="btn btn-primary" ng-click="updateService()" value="UpDate Service" />
-            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm.$dirty)" value="Cancel" />
+            <input type="button" class="btn btn-primary" ng-click="cancelServiceEdit(serviceForm)" value="Cancel" />
         </div>
 
         <hr>
