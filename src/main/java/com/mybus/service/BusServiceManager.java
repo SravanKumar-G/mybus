@@ -87,9 +87,6 @@ public class BusServiceManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Saving bus service :[{}]" + busService);
 		}
-		if ( busService.getRouteId() != null) {
-			updateRouteConfiguration(busService);
-		}
 		return busServiceDAO.save(busService);
 	}
 
