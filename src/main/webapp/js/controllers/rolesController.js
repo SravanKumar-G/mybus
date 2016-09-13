@@ -61,10 +61,8 @@ angular.module('myBus.roleModules', ['ngTable', 'ui.bootstrap'])
 			}
 		});
 		modalInstance.result.then(function (data) {
-			$log.debug("results from modal: " + angular.toJson(data));
-			$scope.cityContentTableParams.reload();
+			$scope.rolesContentTableParams.reload();
 		}, function () {
-			$log.debug('Modal dismissed at: ' + new Date());
 		});
 	};
 	

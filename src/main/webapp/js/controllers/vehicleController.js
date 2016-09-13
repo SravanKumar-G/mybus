@@ -9,7 +9,6 @@ angular.module('myBus.vehicleModule', [])
         var loadTableData = function (tableParams, $defer) {
             var data=vehicleManager.getVehicles(function(data) {
                 $scope.vehicles = data;
-                console.log("found city"+angular.toJson(data));
                 var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
                 tableParams.total(data.length);
                 if (angular.isDefined($defer)) {
@@ -27,10 +26,12 @@ angular.module('myBus.vehicleModule', [])
             }
         }, {
             total: $scope.currentPageOfVehicles.length,
-
             getData: function ($defer, params) {
                 loadTableData(params);
             }
+        });
+        $scope.$on('reloadVehicleInfo',function(e,value){
+            loadTableData($scope.vehicleContentTableParams)
         });
         $scope.addVehicleOnClick = function () {
             var modalInstance = $modal.open({
@@ -61,6 +62,7 @@ angular.module('myBus.vehicleModule', [])
         $scope.ok = function () {
             vehicleManager.createVehicle($scope.vehicle, function(data){
                 $modalInstance.close(data);
+
                 //$route.reload();
             });
         };
