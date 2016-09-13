@@ -22,11 +22,25 @@ portalApp.factory('tripManager',function($rootScope,$http,$window,$log){
 		},
 		getTripByID : function(id,callback){
 			$http.get("",id).success(function(data){
-				calback(data)
+				callback(data)
+			}).
+			error(function(error){
+				
+			})
+		},
+		searchBuses : function(searchFields,callback){
+			$http.get("/api/v1/buses",{
+				params:{ fromCityId : searchFields.fromCity,
+					     toCityId :searchFields.toCity,
+					     travelDate :searchFields.tripDate
+				       }
+			}).success(function(data){
+				callback(data);
 			}).
 			error(function(error){
 				
 			})
 		}
+		
 	}
 });
