@@ -39,6 +39,7 @@ portalApp.factory('vehicleManager', function ($rootScope, $http, $log, $window) 
         createVehicle: function (vehicle, callback) {
             $http.post('/api/v1/vehicle', vehicle).success(function (data) {
                 callback(data);
+                $rootScope.$broadcast("reloadVehicleInfo");
                 swal("Great", "Your vehicle has been successfully added", "success");
             }).error(function (err,status) {
                 sweetAlert("Error",err.message,"error");

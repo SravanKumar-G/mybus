@@ -28,19 +28,16 @@ portalApp.factory('roleManager', function ($rootScope, $http,$filter) {
 				});
 		},
 		createRole : function (role,callback) {
-			role.name = $filter('uppercase')(role.name);
 			$http.post('/api/v1/createRole',role)
 				.success(function (data) {
 					callback(data);
 					$rootScope.$broadcast("roleInit");
 					swal("Great", "Role has been successfully added", "success");
 				}).error(function(err) {
-					callback(err);
 					sweetAlert("Error",err.message,"error");
 				});
 		},
 		updateRole : function (roleID,role,callback) {
-			role.name = $filter('uppercase')(role.name);
 			$http.put('/api/v1/role/'+roleID,role)
 				.success(function (data) {
 					callback(data);
