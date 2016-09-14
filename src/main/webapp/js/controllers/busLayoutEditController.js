@@ -7,7 +7,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusLayoutController   ================================================
   // ==================================================================================================================
 
-  .controller('BusLayoutEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $stateParams, $location, $cacheFactory) {
+  .controller('BusLayoutEditController', function ($rootScope,$window, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $stateParams, $location, $cacheFactory) {
         $log.debug('BusLayoutController loading');
         var busLayoutEditCtrl = this;
 
@@ -320,6 +320,29 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                 busLayoutManager.createLayout(layoutToSave);
             }
         };
+    busLayoutEditCtrl.cancel = function (theForm) {
+    console.log("dirty " + theForm.$dirty + "  presitine " + theForm.$pristine);
+    if (theForm.$dirty) {
+        swal({
+                title: "You want to stop creating Layout?", text: "You'll loose the unsaved data!", type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Stop!",
+                closeOnConfirm: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $location.url('/layouts');
+                    if (!$scope.$$phase && !$scope.$root.$$phase) {
+                        $scope.$apply();
+                    }
+                }
+            });
+        } else {
+        $window.history.back();
+
+         }
+    }
 
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 
