@@ -1,1 +1,60 @@
-Welcome to Trip
+
+<div ng-class="container">
+	<form name="searchBusesForm">
+		<div class="form-group">
+			<div class="row">
+				<div class="col-sm-2">
+					<label for="fromCity">From:</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="fromCity" id="fromCity" ng-model="tripCtrl.searchFields.fromCity" class="form-control">
+      					<option ng-repeat="city in tripCtrl.cities" value="{{city.id}}">{{city.name}}</option>
+    				</select>
+				</div>
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-sm-2">
+					<label for="toCity">To:</label>
+				</div>
+				<div class="col-sm-6">
+					<select name="toCity" id="toCity" ng-model="tripCtrl.searchFields.toCity" class="form-control">
+      					<option ng-repeat="city in tripCtrl.cities" value="{{city.id}}">{{city.name}}</option>
+    				</select>
+				</div>
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-sm-2">
+					<label for="tripDate">Date of Journey</label>
+				</div>
+				<div class="col-sm-6">
+					<input type="date" placeholder="Journey Date" 
+					ng-model="tripCtrl.searchFields.tripDate" options="dateOptions" class="form-control" opened="opened"  
+					/>
+				</div>
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-sm-2">
+					
+				</div>
+				<div class="col-sm-6 center">
+					<input type="submit" class="btn btn-primary" ng-click="tripCtrl.searchTrips()" value="Search for Bus" />
+				</div>
+			</div>
+			<br/>
+		</div>
+	</form>
+	<hr><br><hr>
+	<table class="table table-bordered table-condensed table-hover" 
+			ng-table="tripCtrl.tripsTableParams"
+			ng-show="tripCtrl.trips.length>0">
+    <tr ng-repeat="trip in tripCtrl.trips">
+        <td data-title="'Service Name'">{{trip.serviceName}}</td>
+        <td data-title="'Timing '">{{trip.tripDate | date: "hh:mm a"}}</td>
+        <td data-title="'Fare '">{{trip.tripFare}}</td>
+    </tr>
+</table>
+</div>
+

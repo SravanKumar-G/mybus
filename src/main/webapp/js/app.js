@@ -178,7 +178,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             	level:2,
                 url:'/trip',
                 templateUrl: 'partials/trip.tpl.html',
-                controller: 'TripController'
+                controller: 'TripController as tripCtrl'
             })
             .state('managingroles',{
             	level:2,
