@@ -112,6 +112,7 @@
 
     <input type="submit" class="btn btn-primary" ng-if="!busLayoutEditCtrl.valid" ng-disabled="layoutForm.$invalid" ng-click="busLayoutEditCtrl.saveLayout()" value="Save Layout" />
     <input type="submit" class="btn btn-primary" ng-if="busLayoutEditCtrl.valid" ng-click="busLayoutEditCtrl.saveLayout()" value="Save Layout" />
+    <button class="btn btn-danger" ng-click="busLayoutEditCtrl.cancel(layoutForm)">Cancel</button>
     <hr>
 
 
