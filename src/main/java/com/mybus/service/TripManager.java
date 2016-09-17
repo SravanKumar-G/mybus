@@ -159,13 +159,13 @@ public class TripManager {
 			fromCity = cityDAO.findOne(fromCityId);
 		}
 		if (fromCityId != null && fromCity == null) {
-			throw new BadRequestException("Invalid id for fromCity");
+			throw new BadRequestException("Invalid id for fromCityId");
 		}
 		if(toCityId != null) {
 			toCity = cityDAO.findOne(toCityId);
 		}
 		if (toCityId != null && toCity == null) {
-			throw new BadRequestException("Invalid id for toCity");
+			throw new BadRequestException("Invalid id for toCityId");
 		}
 
 		List<Trip> trips = null;

@@ -117,8 +117,8 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		
 		JSONObject routeJSON = new JSONObject();
 		routeJSON.put("name", "To to From");
-		routeJSON.put("fromCity", fromCity.getId());
-		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("fromCityId", fromCity.getId());
+		routeJSON.put("toCityId", toCity.getId());
 		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());
