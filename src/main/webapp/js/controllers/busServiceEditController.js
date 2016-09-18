@@ -85,17 +85,17 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 				busServiceEditCtrl.busService = service;
 				busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
 				busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
-				/*$scope.serviceStartDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
-				$scope.serviceEndDate = new Date(busServiceEditCtrl.busService.schedule.endDate);*/
 			});
-		} /*else{
-			var date = new Date(busServiceEditCtrl.busService.schedule.startDate);
-			$scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
-			$scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
-			busServiceEditCtrl.busService.schedule.startDate = $scope.minDate;
-			busServiceEditCtrl.busService.schedule.endDate = $scope.maxDate;
-			}*/
-
+		}
+		$scope.onSelectServiceStartDate = function(dateOfJourney){
+			$scope.startDt = new Date(dateOfJourney);
+			$scope.maxDate = $scope.startDt.setDate($scope.startDt.getDate() + 30 );
+			if(dateOfJourney!=''){
+				busServiceEditCtrl.busService.schedule.endDate=new Date($scope.maxDate);
+			}else{
+				$scope.rminDate = $scope.minDate;
+			}
+		}
 
 		function initialize(){
         	busServiceEditCtrl.busService.active=false;
