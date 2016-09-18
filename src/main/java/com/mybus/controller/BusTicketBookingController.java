@@ -85,8 +85,8 @@ public class BusTicketBookingController {
 	@ResponseBody
 	@ApiOperation(value ="creating booking sesssion info")
 	public BookingSessionInfo searchForBus(
-			@RequestParam("fromCity") String fromCity,
-			@RequestParam("toCity") String ToCity,
+			@RequestParam("fromCityId") String fromCity,
+			@RequestParam("toCityId") String ToCity,
 			@RequestParam("dateOfJourney") String dateOfJourney,
 			@RequestParam("returnJourney") String returnJourney,
 			@RequestParam("journeyType") JourneyType journeyType) {

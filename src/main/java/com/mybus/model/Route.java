@@ -25,12 +25,12 @@ public class Route extends AbstractDocument{
     @Getter
     @Setter
     @ApiModelProperty
-    private String fromCity;
+    private String fromCityId;
 
     @Getter
     @Setter
     @ApiModelProperty
-    private String toCity;
+    private String toCityId;
 
     @Getter
     @Setter
@@ -49,11 +49,11 @@ public class Route extends AbstractDocument{
         if(json.containsKey("name")) {
             this.name = json.get("name").toString();
         }
-        if(json.containsKey("fromCity")) {
-            this.fromCity = json.get("fromCity").toString();
+        if(json.containsKey("fromCityId")) {
+            this.fromCityId = json.get("fromCityId").toString();
         }
-        if(json.containsKey("toCity")) {
-            this.toCity = json.get("toCity").toString();
+        if(json.containsKey("toCityId")) {
+            this.toCityId = json.get("toCityId").toString();
         }
         if(json.containsKey("viaCities")) {
             this.viaCities = (Set<String>)json.get("viaCities");

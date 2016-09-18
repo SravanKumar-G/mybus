@@ -80,8 +80,8 @@ table.dp-pull{
 	<label ng-show="returnJourneyMesg=='TWO_WAY'">Return Journey:</label>
 	
 	</div>
-	<div class="col-md-2">{{bJny.fromCity}}</div>
-	<div class="col-md-2">{{bJny.toCity}}</div>
+	<div class="col-md-2">{{bJny.fromCityId}}</div>
+	<div class="col-md-2">{{bJny.toCityId}}</div>
 	<div class="col-md-2">{{bJny.dateOfJourney|date :'EEE MMM dd,yyyy'}}</div>
 	<div class="col-md-2">{{bJny.returnJourney|date :'EEE MMM dd,yyyy'}}</div>
 	<div class="col-md-2">
@@ -97,13 +97,13 @@ table.dp-pull{
 			<input type="radio"  ng-model="bJny.journeyType" value="TWO_WAY"> Two Way
 		</div>
 		<div class="col-md-2">
-			<input type="text" list = "fromCity" ng-model="bJny.fromCity" class="form-control"> 
+			<input type="text" list = "fromCityId" ng-model="bJny.fromCityId" class="form-control">
 			<datalist id="fromCity">
 			  	<option ng-repeat="city in allCities" value="{{city.name}}">
 			</datalist>
 		</div>
 		<div class="col-md-2">
-			<input type="text" list = "toCity" ng-model="bJny.toCity" class="form-control">
+			<input type="text" list = "toCityId" ng-model="bJny.toCityId" class="form-control">
 			<datalist id= "toCity">
 			  	<option ng-repeat="city in allCities" value="{{city.name}}">
 			</datalist>

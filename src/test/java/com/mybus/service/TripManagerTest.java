@@ -164,8 +164,8 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		
 		JSONObject routeJSON = new JSONObject();
 		routeJSON.put("name", "To to From");
-		routeJSON.put("fromCity", fromCity.getId());
-		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("fromCityId", fromCity.getId());
+		routeJSON.put("toCityId", toCity.getId());
 		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());
@@ -280,13 +280,13 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testFindTripsWrongFromCityId() {
         expectedEx.expect(BadRequestException.class);
-        expectedEx.expectMessage("Invalid id for fromCity");
+        expectedEx.expectMessage("Invalid id for fromCityId");
         tripManager.findTrips("123",null, null);
     }
     @Test
     public void testFindTripsWrongToCityId() {
         expectedEx.expect(BadRequestException.class);
-        expectedEx.expectMessage("Invalid id for toCity");
+        expectedEx.expectMessage("Invalid id for toCityId");
         tripManager.findTrips(null, "123", null);
     }
 }

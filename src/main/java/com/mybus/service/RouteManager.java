@@ -65,10 +65,10 @@ public class RouteManager {
             throw new NullPointerException("route can not be null");
         }
         Preconditions.checkNotNull(route.getName(), "Route name can not be null");
-        Preconditions.checkNotNull(route.getFromCity(), "Route from city can not be null");
-        Preconditions.checkNotNull(route.getToCity(), "Route to city can not be null");
-        Preconditions.checkNotNull(cityDAO.findOne(route.getFromCity()), "Invalid from city id");
-        Preconditions.checkNotNull(cityDAO.findOne(route.getToCity()), "Invalid to city id");
+        Preconditions.checkNotNull(route.getFromCityId(), "Route from city can not be null");
+        Preconditions.checkNotNull(route.getToCityId(), "Route to city can not be null");
+        Preconditions.checkNotNull(cityDAO.findOne(route.getFromCityId()), "Invalid from city id");
+        Preconditions.checkNotNull(cityDAO.findOne(route.getToCityId()), "Invalid to city id");
         if(StringUtils.isBlank(route.getId()) && routeDAO.findByName(route.getName()) != null) {
             throw new RuntimeException("Route with the same name exits");
         }
