@@ -8,7 +8,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ==================================================================================================================
 
   .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter,
-													busServiceManager, routesManager,cityManager,
+													busServiceManager, routesManager,cityManager,cancelManager,
 													amenitiesManager, layoutNamesPromise,
 													routeNamesPromise, amenitiesNamesPromise,
 													$location, $stateParams) {
@@ -378,29 +378,10 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         		
         	}
         }
-		$scope.cancelServiceEdit = function(theForm) {
-			console.log("dirty " + theForm.$dirty + "  presitine "+ theForm.$pristine);
-			if(theForm.$dirty) {
-				swal({   title: "You want to stop creating service?",   text: "You'll loose the unsaved data!",   type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#DD6B55",
-					confirmButtonText: "Yes, Stop!",
-					closeOnConfirm: true },
-					function(isConfirm) {
-						if (isConfirm) {
-							$location.url('/services');
-							if (!$scope.$$phase && !$scope.$root.$$phase){
-								$scope.$apply();
-							}
-						}
-					});
-			} else {
-				$location.url('/services');
-				if (!$scope.$$phase && !$scope.$root.$$phase) {
-					$scope.$apply()
-				}
-			}
-		}
+
+		$scope.cancelServiceEdit = function(theForm){
+			cancelManager.cancel(theForm);
+		};
         return busServiceEditCtrl;
 
   })
