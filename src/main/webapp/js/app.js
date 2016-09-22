@@ -28,7 +28,8 @@ var myBus = angular.module('myBus', [
   'myBus.paymentModule',
   'myBus.tripModule',
   'myBus.amenitiesModule',
-  'myBus.roleModules'
+  'myBus.roleModules',
+  'myBus.bookingModules'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -185,6 +186,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/managingRoles',
                 templateUrl: 'partials/managing-roles.tpl.html',
                 controller: 'ManagingRolesController'
+            })
+            .state('booking',{
+            	level:2,
+                url:'/booking',
+                templateUrl: 'partials/booking-info.tpl.html',
+                controller: 'BookingController as bookingCtrl'
             });
         $urlRouterProvider.otherwise( '/');
     }]);

@@ -41,6 +41,8 @@
     <script src="js/controllers/tripController.js"></script>
     <script src="js/controllers/amenitiesController.js"></script>
     <script src="js/controllers/rolesController.js"></script>
+    <script src="js/controllers/bookingController.js"></script>
+    <script src="js/services/bookingHelper.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
     <script src="js/services/cityManager.js"></script>

@@ -55,7 +55,7 @@ public class TripController {
 
 	@RequestMapping(value = "buses", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
-	@ApiOperation(value ="Get the trips for a route and date", response = List.class)
+	@ApiOperation(value ="Get the trips for a route and date", response = Trip.class, responseContainer="List")
 	public List<Trip> findBuses(HttpServletRequest request,
 							@ApiParam(value = "Id of the fromCity") @RequestParam("fromCityId") final String fromCityId,
 						  @ApiParam(value = "Id of the toCity") @RequestParam("toCityId") final String toCityId,

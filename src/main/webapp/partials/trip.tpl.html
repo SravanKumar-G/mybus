@@ -63,7 +63,7 @@
 				</div>
 				<div class="col-sm-6">
 					<select name="toCity" id="toCity" data-ng-model="tripCtrl.searchFields.toCity" class="form-control">
-      					<option data-data-ng-repeat="city in tripCtrl.cities" value="{{city.id}}">{{city.name}}</option>
+      					<option data-ng-repeat="city in tripCtrl.cities" value="{{city.id}}">{{city.name}}</option>
     				</select>
 				</div>
 			</div>
@@ -116,10 +116,10 @@
      <tr>
      <tr data-ng-repeat-end>
      	<td>
-	    <table data-ng-if="!tripCtrl.busLayout.sleeper" class="holder" data-ng-class="{'bigbus': tripCtrl.busLayout.isBig}">
-	    	<tr data-ng-repeat="seats in tripCtrl.busLayout.rows" data-ng-init="rowNumber = $index">
-	        	<td data-ng-class="getMatchingClass(rowNumber,seat)" data-ng-repeat="seat in seats.seats">
-	        		<label  style="width:35px" data-ng-if="seat.number" data-ng-click="tripCtrl.markSeatForSelection(seat,rowNumber)" >
+	    <table data-ng-if="!tripCtrl.busLayouts[trip.id].busLayout.sleeper" class="holder" data-ng-class="{'bigbus': tripCtrl.busLayouts[trip.id].busLayout.isBig}">
+	    	<tr data-ng-repeat="seats in tripCtrl.busLayouts[trip.id].busLayout.rows" data-ng-init="rowNumber = $index">
+	        	<td data-ng-class="getMatchingClass(trip.id,rowNumber,seat)" data-ng-repeat="seat in seats.seats">
+	        		<label  style="width:35px" data-ng-if="seat.number" data-ng-click="tripCtrl.markSeatForSelection(trip.id,seat,rowNumber)" >
 	        			{{tripCtrl.getSeatName(seat)}}
 	        		</label>
 	        	</td>
@@ -146,8 +146,16 @@
 		</table>
 		</td>
 		<td colspan="2">
-			
-		
+			<div data-ng-show="tripCtrl.busLayouts[trip.id].showLayout">
+				<select name="boardingPoint" id="boardingPoint" data-ng-model="tripCtrl.busLayouts[trip.id].selectedBoardingPoint"
+									data-ng-change="tripCtrl.enableContinue(trip.id);" class="form-control">
+	      					<option data-ng-repeat="boardingPoint in tripCtrl.busLayouts[trip.id].boardingPoints" value="{{boardingPoint.id}}">{{boardingPoint.name}}</option>
+	    		</select>
+	    		<br>
+	    		<input type="submit" id="continue" class="btn btn-primary"
+	    		    data-ng-show="tripCtrl.busLayouts[trip.id].showContinue" 
+	    		    data-ng-click="tripCtrl.proceedForBooking(trip.id)" value="Continue" />
+    		</div>
 		</td>
     </tr>
     </tbody>

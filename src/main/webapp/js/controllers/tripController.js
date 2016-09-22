@@ -2,19 +2,18 @@
 /*global angular, _*/
 
 angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
-.controller("TripController",function($rootScope,$scope, $log, $filter,ngTableParams,tripManager,cityManager,$cacheFactory){
+.controller("TripController",function($scope, $rootScope, $log, $filter,ngTableParams,tripManager,cityManager,$cacheFactory,$location,bookingHelper){
 
 	var tripCtrl = this;
 	
 	tripCtrl.trips = [];
 	
+	//this reference has to be removed
 	tripCtrl.trip = {};
 	
 	tripCtrl.currentPageTrips = [];
 	
-	tripCtrl.currentSelectionSeats = [];
-	
-	tripCtrl.busLayout = {};
+	tripCtrl.busLayouts = {};
 	
 	var seatNames = {"seats":[{"id":1,"name":"A"},{"id":2,"name":"B"},{"id":3,"name":"C"},{"id":4,"name":"D"},{"id":5,"name":"E"},{"id":6,"name":"F"},{"id":7,"name":"G"},{"id":8,"name":"H"},{"id":9,"name":"I"},{"id":10,"name":"J"},{"id":11,"name":"K"},{"id":12,"name":"L"},{"id":13,"name":"M"},{"id":14,"name":"N"},{"id":15,"name":"O"},{"id":16,"name":"P"},{"id":17,"name":"Q"},{"id":18,"name":"R"},{"id":19,"name":"S"},{"id":20,"name":"T"}]};
 	
@@ -54,60 +53,112 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
 	
 	tripCtrl.getTrip = function(tripId){
 		 $log.debug("Selected trip..." + tripId);
+		 var selectedTrip = {};
 		for(var i=0; i<tripCtrl.trips.length ; i++)	{
 			if ( tripCtrl.trips[i].id == tripId) {
-				
+				selectedTrip = tripCtrl.trips[i];
 				tripCtrl.trip = tripCtrl.trips[i];
 			}
 		}
-		tripCtrl.showLayout();
+		
+		tripCtrl.createLayout(tripCtrl.trip);
+		//call this method if already not loaded
+		cityManager.getBoardingPoints(tripCtrl.trip.fromCityId,function(data){
+			var cityBoardingPoints = data;
+			var tripBoardingPoints = [];
+			var counter = 0;
+			for(var i=0;i<cityBoardingPoints.length;i++) {
+				for(var j=0;j<tripCtrl.trip.boardingPoints.length;j++) {
+					if ( tripCtrl.trip.boardingPoints[j].refId === cityBoardingPoints[i].id) {
+						tripBoardingPoints[counter] = cityBoardingPoints[i];
+						counter++;
+					}
+				}
+			}
+			//initialize tripInfo
+			if (tripCtrl.busLayouts[tripCtrl.trip.id] == undefined){
+				tripCtrl.busLayouts[tripCtrl.trip.id]={};
+			}
+			var tripInfo = tripCtrl.busLayouts[tripCtrl.trip.id];
+			tripInfo["boardingPoints"] = tripBoardingPoints;
+			tripInfo["selectedSeats"] = [];
+			tripInfo["selectedBoardingPoint"] = null;
+			tripInfo["showLayout"] = true;
+			tripInfo["showContinue"] = false;
+			tripCtrl.busLayouts[tripCtrl.trip.id] = tripInfo;
+		})
 	};
 	
-	tripCtrl.showLayout = function() {
-		 $log.debug("showing layout for trip..." + tripCtrl.trip.id);
+	tripCtrl.createLayout = function(trip) {
+		 $scope.showLayout= true;
+		 var tripId = trip.id;
          var cache = $cacheFactory.get($rootScope.id);
-		 if(cache){
-		     tripCtrl.busLayout = cache.get(tripCtrl.trip.layoutId);
-		 }
-		 if (typeof tripCtrl.busLayout.id == 'undefined') {
-			tripManager.getLayoutByID(tripCtrl.trip.layoutId,function(data) {
-				tripCtrl.busLayout = data;
+         var busLayout = {};
+//         if (tripCtrl.busLayouts.hasOwnProperty(tripId) && typeof tripCtrl.busLayouts[tripId].busLayout != undefined) {
+//        	 return;
+//         }
+		 if(cache) {
+		     busLayout = cache.get(trip.layoutId);
+		 } 
+		 var isCachedLayout = true;
+		 if (! busLayout.hasOwnProperty('id')) {
+			 isCachedLayout = false;
+			tripManager.getLayoutByID(trip.layoutId, function(layout) {
+				tripCtrl.populateLayoutInfo(layout);
+				//group with trip Id
+				if (tripCtrl.busLayouts[tripId] == undefined){
+					tripCtrl.busLayouts[tripId]={};
+				}
+				var tripInfo = tripCtrl.busLayouts[tripId];
+				tripInfo["busLayout"] = layout;
+				tripCtrl.busLayouts[tripId] = tripInfo;
 			});
+		 } else {
+			 tripCtrl.populateLayoutInfo(busLayout);
+			//group with trip Id
+			if (tripCtrl.busLayouts[tripId] == undefined){
+				tripCtrl.busLayouts[tripId]={};
+			}
+			var tripInfo = tripCtrl.busLayouts[tripId];
+			tripInfo["busLayout"] = busLayout;
+			tripCtrl.busLayouts[tripId] = tripInfo;
 		 }
-		 
-		 if(tripCtrl.busLayout.type === 'SLEEPER'){
-			 tripCtrl.busLayout.sleeper = true;
-			 tripCtrl.busLayout.layoutCls = 'sleeper';
+	};
+	
+	tripCtrl.populateLayoutInfo= function(busLayout) {
+		 if(busLayout.type === 'SLEEPER'){
+			 busLayout.sleeper = true;
+			 busLayout.layoutCls = 'sleeper';
          }else{
-        	 tripCtrl.busLayout.layoutCls = 'seat';
+        	 busLayout.layoutCls = 'seat';
          }
-		 var rows = angular.copy(tripCtrl.busLayout.rows);
+		 var rows = angular.copy(busLayout.rows);
 		 
-		 if(tripCtrl.busLayout.sleeper && tripCtrl.busLayout.seatsPerRow && tripCtrl.busLayout.totalRows){
+		 if(busLayout.sleeper && busLayout.seatsPerRow && busLayout.totalRows){
              for(var k = 0; k < 2; k++){
                  if(k===0){
-                	 tripCtrl.busLayout.upper = getSeats(true, rows);
-                	 tripCtrl.busLayout.upperHeader = 'Upper';
+                	 busLayout.upper = getSeats(busLayout,true, rows);
+                	 busLayout.upperHeader = 'Upper';
                  }else{
-                	 tripCtrl.busLayout.lower = getSeats(true, rows);
-                	 tripCtrl.busLayout.lowerHeader = 'Lower';
+                	 busLayout.lower = getSeats(busLayout,true, rows);
+                	 busLayout.lowerHeader = 'Lower';
                  }
              }
-         }else if(tripCtrl.busLayout.seatsPerRow && tripCtrl.busLayout.totalRows){
-        	 tripCtrl.busLayout.rows = getSeats(false, rows);
+         } else if(busLayout.seatsPerRow && busLayout.totalRows){
+        	 busLayout.rows = getSeats(busLayout,false, rows);
          }
-		 
 	};
 	
 	function getName(id){
         return $filter('filter')(seatNames.seats, {id: id })[0];
-    }
+    };
 	
-	function getSeats(sleeper, oldrows){
+	
+	function getSeats(busLayout,sleeper, oldrows){
         var rows = [];
-        var middleseat = tripCtrl.busLayout.middleRowSeat;
-        var  middleseatpos = tripCtrl.busLayout.middleRowPosition;
-        var cols = tripCtrl.busLayout.seatsPerRow;
+        var middleseat = busLayout.middleRowSeat;
+        var  middleseatpos = busLayout.middleRowPosition;
+        var cols = busLayout.seatsPerRow;
 
         if(sleeper && cols > 2){
             cols = 2;
@@ -118,18 +169,18 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
         }
 
         if (cols > 4){
-        	tripCtrl.busLayout.isBig = true;
+        	busLayout.isBig = true;
         }
 
         for (var i = 1; i <= cols; i++){
             var seats = [];
             if(i === parseInt(middleseatpos)){
-                for (var j = 1; j <= tripCtrl.busLayout.totalRows; j++){
+                for (var j = 1; j <= busLayout.totalRows; j++){
                     var number = getName(j).name+''+i;
-                    console.log(j+','+tripCtrl.busLayout.totalRows);
-                    if(angular.equals(middleseat, true) && angular.equals(j, parseInt(tripCtrl.busLayout.totalRows))){
+                    console.log(j+','+busLayout.totalRows);
+                    if(angular.equals(middleseat, true) && angular.equals(j, parseInt(busLayout.totalRows))){
                         if(!sleeper){
-                        	tripCtrl.busLayout.totalSeats = tripCtrl.busLayout.totalSeats + 1;
+                        	busLayout.totalSeats = busLayout.totalSeats + 1;
                             seats.push({
                             	number : number, 
                             	[number]: number
@@ -140,7 +191,7 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
                     }
                 }
             }else{
-                for (var j = 1; j <= tripCtrl.busLayout.totalRows; j++){
+                for (var j = 1; j <= busLayout.totalRows; j++){
                     var number = getName(j).name+''+i;
                     var displayName = number;
                     if(oldrows && !sleeper){
@@ -148,7 +199,7 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
 //                        var row = oldrows[i-1].seats;
 //                        displayName = $filter('filter')(row, {number: number})[0].displayName;
                     }
-                    tripCtrl.busLayout.totalSeats = tripCtrl.busLayout.totalSeats + 1;
+                    busLayout.totalSeats = busLayout.totalSeats + 1;
                     seats.push({number : number, [number]: displayName});
                 }
             }
@@ -162,21 +213,39 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
     };
 
     
-    tripCtrl.markSeatForSelection = function(seat , rowNumber) {
-    	tripCtrl.currentSelectionSeats[tripCtrl.currentSelectionSeats.length] = rowNumber + "-" + seat.number;
-    	
+    tripCtrl.markSeatForSelection = function(tripId,seat , rowNumber) {
+    	var index = tripCtrl.busLayouts[tripId].selectedSeats.length;
+    	tripCtrl.busLayouts[tripId].selectedSeats[index] = rowNumber + "-" + seat.number;
+    	if(tripCtrl.busLayouts[tripId].selectedBoardingPoint != null){
+    		tripCtrl.busLayouts[tripId].showContinue = true;
+    	}
     };
     
-    $scope.getMatchingClass = function(rowNumber,seat) {
+    tripCtrl.proceedForBooking = function(tripId) {
+    	$location.url("/booking");
+    	//change selectedBoardingPoint to name instead of id 
+    	bookingHelper.setTripInfo(tripId,tripCtrl.busLayouts[tripId].selectedSeats,tripCtrl.busLayouts[tripId].selectedBoardingPoint);
+    };
+    
+    $scope.getMatchingClass = function(tripId,rowNumber,seat) {
     	if ( seat.number == null) {
     		return "";
-    	}  
-    	if ( tripCtrl.currentSelectionSeats.indexOf(rowNumber + "-" + seat.number) !== -1) {
-    		return "selectingSeat";
+    	} 
+    	if (tripCtrl.busLayouts[tripId].selectedSeats !== undefined) {
+	    	if ( tripCtrl.busLayouts[tripId].selectedSeats.indexOf(rowNumber + "-" + seat.number) !== -1) {
+	    		return "selectingSeat";
+	    	}
     	}
-    	return "seat";
+	    return "seat";
     };
+    
+    tripCtrl.enableContinue = function(tripId){
+    	if( tripCtrl.busLayouts[tripId].selectedSeats.length > 0) {
+    		tripCtrl.busLayouts[tripId].showContinue = true;
+    	}
+    }
 	
+    
 	tripCtrl.tripsTableParams = new ngTableParams({
          page: 1,
          count: 25,

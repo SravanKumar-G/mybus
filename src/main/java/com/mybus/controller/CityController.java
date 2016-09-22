@@ -5,6 +5,7 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
+import com.mybus.model.ServiceBoardingPoint;
 import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -139,6 +140,16 @@ public class CityController extends MyBusBaseController{
                                         @ApiParam(value ="Boardingpoint Id")@PathVariable final String id) {
         logger.debug("create boardingpoint called");
         return cityManager.deleteBoardingPoint(cityId, id);
+    }
+    
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "city/{cityId}/boardingpoint/", method = RequestMethod.GET,
+            produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Gets all boarding points for a given city", response = BoardingPoint.class, responseContainer= "List")
+    public Iterable<BoardingPoint> getBoardingPoints(HttpServletRequest request,
+                                        @ApiParam(value = "City Id")  @PathVariable final String cityId) {
+        logger.debug("create boardingpoint called");
+        return cityManager.getBoardingPoints(cityId);
     }
 
 }

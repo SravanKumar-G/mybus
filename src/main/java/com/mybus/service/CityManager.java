@@ -166,4 +166,13 @@ public class CityManager {
     public void deleteAll() {
         cityDAO.deleteAll();
     }
+    
+    public Iterable<BoardingPoint> getBoardingPoints(String cityId) {
+        Preconditions.checkNotNull(cityId, "The city id can not be null");
+        if (logger.isDebugEnabled()) {
+            logger.debug("getting boarding points for city:[{}] ", cityId);
+        }
+        City city = cityDAO.findOne(cityId);
+        return city.getBoardingPoints();
+    }
 }

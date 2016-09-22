@@ -40,7 +40,7 @@ portalApp.factory('tripManager',function($rootScope,$http,$window,$log){
 		},
 		getLayoutByID : function(id,callback){
 			$http.get("/api/v1/layout/"+id).success(function(data){
-				callback(data)
+				callback(data);
 			}).
 			error(function(error){
 				
