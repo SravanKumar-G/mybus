@@ -66,8 +66,8 @@
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
+    <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
-
     <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
@@ -85,17 +85,17 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travel</span></a>
         </div>
         <div class="navbar-collapse collapse">
-        	<ul class="nav navbar-nav">
-	          <my-menu label="DashBoard" class="nav navbar-nav navbar-left"></my-menu>
-	          <li><a></a></li>
-              <li class="nav navbar-nav navbar-left dropdown">
+            <ul class="nav navbar-nav">
+                <my-menu label="DashBoard" class="nav navbar-nav navbar-left"></my-menu>
+                <li class="nav navbar-nav navbar-left dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">Configuration
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      	<my-menu label="Cities" class="nav navbar-nav col-md-12 "></my-menu>                        
-                      	<my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
+                        <my-menu label="Cities" class="nav navbar-nav col-md-12 "></my-menu>
+                        <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                         <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Layouts" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
@@ -116,10 +116,12 @@
                 <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
+                <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
             </ul>
+
         </div><!--/.nav-collapse -->
     </div>
 
@@ -128,6 +130,7 @@
 <div class="container">
     <div class="view-container">
         <div class="view-frame">
+            <i class="ion-chevron-up"></i>
             <ui-view>Select from Menu</ui-view>
         </div>
     </div>
