@@ -55,6 +55,9 @@
     <script src="js/services/tripManager.js"></script>
     <script src="js/services/amenitiesManager.js"></script>
     <script src="js/services/roleManager.js"></script>
+
+    <script src="js/services/cancelManager.js"></script>
+
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
     <script src="js/directives/stateOptions.js"></script>
