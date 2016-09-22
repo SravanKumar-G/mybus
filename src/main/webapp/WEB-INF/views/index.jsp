@@ -116,11 +116,11 @@
                 <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
-<               <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
-=           </ul>
+                <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
->           </ul>
+            </ul>
 
         </div><!--/.nav-collapse -->
     </div>
