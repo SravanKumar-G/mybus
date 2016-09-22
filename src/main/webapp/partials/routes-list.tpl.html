@@ -7,8 +7,8 @@
 <table class="table table-bordered table-condensed table-hover" id="routeTable" ng-table="routeContentTableParams">
     <tr ng-repeat="route in currentPageOfRoutes" ng-class="route.active?'':'bg-danger'">
         <td data-title="'Name'"  id="routeName" sortable="'city'" class="col-md-6">{{ route.name }}</td>
-        <td data-title="'From City'" class="col-md-4">{{ route.fromCity }}<!-- {{route.id}} --></td>
-        <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCity }}</td>
+        <td data-title="'From City'" class="col-md-4">{{ route.fromCityId }}<!-- {{route.id}} --></td>
+        <td data-title="'To City'"  sortable="'city'" class="col-md-6">{{ route.toCityId }}</td>
         <td class="col-md-2">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="handleClickUpdateRoute(route.id)">
@@ -65,7 +65,7 @@
                     <input id="modalRouteFromCity"type="text" placeholder="From City" ng-model="fromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="selectFromCity($item)"
                             typeahead-select-on-exact="true">
-                    <input id="fromCityInputId"type="hidden" ng-model="route.fromCity" >
+                    <input id="fromCityInputId"type="hidden" ng-model="route.fromCityId" >
                 </div>
             </div>
 
@@ -74,7 +74,7 @@
                 <div class="col-sm-6 col-xs-offset-2">
                     <input id="modalRouteToCity"type="text" placeholder="To City" ng-model="toCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-show-hint="true" typeahead-min-length="1" typeahead-on-select="selectToCity($item, $model, $label, $event)">
-                    <input id="toCityInputId"type="hidden" ng-model="route.toCity" >
+                    <input id="toCityInputId"type="hidden" ng-model="route.toCityId" >
                 </div>
             </div>
 
@@ -150,7 +150,7 @@
                     <input id="updateRouteFromCity" type="text" placeholder="From City" ng-model="routesFromCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="updateFromCity($item)"
                            typeahead-select-on-exact="true">
-                    <input id="updateFromCityInputId" type="hidden" ng-model="route.fromCity" >
+                    <input id="updateFromCityInputId" type="hidden" ng-model="route.fromCityId" >
                 </div>
             </div>
 
@@ -160,7 +160,7 @@
                     <input id="updateRouteToCity" type="text" placeholder ="To City" ng-model="routesToCityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
                            class="form-control" typeahead-min-length="1" typeahead-on-select="updateToCity($item)"
                            typeahead-select-on-exact="true">
-                    <input id="updateToCityInputId" type="hidden" ng-model="route.toCity" >
+                    <input id="updateToCityInputId" type="hidden" ng-model="route.toCityId" >
                 </div>
             </div>
 

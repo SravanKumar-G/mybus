@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -67,32 +69,49 @@ public class TripManager {
 		Set<DateTime> tripDates = getTripDates(busService);
 		Layout layout = layoutDAO.findOne(busService.getLayoutId());
 		Route route = routeDAO.findOne(busService.getRouteId());
-		for (DateTime dateTime : tripDates) {
-			Trip trip = new Trip();
-			trip.setActive(true);
-			trip.setAmenities(busService.getAmenities());
-			// trip.setArrivalTime(busService.gets);
-			// trip.setDepartureTime(departureTime);
 
-			trip.setAvailableSeats(layout.getTotalSeats());
-			trip.setBoardingPoints(busService.getBoardingPoints());
-			trip.setDropingPoints(busService.getDropingPoints());
-			trip.setFromCityId(route.getFromCity()); // this has to come from
-														// via city
-			trip.setLayoutId(layout.getId());
-			trip.setRouteId(route.getId());
-			trip.setRows(layout.getRows());
-			// trip.setServiceFares(serviceFares);//This has to come from via
-			// city
-			trip.setServiceId(busService.getId());
-			trip.setServiceName(busService.getServiceName());
-			trip.setServiceNumber(busService.getServiceNumber());
-			trip.setToCityId(route.getToCity());
-			trip.setTotalSeats(layout.getTotalSeats());
-			trip.setTripDate(dateTime);
-			// trip.setVehicleAllotmentId(busService.get);
-			createTrip(trip);
-		}
+		List<ServiceFare> serviceFares = busService.getServiceFares();
+		tripDates.forEach(tripDate -> {
+			serviceFares.stream().filter(sf -> sf.isActive()).forEach(serviceFare -> {
+				Trip trip = new Trip();
+				trip.setTripDate(tripDate);
+				trip.setActive(true);
+				trip.setAmenities(busService.getAmenities());
+				trip.setServiceId(busService.getId());
+				trip.setServiceName(busService.getServiceName());
+
+				// Service Fare
+				trip.setArrivalTime(serviceFare.getArrivalTimeInDate());
+				trip.setDepartureTime(serviceFare.getDepartureTimeInDate());
+				trip.setToCityId(serviceFare.getDestinationCityId());
+				trip.setTripFare(serviceFare.getFare());
+				trip.setFromCityId(serviceFare.getSourceCityId());
+				List<BoardingPoint> boardingPoints = cityDAO.findOne(serviceFare.getSourceCityId())
+																.getBoardingPoints();
+				Set<ServiceBoardingPoint> serviceBps = new HashSet<>();
+				boardingPoints.forEach(bp -> {
+					serviceBps.add(new ServiceBoardingPoint(bp));
+				});
+				trip.setBoardingPoints(serviceBps);
+
+				Set<BoardingPoint> droppingPoints = cityDAO.findOne(serviceFare.getDestinationCityId())
+																.getDroppingPoints();
+				Set<ServiceDropingPoint> serviceDps = new HashSet<>();
+				droppingPoints.forEach(dp -> {
+					serviceDps.add(new ServiceDropingPoint(dp));
+				});
+				trip.setDropingPoints(serviceDps);
+
+				// Layout info
+				trip.setAvailableSeats(layout.getTotalSeats());
+				trip.setLayoutId(layout.getId());
+				trip.setRows(layout.getRows());
+				trip.setTotalSeats(layout.getTotalSeats());
+				trip.setRouteId(route.getId());
+
+				createTrip(trip);
+			});
+		});
 	}
 
 	/**
@@ -140,13 +159,13 @@ public class TripManager {
 			fromCity = cityDAO.findOne(fromCityId);
 		}
 		if (fromCityId != null && fromCity == null) {
-			throw new BadRequestException("Invalid id for fromCity");
+			throw new BadRequestException("Invalid id for fromCityId");
 		}
 		if(toCityId != null) {
 			toCity = cityDAO.findOne(toCityId);
 		}
 		if (toCityId != null && toCity == null) {
-			throw new BadRequestException("Invalid id for toCity");
+			throw new BadRequestException("Invalid id for toCityId");
 		}
 
 		List<Trip> trips = null;

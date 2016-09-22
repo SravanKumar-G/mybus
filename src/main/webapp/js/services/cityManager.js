@@ -69,24 +69,23 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
             alert("error finding city. " + angular.toJson(error));
           });
     },
-      deleteCity: function(id) {
-
-          swal({   title: "Are you sure?",   text: "You will not be able to recover this City !",   type: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#DD6B55",
-                  confirmButtonText: "Yes, delete it!",
-                  closeOnConfirm: false }, function() {
-              $http.delete('/api/v1/city/' + id)
-                  .success(function (data) {
-                      //callback(data);
-                      sweetAlert("Great", "Your City has been successfully deleted", "success");
-                      $window.location = "#/cities";
-                  })
-                  .error(function (error) {
-                      sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
-                  });
-          });
-              },
+    deleteCity: function(id) {
+      swal({   title: "Are you sure?",   text: "You will not be able to recover this City !",   type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "Yes, delete it!",
+              closeOnConfirm: false }, function() {
+          $http.delete('/api/v1/city/' + id)
+              .success(function (data) {
+                  //callback(data);
+                  sweetAlert("Great", "Your City has been successfully deleted", "success");
+                  $window.location = "#/cities";
+              })
+              .error(function (error) {
+                  sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
+              });
+      });
+    },
     updateCity: function(city,callback) {
       $http.put('/api/v1/city/'+city.id,city).success(function (data) {
         callback(data);

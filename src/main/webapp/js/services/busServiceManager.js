@@ -41,15 +41,24 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 		getServices: function (callback) {
 			$log.debug("fetching services data ...");
 			$http.get('/api/v1/services')
-			.success(function (data) {
-				$rootScope.$broadcast('servicesInitStart');
-				callback(data);
-			})
-			.error(function (error) {
-				$log.debug("error retrieving services");
-			});
+				.success(function (data) {
+					$rootScope.$broadcast('servicesInitStart');
+					callback(data);
+				})
+				.error(function (error) {
+					$log.debug("error retrieving services");
+				});
 		},
-
+		getService: function (serviceId, callback) {
+			$log.debug("loading service with id " + serviceId);
+			$http.get('/api/v1/service/'+serviceId)
+				.success(function (data) {
+					callback(data);
+				})
+				.error(function (error) {
+					$log.debug("error retrieving service");
+				});
+		},
 		getAllServices: function () {
 			return services;
 		},
@@ -121,7 +130,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 	            })
 			
 		},
-		busServiceConfig : function(service,callback){
+		updateServiceConfig : function(service,callback){
 			$http.put('/api/v1/update/serviceConfig',service)
 			.success(function(data) {
 				callback(data);

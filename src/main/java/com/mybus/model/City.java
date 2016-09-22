@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by skandula on 3/31/15.
@@ -87,5 +89,11 @@ public class City extends AbstractDocument{
         this.boardingPoints = bps;
         this.hub = hub;
     }
+    
+	public Set<BoardingPoint> getDroppingPoints() {
+		return boardingPoints.stream()
+				.filter(bp -> bp.isDroppingPoint())
+				.collect(Collectors.toSet());
+	}
 
  }

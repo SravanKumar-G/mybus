@@ -7,8 +7,12 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusServiceEditController   ================================================
   // ==================================================================================================================
 
-  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busServiceManager, routesManager,cityManager, amenitiesManager, layoutNamesPromise, routeNamesPromise, amenitiesNamesPromise, $location, $cacheFactory,$stateParams) {
-        $log.debug('BusServiceController loading');
+  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter,
+													busServiceManager, routesManager,cityManager,cancelManager,
+													amenitiesManager, layoutNamesPromise,
+													routeNamesPromise, amenitiesNamesPromise,
+													$location, $stateParams) {
+		$log.debug('BusServiceController loading');
         var busServiceEditCtrl = this;
 
         busServiceEditCtrl.valid = true;
@@ -16,21 +20,20 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.totalSeats = 0;
         
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
-        
 
-        var date = new Date();
-        $scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
-        $scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
-        
-        $scope.onSelectDateOfJourney = function(dateOfJourney){
-   	     if(dateOfJourney!=''){
-   	    	 $scope.rminDate = $filter('date')(dateOfJourney,'yyyy-MM-dd');
-   	     }else{
-   	    	 $scope.rminDate = $scope.minDate; 
-   	     }
-        }
+		var date = new Date();
 
-        
+		$scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
+		$scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
+
+		$scope.onSelectDateOfJourney = function(dateOfJourney){
+			if(dateOfJourney!=''){
+				$scope.rminDate = $filter('date')(dateOfJourney,'yyyy-MM-dd');
+			}else{
+				$scope.rminDate = $scope.minDate;
+			}
+		}
+
         $scope.headline = "Service Details";
         $scope.sSDates=[];
         $scope.amenitiesForUi=[];
@@ -75,29 +78,26 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
                                       {id: 'PERCENTAGE', name: 'PERCENTAGE'}
                                     ];
 
-      var serviceId = $stateParams.id;
-      if($stateParams.id != "create" && serviceId !== ''){
-    	  $scope.updateServiceButton = true;
-      }
-      if($stateParams.id != "create" && serviceId !== ''){
-    	  var cache = $cacheFactory.get($rootScope.id);
-    	  if(cache){
-    		  busServiceEditCtrl.busService = cache.get(serviceId);
-    		  busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
-    		  busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
-    		  angular.forEach(busServiceEditCtrl.amenities,function(amts){
-    			  angular.forEach(busServiceEditCtrl.busService.amenities,function(amt){
-	    			  if(amt.name === amts.name){
-	    				 amts.active=true 
-	    			  }
-    			  });
-    		  });
-    		
-    	  }
-      }
+		var serviceId = $stateParams.id;
+		if($stateParams.id != "create" && serviceId !== ''){
+			$scope.updateServiceButton = true;
+			busServiceManager.getService(serviceId, function(service) {
+				busServiceEditCtrl.busService = service;
+				busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
+				busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
+			});
+		}
+		$scope.onSelectServiceStartDate = function(dateOfJourney){
+			$scope.startDt = new Date(dateOfJourney);
+			$scope.maxDate = $scope.startDt.setDate($scope.startDt.getDate() + 30 );
+			if(dateOfJourney!=''){
+				busServiceEditCtrl.busService.schedule.endDate=new Date($scope.maxDate);
+			}else{
+				$scope.rminDate = $scope.minDate;
+			}
+		}
 
-        function initialize(){
-        	
+		function initialize(){
         	busServiceEditCtrl.busService.active=false;
         	busServiceEditCtrl.busService.serviceName=null;
         	busServiceEditCtrl.busService.serviceNumber=null;
@@ -116,8 +116,6 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
 			busServiceEditCtrl.busService.routesMap = {};
-			
-
         }
 		$scope.$watch('busServiceEditCtrl.busService.routeName', function() {
 			if(busServiceEditCtrl.routesMap && busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName]){
@@ -125,9 +123,11 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 				busServiceEditCtrl.updateServiceConfig();
 			}
 		});
-
+		/**
+		 * Module to update the service component after selecting/changing the route
+		 */
         busServiceEditCtrl.updateServiceConfig = function(){
-        	busServiceManager.busServiceConfig(busServiceEditCtrl.busService,function(data){
+        	busServiceManager.updateServiceConfig(busServiceEditCtrl.busService,function(data){
         		console.log("service config -"+data);
         		busServiceEditCtrl.busService = data;
         		if(angular.isNumber(busServiceEditCtrl.busService.effectiveFrom)){
@@ -143,14 +143,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         			$scope.serviceFares = [];
         			$scope.dropingPoints=[];
         			$scope.boardingPoints=[];
-        				
-        			
-        			
         			angular.forEach(busServiceEditCtrl.busService.serviceFares,function(serviceFare,index){
-        				
         				var destinationCityId = $filter('filter')(cities,serviceFare.destinationCityId);
         				var sourceCityId = $filter('filter')(cities,serviceFare.sourceCityId); 
-        				
         				if(serviceFare.active){
         					$scope.serviceFares.push({
         						sourceCityId:sourceCityId[0],
@@ -166,34 +161,29 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         						departureTime:serviceFare.departureTime,
         						arrivalTime:serviceFare.arrivalTime,
         						active:false
-        					})
+        					});
         				}
         				$log.debug("arrivalTime:serviceFare.arrivalTime,"+serviceFare.arrivalTime)
         			});
         			
     				angular.forEach(busServiceEditCtrl.busService.boardingPoints,function(bpid){
-
     					var bpCityTem = $filter('filter')(cities,bpid.refId);
-    					
     					angular.forEach(bpCityTem[0].boardingPoints,function(bp){
     						if(bp.id==bpid.refId){
         						bp.active = false
         						$scope.boardingPoints.push(bp);
     						}
-    					})
-    					
+    					});
                     });
     				
     				angular.forEach(busServiceEditCtrl.busService.dropingPoints,function(dpid){
-
     					var dpCityTem = $filter('filter')(cities,dpid.droppingPointId);
-    					
     					angular.forEach(dpCityTem[0].boardingPoints,function(dp){
     						if(dp.id==dpid.droppingPointId){
         						dp.active = false
         						$scope.dropingPoints.push(dp);
     						}
-    					})
+    					});
                     });
         			
     				busServiceEditCtrl.busService.serviceFares = [];
@@ -210,7 +200,6 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     								});
     					}
     				});
-    				
     				busServiceEditCtrl.busService.dropingPoints= [];
     				busServiceEditCtrl.busService.boardingPoints=[]
         		});
@@ -239,8 +228,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 
         $scope.saveService = function (){
         	var service = angular.copy(busServiceEditCtrl.busService)
-        	service.effectiveFrom = $filter('date')(service.effectiveFrom,'yyyy-MM-dd');
-        	service.effectiveTo = $filter('date')(service.effectiveTo,'yyyy-MM-dd');
+        	service.schedule.startDate = $filter('date')(service.schedule.startDate,'yyyy-MM-dd');
+        	service.schedule.endDate = $filter('date')(service.schedule.endDate,'yyyy-MM-dd');
         	busServiceManager.createService(service)
         };
         
@@ -389,6 +378,10 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         		
         	}
         }
+
+		$scope.cancelServiceEdit = function(theForm){
+			cancelManager.cancel(theForm);
+		};
         return busServiceEditCtrl;
 
   })

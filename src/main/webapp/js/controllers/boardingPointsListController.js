@@ -46,6 +46,9 @@ angular.module('myBus.boardingPointModule', [])
                 resolve: {
                     cityId:function(){
                         return $scope.cityId;
+                    },
+                    city :function(){
+                        return $scope.city;
                     }
                 }
             })
@@ -73,14 +76,15 @@ angular.module('myBus.boardingPointModule', [])
          })
 
     // ========================== Modal - Boarding point controller =================================
-    .controller('AddBoardingPointController', function ($scope, $modalInstance,$state, $http,$log,cityId, cityManager) {
+    .controller('AddBoardingPointController', function ($scope, $modalInstance,$state, $http,$log,city, cityManager) {
         $scope.boardingPoint = {};
+        $scope.city = city;
         $scope.ok = function () {
             if ($scope.boardingPoint.name === null || $scope.boardingPoint.contact === null || $scope.boardingPoint.landmark === null) {
                 $log.error("null name or contact or landmark.  nothing was added.");
                 $modalInstance.close(null);
             }
-            cityManager. createBordingPoint(cityId,$scope.boardingPoint, function(data){
+            cityManager. createBordingPoint(city.id,$scope.boardingPoint, function(data){
                 $state.go($state.$current, null, { reload: true });
                 $modalInstance.close(data);
             });

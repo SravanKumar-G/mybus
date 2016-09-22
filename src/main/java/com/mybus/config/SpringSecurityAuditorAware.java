@@ -20,6 +20,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     @Autowired
     private UserDAO userDAO;
 
+    @Override
     public String getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

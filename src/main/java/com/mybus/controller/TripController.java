@@ -57,10 +57,10 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value ="Get the trips for a route and date", response = List.class)
 	public List<Trip> findBuses(HttpServletRequest request,
-							@ApiParam(value = "Id of the fromCity") @PathVariable final String fromCityId,
-						  @ApiParam(value = "Id of the toCity") @PathVariable final String toCityId,
-						  @ApiParam(value = "Date of travel") @PathVariable final DateTime travelDate) {
+								@ApiParam(value = "Id of the fromCity") @PathVariable final String fromCityId,
+								@ApiParam(value = "Id of the toCity") @PathVariable final String toCityId,
+								@ApiParam(value = "Date of travel") @PathVariable final DateTime travelDate) {
 		return tripManager.findTrips(fromCityId, toCityId, travelDate);
 	}
-
+	
 }

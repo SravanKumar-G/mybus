@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
+import org.springframework.util.Assert;
 
 /**
  * @author  schanda on 02/13/16.
@@ -40,9 +41,8 @@ public class ServiceBoardingPoint {
 	}
 	
 	public ServiceBoardingPoint(LinkedHashMap bpMap){
-		if(bpMap.containsKey("refId")){
-			this.refId = bpMap.get("refId").toString();
-		}
+		Assert.notNull(bpMap.get(refId), "Reference Id is required for ServiceBoardning point");
+
 		if(bpMap.containsKey("time")){
 			this.time = bpMap.get("time").toString();
 		}

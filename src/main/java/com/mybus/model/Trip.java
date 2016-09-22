@@ -47,11 +47,6 @@ public class Trip extends AbstractDocument {
 	
     @Getter
     @Setter
-    @ApiModelProperty(notes = "Copied from the service")
-    private List<ServiceFare> serviceFares;
-
-    @Getter
-    @Setter
     @ApiModelProperty(notes = "Date for the trip, this is tied to the departure time")
     private DateTime tripDate;
 
@@ -99,5 +94,9 @@ public class Trip extends AbstractDocument {
     @Setter
     @ApiModelProperty(notes = "The vehicle allotment id, this is set")
     private String vehicleAllotmentId;
+    
+    @Getter
+    @Setter
+    private Double tripFare;
     
 }

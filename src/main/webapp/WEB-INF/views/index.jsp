@@ -55,16 +55,19 @@
     <script src="js/services/tripManager.js"></script>
     <script src="js/services/amenitiesManager.js"></script>
     <script src="js/services/roleManager.js"></script>
+
+    <script src="js/services/cancelManager.js"></script>
+
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
     <script src="js/directives/myMenu.js"></script>
-    <script src="js/filters/unsafeFilter.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
+    <script src="js/filters/someFilters.js"></script>
     <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
@@ -94,8 +97,6 @@
                         <my-menu label="Cities" class="nav navbar-nav col-md-12 "></my-menu>
                         <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                         <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="ManagingRoles" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Layouts" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Services" class="nav navbar-nav col-md-12"></my-menu>
@@ -103,13 +104,23 @@
                         <my-menu label="Plans" class="nav navbar-nav col-md-12"></my-menu>
                     </ul>
                 </li>
-                <my-menu label="Persons" class="navbar-left nav navbar-nav"></my-menu>
-                <my-menu label="Expenses" class="navbar-left nav navbar-nav"></my-menu>
+                <li class="nav navbar-nav navbar-left dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">Admin
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
+                        <my-menu label="ManagingRoles" class="nav navbar-nav col-md-12"></my-menu>
+                     </ul>
+                </li>
+                <my-menu label="Finance" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
-                <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
-            </ul>
+<               <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
+=           </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
+>           </ul>
 
         </div><!--/.nav-collapse -->
     </div>

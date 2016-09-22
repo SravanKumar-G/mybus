@@ -113,13 +113,24 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 	}
 	
 	@Test
-	public void testPublishBusService() {
+	public void testPublishBusService_withInActiveServiceFare() {
 		BusService service = createBusService();
 		service = busServiceManager.saveBusService(service);
 		tripManager.publishService(service.getId());
 		Assert.assertEquals(11, List.class.cast(tripManager.getAllTrips()).size());
 	}
 	
+	
+	@Test
+	public void testPublishBusService_withActiveServiceFare() {
+		BusService service = createBusService();
+		service.getServiceFares().stream().forEach(sf->{
+			sf.setActive(true);
+		});
+		service = busServiceManager.saveBusService(service);
+		tripManager.publishService(service.getId());
+		Assert.assertEquals(33, List.class.cast(tripManager.getAllTrips()).size());
+	}
 	private BusService createBusService() {
 		BusService service = new BusService();
 		City fromCity = new City("FromCity", "TestState", true, new ArrayList<>());
@@ -153,8 +164,8 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		
 		JSONObject routeJSON = new JSONObject();
 		routeJSON.put("name", "To to From");
-		routeJSON.put("fromCity", fromCity.getId());
-		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("fromCityId", fromCity.getId());
+		routeJSON.put("toCityId", toCity.getId());
 		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());
@@ -171,8 +182,11 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 		service.setServiceName("TestService"+Math.random());
 		service.setServiceNumber("1231");
 		service.setServiceTax(10.0);
+		busServiceManager.updateRouteConfiguration(service);
 		return service;
 	}
+	
+	
 	
 	private Trip createTrip() {
 		Trip trip = new Trip();
@@ -266,13 +280,13 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testFindTripsWrongFromCityId() {
         expectedEx.expect(BadRequestException.class);
-        expectedEx.expectMessage("Invalid id for fromCity");
+        expectedEx.expectMessage("Invalid id for fromCityId");
         tripManager.findTrips("123",null, null);
     }
     @Test
     public void testFindTripsWrongToCityId() {
         expectedEx.expect(BadRequestException.class);
-        expectedEx.expectMessage("Invalid id for toCity");
+        expectedEx.expectMessage("Invalid id for toCityId");
         tripManager.findTrips(null, "123", null);
     }
 }

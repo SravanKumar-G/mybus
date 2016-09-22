@@ -16,9 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,8 +79,6 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		Assert.assertNotSame(0, service.getDropingPoints());
 		
 		Assert.assertEquals(3, service.getServiceFares().size());
-		Assert.assertEquals(4, service.getBoardingPoints().size());
-		Assert.assertEquals(4, service.getDropingPoints().size());
 	}
 
 
@@ -121,8 +117,8 @@ public class BusServiceManagerTest extends AbstractControllerIntegrationTest {
 		
 		JSONObject routeJSON = new JSONObject();
 		routeJSON.put("name", "To to From");
-		routeJSON.put("fromCity", fromCity.getId());
-		routeJSON.put("toCity", toCity.getId());
+		routeJSON.put("fromCityId", fromCity.getId());
+		routeJSON.put("toCityId", toCity.getId());
 		routeJSON.put("viaCities",viaCitySet);
 		Route route = routeManager.saveRoute(new Route(routeJSON));
 		service.setRouteId(route.getId());

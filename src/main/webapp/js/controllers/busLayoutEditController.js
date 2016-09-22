@@ -7,7 +7,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusLayoutController   ================================================
   // ==================================================================================================================
 
-  .controller('BusLayoutEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $stateParams, $location, $cacheFactory) {
+  .controller('BusLayoutEditController', function ($rootScope,$window, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager,cancelManager, $stateParams, $location, $cacheFactory) {
         $log.debug('BusLayoutController loading');
         var busLayoutEditCtrl = this;
 
@@ -320,6 +320,10 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
                 busLayoutManager.createLayout(layoutToSave);
             }
         };
+
+        busLayoutEditCtrl.cancel = function (theForm){
+            cancelManager.cancel(theForm);
+        }
 
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 
