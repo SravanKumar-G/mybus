@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -109,8 +108,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
                 .writeValueAsBytes(route)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.name").value(route.getName()));
-        actions.andExpect(jsonPath("$.fromCity").value(route.getFromCity()));
-        actions.andExpect(jsonPath("$.toCity").value(route.getToCity()));
+        actions.andExpect(jsonPath("$.fromCityId").value(route.getFromCityId()));
+        actions.andExpect(jsonPath("$.toCityId").value(route.getToCityId()));
         List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(1, routeList.size());
     }
@@ -121,8 +120,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/route/%s", route.getId())), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.name").value(route.getName()));
-        actions.andExpect(jsonPath("$.fromCity").value(route.getFromCity()));
-        actions.andExpect(jsonPath("$.toCity").value(route.getToCity()));
+        actions.andExpect(jsonPath("$.fromCityId").value(route.getFromCityId()));
+        actions.andExpect(jsonPath("$.toCityId").value(route.getToCityId()));
         actions.andExpect(jsonPath("$.active").value(true));
         List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(1, routeList.size());
@@ -140,8 +139,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$").value(true));
         List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(route.getName(), routeList.get(0).getName());
-        Assert.assertEquals(route.getFromCity(), routeList.get(0).getFromCity());
-        Assert.assertEquals(route.getToCity(), routeList.get(0).getToCity());
+        Assert.assertEquals(route.getFromCityId(), routeList.get(0).getFromCityId());
+        Assert.assertEquals(route.getToCityId(), routeList.get(0).getToCityId());
         Assert.assertEquals(1, routeList.size());
     }
 

@@ -8,7 +8,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ==================================================================================================================
 
   .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter,
-													busServiceManager, routesManager,cityManager,
+													busServiceManager, routesManager,cityManager,cancelManager,
 													amenitiesManager, layoutNamesPromise,
 													routeNamesPromise, amenitiesNamesPromise,
 													$location, $stateParams) {
@@ -20,21 +20,20 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         busServiceEditCtrl.totalSeats = 0;
         
         $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
-        
 
-        var date = new Date();
-        $scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
-        $scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
-        
-        $scope.onSelectDateOfJourney = function(dateOfJourney){
-   	     if(dateOfJourney!=''){
-   	    	 $scope.rminDate = $filter('date')(dateOfJourney,'yyyy-MM-dd');
-   	     }else{
-   	    	 $scope.rminDate = $scope.minDate; 
-   	     }
-        }
+		var date = new Date();
 
-        
+		$scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
+		$scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
+
+		$scope.onSelectDateOfJourney = function(dateOfJourney){
+			if(dateOfJourney!=''){
+				$scope.rminDate = $filter('date')(dateOfJourney,'yyyy-MM-dd');
+			}else{
+				$scope.rminDate = $scope.minDate;
+			}
+		}
+
         $scope.headline = "Service Details";
         $scope.sSDates=[];
         $scope.amenitiesForUi=[];
@@ -84,10 +83,21 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			$scope.updateServiceButton = true;
 			busServiceManager.getService(serviceId, function(service) {
 				busServiceEditCtrl.busService = service;
+				busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
+				busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
 			});
 		}
+		$scope.onSelectServiceStartDate = function(dateOfJourney){
+			$scope.startDt = new Date(dateOfJourney);
+			$scope.maxDate = $scope.startDt.setDate($scope.startDt.getDate() + 30 );
+			if(dateOfJourney!=''){
+				busServiceEditCtrl.busService.schedule.endDate=new Date($scope.maxDate);
+			}else{
+				$scope.rminDate = $scope.minDate;
+			}
+		}
 
-        function initialize(){
+		function initialize(){
         	busServiceEditCtrl.busService.active=false;
         	busServiceEditCtrl.busService.serviceName=null;
         	busServiceEditCtrl.busService.serviceNumber=null;
@@ -218,8 +228,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 
         $scope.saveService = function (){
         	var service = angular.copy(busServiceEditCtrl.busService)
-        	service.effectiveFrom = $filter('date')(service.effectiveFrom,'yyyy-MM-dd');
-        	service.effectiveTo = $filter('date')(service.effectiveTo,'yyyy-MM-dd');
+        	service.schedule.startDate = $filter('date')(service.schedule.startDate,'yyyy-MM-dd');
+        	service.schedule.endDate = $filter('date')(service.schedule.endDate,'yyyy-MM-dd');
         	busServiceManager.createService(service)
         };
         
@@ -368,29 +378,10 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         		
         	}
         }
-		$scope.cancelServiceEdit = function(theForm) {
-			console.log("dirty " + theForm.$dirty + "  presitine "+ theForm.$pristine);
-			if(theForm.$dirty) {
-				swal({   title: "You want to stop creating service?",   text: "You'll loose the unsaved data!",   type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#DD6B55",
-					confirmButtonText: "Yes, Stop!",
-					closeOnConfirm: true },
-					function(isConfirm) {
-						if (isConfirm) {
-							$location.url('/services');
-							if (!$scope.$$phase && !$scope.$root.$$phase){
-								$scope.$apply();
-							}
-						}
-					});
-			} else {
-				$location.url('/services');
-				if (!$scope.$$phase && !$scope.$root.$$phase) {
-					$scope.$apply()
-				}
-			}
-		}
+
+		$scope.cancelServiceEdit = function(theForm){
+			cancelManager.cancel(theForm);
+		};
         return busServiceEditCtrl;
 
   })

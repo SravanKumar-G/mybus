@@ -79,7 +79,7 @@ angular.module('myBus.agentPlanModule', ['ngTable', 'ui.bootstrap'])
 
     })
 
-    .controller('AddAgentPlanTypeController', function ($scope, $location, $http, $log, agentPlanManager) {
+    .controller('AddAgentPlanTypeController', function ($scope, $location, $http, $log, agentPlanManager,cancelManager) {
 
         $scope.headline = "Add New Plan";
         console.log("in AddAgentPlanType Controller");
@@ -91,8 +91,8 @@ angular.module('myBus.agentPlanModule', ['ngTable', 'ui.bootstrap'])
             })
         };
 
-        $scope.cancel = function () {
-            $location.url('/plans');
+        $scope.cancelPlanType = function (theForm) {
+            cancelManager.cancel(theForm);
         };
 
         $scope.isInputValid = function () {

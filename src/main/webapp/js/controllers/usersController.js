@@ -75,7 +75,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,$log,agentPlanManager, roleManager ) {
+    .controller('UserAddController', function($scope,userManager,$window,$log,agentPlanManager, roleManager,cancelManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
@@ -127,15 +127,15 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
 
         };
 
-        $scope.cancel = function(){
-            $window.history.back();
+        $scope.cancelUser = function(theForm){
+            cancelManager.cancel(theForm);
         }
     })
 
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window,roleManager) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window,roleManager,cancelManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.idParam;
         $scope.user={};
@@ -160,8 +160,8 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             });
             $location.url('/users');
         };
-        $scope.cancel = function(){
-            $window.history.back();
+        $scope.cancelUser = function(theForm){
+            cancelManager.cancel(theForm);
         }
 
     });

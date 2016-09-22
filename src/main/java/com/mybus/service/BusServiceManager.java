@@ -147,12 +147,12 @@ public class BusServiceManager {
 		Route route = routeDAO.findOne(service.getRouteId());
 		Preconditions.checkNotNull(route, "Invalid route found");
 		Preconditions.checkArgument(route.isActive(), format("Route %s is not active", route.getName()));
-		City fromCity = cityDAO.findOne(route.getFromCity());
+		City fromCity = cityDAO.findOne(route.getFromCityId());
 		Preconditions.checkNotNull(fromCity, "From City not found");
 		Preconditions.checkArgument(fromCity.isActive(), format("FromCity %s is not active", fromCity.getName()));
 		service.addBoardingPoints(fromCity.getBoardingPoints().stream()
 				.filter(bp -> bp.isActive()).collect(Collectors.toList()));
-		City toCity = cityDAO.findOne(route.getToCity());
+		City toCity = cityDAO.findOne(route.getToCityId());
 		Preconditions.checkNotNull(toCity, "ToCity not found");
 		Preconditions.checkArgument(toCity.isActive(), format("ToCity %s is not active", toCity.getName()));
 
@@ -163,13 +163,13 @@ public class BusServiceManager {
 
 		List<ServiceFare> sfList =  new ArrayList<>();
 		List<City> preViaCityList = new LinkedList<>();
-		sfList.add(new ServiceFare(route.getFromCity(), route.getToCity(), true));
+		sfList.add(new ServiceFare(route.getFromCityId(), route.getToCityId(), true));
 
 		for(String cityID:route.getViaCities()) {
 			viaCity = cityDAO.findOne(cityID);
 			if(viaCity.isActive()) {
-				sfList.add(new ServiceFare(route.getFromCity(), viaCity.getId(), false));
-				sfList.add(new ServiceFare(viaCity.getId(), route.getToCity(), false));
+				sfList.add(new ServiceFare(route.getFromCityId(), viaCity.getId(), false));
+				sfList.add(new ServiceFare(viaCity.getId(), route.getToCityId(), false));
 				if(preViaCityList.size()>=0){
 					for(City preViaCity:preViaCityList){
 						sfList.add(new ServiceFare(preViaCity.getId(), viaCity.getId(), false));

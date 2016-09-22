@@ -119,8 +119,8 @@
                     <!-- <label class="col-sm-2 control-label" for="addBoardingPoint">Contact</label> -->
                     <div class="col-xs-10">
                         <div class="form-group" ng-class="{ 'has-error': addBoardingPointForm.contact.$invalid && addBoardingPointForm.contact.$dirty }">
-                            <input type="number" placeholder="Contact" class="form-control" name="contact" ng-model="boardingPoint.contact"
-                                   ng-minlength="7" ng-maxlength="10" placeholder="contact number" ng-required="true">
+                            <input type="text" placeholder="Contact" class="form-control" name="contact" ng-model="boardingPoint.contact"
+                                   onkeypress='return event.charCode >= 48 && event.charCode <= 57' ng-minlength="7" ng-maxlength="10" ng-required="true"/>
                         </div>
                     </div>
                 </div>

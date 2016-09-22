@@ -6,7 +6,6 @@ import com.mybus.dao.CityDAO;
 import com.mybus.dao.RouteDAO;
 import com.mybus.model.City;
 import com.mybus.model.Route;
-import com.mybus.model.User;
 import junit.framework.Assert;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
@@ -17,8 +16,6 @@ import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by skandula on 12/30/15.
@@ -64,7 +61,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     public void testSaveRouteWithInvalidToCityId() {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCity(fromCity.getId());
+        route.setFromCityId(fromCity.getId());
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid to city id");
         routeManager.saveRoute(route);
@@ -73,10 +70,10 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     public void testSaveRoute() {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCity(fromCity.getId());
+        route.setFromCityId(fromCity.getId());
 
         City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
-        route.setToCity(toCity.getId());
+        route.setToCityId(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         Preconditions.checkNotNull(savedRoute);
         routeManager.saveRoute(route);
@@ -87,10 +84,10 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     public void testSaveRouteWithDuplicateName() {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCity(fromCity.getId());
+        route.setFromCityId(fromCity.getId());
 
         City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
-        route.setToCity(toCity.getId());
+        route.setToCityId(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         //try saving the route with same name
         savedRoute.setId(null);
@@ -102,9 +99,9 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     public void testSaveRouteWithNewName() {
         Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), true);
         City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCity(fromCity.getId());
+        route.setFromCityId(fromCity.getId());
         City toCity = cityManager.saveCity(new City("To", "TestState", true, new ArrayList<>()));
-        route.setToCity(toCity.getId());
+        route.setToCityId(toCity.getId());
         Route savedRoute = routeManager.saveRoute(route);
         //try saving the route with same name
         savedRoute.setId(null);
