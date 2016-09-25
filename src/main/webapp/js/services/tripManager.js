@@ -28,6 +28,24 @@ portalApp.factory('tripManager',function($rootScope,$http,$window,$log){
 				
 			})
 		},
+		selectSeat : function(serviceId,seat,rowNumber){
+			$http.get("/api/v1/services/"+id , {
+				
+			}).success(function(data){
+				callback(data)
+			}).
+			error(function(error){
+				
+			})
+		},
+		getLayoutByID : function(id,callback){
+			$http.get("/api/v1/layout/"+id).success(function(data){
+				callback(data);
+			}).
+			error(function(error){
+				
+			})
+		},
 		searchBuses : function(searchFields,callback){
 			$http.get("/api/v1/buses",{
 				params:{ fromCityId : searchFields.fromCity,

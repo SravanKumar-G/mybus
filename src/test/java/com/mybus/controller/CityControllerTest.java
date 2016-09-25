@@ -281,6 +281,17 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 "1234")), currentUser));
         actions.andExpect(status().isBadRequest());
     }
+    
+    @Test
+    public void testGetAllBoardingPoints() throws Exception {
+        City city = new City("TextCity", "TestState", true, new ArrayList<>());
+        BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
+        city.getBoardingPoints().add(bp);
+        city = cityDAO.save(city);
+//        bp = city.getBoardingPoints().iterator().next();
+        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/city/%s/boardingpoint/", city.getId())), currentUser));
+        actions.andExpect(status().isOk());
+    }
 
     @Test
     public void testDeleteBoardingPoint() throws Exception{
@@ -312,7 +323,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
     }
 
     @Test
-    public void testUpdateCityWithDuplicateName() throws Exception{
+    public void testUpdateCityWithDuplicateName() throws Exception {
         City city = new City("TestCity", "TestState", true, new ArrayList<>());
         city = cityDAO.save(city);
         cityDAO.save(new City("NewName", "TestState", true, new ArrayList<>()));

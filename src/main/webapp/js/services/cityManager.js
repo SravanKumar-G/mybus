@@ -139,6 +139,15 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
               sweetAlert("Oops...", "Error finding BoardingPoint data!", "error" + angular.toJson(error));
           });
     },
+    getBoardingPoints: function (cityId,callback) {
+        $http.get('/api/v1/city/'+cityId+'/boardingpoint/')
+            .success(function (data) {
+              callback(data);
+            })
+            .error(function (error) {
+                sweetAlert("Oops...", "Error loading BoardingPoint data!", "error" + angular.toJson(error));
+            });
+      }
   }
 });
 
