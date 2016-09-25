@@ -14,17 +14,16 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 													$location, $stateParams) {
 		$log.debug('BusServiceController loading');
         var busServiceEditCtrl = this;
-
-        busServiceEditCtrl.valid = true;
-
-        busServiceEditCtrl.totalSeats = 0;
-        
-        $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
-
+		busServiceEditCtrl.valid = true;
+		busServiceEditCtrl.totalSeats = 0;
+		$scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
 		var date = new Date();
-
 		$scope.minDate = $filter('date')(date.setDate((new Date()).getDate()),'yyyy-MM-dd');
 		$scope.maxDate = $filter('date')(date.setDate((new Date()).getDate() + 30),'yyyy-MM-dd');
+		$scope.headline = "Service Details";
+		$scope.sSDates=[];
+		$scope.amenitiesForUi=[];
+		$scope.updateServiceButton = false;
 
 		$scope.onSelectDateOfJourney = function(dateOfJourney){
 			if(dateOfJourney!=''){
@@ -32,60 +31,6 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			}else{
 				$scope.rminDate = $scope.minDate;
 			}
-		}
-
-        $scope.headline = "Service Details";
-        $scope.sSDates=[];
-        $scope.amenitiesForUi=[];
-        $scope.updateServiceButton = false;
-        busServiceEditCtrl.busService = {
-        	active:false,
-			serviceName:null,
-			serviceNumber:null,
-			phoneEnquiry:null,
-			cutoffTime:null,
-        	serviceTaxType:null,
-        	serviceTax:null, 
-        	routeId:null,
-	        schedule : {
-	        	startDate:null,
-	        	endDate:null,
-	        	frequency:null,  
-	        	weeklyDays:[],
-	        	specialServiceDates:[]
-	        },
-        	boardingPoints:[],
-        	dropingPoints:[],
-        	serviceFares:[],
-        	amenities:[]
-        }
-        busServiceEditCtrl.layouts = layoutNamesPromise.data;
-        busServiceEditCtrl.routes = routeNamesPromise.data;
-		busServiceEditCtrl.routesMap = {};
-		//create map data
-		for(var rt in routeNamesPromise.data){
-			busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].id] = busServiceEditCtrl.routes[rt].name;
-			busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].name] = busServiceEditCtrl.routes[rt].id;
-		}
-		busServiceEditCtrl.amenities = amenitiesNamesPromise.data;
-		angular.forEach(busServiceEditCtrl.amenities,function(amenity){
-			amenity.active = false;
-		})
-        busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        busServiceEditCtrl.specialDays = [{'date':''}]
-        busServiceEditCtrl.taxModes  = [
-                                      {id: 'FIXED', name: 'FIXED'},
-                                      {id: 'PERCENTAGE', name: 'PERCENTAGE'}
-                                    ];
-
-		var serviceId = $stateParams.id;
-		if($stateParams.id != "create" && serviceId !== ''){
-			$scope.updateServiceButton = true;
-			busServiceManager.getService(serviceId, function(service) {
-				busServiceEditCtrl.busService = service;
-				busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
-				busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
-			});
 		}
 		$scope.onSelectServiceStartDate = function(dateOfJourney){
 			$scope.startDt = new Date(dateOfJourney);
@@ -97,8 +42,8 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 			}
 		}
 
-		function initialize(){
-        	busServiceEditCtrl.busService.active=false;
+		busServiceEditCtrl.initialize = function(){
+        	/*busServiceEditCtrl.busService.active=false;
         	busServiceEditCtrl.busService.serviceName=null;
         	busServiceEditCtrl.busService.serviceNumber=null;
         	busServiceEditCtrl.busService.phoneEnquiry=null;
@@ -115,7 +60,69 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         	busServiceEditCtrl.busService.boardingPoints=[];
         	busServiceEditCtrl.busService.dropingPoints=[];
         	busServiceEditCtrl.busService.serviceFares=[];
-			busServiceEditCtrl.busService.routesMap = {};
+			busServiceEditCtrl.busService.routesMap = {};*/
+
+			busServiceEditCtrl.busService = {
+				active:false,
+				serviceName:null,
+				serviceNumber:null,
+				phoneEnquiry:null,
+				cutoffTime:null,
+				serviceTaxType:null,
+				serviceTax:null,
+				routeId:null,
+				schedule : {
+					startDate:null,
+					endDate:null,
+					frequency:null,
+					weeklyDays:[],
+					specialServiceDates:[]
+				},
+				boardingPoints:[],
+				dropingPoints:[],
+				serviceFares:[],
+				amenities:[] //temporary variable for showing the amenityIds
+			}
+			busServiceEditCtrl.layouts = layoutNamesPromise.data;
+			busServiceEditCtrl.routes = routeNamesPromise.data;
+			busServiceEditCtrl.routesMap = {};
+			//create map data
+			for(var rt in routeNamesPromise.data){
+				busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].id] = busServiceEditCtrl.routes[rt].name;
+				busServiceEditCtrl.routesMap[busServiceEditCtrl.routes[rt].name] = busServiceEditCtrl.routes[rt].id;
+			}
+			busServiceEditCtrl.amenities = amenitiesNamesPromise.data;
+			console.log("amenities " + busServiceEditCtrl.amenities.length);
+			angular.forEach(busServiceEditCtrl.amenities,function(amenity){
+				amenity.active = false;
+			});
+
+			busServiceEditCtrl.weeklyDays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+			busServiceEditCtrl.specialDays = [{'date':''}]
+			busServiceEditCtrl.taxModes  = [
+				{id: 'FIXED', name: 'FIXED'},
+				{id: 'PERCENTAGE', name: 'PERCENTAGE'}
+			];
+
+			var serviceId = $stateParams.id;
+			if($stateParams.id != "create" && serviceId !== ''){
+				$scope.updateServiceButton = true;
+				busServiceManager.getService(serviceId, function(service) {
+					//update the amenities for the service
+					_.each(service.amenityIds, function(amenityId) {
+						_.find(busServiceEditCtrl.amenities, function(amenity) {
+							return amenity.id === amenityId;
+						}).active = true;
+					})
+
+					busServiceEditCtrl.busService = service;
+					busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
+					busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
+					if(!$scope.$$phase) {
+						$scope.$apply();
+					}
+				});
+			}
         }
 		$scope.$watch('busServiceEditCtrl.busService.routeName', function() {
 			if(busServiceEditCtrl.routesMap && busServiceEditCtrl.routesMap[busServiceEditCtrl.busService.routeName]){
@@ -138,7 +145,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         		}
         		busServiceEditCtrl.routeCities = [];
         		
-        		cityManager.getCities(function(data){
+        		/*cityManager.getCities(function(data){
         			var cities = data;
         			$scope.serviceFares = [];
         			$scope.dropingPoints=[];
@@ -202,21 +209,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
     				});
     				busServiceEditCtrl.busService.dropingPoints= [];
     				busServiceEditCtrl.busService.boardingPoints=[]
-        		});
+        		});*/
         	});
 		};
-		
-        busServiceEditCtrl.doService = function (){
-            initialize();
-            // service css class
-            var sleeper = false;
-            if(busServiceEditCtrl.services.type === 'SLEEPER'){
-                sleeper = true;
-                busServiceEditCtrl.serviceCls = 'seat';
-            }else{
-                busServiceEditCtrl.serviceCls = 'seat';
-            }
-        };
 
         busServiceEditCtrl.goToServices = function(){
         	$location.url('/services');
@@ -351,38 +346,25 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         			}
         		})
         	}
-        	
         }
         $scope.dailyService = function(){
         	busServiceEditCtrl.busService.schedule.specialServiceDates = [];
         	busServiceEditCtrl.busService.schedule.weeklyDays=[];
         }
-        $scope.addOrRemoveAmenitiesToService = function(checkedOrUnchecked,amenityName){
-        	if(busServiceEditCtrl.busService.amenities==undefined){
-        		busServiceEditCtrl.busService.amenities=[];
+        $scope.addOrRemoveAmenitiesToService = function(checkedOrUnchecked,amenityId){
+        	if(busServiceEditCtrl.busService.amenityIds===undefined){
+        		busServiceEditCtrl.busService.amenityIds=[];
         	}
         	if(checkedOrUnchecked){
-        		var index = busServiceEditCtrl.busService.amenities.indexOf($filter('filter')(busServiceEditCtrl.busService.amenities, amenityName)[0]);
-				if(index==-1){
-					var amt = {
-						name:amenityName,
-						active:checkedOrUnchecked
-					}
-					busServiceEditCtrl.busService.amenities.push(amt);
-				}
+				busServiceEditCtrl.busService.amenityIds.push(amenityId);
         	}else{
-        		var index = busServiceEditCtrl.busService.amenities.indexOf($filter('filter')(busServiceEditCtrl.busService.amenities, amenityName)[0]);
-        		if(index!=-1){
-        			busServiceEditCtrl.busService.amenities.splice(index, 1);
-        		}
-        		
+				busServiceEditCtrl.busService.amenityIds.splice(busServiceEditCtrl.busService.amenityIds.indexOf(amenityId), 1);
         	}
+			console.log("amenities " + busServiceEditCtrl.busService.amenityIds);
         }
-
 		$scope.cancelServiceEdit = function(theForm){
 			cancelManager.cancel(theForm);
 		};
-        return busServiceEditCtrl;
-
-  })
-;
+		busServiceEditCtrl.initialize();
+		return busServiceEditCtrl;
+  });

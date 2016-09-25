@@ -10,33 +10,28 @@
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Service Number:</label> -->
-                    <input type="text" placeholder="Service Number" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.serviceNumber" required>
+                    <number model="busServiceEditCtrl.busService.serviceNumber" placeholder="Service Number"/>
                     <br>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Enquiry Phone Number:</label> -->
-                    <input type="text" placeholder="Enquiry Phone Number" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.phoneEnquiry" required>
+                    <number model="busServiceEditCtrl.busService.phoneEnquiry" placeholder="Enquiry Phone Number"/>
                     <br>
                 </div>
                 <div class="col-sm-4">
-                    <!-- <label for="sel1">Cutoff-Time(Hours):</label> -->
-                    <input type="number" placeholder="Cutoff-Time(Hours):" class="form-control" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" data-ng-model="busServiceEditCtrl.busService.cutoffTime" required>
+                    <number model="busServiceEditCtrl.busService.cutoffTime" placeholder="Cutoff-Time(Hours):"/>
                     <br>
                 </div>
             </div>
-
+            <br/>
             <div class="row">
-            <div class="col-sm-4">
-
-                    <!--  <label for="sel1">Service Tax:</label> -->
-                    <input type="number" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" placeholder="Service Tax" class="form-control" ng-model="busServiceEditCtrl.busService.serviceTax" required >
-                    <br>
+                <div class="col-sm-4">
+                  <number model="busServiceEditCtrl.busService.serviceTax" placeholder="Service Tax"/>
+                  <br/>
                 </div>
-                
+
                 <label class="col-sm-1 control-label checkbox" for="serviceActiveInactive">Active</label>
                 <div class="col-sm-1">
                 	<div class="col-sm-8">
@@ -48,7 +43,6 @@
             <div class="row">
                 <div class="col-sm-4">
                     <label for="serviceTaxMode">Service Tax Mode:</label>
-
                     <select id="serviceTaxMode" class="form-control" data-ng-model="busServiceEditCtrl.busService.serviceTaxType" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" required>
                         <option ng-repeat="taxMode in busServiceEditCtrl.taxModes" values="{{taxMode.id}}">{{taxMode.name}}</option>
                     </select>
@@ -95,7 +89,7 @@
                 
                 <div class="col-sm-4">
                 	 <label for="serviceAmenities">Amenities:</label></br>
-					    <span ng-repeat="amenity in busServiceEditCtrl.amenities">
+                        <span ng-repeat="amenity in busServiceEditCtrl.amenities">
                 	 	<input id="serviceAmenities" type="checkbox" data-ng-checked="amenity.active" ng-disabled="busServiceEditCtrl.busService.status=='PUBLISHED'" ng-model='checkedOrUnchecked' checklist-value="{{amenity.id}}" ng-click="addOrRemoveAmenitiesToService(checkedOrUnchecked,amenity.id)"/>
                 	 	{{amenity.name}}
                 	 </span>

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ import com.mybus.model.Trip;
 import com.mybus.service.BookingSessionInfo;
 import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
-import com.mybus.service.PaymentManager;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -128,7 +126,7 @@ public class BusTicketBookingController {
 			t.setActive(true);
 			t.setServiceName(bs.getServiceName());
 			t.setServiceNumber(bs.getServiceNumber());
-			t.setAmenities(bs.getAmenities());
+			t.setAmenities(bs.getAmenityIds());
 			t.setServiceId(bs.getServiceNumber());
 			t.setRouteId(bs.getRouteId());
 			t.setLayoutId(bs.getLayoutId());
