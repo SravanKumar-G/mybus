@@ -57,10 +57,13 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value ="Get the trips for a route and date", response = Trip.class, responseContainer="List")
 	public List<Trip> findBuses(HttpServletRequest request,
-								@ApiParam(value = "Id of the fromCity") @PathVariable final String fromCityId,
-								@ApiParam(value = "Id of the toCity") @PathVariable final String toCityId,
-								@ApiParam(value = "Date of travel") @PathVariable final DateTime travelDate) {
-		return tripManager.findTrips(fromCityId, toCityId, travelDate);
+								@ApiParam(value = "Id of the fromCity") @RequestParam("fromCityId") final String fromCityId,
+								@ApiParam(value = "Id of the toCity") @RequestParam("toCityId") final String toCityId,
+								@ApiParam(value = "Date of travel") @RequestParam("travelDate") final String travelDate) {
+		//TOOD: DateTime converter we have to add 
+				String[] dateArray = travelDate.split("-");
+				DateTime travelDateTime = new DateTime(Integer.valueOf(dateArray[0]), Integer.valueOf(dateArray[1]),Integer.valueOf(dateArray[2]),0,0);
+		return tripManager.findTrips(fromCityId, toCityId, travelDateTime);
 	}
 	
 }
