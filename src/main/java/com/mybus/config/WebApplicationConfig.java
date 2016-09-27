@@ -269,10 +269,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         
     }
 
-    @Bean
-    public SpringSecurityAuditorAware springSecurityAuditorAware() {
-        return (SpringSecurityAuditorAware) applicationContext.getBean("springSecurityAuditorAware");
-    }
+
    
     @Bean
 	public VelocityEngine velocityEngine() throws VelocityException, IOException{

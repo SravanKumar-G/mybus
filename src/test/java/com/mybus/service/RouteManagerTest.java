@@ -33,6 +33,9 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     @Autowired
     private RouteManager routeManager;
 
+    @Autowired
+    private RouteTestService routeTestService;
+
     @Before
     public void setup() {
         cleanup();
@@ -68,27 +71,15 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     }
     @Test
     public void testSaveRoute() {
-        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
-        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCityId(fromCity.getId());
-
-        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
-        route.setToCityId(toCity.getId());
-        Route savedRoute = routeManager.saveRoute(route);
+        Route savedRoute = routeManager.saveRoute(routeTestService.createTestRoute());
         Preconditions.checkNotNull(savedRoute);
-        routeManager.saveRoute(route);
+        routeManager.saveRoute(savedRoute);
         List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(1, routes.size());
     }
     @Test
     public void testSaveRouteWithDuplicateName() {
-        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), false);
-        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCityId(fromCity.getId());
-
-        City toCity = cityManager.saveCity(new City("ToCity", "TestState", true, new ArrayList<>()));
-        route.setToCityId(toCity.getId());
-        Route savedRoute = routeManager.saveRoute(route);
+        Route savedRoute = routeManager.saveRoute(routeTestService.createTestRoute());
         //try saving the route with same name
         savedRoute.setId(null);
         expectedEx.expect(RuntimeException.class);
@@ -97,12 +88,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     }
     @Test
     public void testSaveRouteWithNewName() {
-        Route route = new Route("Name", "123", "1234", new LinkedHashSet<>(), true);
-        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        route.setFromCityId(fromCity.getId());
-        City toCity = cityManager.saveCity(new City("To", "TestState", true, new ArrayList<>()));
-        route.setToCityId(toCity.getId());
-        Route savedRoute = routeManager.saveRoute(route);
+        Route savedRoute = routeManager.saveRoute(routeTestService.createTestRoute());
         //try saving the route with same name
         savedRoute.setId(null);
         //change the name and it should be good
@@ -123,7 +109,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid Route id");
         routeManager.deactiveRoute("123");
-        Route route = createTestRoute();
+        Route route = routeManager.saveRoute(routeTestService.createTestRoute());
         route = routeManager.deactiveRoute(route.getId());
         Assert.assertEquals("Deactivation failed", false, route.isActive());
         List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
@@ -139,7 +125,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         expectedEx.expect(NullPointerException.class);
         expectedEx.expectMessage("Invalid Route id");
         routeManager.deleteRoute("123");
-        Route route = createTestRoute();
+        Route route = routeManager.saveRoute(routeTestService.createTestRoute());
         routeManager.deleteRoute(route.getId());
         List routes = IteratorUtils.toList(routeDAO.findAll().iterator());
         Assert.assertEquals(0, routes.size());
@@ -171,14 +157,5 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
         List cities = IteratorUtils.toList(cityDAO.findAll().iterator());
         Assert.assertEquals(5, cities.size());
     }
-    /**
-     * Create a route for testing
-     * @return
-     */
-    private Route createTestRoute() {
-        City fromCity = cityManager.saveCity(new City("TestCity", "TestState", true, new ArrayList<>()));
-        City toCity = cityManager.saveCity(new City("To", "TestState", true, new ArrayList<>()));
-        Route route = new Route("Name", fromCity.getId(), toCity.getId(), new LinkedHashSet<>(), false);
-        return routeManager.saveRoute(route);
-    }
+
 }

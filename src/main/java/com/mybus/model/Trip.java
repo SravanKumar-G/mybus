@@ -88,7 +88,7 @@ public class Trip extends AbstractDocument {
 
     @Getter
     @Setter
-    private Set<ServiceAmenity> amenities;
+    private List<String> amenities;
 
     @Getter
     @Setter

@@ -303,7 +303,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s/boardingpoint/%s", city.getId()
                 , bp.getId())), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.boardingPoints").doesNotExist());
+        actions.andExpect(jsonPath("$.boardingPoints").isEmpty());
         Assert.assertNotNull(cityDAO.findOne(city.getId()));
     }
 

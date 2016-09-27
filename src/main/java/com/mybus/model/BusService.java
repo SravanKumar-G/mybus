@@ -3,12 +3,11 @@ package com.mybus.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,11 @@ import java.util.Set;
  */
 @ToString
 @ApiModel(value = "BusService")
+@NoArgsConstructor
 public class BusService extends AbstractDocument {
+	public BusService(String name) {
+		this.serviceName = name;
+	}
 
 	@Getter
 	@Setter
@@ -68,7 +71,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private Set<ServiceAmenity> amenities = new LinkedHashSet<ServiceAmenity>();
+	private List<String> amenityIds = new ArrayList<>();
 
 	@Getter
 	@Setter
