@@ -71,7 +71,7 @@ public class BusService extends AbstractDocument {
 
 	@Getter
 	@Setter
-	private String[] amenityIds = new String[20];
+	private List<String> amenityIds = new ArrayList<>();
 
 	@Getter
 	@Setter

@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -8,7 +9,6 @@ import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.AmenityDAO;
 import com.mybus.model.Amenity;
 
-import junit.framework.Assert;
 
 /**
  * 
@@ -21,6 +21,8 @@ public class AmenitiesManagerTest extends AbstractControllerIntegrationTest {
 	@Autowired
 	public AmenityDAO amenityDAO;
 
+	@Autowired
+	private AmenityTestService amenityTestService;
 
 	@Autowired
 	public AmenitiesManager amenitiesManager;
@@ -35,11 +37,7 @@ public class AmenitiesManagerTest extends AbstractControllerIntegrationTest {
 
 	@Test
 	public void amenitTest(){
-		Amenity amenity = new Amenity();
-		amenity.setName("bottle");
-		amenity.setActive(true);
-
-		Amenity a = amenitiesManager.save(amenity);
+		Amenity a = amenityTestService.createTestAmenity();
 		Assert.assertNotNull(a);
 		Assert.assertNotNull(a.getId());
 		

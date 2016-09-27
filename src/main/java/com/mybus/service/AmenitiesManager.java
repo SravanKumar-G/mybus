@@ -58,4 +58,7 @@ public class AmenitiesManager {
 		amenityDAO.delete(amenityID); 
 		return true;
 	}
+	public void deleteAll() {
+		amenityDAO.deleteAll();
+	}
 }
