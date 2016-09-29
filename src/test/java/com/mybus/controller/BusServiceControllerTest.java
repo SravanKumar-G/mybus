@@ -3,17 +3,12 @@ package com.mybus.controller;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.BusService;
-import com.mybus.model.City;
-import com.mybus.model.Layout;
-import com.mybus.model.Route;
-import com.mybus.model.User;
-import com.mybus.service.BusServiceManager;
-import com.mybus.service.CityManager;
-import com.mybus.service.RouteManager;
+import com.mybus.model.*;
+import com.mybus.service.*;
+import static org.junit.Assert.*;
 
-import junit.framework.Assert;
-
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -25,9 +20,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,11 +47,21 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
     private UserDAO userDAO;
 
     @Autowired
-    public CityManager cityManager;
+    private CityManager cityManager;
     
     @Autowired
-    public RouteManager routeManager;
-    
+    private RouteManager routeManager;
+
+    @Autowired
+    private RouteTestService routeTestService;
+
+    @Autowired
+    private AmenityTestService amenityTestService;
+
+    @Autowired
+    private AmenitiesManager amenitiesManager;
+
+
     private MockMvc mockMvc;
     private User currentUser;
 
@@ -73,6 +80,9 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
     private void cleanup() {
         userDAO.deleteAll();
         busServiceDAO.deleteAll();
+        cityManager.deleteAll();
+        amenitiesManager.deleteAll();
+        routeManager.deleteAll();
     }
     
     public Layout saveLayout(){
@@ -139,7 +149,22 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
                 .content(service.toJSONString()).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         List<BusService> busServiceList = IteratorUtils.toList(busServiceDAO.findAll().iterator());
-        Assert.assertEquals(1, busServiceList.size());
+        assertEquals(1, busServiceList.size());
         //actions.andExpect(jsonPath("$.name").value(busServiceList.get));
+    }
+
+    @Test
+    public void testUpdateBusServiceConfiguration() throws Exception {
+        BusService service = new BusService();
+        Route route = routeTestService.createTestRoute();
+        Amenity a1 = amenityTestService.createTestAmenity();
+        Amenity a2 = amenityTestService.createTestAmenity();
+        service.getAmenityIds().add(a1.getId());
+        service.getAmenityIds().add(a2.getId());
+        service.setRouteId(route.getId());
+        String json = getObjectMapper().writeValueAsString(service);
+        ResultActions actions = mockMvc.perform(asUser(put("/api/v1/update/serviceConfig")
+                .content(json).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
     }
 }

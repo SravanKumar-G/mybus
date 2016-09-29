@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -20,10 +21,12 @@ public class Schedule {
 	
 	@Getter
 	@Setter
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private DateTime startDate;
 	
 	@Getter
 	@Setter
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private DateTime endDate;
 	
 	@Getter

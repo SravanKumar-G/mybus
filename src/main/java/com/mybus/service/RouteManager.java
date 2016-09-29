@@ -23,6 +23,9 @@ public class RouteManager {
     @Autowired
     private CityDAO cityDAO;
 
+    public void deleteAll() {
+        routeDAO.deleteAll();
+    }
     public Route saveRoute(Route route) {
         validateRoute(route);
         return routeDAO.save(route);

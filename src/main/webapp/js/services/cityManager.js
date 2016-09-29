@@ -50,6 +50,11 @@ portalApp.factory('cityManager', function ($rootScope, $http, $log, $window) {
         return value.id === id;
       }));
     },
+    getCityName: function (id) {
+      return _.first(_.select(cities, function (value) {
+          return value.id === id;
+      })).name;
+    },
     createCity : function (city,callback) {
       $http.post('/api/v1/city',city)
           .success(function (data) {

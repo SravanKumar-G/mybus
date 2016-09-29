@@ -42,7 +42,7 @@ public class AmenitiesController {
 	@RequestMapping(value = "amenities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get all the amenities available", response = Amenity.class, responseContainer = "List")
 	public Iterable<Amenity> getAmenities() {
-		LOGGER.debug("Get all the amenities available");
+		LOGGER.debug("Get all the amenityIds available");
 		return amenitiesManager.findAll();
 	}
 

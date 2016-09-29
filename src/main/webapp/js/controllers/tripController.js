@@ -100,9 +100,7 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
 		 if(cache) {
 		     busLayout = cache.get(trip.layoutId);
 		 } 
-		 var isCachedLayout = true;
-		 if (! busLayout.hasOwnProperty('id')) {
-			 isCachedLayout = false;
+		 if (typeof  busLayout != "undefined" && !busLayout.hasOwnProperty('id')) {
 			tripManager.getLayoutByID(trip.layoutId, function(layout) {
 				tripCtrl.populateLayoutInfo(layout);
 				//group with trip Id

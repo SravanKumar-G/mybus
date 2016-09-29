@@ -144,6 +144,9 @@ public class BusServiceManager {
 	}
 
 	public BusService updateRouteConfiguration(BusService service) {
+		if (service.getRouteId() == null) {
+			return service;
+		}
 		Route route = routeDAO.findOne(service.getRouteId());
 		Preconditions.checkNotNull(route, "Invalid route found");
 		Preconditions.checkArgument(route.isActive(), format("Route %s is not active", route.getName()));

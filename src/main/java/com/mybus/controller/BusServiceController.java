@@ -93,10 +93,20 @@ public class BusServiceController extends MyBusBaseController{
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
-	@RequestMapping(value = "update/serviceConfig" ,method = RequestMethod.PUT)
+	@RequestMapping(value = "update/serviceConfig" ,method = RequestMethod.PUT , produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value="Update Service configuration after selecting/changing the route on it")
 	public BusService updateServiceConfiguration(HttpServletRequest request, 
 			@ApiParam(value = "bus service Configuration") @RequestBody final BusService service){
 		return busServiceManager.updateRouteConfiguration(service);
+	}
+
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "service/amenities", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Update amenities for services", response = BusService.class)
+	public BusService updateServiceAmenities(HttpServletRequest request,
+									@ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
+		logger.debug("update BusService called");
+		return busServiceManager.updateBusService(service);
 	}
 }

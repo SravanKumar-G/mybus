@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,13 +58,10 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value ="Get the trips for a route and date", response = Trip.class, responseContainer="List")
 	public List<Trip> findBuses(HttpServletRequest request,
-								@ApiParam(value = "Id of the fromCity") @RequestParam("fromCityId") final String fromCityId,
-								@ApiParam(value = "Id of the toCity") @RequestParam("toCityId") final String toCityId,
-								@ApiParam(value = "Date of travel") @RequestParam("travelDate") final String travelDate) {
-		//TOOD: DateTime converter we have to add 
-				String[] dateArray = travelDate.split("-");
-				DateTime travelDateTime = new DateTime(Integer.valueOf(dateArray[0]), Integer.valueOf(dateArray[1]),Integer.valueOf(dateArray[2]),0,0);
-		return tripManager.findTrips(fromCityId, toCityId, travelDateTime);
+								@ApiParam(value = "Id of the fromCity") @RequestParam final String fromCityId,
+								@ApiParam(value = "Id of the toCity") @RequestParam final String toCityId,
+								@ApiParam(value = "Date of travel") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") final DateTime travelDate) {
+		return tripManager.findTrips(fromCityId, toCityId, travelDate);
 	}
 	
 }

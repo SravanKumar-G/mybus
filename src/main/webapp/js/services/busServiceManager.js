@@ -109,7 +109,7 @@ portalApp.factory('busServiceManager', function ($rootScope, $http, $log, $windo
 			
 		},
 		
-		busServicePublish : function(id) {
+		busServicePublish : function(id,callback) {
 			 swal({
 	                title: "Are you sure ?",
 	                text: "Are you sure you want to publish this Bus Service ?",

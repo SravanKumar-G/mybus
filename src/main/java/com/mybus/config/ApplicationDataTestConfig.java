@@ -25,6 +25,7 @@ public class ApplicationDataTestConfig extends AbstractApplicationDataConfig {
         return new MongoSystemProperties(mongoProperties, getHomeDirPropertiesFilename());
     }
 
+
     @Override
     String getHomeDirPropertiesFilename() {
         return HOME_DIR_PROPS_FILENAME;

@@ -191,7 +191,7 @@ public class TripManagerTest extends AbstractControllerIntegrationTest{
 	private Trip createTrip() {
 		Trip trip = new Trip();
 		trip.setActive(true);
-		//trip.setAmenities(busService.getAmenities());
+		//trip.setAmenityIds(busService.getAmenityIds());
 		trip.setArrivalTime(DateTime.now());
 		trip.setDepartureTime(DateTime.now());
 		
