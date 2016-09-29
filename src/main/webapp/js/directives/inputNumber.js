@@ -5,11 +5,17 @@ angular.module('myBus')
 .directive('number', function() {
     return {
         template: function(elem, attr) {
+        	
+        	var minlength = 7;
+        	if ( attr.minlength != null ){
+        		minlength = attr.minlength;
+        	}
+        	
             return "<input type='text' placeholder='"+attr.placeholder+"' " +
-            "class='form-control' ng-model='"+attr.model+"' " +
+            "class='form-control' data-ng-model='"+attr.model+"' " +
                 "onkeypress='return event.charCode >= 48 && event.charCode <= 57' " +
-                " ng-minlength='7' ng-maxlength='10' " +
-                " ng-required='true' ng-disabled='"+attr.disabled+"' />";
+                " data-ng-minlength='" + minlength +"' data-ng-maxlength='10' " +
+                " data-ng-required='true' data-ng-disabled='"+attr.disabled+"' />";
         }
     };
 });

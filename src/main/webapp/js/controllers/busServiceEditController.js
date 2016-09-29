@@ -43,24 +43,6 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 		}
 
 		busServiceEditCtrl.initialize = function(){
-        	/*busServiceEditCtrl.busService.active=false;
-        	busServiceEditCtrl.busService.serviceName=null;
-        	busServiceEditCtrl.busService.serviceNumber=null;
-        	busServiceEditCtrl.busService.phoneEnquiry=null;
-        	busServiceEditCtrl.busService.cutoffTime=null;
-        	busServiceEditCtrl.busService.serviceTaxType=null;
-        	busServiceEditCtrl.busService.serviceTax=null; 
-        	busServiceEditCtrl.busService.layoutId=null;
-        	busServiceEditCtrl.busService.routeId=null;
-        	
-        	busServiceEditCtrl.busService.schedule.startDate=null;
-        	busServiceEditCtrl.busService.schedule.endDate=null;
-        	busServiceEditCtrl.busService.schedule.weeklyDays=[];
-        	busServiceEditCtrl.busService.schedule.specialServiceDates=[];
-        	busServiceEditCtrl.busService.boardingPoints=[];
-        	busServiceEditCtrl.busService.dropingPoints=[];
-        	busServiceEditCtrl.busService.serviceFares=[];
-			busServiceEditCtrl.busService.routesMap = {};*/
 
 			busServiceEditCtrl.busService = {
 				active:false,
@@ -81,7 +63,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 				boardingPoints:[],
 				dropingPoints:[],
 				serviceFares:[],
-				amenities:[] //temporary variable for showing the amenityIds
+				amenityIds:[]
 			}
 			busServiceEditCtrl.layouts = layoutNamesPromise.data;
 			busServiceEditCtrl.routes = routeNamesPromise.data;
@@ -135,14 +117,9 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
 		 */
         busServiceEditCtrl.updateServiceConfig = function(){
         	busServiceManager.updateServiceConfig(busServiceEditCtrl.busService,function(data){
-        		console.log("service config -"+data);
         		busServiceEditCtrl.busService = data;
-        		if(angular.isNumber(busServiceEditCtrl.busService.effectiveFrom)){
-        			busServiceEditCtrl.busService.effectiveFrom = new Date(busServiceEditCtrl.busService.effectiveFrom);
-        		}
-        		if(angular.isNumber(busServiceEditCtrl.busService.effectiveTo)){
-        			busServiceEditCtrl.busService.effectiveTo = new Date(busServiceEditCtrl.busService.effectiveTo);
-        		}
+        		busServiceEditCtrl.busService.schedule.startDate = new Date(busServiceEditCtrl.busService.schedule.startDate);
+        		busServiceEditCtrl.busService.schedule.endDate = new Date(busServiceEditCtrl.busService.schedule.endDate);
         		busServiceEditCtrl.routeCities = [];
         		
         		/*cityManager.getCities(function(data){
@@ -222,18 +199,18 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
         });
 
         $scope.saveService = function (){
-        	var service = angular.copy(busServiceEditCtrl.busService)
+        	var service = angular.copy(busServiceEditCtrl.busService);
         	service.schedule.startDate = $filter('date')(service.schedule.startDate,'yyyy-MM-dd');
         	service.schedule.endDate = $filter('date')(service.schedule.endDate,'yyyy-MM-dd');
         	busServiceManager.createService(service)
         };
         
         $scope.updateService = function (){
-        	var serviceUpdate = angular.copy(busServiceEditCtrl.busService)
-        	serviceUpdate.effectiveFrom = $filter('date')(serviceUpdate.effectiveFrom,'yyyy-MM-dd');
-        	serviceUpdate.effectiveTo = $filter('date')(serviceUpdate.effectiveTo,'yyyy-MM-dd');
+        	var service = angular.copy(busServiceEditCtrl.busService);
+        	service.schedule.startDate = $filter('date')(service.schedule.startDate,'yyyy-MM-dd');
+        	service.schedule.endDate = $filter('date')(service.schedule.endDate,'yyyy-MM-dd');
         	
-        	busServiceManager.updateService(serviceUpdate)
+        	busServiceManager.updateService(service)
         };
         
         $scope.editPublishedService=function(){
