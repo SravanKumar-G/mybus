@@ -1,7 +1,10 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.JourneyType;
 import com.mybus.model.Trip;
+import com.mybus.service.BookingSessionInfo;
+import com.mybus.service.BookingSessionManager;
 import com.mybus.service.TripManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 /**
  * 
@@ -26,6 +31,9 @@ public class TripController {
 
 	@Autowired
 	private TripManager tripManager;
+	
+	@Autowired
+	private BookingSessionManager bookingSessionManager;
 	
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "trips", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -61,6 +69,9 @@ public class TripController {
 								@ApiParam(value = "Id of the fromCity") @RequestParam final String fromCityId,
 								@ApiParam(value = "Id of the toCity") @RequestParam final String toCityId,
 								@ApiParam(value = "Date of travel") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") final DateTime travelDate) {
+		BookingSessionInfo bookingSessionInfo = new BookingSessionInfo();
+		bookingSessionInfo.setBusJourney(fromCityId,toCityId,travelDate.toString(),null,JourneyType.ONE_WAY);
+		bookingSessionManager.setBookingSessionInfo(bookingSessionInfo);
 		return tripManager.findTrips(fromCityId, toCityId, travelDate);
 	}
 	

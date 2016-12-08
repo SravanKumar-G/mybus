@@ -5,7 +5,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 .directive('formSubmitter', formSubmitterDirective)
 .directive('ebsFormSubmitter', ebsFormSubmitterDirective)
 
-.controller("PaymentController", function($rootScope, $http,$scope,$modal, paymentManager,FormSubmitter,EBSFormSubmitter){
+.controller("PaymentController", function($rootScope, $http,$scope,$modal, paymentManager,FormSubmitter,EBSFormSubmitter,bookingHelper){
 	
 	console.log("In PaymentController");
 	
@@ -18,6 +18,8 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 	$scope.payments =[];
 	
 	$scope.paymentToBeRefund = {};
+	
+	$scope.payment.passengerInfo = bookingHelper.passengerInfo;
 	
     $scope.paymentButtonClicked = function(){
 	 	paymentManager.proceedToPay($scope.payment,function(data){

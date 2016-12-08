@@ -6,7 +6,7 @@ angular.module('myBus.bookingModules', ['ui.bootstrap'])
   // ====================================    BookingController   ================================================
   // ==================================================================================================================
 
-  .controller('BookingController', function ($scope,bookingHelper) {
+  .controller('BookingController', function ($scope,bookingHelper,$location) {
 	
 	  var bookingCtrl = this;
 	  bookingCtrl.contactInfo = {
@@ -14,7 +14,8 @@ angular.module('myBus.bookingModules', ['ui.bootstrap'])
 			  phone : null
 	  };
 	  
-	  bookingCtrl.passengerInfo={};
+	  bookingCtrl.passengerInfo=[];
+	  bookingCtrl.showPayment = false;
 	  bookingCtrl.passengerInfo.boardingPoint = bookingHelper.getTripInfo().boardingPoint;
 	  bookingCtrl.passengerInfo.primaryPassenger = {};
 	  bookingCtrl.passengerInfo.primaryPassenger.name= null;
@@ -35,6 +36,18 @@ angular.module('myBus.bookingModules', ['ui.bootstrap'])
 	  
 	  bookingCtrl.doPayment = function() {
 		  
+		  var bookingInfo = {};
+		  var passengers = [];
+		  
+		  passengers.push(bookingCtrl.passengerInfo.primaryPassenger);
+		  if ( bookingCtrl.passengerInfo.length > 0) {
+			  passengers.push(bookingCtrl.passengerInfo.copassengers);
+		  }
+		  bookingInfo.ONE_WAY = passengers;
+		  
+		  
+		  bookingHelper.setPassengerInfo(bookingInfo);
+		  $location.url("/payment");
 	  }
 	  
 	  return bookingCtrl;

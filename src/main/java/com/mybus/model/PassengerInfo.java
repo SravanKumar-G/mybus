@@ -40,7 +40,7 @@ public class PassengerInfo {
 			this.name = (String)passengerInfoMap.get("name");
 		}
 		if(passengerInfoMap.containsKey("age")) {
-			this.age = (int)passengerInfoMap.get("age");
+			this.age = Integer.valueOf((String)passengerInfoMap.get("age"));
 		}
 		if(passengerInfoMap.containsKey("gender")) {
 			this.gender = (String)passengerInfoMap.get("gender");
@@ -49,7 +49,7 @@ public class PassengerInfo {
 			this.seatNumber = (String)passengerInfoMap.get("seatNumber");
 		}
 		if(passengerInfoMap.containsKey("seatFare")) {
-			this.seatFare = (double)((Integer)passengerInfoMap.get("seatFare"));
+			this.seatFare = Double.valueOf((String)passengerInfoMap.get("seatFare"));
 		}
 	}
 	

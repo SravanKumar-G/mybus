@@ -145,7 +145,7 @@ public class Payment extends AbstractDocument {
 			this.email = (String)palmentJson.get("email");
 		}
 		if(palmentJson.containsKey("phoneNo")) {
-			this.phoneNo = (String)palmentJson.get("phoneNo");
+			this.phoneNo = String.valueOf(palmentJson.get("phoneNo"));
 		}
 		if(palmentJson.containsKey("firstName")) {
 			this.firstName = (String)palmentJson.get("firstName");

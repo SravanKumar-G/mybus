@@ -1,5 +1,13 @@
 package com.mybus.service;
 
+
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_ACCOUNT_ID;
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_HASH_KEY;
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_CALLBACK_URL;
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_REQUEST_URL;
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_NAME;
+import static com.mybus.payment.PaymentConstants.GATEWAY_PAYU_PAYMENT_TYPE;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +31,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.mybus.SystemProperties;
@@ -35,6 +46,7 @@ import com.mybus.model.Payment;
 import com.mybus.model.PaymentGateway;
 import com.mybus.model.PaymentResponse;
 import com.mybus.model.RefundResponse;
+import com.mybus.payment.GatewaySettings;
 import com.mybus.util.Constants;
 import com.mybus.util.Status;
 /**
@@ -42,10 +54,14 @@ import com.mybus.util.Status;
  * @author yks-Srinivas
  */
 @Service
+@PropertySource(name = "gatwaySettings", value = "classpath:payment-gateway.properties")
 public class PaymentManager {
 
 
 	private static final Logger LOGGER= LoggerFactory.getLogger(PaymentManager.class);
+	
+	@Autowired
+	private Environment gatewaySettings;
 	
 	@Autowired
 	private SystemProperties systemProperties;
@@ -64,17 +80,23 @@ public class PaymentManager {
 	
 	@Autowired
 	private BookingTrackingManager bookingTrackingManager;
+	
+	@Bean
+	GatewaySettings getGatewatSettings() {
+        return new GatewaySettings(gatewaySettings);
+    }
+	
 
 	public Payment getPayuPaymentGatewayDetails(Payment payment){
 
 		LOGGER.info("PaymentManager :: getPayuPaymentGatewayDetails");
 		PaymentGateway pg = new PaymentGateway();
-		pg.setPgKey("eCwWELxi"); //payu  salt
-		pg.setPgAccountID("gtKFFx"); //payu key
-		pg.setPgRequestUrl("https://test.payu.in/_payment");
-		pg.setPgCallbackUrl("http://localhost:8081/payUResponse");
-		pg.setPaymentType("PG");
-		pg.setName("PAYU");
+		pg.setPgKey(getGatewatSettings().getProperty(GATEWAY_PAYU_HASH_KEY)); //payu  salt
+		pg.setPgAccountID(getGatewatSettings().getProperty(GATEWAY_PAYU_ACCOUNT_ID)); //payu key
+		pg.setPgRequestUrl(getGatewatSettings().getProperty(GATEWAY_PAYU_REQUEST_URL));
+		pg.setPgCallbackUrl(getGatewatSettings().getProperty(GATEWAY_PAYU_CALLBACK_URL));
+		pg.setPaymentType(GATEWAY_PAYU_PAYMENT_TYPE);
+		pg.setName(GATEWAY_PAYU_NAME);
 		String merchantRefNo =  getRandamNo();
 		String hashSequence = pg.getPgAccountID()+"|"+ merchantRefNo +"|"+ (int)payment.getAmount() +"|bus|"+
 				payment.getFirstName() +"|"+ payment.getEmail() +"|||||||||||"+pg.getPgKey();
