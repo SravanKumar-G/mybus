@@ -3,8 +3,7 @@ angular.module('myBus').factory('cancelManager', function ( $log, $window,$state
     return {
         cancel: function (theForm) {
             console.log("dirty " + theForm.$dirty + "  presitine "+ theForm.$pristine);
-            if(theForm.$dirty)
-            {
+            if(theForm.$dirty) {
                     var state=$state.$current.name;
                     var subStr = "/";
                     if(!(angular.equals(state.indexOf(subStr),-1)))

@@ -17,6 +17,9 @@ pre.tiny-debug {
     background-color: #00a;
 }
 
+.msg-error {
+    color: red;
+}
 
 
 .arrow {

@@ -5,7 +5,6 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import com.mybus.model.ServiceBoardingPoint;
 import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +25,7 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/")
 @Api(value="CityController", description="City and Boarding points management")
 public class CityController extends MyBusBaseController{
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CityController.class);
 
     @Autowired
     private CityDAO cityDAO;

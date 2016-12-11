@@ -1,5 +1,6 @@
 package com.mybus.model;
 
+import com.google.gson.Gson;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,11 @@ public class User extends AbstractDocument implements AttributesDocument{
 
     @Getter
     @Setter
-    private String contact;
+    private long contact;
+
+    @Getter
+    @Setter
+    private long secondaryContact;
 
     @Getter
     @Setter
@@ -78,6 +83,9 @@ public class User extends AbstractDocument implements AttributesDocument{
         if(json.containsKey("firstName")) {
             this.firstName = json.get("firstName").toString();
         }
+        if(json.containsKey("active")) {
+            this.active = Boolean.valueOf(json.get("active").toString());
+        }
         if(json.containsKey("email")) {
             this.email = json.get("email").toString();
         }
@@ -88,7 +96,10 @@ public class User extends AbstractDocument implements AttributesDocument{
             this.password = json.get("password").toString();
         }
         if(json.containsKey("contact")) {
-            this.contact = json.get("contact").toString();
+            this.contact = Long.parseLong(json.get("contact").toString());
+        }
+        if(json.containsKey("secondaryContact")) {
+            this.secondaryContact = Long.parseLong(json.get("secondaryContact").toString());
         }
         if(json.containsKey("address1")) {
             this.address1 = json.get("address1").toString();
@@ -96,8 +107,11 @@ public class User extends AbstractDocument implements AttributesDocument{
         if(json.containsKey("city")) {
             this.city = json.get("city").toString();
         }
+        if(json.containsKey("state")) {
+            this.state = json.get("state").toString();
+        }
         if(json.containsKey("userType")){
-            this.setUserType(UserType.valueOf((String)json.get("userType")));
+            this.setUserType(UserType.valueOf(json.get("userType").toString()));
         }
         if(json.containsKey("planType")){
             this.planType = json.get("planType").toString();
@@ -129,7 +143,7 @@ public class User extends AbstractDocument implements AttributesDocument{
                 final boolean active,
                final boolean admin,
                 final String email,
-                final String contact,
+                final long contact,
                 final String address1,
                 final String address2,
                 final String city,
@@ -153,7 +167,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     }
     public User(final String firstName, final String lastName, final String userName, final String password,
                 final String email,
-                final String contact,
+                final long contact,
                 final String address1,
                 final String address2,
                 final String city,

@@ -9,7 +9,6 @@ var myBus = angular.module('myBus', [
   'ngTable',
   'dndLists',
   'ui.bootstrap',
-  'unsavedChanges',
   'angularSpinner',
   'myBus.routesModules',
   'myBus.citiesModules',
@@ -127,16 +126,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             })
             .state('user', {
             	level:2,
-                url:'/user',
+                url:'/user/',
                 templateUrl: 'partials/user-details.tpl.html',
                 controller: 'UserAddController'
             })
             .state('useredit', {
             	level:3,
-                url:'/user/',
-                params:{
-                    idParam : null
-                },
+                url:'/user/:id',
                 templateUrl: 'partials/user-editDetails.tpl.html',
                 controller: 'UpdateUserController'
             })
@@ -214,10 +210,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 		appConfigManager.fetchAppSettings(function (err, cfg) {
 			$rootScope.appConfigManager = appConfigManager;
 		}, true);
-		userManager.getCurrentUser(function (err) {
+		userManager.getCurrentUser(function (err,data) {
 			if (!err) {
 				userManager.getGroupsForCurrentUser();
+                console.log("currentuser is admin " + data.admin);
+                myBus.constant('currentuser', data);
 			}
+
 		});
 		$rootScope.userManager = userManager;
 		$rootScope.$on('$stateChangeSuccess', function() {

@@ -12,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>sri krishna Travel</title>
+    <title>SriKrishna Travels</title>
 
     <link rel="stylesheet" href="assets-new/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
@@ -43,7 +43,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travel</span></a>
+            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travels</span></a>
         </div> <!-- /.navbar-header -->
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -96,13 +96,13 @@
                 <div class="intro container">
                     <div class="inner-intro">
                         <h1 class="header-title">
-                            <span>test</span> Heading 1
+                            Our newly launched service
                         </h1>
                         <p class="header-sub-title">
-                            Test Subheading 1
+                           Launching 2+1 AC Sleeper
                         </p>
                         <button class="btn custom-btn">
-                            test button
+                            Hyderabad - Rajamundry
                         </button>
                     </div>
                 </div>
@@ -111,18 +111,18 @@
                 <div class="intro">
                     <div class="inner-intro">
                         <h1 class="header-title">
-                            <span>test</span> Heading 2
+                            Our newly launched service
                         </h1>
                         <p class="header-sub-title">
-                            Test Subheading 2
+                            Launching 2+1 AC Sleeper
                         </p>
                         <button class="btn custom-btn">
-                            test button
+                            Chennai - Rajamundry
                         </button>
                     </div>
                 </div>
             </li> <!-- /.slider-item -->
-            <li class="slider-item" style="background-image: url('assets-new/images/banner3.png')">
+            <!--<li class="slider-item" style="background-image: url('assets-new/images/banner3.png')">
                 <div class="intro">
                     <div class="inner-intro">
                         <h1 class="header-title">
@@ -136,7 +136,8 @@
                         </button>
                     </div>
                 </div>
-            </li> <!-- /.slider-item -->
+            </li>  -->
+            <!-- /.slider-item -->
         </ul> <!-- /.slides -->
     </div> <!-- /.flexslider -->
 

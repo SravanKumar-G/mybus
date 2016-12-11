@@ -50,7 +50,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     }
 
     public User createUser(){
-        User user = new User("fname", "lname", "uname", "pwd", "e@email.com", "1234567", "add1", "add2",
+        User user = new User("fname", "lname", "uname", "pwd", "e@email.com", 1234567, "add1", "add2",
                 "city", "state", UserType.ADMIN,"plan3");
         return userDAO.save(user);
     }
@@ -58,7 +58,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     @Test
     public void testSaveUser() throws Exception {
         User user = createUser();
-        User duplicate = new User("fname", "lname", "uname", "pwd", "e@email.com", "1234567", "add1", "add2",
+        User duplicate = new User("fname", "lname", "uname", "pwd", "e@email.com", 1234567, "add1", "add2",
                 "city", "state", UserType.ADMIN, "plan3");
         userDAO.save(user);
         Assert.assertNotNull(userDAO.findOne(user.getId()));
@@ -70,7 +70,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     @Test
     public void testUpdateUser() throws Exception {
         User user = createUser();
-        User duplicate = new User("fname", "lname", "unamenew", "pwd", "e@email.com", "1234567", "add1", "add2",
+        User duplicate = new User("fname", "lname", "unamenew", "pwd", "e@email.com", 1234567, "add1", "add2",
                 "city", "state", UserType.USER, "plan2");
         userDAO.save(user);
         userManager.saveUser(duplicate);

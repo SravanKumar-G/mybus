@@ -275,9 +275,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
 
         $scope.insertedCallback = function(index,item){
             $scope.route.viaCities.splice(index,0,item.id);
-            console.log("index2:"+index);
-            console.log("item2:"+item.id);
-            return true;
+             return true;
         };
 
         $scope.ok = function () {

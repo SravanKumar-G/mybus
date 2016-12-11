@@ -15,7 +15,7 @@
     <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>
     <script src="bower_components/ng-table/ng-table.min.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular-unsavedChanges/dist/unsavedChanges.js"></script>
+    <!-- <script src="bower_components/angular-unsavedChanges/dist/unsavedChanges.js"></script> -->
     <script src="bower_components/spin.js/spin.js"></script>
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="bower_components/sweet-alert/dist/sweetalert.min.js"></script>
@@ -97,7 +97,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown">Configuration
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <my-menu label="Cities" class="nav navbar-nav col-md-12 "></my-menu>
+                        <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
                         <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                         <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                         <my-menu label="Layouts" class="nav navbar-nav col-md-12"></my-menu>
@@ -131,7 +131,6 @@
 <div class="container">
     <div class="view-container">
         <div class="view-frame">
-            <i class="ion-chevron-up"></i>
             <ui-view>Select from Menu</ui-view>
         </div>
     </div>

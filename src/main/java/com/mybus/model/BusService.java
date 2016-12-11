@@ -18,80 +18,34 @@ import java.util.Set;
 @ToString
 @ApiModel(value = "BusService")
 @NoArgsConstructor
+@Getter
+@Setter
 public class BusService extends AbstractDocument {
 	public BusService(String name) {
 		this.serviceName = name;
 	}
-
-	@Getter
-	@Setter
 	private boolean active;
-
-	@Getter
-	@Setter
 	private String serviceName;
-
-	@Getter
-	@Setter
 	private String serviceNumber;
-
-	@Getter
-	@Setter
 	private String phoneEnquiry;
 
-	@Getter
-	@Setter
 	@ApiModelProperty(notes = "Cut off time in minutes for disabling reservations " +
 			"for this service before the bus starts")
 	private int cutoffTime;
-	
-	@Getter
-	@Setter
+
 	private ServiceTaxType serviceTaxType;
 
-	@Getter
-	@Setter
 	private double serviceTax;
-
-	@Getter
-	@Setter
 	private String layoutId;
-
-	@Getter
-	@Setter
 	private String routeId;
-
-	@Getter
-	@Setter
 	private String routeName;
-	
-	@Getter
-	@Setter
 	private Schedule schedule;
-
-	@Getter
-	@Setter
 	private List<String> amenityIds = new ArrayList<>();
-
-	@Getter
-	@Setter
 	private Set<ServiceBoardingPoint> boardingPoints = new LinkedHashSet<ServiceBoardingPoint>();
-
-	@Getter
-	@Setter
 	private Set<ServiceDropingPoint> dropingPoints = new LinkedHashSet<ServiceDropingPoint>();
-
-	@Getter
-	@Setter
 	@ApiModelProperty(notes = "Fares for combination of routes with different cities")
 	private List<ServiceFare> serviceFares;
-	
-	@Getter
-	@Setter
 	private String status;
-	
-	@Getter
-	@Setter
 	private double fare;
 
 	public void addBoardingPoints(List<BoardingPoint> list) {

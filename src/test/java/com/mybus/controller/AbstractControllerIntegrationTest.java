@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static java.lang.String.format;
 
+
 @ActiveProfiles("test")
 @WebAppConfiguration
 @ContextConfiguration(classes = { CoreAppConfig.class, WebApplicationConfig.class, ApplicationDataTestConfig.class })

@@ -1,21 +1,21 @@
 package com.mybus.controller;
 
+import com.google.gson.Gson;
 import com.mybus.dao.PlanTypeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.*;
 import com.mybus.service.UserManager;
-import junit.framework.Assert;
 import org.apache.commons.collections.IteratorUtils;
 import org.bson.types.ObjectId;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
+import static org.junit.Assert.*;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.portlet.MockActionResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -79,7 +79,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
             UserType userType;
             user.setUserName("xxx");
             user.setAddress1("address");
-            user.setContact("23456785");
+            user.setContact(23456785);
 
         List<User> users = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(1, users.size());
@@ -170,6 +170,37 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testUpdate() throws Exception {
+        List<User> userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        org.junit.Assert.assertEquals(1, userList1.size());
+
+        JSONObject user = new JSONObject();
+        user.put("userName", "uName");
+        user.put("firstName","fName");
+        user.put("contact", "3452555");
+        user.put("address1", "123 maple");
+        user.put("city","city");
+        user.put("state","state");
+        user.put("email","email@email");
+        user.put("lastName","lname");
+        user.put("userType","ADMIN");
+        user.put("planType","plan1");
+        user.put("password","sample");
+
+        User newUser = userManager.saveUser(new User(user));
+        newUser.setUserName("newUserName");
+        newUser.setFirstName("newFirstName");
+        ResultActions actions2 = mockMvc.perform(asUser(put(format("/api/v1/userEdit/%s", newUser.getId()))
+                .content(getObjectMapper().writeValueAsBytes(user))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        Assert.assertEquals(2,userList1.size());
+
+    }
+    @Test
+    public void testUpdateActive() throws Exception {
+        List<User> userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        org.junit.Assert.assertEquals(1, userList1.size());
+
         JSONObject user = new JSONObject();
         user.put("userName", "uName");
         user.put("firstName","fName");
@@ -187,13 +218,44 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
                 .content(getObjectMapper().writeValueAsBytes(user))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        user.put("userName","newUserName");
-        user.put("firstName","newFirstName");
-        ResultActions actions2 = mockMvc.perform(asUser(put(format("/api/v1/userEdit/%s", user.get("id")))
+        JSONObject responseJSON = new Gson().fromJson(actions.andReturn().getResponse().getContentAsString(),
+                JSONObject.class);
+        user.put("active",true);
+        ResultActions actions2 = mockMvc.perform(asUser(put(format("/api/v1/userEdit/%s", responseJSON.get("id")))
                 .content(getObjectMapper().writeValueAsBytes(user))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
-        List<User> userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(2,userList1.size());
+        User newUser = userDAO.findOne(responseJSON.get("id").toString());
+        assertEquals(true, newUser.isActive());
+    }
 
+    @Test
+    public void testUpdateUserType() throws Exception {
+        List<User> userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        org.junit.Assert.assertEquals(1, userList1.size());
+
+        JSONObject user = new JSONObject();
+        user.put("userName", "uName");
+        user.put("firstName","fName");
+        user.put("contact", "3452555");
+        user.put("address1", "123 maple");
+        user.put("city","city");
+        user.put("state","state");
+        user.put("email","email@email");
+        user.put("lastName","lname");
+        user.put("userType","ADMIN");
+        user.put("planType","plan1");
+        user.put("password","sample");
+
+        User newUser = userManager.saveUser(new User(user));
+        newUser.setUserType(UserType.MANAGER);
+        ResultActions actions2 = mockMvc.perform(asUser(put(format("/api/v1/userEdit/%s", newUser.getId()))
+                .content(getObjectMapper().writeValueAsBytes(newUser))
+                .contentType(MediaType.APPLICATION_JSON), currentUser));
+        userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
+        Assert.assertEquals(2,userList1.size());
+        newUser = userDAO.findOne(newUser.getId());
+        assertEquals(UserType.MANAGER.toString(), newUser.getUserType().toString());
     }
 }
