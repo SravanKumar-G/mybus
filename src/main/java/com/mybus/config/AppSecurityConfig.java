@@ -34,13 +34,13 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.authorizeRequests()
 		.antMatchers("/protected/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/confidential/**").access("hasRole('ROLE_SUPERADMIN')").and()
-				.formLogin().loginPage("/login")
-				.failureUrl("/login?error")
-				.usernameParameter("username")
-				.passwordParameter("password").and()
-				.logout().logoutSuccessUrl("/login?logout")
-				.and().csrf().disable();
+		.antMatchers("/confidential/**").access("hasRole('ROLE_SUPERADMIN')").and()
+		.formLogin().loginPage("/login")
+		.failureUrl("/login?error")
+		.usernameParameter("username")
+		.passwordParameter("password").and()
+		.logout().logoutSuccessUrl("/login?logout")
+		.and().csrf().disable();
 
 	}
 

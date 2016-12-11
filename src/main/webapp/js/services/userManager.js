@@ -24,6 +24,12 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
 
   return {
 
+    validateUserInfo: function(user, confirmPassword) {
+        if(user.password !== confirmPassword) {
+          return false;
+        }
+      return true;
+    },
     fetchAllUsers: function () {
       $log.debug("fetching routes data ...");
       $http.get('/api/v1/users')
@@ -36,21 +42,21 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
           });
     },
 
-      getUsers: function (callback) {
-          $log.debug("fetching users data ...");
-          $http.get('/api/v1/users')
-              .success(function (data) {
-                  callback(data);
-                  $rootScope.$broadcast('FetchingUsersComplete');
-              })
-              .error(function (error) {
-                  $log.debug("error retrieving cities");
-              });
-      },
+    getUsers: function (callback) {
+        $log.debug("fetching users data ...");
+        $http.get('/api/v1/users')
+            .success(function (data) {
+                callback(data);
+                $rootScope.$broadcast('FetchingUsersComplete');
+            })
+            .error(function (error) {
+                $log.debug("error retrieving cities");
+            });
+    },
 
-      getAllUsers: function () {
-          return users;
-      },
+    getAllUsers: function () {
+        return users;
+    },
 
     createUser: function(user,callback){
       $http.post('/api/v1/user',user).success(function(data){
@@ -58,9 +64,6 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
         $rootScope.$broadcast('CreateUserCompleted');
       })
           .error(function (err,status) {
-            /*var errorMsg = "error adding new city info. " + (err && err.error ? err.error : '');
-             $log.error(errorMsg);
-             alert(errorMsg);*/
             sweetAlert("Error",err.message,"error");
           });
     },
@@ -68,15 +71,15 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
     getUserWithId:function(id,callback){
       $http.get("/api/v1/userId/" + id).success(function(data){
         callback(data);
-       // $rootScope.$broadcast("UpdateUserCompleted");
       })
-
     },
-    updateUser : function (user,callback) {
+    updateUser : function (user,callback,errorcallback) {
       $http.put('/api/v1/userEdit/'+user.id,user).success(function(data){
         callback(data);
         $rootScope.$broadcast('UpdateUserCompleted');
-      })
+      }).error(function (data, status, header, config) {
+        errorcallback(data);
+      });
     },
 
     deleteUser : function (id){

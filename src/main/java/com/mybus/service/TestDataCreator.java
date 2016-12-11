@@ -1,16 +1,14 @@
 package com.mybus.service;
 
 import com.mybus.SystemProperties;
-import com.mybus.controller.UserController;
 import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.model.PaymentGateway;
 import com.mybus.model.User;
 import com.mybus.model.UserType;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.mybus.model.PaymentGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TestDataCreator {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestDataCreator.class);
 
     @Autowired
     private UserDAO userDAO;

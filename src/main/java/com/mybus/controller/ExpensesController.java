@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value = "/api/v1/")
 public class ExpensesController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExpensesController.class);
 
     @Autowired
     private ExpenseDAOImpl expenseDAOImpl;

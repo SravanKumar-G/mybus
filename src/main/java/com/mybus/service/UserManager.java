@@ -38,10 +38,7 @@ public class UserManager {
     }
 
     public User updateUser(User user) {
-        System.out.println("In update");
         Preconditions.checkNotNull(user, "The user can not be null");
-        System.out.println("user not null");
-        System.out.println("uid"+user.getId());
         Preconditions.checkNotNull(user.getId(), "Unknown user for update");
         validateAgent(user);
         User loadedUser = userDAO.findOne(user.getId());
@@ -51,7 +48,6 @@ public class UserManager {
             logger.error("Error merging user", e);
             throw new BadRequestException("Error merging user info");
         }
-        System.out.println("After merge");
         return saveUser(loadedUser);
     }
 

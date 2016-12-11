@@ -2,7 +2,6 @@ package com.mybus.interceptors;
 
 import com.mybus.annotations.RequiresAdmin;
 import com.mybus.annotations.RequiresAuthorizedUser;
-import com.mybus.controller.UserController;
 import com.mybus.dao.UserDAO;
 import com.mybus.exception.ForbiddenException;
 import com.mybus.exception.InactiveUserException;
@@ -28,7 +27,7 @@ import static java.lang.String.format;
  */
 @Service
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationInterceptor.class);
     public static final String MESSAGE_MUST_BE_LOGGED_IN = "You must be logged in to perform that action.";
     public static final String MESSAGE_MUST_BE_LOGGED_IN_AND_ACTIVE
             = "You must be logged in to an active account to perform that action.";

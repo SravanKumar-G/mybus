@@ -1,10 +1,5 @@
 <legend>{{ headline }}</legend>
 
-<!--
-<div class="pull-right toolbar-button-div">
-    <a class="btn btn-primary" href="#/users-new"><span class="glyphicon-plus">&nbsp;</span>Add User</a>
-</div>
--->
 
 <br/>
 
@@ -18,18 +13,19 @@
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
     <tr ng-repeat="user in currentPageOfUsers">
-        <td data-title="'Last Name'" class="col-md-4" sortable="'lastName'">{{ user.lastName }}</td>
-        <td data-title="'First Name'" class="col-md-4"sortable="'firstName'">{{ user.firstName }}</td>
-        <td data-title="'Username'" class="col-md-4" sortable="'userName'">{{ user.userName }}</td>
-        <td data-title="'Type'" class="col-md-4" sortable="'type'">{{ user.type }}</td>
-        <td class="col-md-2">
+        <td data-title="'Last Name'" class="col-sm-3" sortable="'lastName'">{{ user.lastName }}</td>
+        <td data-title="'First Name'" class="col-sm-3"sortable="'firstName'">{{ user.firstName }}</td>
+        <td data-title="'Username'" class="col-sm-3" sortable="'userName'">{{ user.userName }}</td>
+        <td data-title="'Contact'" class="col-sm-3" sortable="'contact'">{{ user.contact }}</td>
+        <td data-title="'Type'" class="col-sm-3" sortable="'type'">{{ user.userType }}</td>
+        <td class="col-sm-2" ng-show="isAdmin()">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="editUser(user.id)">
                     <span class="glyphicon glyphicon-pencil"></span></md-icon>
             </md-button>
         </td>
-        <td class="col-md-2">
-            <md-button>
+        <td class="col-sm-2" ng-show="isAdmin()">
+            <md-button >
                 <md-icon type="button" class="btn" ng-click="deleteUser(user.id)">
                     <span class="glyphicon glyphicon-remove"></span></md-icon>
             </md-button>

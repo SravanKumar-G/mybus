@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 public class UserController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -32,14 +32,12 @@ public class UserController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/me", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     public User getUserInfo(HttpServletRequest request) {
         User account = (User)userDAO.findOneByUserName(request.getUserPrincipal().getName());
         return account;
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/groups", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     public List<String> getUserGroups(HttpServletRequest request) {
         return null;
     }
@@ -55,33 +53,31 @@ public class UserController extends MyBusBaseController{
 
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value = "Create a user")
-    public ResponseEntity createUser(HttpServletRequest request,
+    public User createUser(HttpServletRequest request,
                                      @ApiParam(value = "JSON for User to be created") @RequestBody JSONObject userJson){
         logger.debug("create user called");
-        return new ResponseEntity<>(userManager.saveUser(new User(userJson)), HttpStatus.OK);
+        return userManager.saveUser(new User(userJson));
     }
 
     @RequestMapping(value = "userEdit/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     @ApiOperation(value ="Update user", response = User.class)
-    public ResponseEntity updateUser(HttpServletRequest request,
+    public User updateUser(HttpServletRequest request,
                                      @ApiParam(value = "Id of the User to be found")
                                      @PathVariable final String id,
                                      @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
-        System.out.println("update user called");
         logger.debug("update user called");
-        return new ResponseEntity<>(userManager.updateUser(new User(userJson)), HttpStatus.OK);
+        User user = new User(userJson);
+        user.setId(id);
+        return userManager.updateUser(user);
     }
 
     @RequestMapping(value = "userId/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get user with Id", response = User.class)
-    public ResponseEntity getUser(HttpServletRequest request,
+    public User getUser(HttpServletRequest request,
                                      @ApiParam(value = "Id of the User to be found") @PathVariable final String id) {
         logger.debug("get user called");
-        return new ResponseEntity<>(userManager.getUser(id), HttpStatus.OK);
+        return userManager.getUser(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
