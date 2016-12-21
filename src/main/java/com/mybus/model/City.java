@@ -19,17 +19,18 @@ import java.util.stream.Collectors;
  */
 
 @ToString
-@ApiModel(value = "City")
+@ApiModel(value = City.COLLECTION_NAME)
 @NoArgsConstructor
 @Document
 public class City extends AbstractDocument{
-    private static final String KEY_NAME = "name";
-    private static final String KEY_ACTIVE = "active";
-    private static final String KEY_STATE = "state";
-    private static final String KEY_SHORT_CODE = "sc";
-    private static final String KEY_LANG_CODE = "langCode";
-    private static final String KEY_BOARDING_POINTS = "bp";
-    private static final String KEY_IS_HUB = "hub";
+    public static final String COLLECTION_NAME = "city";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ACTIVE = "active";
+    public static final String KEY_STATE = "state";
+    public static final String KEY_SHORT_CODE = "sc";
+    public static final String KEY_LANG_CODE = "langCode";
+    public static final String KEY_BOARDING_POINTS = "bp";
+    public static final String KEY_IS_HUB = "hub";
 
 
     @Getter

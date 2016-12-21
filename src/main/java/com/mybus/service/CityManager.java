@@ -1,12 +1,15 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.impl.CityMongoDAO;
+import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import org.apache.commons.collections.IteratorUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,13 @@ public class CityManager {
 
     @Autowired
     private CityDAO cityDAO;
+
+    @Autowired
+    private MongoQueryDAO mongoQueryDAO;
+
+    public City findOne(String cityId){
+        return cityDAO.findOne(cityId);
+    }
 
     public City findCityByName(String name) {
         return cityDAO.findOneByName(name);
@@ -145,16 +155,13 @@ public class CityManager {
      * @return
      */
     public Map<String, String> getCityNames(boolean allCities) {
-        List<City> cities = null;
-        if(allCities) {
-            cities = IteratorUtils.toList(cityDAO.findAll().iterator());
-        } else {
-            //find only active cities
-            cities = IteratorUtils.toList(cityDAO.findByActive(true).iterator());
+        String fields[] = {City.KEY_NAME};
+        JSONObject query = new JSONObject();
+        if(!allCities) {
+            query.put("active", true);
         }
-        if (cities == null || cities.isEmpty() ) {
-            return new HashMap<>();
-        }
+        List<City> cities = IteratorUtils.toList(mongoQueryDAO
+                .getDocuments(City.class, City.COLLECTION_NAME, fields, query, null).iterator());
         Map<String, String> map = cities.stream().collect(
                 Collectors.toMap(City::getId, city -> city.getName()));
         return map;

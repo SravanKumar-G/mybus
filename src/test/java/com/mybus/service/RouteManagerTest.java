@@ -6,6 +6,7 @@ import com.mybus.dao.CityDAO;
 import com.mybus.dao.RouteDAO;
 import com.mybus.model.City;
 import com.mybus.model.Route;
+import com.mybus.test.util.AmenityTestService;
 import junit.framework.Assert;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
@@ -34,7 +35,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
     private RouteManager routeManager;
 
     @Autowired
-    private RouteTestService routeTestService;
+    private AmenityTestService.RouteTestService routeTestService;
 
     @Before
     public void setup() {

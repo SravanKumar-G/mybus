@@ -42,6 +42,9 @@
     <script src="js/controllers/amenitiesController.js"></script>
     <script src="js/controllers/rolesController.js"></script>
     <script src="js/controllers/bookingController.js"></script>
+    <script src="js/controllers/shipmentControllers.js"></script>
+    <script src="js/controllers/branchOfficeControllers.js"></script>
+
     <script src="js/services/bookingHelper.js"></script>
     <script src="js/services/appConfigManager.js"></script>
     <script src="js/services/userManager.js"></script>
@@ -88,7 +91,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travel</span></a>
+            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travels</span></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -97,6 +100,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown">Configuration
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                        <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
                         <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
                         <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                         <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
@@ -117,6 +121,7 @@
                 </li>
                 <my-menu label="Finance" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
+                <my-menu label="Shipments" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
                 <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
                 <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>

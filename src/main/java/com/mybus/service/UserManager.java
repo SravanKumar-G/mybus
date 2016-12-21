@@ -2,14 +2,24 @@ package com.mybus.service;
 
 import com.google.common.base.Preconditions;
 import com.mybus.dao.PlanTypeDAO;
+import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.UserDAO;
+import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
+import com.mybus.model.BranchOffice;
+import com.mybus.model.City;
 import com.mybus.model.User;
 import com.mybus.model.UserType;
+import org.apache.commons.collections.IteratorUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by skandula on 2/13/16.
@@ -22,8 +32,14 @@ public class UserManager {
     private UserDAO userDAO;
 
     @Autowired
+    private MongoQueryDAO mongoQueryDAO;
+
+    @Autowired
     private PlanTypeDAO planTypeDAO;
 
+    public User findOne(String userId) {
+        return userDAO.findOne(userId);
+    }
     public User saveUser(User user){
         validate(user);
         User duplicateUser = userDAO.findOneByUserName(user.getUserName());
@@ -73,18 +89,39 @@ public class UserManager {
         return user;
     }
 
-    private void validate(final User user){
-        Preconditions.checkNotNull(user, "The user can not be null");
-        if(user == null){
-            throw new NullPointerException("user can not be null");
+    /**
+     *  Get user names as a map
+     * @param includeInactive
+     * @return
+     */
+    public Map<String, String> getUserNames(boolean includeInactive) {
+        List<User> users = getUserNamesAsUserList(includeInactive);
+        Map<String, String> map = users.stream().collect(
+                Collectors.toMap(User::getId, user -> user.getFullName()));
+        return map;
+    }
+
+    /**
+     * Get users as a list only include the name fields
+     * @param includeInactive
+     * @return
+     */
+    public List<User> getUserNamesAsUserList(boolean includeInactive) {
+        String fields[] = {User.FIRST_NAME, User.LAST_NAME};
+        JSONObject query = new JSONObject();
+        if(!includeInactive) {
+            query.put("active", true);
         }
-        Preconditions.checkNotNull(user.getUserName(), "Username can not be null");
-        Preconditions.checkNotNull(user.getFirstName(), "User firstname can not be null");
-        Preconditions.checkNotNull(user.getLastName(), "User lastname can not be null");
-        Preconditions.checkNotNull(user.getEmail(), "User emails can not be null");
-        Preconditions.checkNotNull(user.getContact(), "User contact can not be null");
-        Preconditions.checkNotNull(user.getPassword(), "User password can not be null");
-        Preconditions.checkNotNull(user.getUserType(), "User type can not be null");
+        List<User> users = IteratorUtils.toList(mongoQueryDAO
+                .getDocuments(User.class, User.COLLECTION_NAME, fields, query, null).iterator());
+        return users;
+    }
+
+    private void validate(final User user){
+        List<String> errors = RequiredFieldValidator.validateModel(user, User.class);
+        if(!errors.isEmpty()) {
+            throw new BadRequestException("Required data missing ");
+        }
     }
 
     private void validateAgent(User user){

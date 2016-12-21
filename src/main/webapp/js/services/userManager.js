@@ -43,7 +43,6 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
     },
 
     getUsers: function (callback) {
-        $log.debug("fetching users data ...");
         $http.get('/api/v1/users')
             .success(function (data) {
                 callback(data);
@@ -53,6 +52,17 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
                 $log.debug("error retrieving cities");
             });
     },
+    getUserNames: function (callback) {
+      $http.get('/api/v1/userNames')
+          .success(function (data) {
+            callback(data);
+            $rootScope.$broadcast('FetchingUserNamesComplete');
+          })
+          .error(function (error) {
+            $log.debug("error retrieving user names");
+          });
+    },
+
 
     getAllUsers: function () {
         return users;
@@ -85,7 +95,7 @@ portalApp.factory('userManager', function ($http, $log,$rootScope) {
     deleteUser : function (id){
       swal({
             title: "Are you sure?",
-            text: "Are you sure you want to delete this route?",
+            text: "Are you sure you want to delete this user?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,

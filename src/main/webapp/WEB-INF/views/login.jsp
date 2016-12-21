@@ -55,12 +55,6 @@
                 <li><a href="#">contact</a></li>
                 <li><div id="loginContainer"><a href="#" id="loginButton"><span>Login</span></a>
                     <div id="loginBox">
-                        <c:if test="${not empty error}">
-                            <div class="error">${error}</div>
-                        </c:if>
-                        <c:if test="${not empty msg}">
-                            <div class="msg">${msg}</div>
-                        </c:if>
                         <form id="loginForm" action="<c:url value='/login' />" method='POST'>
                             <div class="login-grids">
                                 <div class="login-grid-left">
@@ -76,7 +70,14 @@
                                         <input name="submit" type="submit" value="submit" >
                                         <label for="checkbox"><input type="checkbox" id="checkbox"> <i>Remember me</i></label>
                                     </fieldset>
-
+                                    <span style="color:red;">
+                                        <c:if test="${not empty error}">
+                                            <div class="error">${error}</div>
+                                        </c:if>
+                                        <c:if test="${not empty msg}">
+                                            <div class="msg">${msg}</div>
+                                        </c:if>
+                                    </span>
                                 </div>
                             </div>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

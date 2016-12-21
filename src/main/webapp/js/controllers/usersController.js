@@ -77,7 +77,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,$log,agentPlanManager, roleManager,cancelManager ) {
+    .controller('UserAddController', function($scope,userManager,$window,$log, $location,agentPlanManager, roleManager,cancelManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
@@ -90,7 +90,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         	});
         }
         $scope.rolesInit();
-        $log.debug("roles"+$scope.roles);
         $scope.usersFromManager=[];
         $scope.onMouseLeave = function(userNameFromUI){
             userManager.getUsers(function(data){
@@ -120,13 +119,18 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             }
         };
 
-        $scope.saveButtonClicked = function(){
-            userManager.createUser($scope.user,function(data){
-                swal("success","User successfully added","success");
-                $location.url('/users');
-            });
-
-
+        $scope.save = function(){
+            if($scope.userForm.$dirty) {
+                $scope.userForm.submitted = true;
+                if ($scope.userForm.$invalid) {
+                    swal("Error!", "Please fix the errors in the user form", "error");
+                    return;
+                }
+                userManager.createUser($scope.user, function (data) {
+                    swal("success", "User successfully added", "success");
+                });
+            }
+            $location.url('/users');
         };
 
         $scope.cancelUser = function(theForm){
@@ -156,7 +160,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         };
         $scope.loadUserWithId();
 
-        $scope.updateUser = function(){
+        $scope.save = function(){
             if($scope.userForm.$invalid) {
                 swal("Error!","Please fix the errors in the user form","error");
                 return;

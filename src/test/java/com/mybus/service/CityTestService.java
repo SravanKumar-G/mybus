@@ -16,7 +16,10 @@ public class CityTestService {
     @Autowired
     private CityManager cityManager;
 
-    public City createTestCity(){
+    public static City createNew(){
+        return new City("TestCityName", "TestState", true, new ArrayList<>());
+    }
+    public City createNewCity(){
         Random rand = new Random();
         String name = "TestCity"+ rand.nextInt(50);
         // get a city with unique name

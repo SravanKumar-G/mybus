@@ -73,6 +73,14 @@ public abstract class AbstractDocument {
         BeanUtils.copyProperties(copy, this, getNullPropertyNames(copy));
     }
 
+    public void merge(final Object copy, boolean ignoreNullValues) throws Exception {
+        if(ignoreNullValues) {
+            BeanUtils.copyProperties(copy, this, getNullPropertyNames(copy));
+        } else {
+            BeanUtils.copyProperties(copy, this);
+        }
+    }
+
     private String[] getNullPropertyNames (Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
