@@ -1,76 +1,60 @@
 package com.mybus.model;
 
 import com.google.gson.Gson;
+import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.json.simple.JSONObject;
+import org.springframework.data.mongodb.core.mapping.Field;
+import sun.security.util.Password;
 
 /**
  * Created by skandula on 3/31/15.
  */
 @ToString
-@ApiModel(value = "User")
+@ApiModel(value = User.COLLECTION_NAME)
 @NoArgsConstructor
-
+@Getter
+@Setter
 public class User extends AbstractDocument implements AttributesDocument{
-    @Getter
-    @Setter
+    public static final String COLLECTION_NAME = "user";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String PASSWORD = "password";
+    public static final String EMAIL = "email";
+    public static final String CONTACT = "contact";
+    public static final String USER_NAME = "userName";
+
+    @Field(USER_NAME)
+    @RequiresValue
     private String userName;
-
-    @Getter
-    @Setter
+    @Field(PASSWORD)
+    @RequiresValue
     private String password;
-    @Getter
-    @Setter
+    @Field(FIRST_NAME)
+    @RequiresValue
     private String firstName;
-    @Getter
-    @Setter
+    @Field(LAST_NAME)
+    @RequiresValue
     private String lastName;
-    @Getter
-    @Setter
+
     private boolean admin;
-
-    @Getter
-    @Setter
     private boolean active;
-
-    @Getter
-    @Setter
+    @RequiresValue
     private String email;
-
-    @Getter
-    @Setter
+    @RequiresValue
     private long contact;
-
-    @Getter
-    @Setter
+    @RequiresValue
     private long secondaryContact;
-
-    @Getter
-    @Setter
     private String address1;
-
-    @Getter
-    @Setter
     private String address2;
-
-    @Getter
-    @Setter
     private String city;
-
-    @Getter
-    @Setter
     private String state;
-
-    @Getter
-    @Setter
+    @RequiresValue
     private UserType userType;
-
-    @Getter
-    @Setter
     private String planType;
 
     public User(JSONObject json){
@@ -186,5 +170,8 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.state = state;
         this.userType = userType;
         this.planType = planType;
+    }
+    public String getFullName(){
+        return this.firstName + ", "+ this.lastName;
     }
 }

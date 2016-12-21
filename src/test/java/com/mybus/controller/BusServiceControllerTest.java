@@ -7,8 +7,7 @@ import com.mybus.model.*;
 import com.mybus.service.*;
 import static org.junit.Assert.*;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.mybus.test.util.AmenityTestService;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -53,7 +51,7 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
     private RouteManager routeManager;
 
     @Autowired
-    private RouteTestService routeTestService;
+    private AmenityTestService.RouteTestService routeTestService;
 
     @Autowired
     private AmenityTestService amenityTestService;

@@ -43,13 +43,19 @@ public class UserController extends MyBusBaseController{
     }
 
     @RequestMapping(value = "users", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get all the users available", response = User.class, responseContainer = "List")
     public ResponseEntity<List<User>> getUsers(HttpServletRequest request)
     {
         return new ResponseEntity<List<User>>((List<User>) userDAO.findAll(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "userNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get user names ", response = User.class, responseContainer = "List")
+    public List<User> getUserNames(HttpServletRequest request,
+                                               @RequestParam(value ="activeOnly", required = false) boolean includeInactive)
+    {
+        return userManager.getUserNamesAsUserList(includeInactive);
+    }
 
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +88,6 @@ public class UserController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
     @ApiOperation(value ="Delete a user")
     public JSONObject deleteUser(HttpServletRequest request,
                                  @ApiParam(value = "Id of the user to be deleted") @PathVariable final String id) {

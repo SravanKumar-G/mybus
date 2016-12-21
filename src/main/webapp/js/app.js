@@ -28,7 +28,9 @@ var myBus = angular.module('myBus', [
   'myBus.tripModule',
   'myBus.amenitiesModule',
   'myBus.roleModules',
-  'myBus.bookingModules'
+  'myBus.bookingModules',
+  'myBus.shipmentModule',
+  'myBus.branchOfficeModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -127,7 +129,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             .state('user', {
             	level:2,
                 url:'/user/',
-                templateUrl: 'partials/user-details.tpl.html',
+                templateUrl: 'partials/user-editDetails.tpl.html',
                 controller: 'UserAddController'
             })
             .state('useredit', {
@@ -188,6 +190,30 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/booking',
                 templateUrl: 'partials/booking-info.tpl.html',
                 controller: 'BookingController as bookingCtrl'
+            }).state('shipments',{
+                url:'/shipments',
+                templateUrl: 'partials/shipments.tpl.html',
+                controller: 'ShipmentsController'
+            }).state('shipment',{
+                url:'/shipment/:id',
+                templateUrl: 'partials/shipmentedit.tpl.html',
+                controller: 'EditShipmentController'
+            }).state('editshipment',{
+                url:'/shipment',
+                templateUrl: 'partials/shipmentedit.tpl.html',
+                controller: 'EditShipmentController'
+            }).state('branchoffices',{
+                url:'/branchoffices',
+                templateUrl: 'partials/branchOffices.tpl.html',
+                controller: 'BranchOfficesController'
+            }).state('branchoffice',{
+                url:'/branchoffice/:id',
+                templateUrl: 'partials/branchOfficeEdit.tpl.html',
+                controller: 'EditBranchOfficeController'
+            }).state('editbranchoffice',{
+                url:'/branchoffice',
+                templateUrl: 'partials/branchOfficeEdit.tpl.html',
+                controller: 'EditBranchOfficeController'
             });
         $urlRouterProvider.otherwise( '/');
     }]);

@@ -50,13 +50,14 @@ public class ShipmentController extends MyBusBaseController{
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "shipment", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
+    @RequestMapping(value = "shipment/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a Shipment")
     public Shipment update(HttpServletRequest request,
+                           @ApiParam(value = "Id of the Shipment to be found") @PathVariable final String id,
                            @ApiParam(value = "JSON for Shipment to be updated") @RequestBody final Shipment shipment) {
         logger.debug("update shipment called");
-        return shipmentManager.saveWithValidations(shipment);
+        return shipmentManager.updateShipment(id, shipment);
     }
 
     @RequestMapping(value = "shipment/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

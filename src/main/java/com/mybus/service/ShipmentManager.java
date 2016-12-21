@@ -9,6 +9,7 @@ import com.mybus.model.Shipment;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,6 @@ public class ShipmentManager {
         return shipment;
     }
 
-    public Shipment save(Shipment shipment) {
-        Preconditions.checkNotNull(shipment.getEmail(), "EMail is required");
-        Preconditions.checkNotNull(shipment.getFromCityId(), "FromCityId is required");
-        Preconditions.checkNotNull(shipment.getToCityId(), "ToCityId is required");
-        Preconditions.checkNotNull(shipment.getFromContact(), "FromContact is required");
-        Preconditions.checkNotNull(shipment.getToContact(), "ToContact is required");
-        Preconditions.checkNotNull(shipment.getToContact(), "ToContact is required");
-        Preconditions.checkNotNull(shipment.getNoOfPackages(), "Number of packages is required");
-        Preconditions.checkNotNull(shipment.getNoOfPackages(), "Number of packages is required");
-
-        return shipmentDAO.save(shipment);
-    }
 
     public Shipment saveWithValidations(Shipment shipment) {
         List<String> errors = RequiredFieldValidator.validateModel(shipment, Shipment.class);
@@ -57,6 +46,17 @@ public class ShipmentManager {
         }
     }
 
+    public Shipment updateShipment(String shipmentId, Shipment shipment) {
+        Preconditions.checkNotNull(shipmentId, "ShipmentId can not be null");
+        Shipment shipmentCopy = shipmentDAO.findOne(shipmentId);
+        Preconditions.checkNotNull(shipmentCopy, "No Shipment found with id");
+        try {
+            shipmentCopy.merge(shipment, false);
+        } catch (Exception e) {
+            throw new BadRequestException("Error updating shipment");
+        }
+        return shipmentDAO.save(shipmentCopy);
+    }
     public Iterable<Shipment> findShipments(JSONObject query, final Pageable pageable) {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);

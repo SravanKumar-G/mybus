@@ -5,6 +5,7 @@ import com.mybus.dao.*;
 import com.mybus.model.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Trip;
+import com.mybus.test.util.TripTestService;
 import junit.framework.Assert;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.DateTime;

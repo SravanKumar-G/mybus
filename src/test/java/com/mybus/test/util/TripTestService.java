@@ -1,7 +1,10 @@
-package com.mybus.service;
+package com.mybus.test.util;
 
+import com.mybus.dao.CityDAO;
 import com.mybus.model.City;
 import com.mybus.model.Trip;
+import com.mybus.service.CityTestService;
+import com.mybus.service.TripManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,12 @@ public class TripTestService {
     @Autowired
     private TripManager tripManager;
 
+    @Autowired
+    private CityDAO cityDAO;
+
     public Trip createTestTrip() {
-        City fromCity = cityTestService.createTestCity();
-        City toCity = cityTestService.createTestCity();
+        City fromCity = cityDAO.save(cityTestService.createNewCity());
+        City toCity = cityDAO.save(cityTestService.createNewCity());
         Trip trip = new Trip();
         trip.setFromCityId(fromCity.getId());
         trip.setToCityId(toCity.getId());

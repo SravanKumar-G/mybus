@@ -6,8 +6,6 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
-import com.mybus.service.CityManager;
-import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +13,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Map;
+import static org.junit.Assert.*;
 
 /**
  * Created by skandula on 12/27/15.
@@ -55,15 +54,14 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
 
     @Test
     public void testAddBoardingPointToCity() throws Exception {
-        City city = cityTestService.createTestCity();
+        City city = cityDAO.save(cityTestService.createNewCity());
         BoardingPoint bp = new BoardingPoint("name", "landmark", "123", true);
-        Assert.assertEquals(0, city.getBoardingPoints().size());
+        assertEquals(0, city.getBoardingPoints().size());
         DateTime time = city.getUpdatedAt();
         Thread.sleep(1000);
         city = cityManager.addBoardingPointToCity(city.getId(), bp);
-
-        Assert.assertEquals(1, city.getBoardingPoints().size());
-        Assert.assertNotNull(city.getBoardingPoints().iterator().next().getId());
+        assertEquals(1, city.getBoardingPoints().size());
+        assertNotNull(city.getBoardingPoints().iterator().next().getId());
     }
 
     @Test
@@ -73,13 +71,13 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
         bp = city.getBoardingPoints().iterator().next();
-        Assert.assertEquals(1, city.getBoardingPoints().size());
-        Assert.assertNotNull(city.getBoardingPoints().iterator().next().getId());
+        assertEquals(1, city.getBoardingPoints().size());
+        assertNotNull(city.getBoardingPoints().iterator().next().getId());
         bp.setContact("1234");
         city = cityManager.updateBoardingPoint(city.getId(), bp);
-        Assert.assertEquals(1, city.getBoardingPoints().size());
-        Assert.assertNotNull(city.getBoardingPoints().iterator().next().getId());
-        Assert.assertEquals("1234", city.getBoardingPoints().iterator().next().getContact());
+        assertEquals(1, city.getBoardingPoints().size());
+        assertNotNull(city.getBoardingPoints().iterator().next().getId());
+        assertEquals("1234", city.getBoardingPoints().iterator().next().getContact());
     }
 
     @Test
@@ -89,9 +87,29 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
         city.getBoardingPoints().add(bp);
         city = cityDAO.save(city);
         bp = city.getBoardingPoints().iterator().next();
-        Assert.assertEquals(1, city.getBoardingPoints().size());
-        Assert.assertNotNull(city.getBoardingPoints().iterator().next().getId());
+        assertEquals(1, city.getBoardingPoints().size());
+        assertNotNull(city.getBoardingPoints().iterator().next().getId());
         city = cityManager.deleteBoardingPoint(city.getId(), bp.getId());
-        Assert.assertEquals(0, city.getBoardingPoints().size());
+        assertEquals(0, city.getBoardingPoints().size());
+    }
+
+    @Test
+    public void testGetCityNames() {
+        for(int i =0; i<10; i++) {
+            City city = new City("TestCity"+(i+1), "TestState", true, new ArrayList<>());
+            if(i%2 ==0) {
+                city.setActive(false);
+            }
+            city = cityDAO.save(city);
+        }
+        Map<String, String> cityNames = cityManager.getCityNames(false);
+        assertEquals(5, cityNames.values().size());
+        cityNames.values().parallelStream().forEach(name -> {
+            assertTrue(name.equals("TestCity2") ||
+                    name.equals("TestCity4")||
+                    name.equals("TestCity6")||
+                    name.equals("TestCity8")||
+                    name.equals("TestCity10"));
+        });
     }
 }

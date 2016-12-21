@@ -44,8 +44,6 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Map<String, String> getActiveCityNames(HttpServletRequest request) {
-        Thread thread = Thread.currentThread();
-
         return cityManager.getCityNames(false);
     }
 

@@ -25,6 +25,11 @@ $(function() {
     var button = $('#loginButton');
     var box = $('#loginBox');
     var form = $('#loginForm');
+    if($("div.error").html() || $("div.msg").html()){
+        button.addClass('active');
+        box.show();
+    }
+
     button.removeAttr('href');
     button.mouseup(function(login) {
         box.toggle();

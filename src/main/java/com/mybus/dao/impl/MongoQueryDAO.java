@@ -55,20 +55,22 @@ public class MongoQueryDAO {
         if (queryInfo != null) {
             for(Object key:queryInfo.keySet()) {
 
-                if(key.toString().equals("dispatchDate")) {
-                    List<Criteria> match = new ArrayList<>();
-                    String dateValue = queryInfo.get(key.toString()).toString();
+                if(collectionName.equals("shipment") && key.toString().equals("dispatchDate")) {
+                    String dateValues[] = queryInfo.get(key.toString()).toString().split(",");
                     Date start = null;
+                    Date end = null;
                     try {
-                        start = Shipment.dateTimeFormat.parse(dateValue);
+                        start = Shipment.dateTimeFormat.parse(dateValues[0]);
+                        if(dateValues.length == 2) {
+                            end = Shipment.dateTimeFormat.parse(dateValues[1]);
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     query.addCriteria(where(key.toString()).gte(start));
                 } else {
-                    query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString()).toString()));
+                    query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString())));
                 }
-
             }
         }
         if (pageable != null) {

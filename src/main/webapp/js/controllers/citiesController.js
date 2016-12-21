@@ -14,13 +14,17 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
 
         var loadTableData = function (tableParams, $defer) {
             var data = cityManager.getAllCities();
-            var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-            $scope.allCities = orderedData;
-            tableParams.total(data.length);
-            if (angular.isDefined($defer)) {
-                $defer.resolve(orderedData);
+            if(angular.isArray(data)) {
+                console.log(JSON.stringify(tableParams));
+                var orderedData = tableParams.sorting()? _.sortBy(data, function (city) {return city[tableParams.orderBy()]}):data;
+                $scope.sortingOrder = tableParams.orderBy();
+                $scope.allCities = orderedData;
+                tableParams.total(data.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve(orderedData);
+                }
+                $scope.currentPageOfCities = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
             }
-            $scope.currentPageOfCities = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
         };
         $scope.$on('updateCityCompleteEvent', function (e, value) {
             cityManager.fetchAllCities();
@@ -39,17 +43,15 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
             page: 1,
             count:25,
             sorting: {
-                state: 'asc',
-                name: 'asc'
+                city: 'asc'
             }
         }, {
             total: $scope.currentPageOfCities.length,
             getData: function ($defer, params) {
-                $scope.$on('cityAndBoardingPointsInitComplete', function (e, value) {
-                    loadTableData(params);
-                });
+                loadTableData(params);
             }
         });
+
         cityManager.fetchAllCities();
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -86,8 +88,7 @@ angular.module('myBus.citiesModules', ['ngTable', 'ui.bootstrap'])
   })
     // ========================== Modal - Update City, State  =================================
 
-    .controller('UpdateStateCityModalController', function ($scope, $modalInstance, $http, $log, cityManager, passId) {
-        console.log("in UpdateStateCityModalController");
+    .controller('UpdateStateCityModalController', function ($scope, $state, $modalInstance, $http, $log, cityManager, passId) {
         $scope.city = {};
 
         $scope.displayCity = function(data){

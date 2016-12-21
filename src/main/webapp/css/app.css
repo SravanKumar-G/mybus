@@ -17,7 +17,7 @@ pre.tiny-debug {
     background-color: #00a;
 }
 
-.msg-error {
+.msg-error, .data-required {
     color: red;
 }
 

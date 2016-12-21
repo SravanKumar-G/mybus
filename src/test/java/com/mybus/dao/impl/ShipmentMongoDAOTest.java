@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.BasicDBObject;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ShipmentDAO;
 import com.mybus.model.Shipment;
@@ -34,7 +33,7 @@ public class ShipmentMongoDAOTest extends AbstractControllerIntegrationTest {
     @Test
     public void testFindShipments() throws Exception {
         for(int i=0; i<5; i++) {
-            Shipment shipment = ShipmentTestService.createNewShipment();
+            Shipment shipment = ShipmentTestService.createNew();
             shipment = shipmentDAO.save(shipment);
             System.out.println(shipment.getId());
         }

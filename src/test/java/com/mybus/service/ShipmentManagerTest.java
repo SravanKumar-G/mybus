@@ -3,9 +3,7 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ShipmentDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.PaymentStatus;
 import com.mybus.model.Shipment;
-import com.mybus.model.ShipmentStatus;
 import com.mybus.test.util.ShipmentTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
@@ -45,7 +43,7 @@ public class ShipmentManagerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testSaveWithValidationsNoError() throws Exception {
-        Shipment shipment = ShipmentTestService.createNewShipment();
+        Shipment shipment = ShipmentTestService.createNew();
         Shipment saved = shipmentManager.saveWithValidations(shipment);
         List<Shipment> shipments = IteratorUtils.toList(shipmentDAO.findAll().iterator());
         Assert.assertEquals(1, shipments.size());
@@ -53,7 +51,7 @@ public class ShipmentManagerTest extends AbstractControllerIntegrationTest {
 
     @Test(expected = BadRequestException.class)
     public void testSaveWithNoDispatchDate() throws Exception {
-        Shipment shipment = ShipmentTestService.createNewShipment();
+        Shipment shipment = ShipmentTestService.createNew();
         shipment.setDispatchDate(null);
         shipmentManager.saveWithValidations(shipment);
     }

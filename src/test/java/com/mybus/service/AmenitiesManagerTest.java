@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import com.mybus.test.util.AmenityTestService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
