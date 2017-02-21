@@ -20,6 +20,8 @@ import java.util.Set;
 
 @EqualsAndHashCode(of = { "_id" })
 @ApiModel(value = "AbstractDocument")
+@Getter
+@Setter
 public abstract class AbstractDocument {
 
     public static final String KEY_ID = "_id";
@@ -28,13 +30,11 @@ public abstract class AbstractDocument {
     public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_UPDATED_AT = "updatedAt";
 
-    @Id @Getter @Setter
+    @Id
     @Field(KEY_ID)
     @ApiModelProperty(value = "ID of the Object")
     private String id;
 
-    @Getter
-    @Setter
     @CreatedDate
     @Field(KEY_CREATED_AT)
     @ApiModelProperty(value = "Time at which Object Was Created")
@@ -43,27 +43,20 @@ public abstract class AbstractDocument {
     @Version
     private Long version;
 
-    @Getter
-    @Setter
     @LastModifiedDate
     @Field(KEY_UPDATED_AT)
     @ApiModelProperty(value = "Time at which Object Was Last Updated")
     private DateTime updatedAt;
 
-    @Getter
-    @Setter
     @CreatedBy
     @ApiModelProperty(value = "User who created the object")
     private String createdBy;
 
-    @Getter
-    @Setter
     @LastModifiedBy
     @ApiModelProperty(value = "User who updated the object")
     private String updatedBy;
 
-    @Getter
-    @Setter
+
     @ApiModelProperty(value = "Additional Fields on the Object")
     @JsonProperty(KEY_ATTRIBUTES)
     @Field(KEY_ATTRIBUTES)

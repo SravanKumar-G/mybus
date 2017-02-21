@@ -7,9 +7,9 @@
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="amenityContentTableParams">
-    <tr ng-repeat="amenity in currentPageOfAmenity">
-        <td data-title="'Amenity'"  sortable="'amenity'" class="clickable-item col-md-6" >{{ amenity.name }}</td>
-        <td data-title="'Status'" class="clickable-item col-md-4"><span ng-if="!amenity.active">InActive</span><span ng-if="amenity.active">Active</span></td>
+    <tr ng-repeat="amenity in currentPageOfAmenities">
+        <td data-title="'Amenity'"  sortable="'name'" class="clickable-item col-md-6" >{{ amenity.name }}</td>
+        <td data-title="'Status'" sortable="'active'"  class="clickable-item col-md-4"><span ng-if="!amenity.active">InActive</span><span ng-if="amenity.active">Active</span></td>
         <td class="col-md-2">
 	        <md-button>
 	            <md-icon type="button" class="btn" ng-click="handleClickUpdateAmenity(amenity.id)">

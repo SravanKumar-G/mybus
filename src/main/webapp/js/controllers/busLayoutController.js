@@ -8,7 +8,7 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
     // ====================================    BusLayoutController   ================================================
     // ==================================================================================================================
 
-    .controller('BusLayoutController', function ($scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager, $location) {
+    .controller('BusLayoutController', function ($scope, $http, $log, NgTableParams, $modal, $filter, busLayoutManager, $location) {
         $log.debug('BusLayoutController loading');
 
         var busLayoutCtrl = this;
@@ -54,7 +54,7 @@ angular.module('myBus.layoutModules', ['ngTable', 'ui.bootstrap'])
             $location.url('/layouts/' + 'create');
         }
 
-        busLayoutCtrl.layoutContentTableParams = new ngTableParams({
+        busLayoutCtrl.layoutContentTableParams = new NgTableParams({
             page: 1,
             count: 50,
             sorting: {

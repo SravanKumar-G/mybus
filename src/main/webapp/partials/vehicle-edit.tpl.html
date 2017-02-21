@@ -1,0 +1,97 @@
+<legend>{{ headline }}</legend>
+
+<!--- Edit User Form------->
+
+        <form name="thisForm" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="regNo">Registration #<span class="data-required">*</span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.regNo.$invalid && thisForm.regNo.$dirty }">
+                    <input type="text" id="regNo" name="regNo" class="form-control" ng-model="vehicle.regNo"
+                           placeholder="Registration Number" required>
+                    <span ng-show="(thisForm.regNo.$dirty || thisForm.submitted) && thisForm.regNo.$error.required">Registraion Number required</span>
+                </div>
+
+                <label class="col-sm-2 control-label" for="vehicleType">Vehicle Type<span class="data-required">*</span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.vehicleType.$invalid && thisForm.vehicleType.$dirty }">
+                    <input type="text" id="vehicleType" name="vehicleType" class="form-control" ng-model="vehicle.vehicleType" ng-minlength="10" ng-maxlength="10" placeholder="Vehicle Type" required>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="chasisNumber">Chasis Number</label>
+                <div class="col-sm-4">
+                    <input type="text" id="chasisNumber" class="form-control" ng-model="vehicle.chasisNumber" placeholder="Chasis Number">
+                </div>
+                <label class="col-sm-2 control-label" for="engineNumber">Engine Number</label>
+                <div class="col-sm-4">
+                    <input type="text" id="engineNumber" class="form-control" ng-model="vehicle.engineNumber" placeholder="Engine Number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="noOfSeats">Number of Seats</label>
+                <div class="col-sm-4">
+                    <input type="number" id="noOfSeats" name="noOfSeats" class="form-control" ng-model="vehicle.noOfSeats" placeholder="Number of seats">
+                </div>
+                <label class="col-sm-2 control-label" for="noOfBerths">Number of berths</label>
+                <div class="col-sm-4">
+                    <input type="number" id="noOfBerths" name="noOfBerths" class="form-control" ng-model="vehicle.noOfBerths"
+                           placeholder="Number of berths">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="ownerName">Owner Name</label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.ownerName.$invalid && thisForm.ownerName.$dirty }">
+                    <input type="email" id="ownerName" name="ownerName" class="form-control" ng-model="vehicle.ownerName" placeholder="Owner Name">
+                </div>
+
+                <label class="col-sm-2 control-label" for="ownerAddress">Owner Address</label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.ownerAddress.$invalid && thisForm.ownerAddress.$dirty }">
+                    <input type="number" id="ownerAddress" name="ownerAddress" class="form-control" ng-model="vehicle.ownerAddress" placeholder="Address">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="yearOfManufacture">Year of manufacture</label>
+                <div class="col-sm-4">
+                    <input type="number" id="yearOfManufacture" class="form-control" ng-model="vehicle.yearOfManufacture" placeholder="Year of Manufacture">
+                </div>
+
+                <label class="col-sm-2 control-label" for="numberOfTyres">Number of tyres</label>
+                <div class="col-sm-4">
+                    <input type="number" id="numberOfTyres" class="form-control" ng-model="vehicle.numberOfTyres" placeholder="Number of tyres">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="permitNumber">Permit Number</label>
+                <div class="col-sm-4">
+                    <input type="text" id="permitNumber" class="form-control" ng-model="vehicle.permitNumber" placeholder="Permit Number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Permit Expiry</label>
+                <div class="col-sm-4">
+                    <mybusDatepicker></mybusDatepicker>
+                </div>
+                <label class="col-sm-2 control-label checkbox" for="editActiveInput">Active</label>
+                <div class="col-xs-1">
+                    <input type="checkbox" id="editActiveInput" class="form-check-input" ng-model="vehicle.active">
+                </div>
+            </div>
+
+           <div class="form-group row">
+                <div class="col-sm-4 text-right">
+                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                </div>
+                <div class="col-sm-3 next">
+                    <button  class="btn btn-danger" ng-click="cancelUser(thisForm)">Cancel</button>
+                </div>
+            </div>
+
+        </form>
+
+

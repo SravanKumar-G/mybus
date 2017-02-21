@@ -5,7 +5,7 @@
 /*global angular, _*/
 
 angular.module('myBusB2c.b2cHome', ['ngTable', 'ui.bootstrap'])
-.controller('B2cHomeController',function($scope, $log, $modal,$state, $filter, ngTableParams,$location, $rootScope,b2cHomeManager) {
+.controller('B2cHomeController',function($scope, $log, $modal,$state, $filter, NgTableParams,$location, $rootScope,b2cHomeManager) {
 
     
 	$log.debug("in myBusB2c.b2cHome at B2cHomeController");

@@ -1,0 +1,50 @@
+<div ng-show="downloaded" >
+    <table class="table table-bordered table-condensed table-hover" >
+        <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date:{{service.jdate}}</td><td>{{service.busType}}</td></tr>
+        <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td></td></tr>
+    </table>
+    <div class="row" >
+        <div class="col-sm-7" style="overflow-y: auto;height: 60%;">
+            <h4>Bookings</h4>
+            <table class="table table-bordered table-condensed table-hover" ng-table="bookingsTableParams">
+                <tr ng-repeat="booking in currentPageOfBookings">
+                    <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-2">{{ booking.seats }}</td>
+                    <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2">{{ booking.bookedBy }}</td>
+                    <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-2">{{ booking.name }}</td>
+                    <td data-title="'NetAmt'"  sortable="'netAmt'" class="clickable-item col-md-2" >
+                        <span ng-show="isOnlineBooking(booking)">{{booking.netAmt}}</span>
+                        <span ng-show="isNotOnlineBooking(booking)"><input type="number" ng-model="booking.netAmt" ng-change="calculateNet()"></span>
+                        <span class="glyphicon glyphicon-remove-sign" ng-show="booking.index" ng-click="deleteBooking(booking)"></span>
+                    </td>
+                </tr>
+                <tr ng-if="!currentPageOfBookings || currentPageOfBookings.length === 0">
+                    <td colspan="5">No bookings found. </td>
+                </tr>
+            </table>
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
+                <span class="glyphicon glyphicon-plus"></span> Add Booking
+            </button>
+        </div>
+        <div class="col-sm-5">
+            <h4>Expenses</h4>
+            <table class="table table-bordered table-condensed table-hover">
+
+            </table>
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
+                <span class="glyphicon glyphicon-plus"></span> Add Expense
+            </button>
+        </div>
+    </div>
+<br/>
+    <table class="table table-bordered table-condensed table-hover">
+        <tr><td>Net Income - Redbus</td><td>{{service.netRedbusIncome}}</td>
+            <td>Net Income - Abhibus</td><td>{{service.netOnlineIncome}}</td>
+            <td>Net Income - Cash</td><td>{{service.netCashIncome}}</td>
+            <td>Total Income</td><td>{{service.netIncome}}</td>
+        </tr>
+    </table>
+</div>
+
+<div ng-show="!downloaded">
+    Please wait while the report data is loaded
+</div>

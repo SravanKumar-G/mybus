@@ -4,65 +4,34 @@
     <meta charset="UTF-8">
     <title>My Bus </title>
 
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
+    <link rel="stylesheet" href="node_modules/ng-table/bundles/ng-table.css">
+
+    <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <script src="lib/underscore-min-1.5.2.js"></script>
-    <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
-    <script src="bower_components/ui-router/angular-ui-router.min.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.min.js"></script>
-    <script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
-    <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>
-    <script src="bower_components/ng-table/ng-table.min.js"></script>
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <!-- <script src="bower_components/angular-unsavedChanges/dist/unsavedChanges.js"></script> -->
-    <script src="bower_components/spin.js/spin.js"></script>
-    <script src="bower_components/angular-spinner/angular-spinner.js"></script>
-    <script src="bower_components/sweet-alert/dist/sweetalert.min.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="bower_components/drag-drop/angular-drag-and-drop-lists.js"></script>
-    <script src="lib/async.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.js"></script>
+    <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+    <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="node_modules/ng-table/bundles/ng-table.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/controllers/citiesController.js"></script>
-    <script src="js/controllers/expensesController.js"></script>
-    <script src="js/controllers/boardingPointsListController.js"></script>
-    <script src="js/controllers/vehicleController.js"></script>
-    <script src="js/controllers/usersController.js"></script>
-    <script src="js/controllers/agentPlanController.js"></script>
-    <script src="js/controllers/personController.js"></script>
-    <script src="js/controllers/busLayoutController.js"></script>
-    <script src="js/controllers/busLayoutEditController.js"></script>
-    <script src="js/controllers/busServiceController.js"></script>
-    <script src="js/controllers/busServiceEditController.js"></script>
-    <script src="js/controllers/homeController.js"></script>
-    <script src="js/controllers/busDetailsController.js"></script>
-    <script src="js/controllers/routesController.js"></script>
-    <script src="js/controllers/paymentController.js"></script>
-    <script src="js/controllers/tripController.js"></script>
-    <script src="js/controllers/amenitiesController.js"></script>
-    <script src="js/controllers/rolesController.js"></script>
-    <script src="js/controllers/bookingController.js"></script>
-    <script src="js/controllers/shipmentControllers.js"></script>
-    <script src="js/controllers/branchOfficeControllers.js"></script>
-
-    <script src="js/services/bookingHelper.js"></script>
+    <script src="js/modules/usersModule.js"></script>
     <script src="js/services/appConfigManager.js"></script>
-    <script src="js/services/userManager.js"></script>
-    <script src="js/services/cityManager.js"></script>
-    <script src="js/services/busManager.js"></script>
-    <script src="js/services/busServiceManager.js"></script>
-    <script src="js/services/routesManager.js"></script>
-    <script src="js/services/personService.js"></script>
-    <script src="js/services/vehicleManager.js"></script>
-    <script src="js/services/agentPlanManager.js"></script>
-    <script src="js/services/paymentManager.js"></script>
-    <script src="js/services/expensesManager.js"></script>
-    <script src="js/services/tripManager.js"></script>
-    <script src="js/services/amenitiesManager.js"></script>
-    <script src="js/services/roleManager.js"></script>
+    <script src="js/modules/amenitiesModule.js"></script>
+    <script src="js/modules/cityModule.js"></script>
+    <script src="js/modules/vehicleModule.js"></script>
+    <script src="js/modules/branchOfficeModules.js"></script>
+    <script src="js/modules/serviceReportsModule.js"></script>
 
-    <script src="js/services/cancelManager.js"></script>
 
+    <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
     <script src="js/directives/stateOptions.js"></script>
@@ -74,72 +43,165 @@
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
-    <link rel="stylesheet" href="bower_components/sweet-alert/dist/sweetalert.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="bower_components/ng-table/ng-table.css">
     <link rel="stylesheet" href="css/app.css">
 
 </head>
 <body>
-<!-- Fixed navbar -->
-<div class="navbar navbar-default navbar-fixed-top" role="navigation" bs-navbar>
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travels</span></a>
+
+        <nav class="navbar navbar-default panel_heading_background ng-scope" role="navigation" ng-controller="headerNavBarhomeCtrl">
+            <div class="navbar-header">
+                <!-- ngIf: general_operater -->
+                <!--<div class="pull-left ng-scope" ng-if="general_operater">
+                    <a href="" ui-sref-active="active" ng-click="redirectToHome()">
+                        <img ng-src="library/images/srikrishna.jpg" class="img-responsive image_logo" alt="Responsive image" src="library/images/srikrishna.jpg">
+                    </a>
+                </div> --> <!-- end ngIf: general_operater -->
+                <a class="navbar-brand" href="index.html" title="HOME"><i class="fa fa-bus"></i> Sri Krishna <span>travels</span></a>
+            </div>
+            <div>
+                <div class="collapse navbar-collapse in" collapse="isCollapsed" style="height: auto;">
+                    <div class="nav navbar-nav navbar-right navbar_background_clr">
+                        <!-- ngIf: privlgeAndCheck.showInchargeAmounts -->
+                        <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
+                            <a href="#" class="dropdown-toggle panel_title_color" dropdown-toggle="" role="button" ng-click="getNotification()" aria-expanded="false" aria-haspopup="true">
+                                <i class="ace-icon fa fa-bell icon-animated-bell"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-caret navbar-pink dropdown-navbar" role="menu">
+                                <li class="dropdown-header ng-binding">
+                                    <i class="ace-icon fa fa-exclamation-triangle"></i>
+                                    Pending Tasks To Do
+                                </li>
+                                <li class="dropdown-content ace-scroll">
+                                    <div class="scroll-track show h_154">
+                                        <div class="scroll-bar h_132 top_0"></div>
+                                    </div>
+                                    <div class="scroll-content">
+                                        <ul class="dropdown-menu dropdown-navbar navbar-pink">
+
+                                        </ul>
+                                    </div>
+                                </li>
+                                <!-- ngIf: totalCount>0 -->
+                            </ul>
+                        </li>
+                        <li class="header_li_border">
+                            <a class="welcome panel_title_color ng-binding">
+                                <i class="fa fa-calendar bigger-110"></i>
+                                &nbsp;15/01/2017  &nbsp;
+                                <i class="fa fa-clock-o bigger-110"></i>
+                                17:23:32
+                            </a>
+                        </li>
+                        <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
+                            <a href="#" class="dropdown-toggle welcome panel_title_color ng-binding" dropdown-toggle="" role="button" aria-expanded="false" aria-haspopup="true">
+                                Welcome &nbsp;
+                                <b href="" ui-sref-active="active" class="handCursor ng-binding">
+                                    Admin
+                                </b>
+                                <span class="caret navebar_caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a ui-sref="userProfile" class="ng-binding" href="#/userProfile">
+                                        Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a ui-sref="changepassword" class="ng-binding" href="#/changepassword">
+                                        Change Password
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="header_li_border">
+                            <a href="#/logout" class="welcome panel_title_color ng-binding" ui-sref-active="active" ui-sref="logout">
+                                <i class="fa fa-power-off panel_title_color"></i>
+                                Logout&nbsp; &nbsp;&nbsp;&nbsp;
+                            </a>
+                        </li>
+
+                        <!--tooltip="{{'Counter'|translate}} : {{counterToolTip.counterName}} {{'Shift'|translate}} : {{counterToolTip.shiftName}}"-->
+
+                        <!-- ngIf: isCounterLogoutShow -->
+                    </div>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div class="row">
+            <div class="col-xs-2">
+                <div class="nav-side-menu">
+                    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+                    <div class="menu-list">
+
+                        <ul id="menu-content" class="menu-content collapse out">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-home fa-lg"></i> Home
+                                </a>
+                            </li>
+
+
+
+                            <li data-toggle="collapse" data-target="#service" class="collapsed">
+                                <a href="#"><i class="fa fa-globe fa-lg"></i> Services</a>
+                            </li>
+                            <ul class="sub-menu collapse" id="service">
+                                <li>New Service 1</li>
+                                <li>New Service 2</li>
+                                <li>New Service 3</li>
+                            </ul>
+
+
+                            <li data-toggle="collapse" data-target="#master" class="collapsed">
+                                <a href="#"><i class="fa fa-book fa-lg"></i> Master</a>
+                            </li>
+                            <ul class="sub-menu collapse" id="master">
+                                <my-menu url="amenities" label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu url="BranchOffices" label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu url="Cities" label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu url="Expense Types"  label="Expense Types" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="Income Types" label="Income Types" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="routes" label="Routes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="users" label="Users" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="vehicles" label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="staff" label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
+                            </ul>
+                            <li data-toggle="collapse" data-target="#reports" class="collapsed">
+                                <a href="#"><i class="fa fa-book fa-lg"></i>Reports</a>
+                            </li>
+                            <ul class="sub-menu collapse" id="reports">
+                                <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
+                            </ul>
+
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-user fa-lg"></i> Profile
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-users fa-lg"></i> Users
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-9">
+                <breadscrumb class="ng-scope">
+                    <div class="breadcrumbs printhide" ng-click="breadscrumb_print_fn()">
+                   <div class="view-container">
+                    <div class="view-frame">
+                        <ui-view>Select from Menu</ui-view>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <my-menu label="DashBoard" class="nav navbar-nav navbar-left"></my-menu>
-                <li class="nav navbar-nav navbar-left dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Configuration
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
-                        <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
-                        <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
-                        <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Layouts" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Services" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Trip" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="Plans" class="nav navbar-nav col-md-12"></my-menu>
-                    </ul>
-                </li>
-                <li class="nav navbar-nav navbar-left dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Admin
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
-                        <my-menu label="ManagingRoles" class="nav navbar-nav col-md-12"></my-menu>
-                     </ul>
-                </li>
-                <my-menu label="Finance" class="navbar-left nav navbar-nav"></my-menu>
-                <my-menu label="Reports" class="navbar-left nav navbar-nav"></my-menu>
-                <my-menu label="Shipments" class="navbar-left nav navbar-nav"></my-menu>
-                <my-menu label="Users" class="navbar-left nav navbar-nav"></my-menu>
-                <my-menu label="Payment" class="navbar-left nav navbar-nav"></my-menu>
-                <li><a href="/logout" style=" background: #2f9e43; color: #FFF;"> <b style="color:black;">{{userManager.getUser().username}}</b> Logout</a></li>
-            </ul>
 
-
-        </div><!--/.nav-collapse -->
-    </div>
-
-</div>
-
-<div class="container">
-    <div class="view-container">
-        <div class="view-frame">
-            <ui-view>Select from Menu</ui-view>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
-    .controller('PersonController', function ($http,$scope,$modal,$filter,ngTableParams, personService) {
+    .controller('PersonController', function ($http,$scope,$modal,$filter,NgTableParams, personService) {
         $scope.persons = [];
         $scope.currentPageOfPerson = [];
         $scope.headline="Person Details";
@@ -55,7 +55,7 @@ angular.module('myBus.personModules', ['ngTable', 'ui.bootstrap'])
         $scope.$on('personinitStart', function (e, value) {
         	personService.fechAmenities();
         });
-        $scope.personContentTableParams = new ngTableParams(
+        $scope.personContentTableParams = new NgTableParams(
        		 {
        			 page: 1,
        			 count:25,

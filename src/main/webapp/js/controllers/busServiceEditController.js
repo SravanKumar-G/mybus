@@ -7,7 +7,7 @@ angular.module('myBus.serviceEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusServiceEditController   ================================================
   // ==================================================================================================================
 
-  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, ngTableParams, $modal, $filter,
+  .controller('BusServiceEditController', function ($rootScope, $scope, $http, $log, NgTableParams, $modal, $filter,
 													busServiceManager, routesManager,cityManager,cancelManager,
 													amenitiesManager, layoutNamesPromise,
 													routeNamesPromise, amenitiesNamesPromise,

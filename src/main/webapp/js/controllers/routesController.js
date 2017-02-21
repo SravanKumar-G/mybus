@@ -9,7 +9,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
     // ====================================    RoutesController   ================================================
     // ==================================================================================================================
 
-    .controller('RoutesController', function ($scope, $http,$modal, $log, routesManager,$filter,ngTableParams,$location,cityManager) {
+    .controller('RoutesController', function ($scope, $http,$modal, $log, routesManager,$filter,NgTableParams,$location,cityManager) {
 
         $log.debug('RoutesController loading');
         $scope.headline = "Routes";
@@ -67,7 +67,7 @@ angular.module('myBus.routesModules', ['ui.bootstrap'])
             routesManager.fetchAllRoutes();
         });
 
-        $scope.routeContentTableParams = new ngTableParams({
+        $scope.routeContentTableParams = new NgTableParams({
             page: 1,
             count: 50,
             sorting: {

@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
-.controller("TripController",function($scope, $rootScope, $log, $filter,ngTableParams,tripManager,cityManager,$cacheFactory,$location,bookingHelper){
+.controller("TripController",function($scope, $rootScope, $log, $filter,NgTableParams,tripManager,cityManager,$cacheFactory,$location,bookingHelper){
 
 	var tripCtrl = this;
 	
@@ -244,7 +244,7 @@ angular.module('myBus.tripModule', ['ngTable', 'ui.bootstrap'])
     }
 	
     
-	tripCtrl.tripsTableParams = new ngTableParams({
+	tripCtrl.tripsTableParams = new NgTableParams({
          page: 1,
          count: 25,
          sorting: {

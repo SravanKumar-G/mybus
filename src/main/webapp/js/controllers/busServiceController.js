@@ -7,7 +7,7 @@ angular.module('myBus.serviceModules', ['ngTable', 'ui.bootstrap'])
     // ====================================    BusServiceController   ================================================
     // ==================================================================================================================
 
-    .controller('BusServiceController', function ($scope, $http, $log, ngTableParams, $modal, $filter, busServiceManager, $location) {
+    .controller('BusServiceController', function ($scope, $http, $log, NgTableParams, $modal, $filter, busServiceManager, $location) {
         $log.debug('BusServiceController loading');
 
         var busServiceCtrl = this;
@@ -60,7 +60,7 @@ angular.module('myBus.serviceModules', ['ngTable', 'ui.bootstrap'])
             $location.url('/services/' + 'create');
         }
         
-        busServiceCtrl.serviceContentTableParams = new ngTableParams({
+        busServiceCtrl.serviceContentTableParams = new NgTableParams({
             page: 1,
             count: 50,
             sorting: {

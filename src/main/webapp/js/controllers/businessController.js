@@ -303,7 +303,7 @@ angular.module('myBus.businessModule', ['ngAnimate', 'ngTouch', 'ngTable', 'angu
   //
   // ======================== Edit Business / Image Upload =============================
   //
-  .controller('BusinessController', function ($scope, $rootScope, $http, $log, ngTableParams, $location, $routeParams, categoriesManager, classificationsManager, states, $upload, businessNavHelper, $modal, geocoder, infoOverlay, citiesAndNeighborhoodsManager, googlePlaces) {
+  .controller('BusinessController', function ($scope, $rootScope, $http, $log, NgTableParams, $location, $routeParams, categoriesManager, classificationsManager, states, $upload, businessNavHelper, $modal, geocoder, infoOverlay, citiesAndNeighborhoodsManager, googlePlaces) {
 
     $scope.headline = "Edit Business";
     $scope.businessId = $routeParams.id;
@@ -974,7 +974,7 @@ angular.module('myBus.businessModule', ['ngAnimate', 'ngTouch', 'ngTable', 'angu
 //
 // ============================= Business Resolve Controller===================================
 //
-.controller('BusinessResolveController', function($scope, $rootScope, $http, $log, $filter, ngTableParams, $location, $routeParams, appUtils, businessNavHelper, geocoder) {
+.controller('BusinessResolveController', function($scope, $rootScope, $http, $log, $filter, NgTableParams, $location, $routeParams, appUtils, businessNavHelper, geocoder) {
   $scope.businessId = $routeParams.id;
   $log.debug("businessId from routeParams is: " + $scope.businessId);
   $scope.business = {};
@@ -1003,7 +1003,7 @@ angular.module('myBus.businessModule', ['ngAnimate', 'ngTouch', 'ngTable', 'angu
   //
   // ============================= Add ========================================
   //
-  .controller('BusinessAddController', function($scope, $rootScope, $http, $log, ngTableParams, $location, $routeParams, categoriesManager, classificationsManager, states, $upload, businessNavHelper, $modal, geocoder, infoOverlay, citiesAndNeighborhoodsManager) {
+  .controller('BusinessAddController', function($scope, $rootScope, $http, $log, NgTableParams, $location, $routeParams, categoriesManager, classificationsManager, states, $upload, businessNavHelper, $modal, geocoder, infoOverlay, citiesAndNeighborhoodsManager) {
     $scope.headline = "Add New Business";
     $scope.saveButtonText = 'Save Business';
     $scope.isAdd = true;
@@ -1367,7 +1367,7 @@ angular.module('myBus.businessModule', ['ngAnimate', 'ngTouch', 'ngTable', 'angu
   //
   // ============================= List All ===================================
   //
-  .controller('BusinessesController', function($scope, $rootScope, $http, $log, $filter, ngTableParams, $location, $routeParams, appUtils, businessNavHelper, geocoder) {
+  .controller('BusinessesController', function($scope, $rootScope, $http, $log, $filter, NgTableParams, $location, $routeParams, appUtils, businessNavHelper, geocoder) {
 
     $scope.headline = "Businesses";
     $scope.businesses = [];
@@ -1392,7 +1392,7 @@ angular.module('myBus.businessModule', ['ngAnimate', 'ngTouch', 'ngTable', 'angu
       {id: 'false', desc: "Pending Review only"}
     ];
 
-    $scope.businessContentTableParams = new ngTableParams({
+    $scope.businessContentTableParams = new NgTableParams({
       page: $routeParams.pageNumber || 1,
       count: $routeParams.pageSize || 100,
       sorting: {

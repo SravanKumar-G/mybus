@@ -7,7 +7,7 @@ angular.module('myBus.busDetailModule', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusLayoutController   ================================================
   // ==================================================================================================================
 
-  .controller('BusDetailsController', function ($scope, $http, $log, ngTableParams, $modal, $filter, expensesManager, $location) {
+  .controller('BusDetailsController', function ($scope, $http, $log, NgTableParams, $modal, $filter, expensesManager, $location) {
     $log.debug('BusDetailsController loading');
     var busDetailsCtrl = this;
 

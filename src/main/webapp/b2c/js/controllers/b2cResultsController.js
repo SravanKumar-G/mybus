@@ -5,7 +5,7 @@
 /*global angular, _*/
 
 angular.module('myBusB2c.b2cResults', ['ngTable', 'ui.bootstrap'])
-.controller('B2cResultsController',function($scope, $log, $modal, $filter, ngTableParams,$location, $rootScope,$compile,b2cHomeManager,b2cBusResultsManager) {
+.controller('B2cResultsController',function($scope, $log, $modal, $filter, NgTableParams,$location, $rootScope,$compile,b2cHomeManager,b2cBusResultsManager) {
 	$scope.trips=[];
 	$scope.selectedSeat = [];
 	$scope.bJny ;

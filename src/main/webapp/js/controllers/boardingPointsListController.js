@@ -3,7 +3,7 @@
 /*global angular,_*/
 
 angular.module('myBus.boardingPointModule', [])
-            .controller('BoardingPointsListController', function ($scope, $http, $log, ngTableParams,$state,$stateParams, $modal, $filter, cityManager) {
+            .controller('BoardingPointsListController', function ($scope, $http, $log, NgTableParams,$state,$stateParams, $modal, $filter, cityManager) {
             $log.debug('BoardingPointsListController');
             $scope.headline = "Boarding Points";
             $scope.cityId = $stateParams.id;
@@ -21,7 +21,7 @@ angular.module('myBus.boardingPointModule', [])
                 });
 
             };
-            $scope.boardingPointContentTableParams = new ngTableParams({
+            $scope.boardingPointContentTableParams = new NgTableParams({
                 page: 1,
                 count: 25,
                 sorting: {
@@ -37,7 +37,7 @@ angular.module('myBus.boardingPointModule', [])
         //--------------------------------City deletion-----------------------------------------------------------
         $scope.handleDeleteButtonClicked = function(id) {
             cityManager.deleteCity(id);
-            },
+        },
         //-----------------------------------------------------------------------------------------------------------
         $scope.handleClickAddBoardingPoint = function () {
             var modalInstance = $modal.open({
@@ -54,7 +54,7 @@ angular.module('myBus.boardingPointModule', [])
             })
         },
         $scope. updateBpOnClick = function(id) {
-                var modalInstance = $modal.open({
+            var modalInstance = $modal.open({
                 templateUrl: 'update-boardingPt.html',
                 controller: 'UpdateBoardingPtController',
                 resolve: {
@@ -107,13 +107,13 @@ angular.module('myBus.boardingPointModule', [])
         };
         $scope.setBpIntoView (cityId,BpId);
         $scope.ok = function (BpId) {
-                    cityManager.updateBp(cityId,$scope.boardingPoint, function(data) {
-                        $state.go($state.$current, null, { reload: true });
-                        $modalInstance.close(data);
-                    })
+            cityManager.updateBp(cityId,$scope.boardingPoint, function(data) {
+                $state.go($state.$current, null, { reload: true });
+                $modalInstance.close(data);
+            });
         }
         $scope.cancel = function () {
-                    $modalInstance.dismiss('cancel');
+            $modalInstance.dismiss('cancel');
         };
     })
 

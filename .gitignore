@@ -20,3 +20,4 @@ out/
 .idea/**
  .idea/workspace.xml
 /bin/
+/src/main/webapp/node_modules/

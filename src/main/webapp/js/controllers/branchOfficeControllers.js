@@ -6,7 +6,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
   //
   // ============================= List All ===================================
   //
-    .controller('BranchOfficesController', function($scope,$state, $http, $log, $filter, ngTableParams, $location, branchOfficeManager) {
+    .controller('BranchOfficesController', function($scope,$state, $http, $log, $filter, NgTableParams, $location, branchOfficeManager) {
         $scope.headline = "Branch Offices";
         $scope.count = 0;
         $scope.offices = {};

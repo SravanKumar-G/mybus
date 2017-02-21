@@ -7,7 +7,7 @@ angular.module('myBus.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
   // ====================================    NeighborhoodsController   ================================================
   // ==================================================================================================================
 
-  .controller('NeighborhoodsController', function ($scope, $http, $log, ngTableParams, $modal, $filter, citiesAndNeighborhoodsManager, geocoder, $location) {
+  .controller('NeighborhoodsController', function ($scope, $http, $log, NgTableParams, $modal, $filter, citiesAndNeighborhoodsManager, geocoder, $location) {
     $log.debug('NeighborhoodsController loading');
 
     $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
@@ -93,7 +93,7 @@ angular.module('myBus.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
 
 
 
-    $scope.cityContentTableParams = new ngTableParams({
+    $scope.cityContentTableParams = new NgTableParams({
       page: 1,
       count: 50,
       sorting: {
@@ -316,7 +316,7 @@ angular.module('myBus.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
   // =================================     NeighborhoodsListController    =============================================
   // ==================================================================================================================
 
-  .controller('NeighborhoodsListController', function ($scope, $routeParams, $http, $location, $log, ngTableParams, $modal, $filter, citiesAndNeighborhoodsManager) {
+  .controller('NeighborhoodsListController', function ($scope, $routeParams, $http, $location, $log, NgTableParams, $modal, $filter, citiesAndNeighborhoodsManager) {
 
     //$log.debug('NeighborhoodsListController loading');
 
@@ -426,7 +426,7 @@ angular.module('myBus.neighborhoodsModule', ['ngTable', 'ui.bootstrap'])
     };
 
 
-    $scope.neighborhoodContentTableParams = new ngTableParams({
+    $scope.neighborhoodContentTableParams = new NgTableParams({
       page: 1,
       count: 50,
       sorting: {
