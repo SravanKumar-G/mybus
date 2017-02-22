@@ -21,17 +21,31 @@
                     <td colspan="5">No bookings found. </td>
                 </tr>
             </table>
-            <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
-                <span class="glyphicon glyphicon-plus"></span> Add Booking
-            </button>
         </div>
         <div class="col-sm-5">
             <h4>Expenses</h4>
             <table class="table table-bordered table-condensed table-hover">
-
+                <tr ng-repeat="expense in service.expenses">
+                    <td><input type="text" placeholder="expense name" ng-model="expense.name"></td>
+                    <td><input type="number" placeholder="amount" ng-model="expense.amount" ng-change="calculateNet()">
+                        <span class="glyphicon glyphicon-remove-sign" ng-show="expense.index" ng-click="deleteExpense(expense)"></span>
+                    </td>
+                </tr>
             </table>
-            <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addExpense()">
                 <span class="glyphicon glyphicon-plus"></span> Add Expense
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
+                <span class="glyphicon glyphicon-plus"></span> Add Booking
+            </button>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()">
+                <span class="glyphicon"></span> Submit Report
             </button>
         </div>
     </div>
@@ -43,8 +57,9 @@
             <td>Total Income</td><td>{{service.netIncome}}</td>
         </tr>
     </table>
+
 </div>
 
 <div ng-show="!downloaded">
-    Please wait while the report data is loaded
+    Please wait while the report data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
 </div>

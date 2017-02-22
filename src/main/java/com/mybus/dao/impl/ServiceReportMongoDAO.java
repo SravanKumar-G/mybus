@@ -26,7 +26,7 @@ public class ServiceReportMongoDAO {
 
     public Iterable<ServiceReport> findReports(JSONObject query, final Pageable pageable) {
         String[] fields = {"serviceNumber", "serviceName", "busType", "status", "vehicleRegNumber", "netIncome",
-                "source", "destination"};
+                "source", "destination", "attrs"};
         Iterable<ServiceReport> reports = mongoQueryDAO.getDocuments(ServiceReport.class, ServiceReport.COLLECTION_NAME,
                 fields, query, pageable);
         return reports;

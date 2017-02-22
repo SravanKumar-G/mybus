@@ -26,12 +26,19 @@ import java.util.Map;
 @Service
 public class BookingTypeManager {
     private static final Logger logger = LoggerFactory.getLogger(BookingTypeManager.class);
+    public static final String REDBUS_CHANNEL = "REDBUS-API";
+    public static final String ONLINE_CHANNEL = "ONLINE";
+    public static final String CASH_CHANNEL = "CASH";
+
     public static boolean isRedbusBooking(Booking booking) {
         return booking.getBookedBy().equalsIgnoreCase("REDBUS-API");
     }
-    public static boolean isAbhibusBooking(Booking booking) {
+    public static boolean isOnlineBooking(Booking booking) {
         if(booking.getBookedBy().equalsIgnoreCase("ONLINE") ||
-                booking.getBookedBy().equalsIgnoreCase("PAYTM-API")){
+                booking.getBookedBy().equalsIgnoreCase("YATRAGENIE-API") ||
+                booking.getBookedBy().equalsIgnoreCase("PAYTM-API") ||
+                booking.getBookedBy().equalsIgnoreCase("ABHIBUS") ||
+                booking.getBookedBy().equalsIgnoreCase("")){
             return true;
         } else {
             return false;

@@ -11,7 +11,8 @@ var myBus = angular.module('myBus', [
   'myBus.cityModule',
   'myBus.vehicleModule',
   'myBus.branchOfficeModule',
-  'myBus.serviceReportsModule'
+  'myBus.serviceReportsModule',
+  'myBus.expensesModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',

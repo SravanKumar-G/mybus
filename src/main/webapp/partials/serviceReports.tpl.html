@@ -43,7 +43,7 @@
             <td data-title="'From'"  sortable="'source'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.source }}</td>
             <td data-title="'To'"  sortable="'destination'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.destination }}</td>
             <td data-title="'Vehicle'"  sortable="'vehicleRegNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.vehicleRegNumber }}</td>
-            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.status }}</td>
+            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.attributes.submittedId }}</td>
          </tr>
         <tr ng-if="!currentPageOfReports || currentPageOfReports.length === 0">
             <td colspan="5">No reports exist. </td>

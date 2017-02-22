@@ -3,23 +3,20 @@ package com.mybus.service;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.dao.SubmittedServiceReportDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
-import com.mybus.model.Booking;
-import com.mybus.model.PaymentType;
-import com.mybus.model.ServiceReport;
-import com.mybus.model.ServiceReportStatus;
+import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONObject;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by skandula on 2/13/16.
@@ -43,6 +40,9 @@ public class ServiceReportsManager {
 
     @Autowired
     private BookingDAO bookingDAO;
+
+    @Autowired
+    private SubmittedServiceReportDAO submittedServiceReportDAO;
 
     public JSONObject getDownloadStatus(String date) {
         JSONObject response = new JSONObject();
@@ -78,7 +78,7 @@ public class ServiceReportsManager {
             if(BookingTypeManager.isRedbusBooking(booking)){
                 report.setNetRedbusIncome(report.getNetRedbusIncome() + booking.getNetAmt());
                 booking.setPaymentType(PaymentType.REDBUS);
-            } else if(BookingTypeManager.isAbhibusBooking(booking)) {
+            } else if(BookingTypeManager.isOnlineBooking(booking)) {
                 report.setNetOnlineIncome(report.getNetOnlineIncome() + booking.getNetAmt());
                 booking.setPaymentType(PaymentType.ONLINE);
             } else {
@@ -86,8 +86,67 @@ public class ServiceReportsManager {
                 booking.setPaymentType(PaymentType.CASH);
             }
         }
+        //round up the digits
+        report.setNetRedbusIncome((double) Math.round(report.getNetRedbusIncome() * 100) / 100);
+        report.setNetOnlineIncome((double) Math.round(report.getNetOnlineIncome() * 100) / 100);
+        report.setNetCashIncome((double) Math.round(report.getNetCashIncome() * 100) / 100);
+
         report.setNetIncome(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome());
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
+    }
+    public SubmittedServiceReport submitReport(ServiceReport serviceReport) {
+        logger.info("submitting the report");
+        SubmittedServiceReport submittedServiceReport = new SubmittedServiceReport();
+        submittedServiceReport.setServiceReportId(serviceReport.getId());
+        Map<String,List<String>> seatBookings = new HashMap<>();
+        Booking redbusBooking = new Booking();
+        Booking onnlineBooking = new Booking();
+        double rebBusIncome =0, onlineIncome =0;
+        for(Booking booking: serviceReport.getBookings()) {
+            if(BookingTypeManager.isRedbusBooking(booking)) {
+                if(seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
+                    seatBookings.put(BookingTypeManager.REDBUS_CHANNEL, new ArrayList<>());
+                }
+                String[] seats = booking.getSeats().split(",");
+                if(redbusBooking.getSeats() == null) {
+                    redbusBooking.setSeats(booking.getSeats());
+                } else {
+                    redbusBooking.setSeats(redbusBooking.getSeats() +","+booking.getSeats());
+                }
+                redbusBooking.setSeatsCount(redbusBooking.getSeatsCount()+seats.length);
+                redbusBooking.setNetAmt(redbusBooking.getNetAmt() + booking.getNetAmt());
+            }else  if(BookingTypeManager.isOnlineBooking(booking)) {
+                String[] seats = booking.getSeats().split(",");
+                if(onnlineBooking.getSeats() == null) {
+                    onnlineBooking.setSeats(booking.getSeats());
+                } else {
+                    onnlineBooking.setSeats(onnlineBooking.getSeats() + "," + booking.getSeats());
+                }
+                onnlineBooking.setSeatsCount(onnlineBooking.getSeatsCount()+seats.length);
+                onnlineBooking.setNetAmt(onnlineBooking.getNetAmt() + booking.getNetAmt());
+            } else {
+                //add dues based on agent
+                submittedServiceReport.getBookings().add(booking);
+                String[] seats = booking.getSeats().split(",");
+                submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + seats.length);
+            }
+        }
+        submittedServiceReport.getBookings().add(redbusBooking);
+        submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + redbusBooking.getSeatsCount());
+        submittedServiceReport.getBookings().add(onnlineBooking);
+        submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + onnlineBooking.getSeatsCount());
+        submittedServiceReport.setExpenses(serviceReport.getExpenses());
+        submittedServiceReport.setNetCashIncome(serviceReport.getNetCashIncome());
+        submittedServiceReport.setSource(serviceReport.getSource());
+        submittedServiceReport.setDestination(serviceReport.getDestination());
+        submittedServiceReport.setBusType(serviceReport.getBusType());
+        submittedServiceReport.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
+        submittedServiceReport.setJDate(serviceReport.getJDate());
+        submittedServiceReport.setConductorInfo(serviceReport.getConductorInfo());
+        submittedServiceReport =  submittedServiceReportDAO.save(submittedServiceReport);
+        serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, submittedServiceReport.getId());
+        serviceReportDAO.save(serviceReport);
+        return submittedServiceReport;
     }
 }

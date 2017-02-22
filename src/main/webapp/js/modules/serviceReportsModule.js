@@ -15,7 +15,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.offices = {};
 
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager) {
+    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, expensesManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
@@ -55,13 +55,22 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         }
 
         $scope.calculateNet = function() {
+
             var netCashIncome = 0;
+            var expenseTotal = 0;
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.paymentType == "CASH" && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
                 }
             }
+            for (var i =0; i< $scope.service.expenses.length;i++) {
+                var expense = $scope.service.expenses[i];
+                if(expense.amount && expense.amount != "") {
+                    expenseTotal += parseFloat(expense.amount);
+                }
+            }
+            netCashIncome-=expenseTotal;
             $scope.service.netCashIncome = netCashIncome.toFixed(2);
             $scope.service.netIncome = parseFloat($scope.service.netCashIncome) +
                                         parseFloat($scope.service.netRedbusIncome) +
@@ -74,7 +83,36 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.currentPageOfBookings.splice(booking.index,1);
             $scope.calculateNet();
         }
-
+        $scope.addExpense = function(){
+            if(!$scope.service.expenses) {
+                $scope.service.expenses = [];
+            }
+            $scope.service.expenses.push({'type':"OTHER",'serviceId':$scope.serviceId,'index':$scope.service.expenses.length+1});
+        }
+        $scope.deleteExpense = function(expense){
+            console.log('deleting expense..' + expense.index);
+            $scope.service.expenses.splice(expense.index-1,1);
+            //reshiffle the index
+            for(var index=0;index<$scope.service.expenses.length; index++) {
+                $scope.service.expenses[index].index = index+1;
+            }
+            $scope.calculateNet();
+        }
+        $scope.submitReport = function() {
+            swal({   title: "Please make sure all the data is accurate?",   text: "You will not be able to edit this form later !",   type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, submit it!",
+                closeOnConfirm: true }, function() {
+                serviceReportsManager.submitReport($scope.service, function (response) {
+                    //callback(response.data);
+                    sweetAlert("Great", "The report successfully submitted", "success");
+                    $location.url('serviceReports');
+                },function (error) {
+                    sweetAlert("Oops...", "Error submitting the report", "error" + angular.toJson(error));
+                });
+            });
+        }
     }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location) {
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth())+1)).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
@@ -111,13 +149,11 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             console.log("date changed to "+ $scope.dt);
             $scope.parseDate();
         }
-
         $scope.dateOptions = {
             formatYear: 'yy',
             minDate: new Date(),
             startingDay: 1
         };
-
         // Disable weekend selection
         function disabled(data) {
             var date = data.date,
@@ -129,26 +165,21 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
             $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
         };
-
         $scope.toggleMin();
-
         $scope.open1 = function() {
             $scope.popup1.opened = true;
         };
-
         $scope.setDate = function(year, month, day) {
             $scope.dt = new Date(year, month, day);
         };
         $scope.popup1 = {
             opened: false
         };
-
         function getDayClass(data) {
             var date = data.date,
                 mode = data.mode;
             if (mode === 'day') {
                 var dayToCheck = new Date(date).setHours(0,0,0,0);
-
                 for (var i = 0; i < $scope.events.length; i++) {
                     var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
 
@@ -157,7 +188,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     }
                 }
             }
-
             return '';
         }
         $scope.checkStatus = function() {
@@ -251,6 +281,15 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading service reports");
+                    });
+            },
+            submitReport:function(serviceReport,successcallback, errorcallback) {
+                $http.post('/api/v1/serviceReport', serviceReport)
+                    .then(function (response) {
+                        successcallback(response.data);
+                    },function (error) {
+                        $log.debug("error loading service reports");
+                        errorcallback();
                     });
             }
         }

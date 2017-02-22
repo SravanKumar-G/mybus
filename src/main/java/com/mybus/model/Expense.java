@@ -2,6 +2,7 @@ package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -11,27 +12,15 @@ import lombok.ToString;
 
 @ToString
 @ApiModel(value = "Expense")
-public class Expense extends AbstractDocument implements AttributesDocument{
-
-    @Getter
-    @Setter
+@Getter
+@Setter
+@NoArgsConstructor
+public class Expense extends AbstractDocument {
     private String date;
-    
-    @Getter
-    @Setter
+    private String name;
+    private int index;
     private String description;
-
-    @Getter
-    @Setter
     private ExpenseType type;
-
-    @Getter
-    @Setter
     private double amount;
-
-
-    @Override
-    public boolean containsKey(String attributeName) {
-        return false;
-    }
+    private String serviceId;
 }

@@ -29,6 +29,7 @@
     <script src="js/modules/vehicleModule.js"></script>
     <script src="js/modules/branchOfficeModules.js"></script>
     <script src="js/modules/serviceReportsModule.js"></script>
+    <script src="js/modules/expensesModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -159,15 +160,15 @@
                                 <a href="#"><i class="fa fa-book fa-lg"></i> Master</a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
-                                <my-menu url="amenities" label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu url="BranchOffices" label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu url="Cities" label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu url="Expense Types"  label="Expense Types" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="Income Types" label="Income Types" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="routes" label="Routes" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="users" label="Users" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="vehicles" label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="staff" label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="ExpenseTypes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="IncomeTypes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
                                 <a href="#"><i class="fa fa-book fa-lg"></i>Reports</a>

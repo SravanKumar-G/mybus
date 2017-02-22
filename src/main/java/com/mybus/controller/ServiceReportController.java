@@ -3,26 +3,18 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.BookingDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.Booking;
 import com.mybus.model.ServiceReport;
-import com.mybus.model.ServiceReportStatus;
-import com.mybus.model.Trip;
+import com.mybus.model.SubmittedServiceReport;
 import com.mybus.service.ServiceReportsManager;
-import com.mybus.service.TripManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.collections.IteratorUtils;
-import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  *
@@ -30,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/")
 public class ServiceReportController {
+	private static final Logger logger = LoggerFactory.getLogger(ServiceReportController.class);
 
 	@Autowired
 	private ServiceReportsManager serviceReportsManager;
@@ -76,5 +69,12 @@ public class ServiceReportController {
 		}catch (Exception e) {
 			throw new BadRequestException("Error loading report");
 		}
+	}
+
+	@RequestMapping(value = "serviceReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Post service report", response = JSONObject.class)
+	public void submitReport(HttpServletRequest request,
+				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
+		 serviceReportsManager.submitReport(serviceReport);
 	}
 }

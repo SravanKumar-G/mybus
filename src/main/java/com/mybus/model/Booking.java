@@ -1,10 +1,7 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +14,7 @@ import java.util.Date;
 @ApiModel(value = "Booking")
 @Getter
 @Setter
+@EqualsAndHashCode(of={"id", "ticketNo"})
 public class Booking extends AbstractDocument{
     private String serviceId;
     private String emailID;
@@ -28,11 +26,12 @@ public class Booking extends AbstractDocument{
     private String country;
     private String postalCode;
     private PaymentType paymentType;
-    private float amount;
+    private double amount;
     private Payment payment;
     private String ticketNo;
     private Date jouurneyDateTime;
     private String seats;
+    private int seatsCount;
     private String source;
     private String destination;
     private String bookedBy;
