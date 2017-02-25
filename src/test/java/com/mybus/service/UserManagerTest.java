@@ -54,7 +54,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     public void testSaveUser() throws Exception {
         User user = UserTestService.createNew();
         User duplicate = new User("fname", "lname", "uname", "pwd", "e@email.com", 1234567, "add1", "add2",
-                "city", "state", UserType.ADMIN, "plan3");
+                "city", "state", "ADMIN", "plan3");
         userDAO.save(user);
         assertNotNull(userDAO.findOne(user.getId()));
         expectedEx.expect(RuntimeException.class);
@@ -66,7 +66,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     public void testUpdateUser() throws Exception {
         User user = UserTestService.createNew();
         User duplicate = new User("fname", "lname", "unamenew", "pwd", "e@email.com", 1234567, "add1", "add2",
-                "city", "state", UserType.USER, "plan2");
+                "city", "state", "USER", "plan2");
         userDAO.save(user);
         userManager.saveUser(duplicate);
         List<User> userList = IteratorUtils.toList(userDAO.findAll().iterator());

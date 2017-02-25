@@ -84,11 +84,18 @@ public class RoleController extends MyBusBaseController {
         Role  role = roleDAO.findOneByName(name);
         return role;
     }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "manageingrole/{id}", method = RequestMethod.PUT)
     public boolean updateManagingRoles(HttpServletRequest request,@ApiParam(value = "JSON for Role to be created") @RequestBody final Role role){
     	roleManager.updateManagingRoles(role);
     	return true;
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "role/names", method = RequestMethod.GET)
+    public Iterable<Role> getRoleNames(HttpServletRequest request){
+        return roleManager.getRoleNames();
     }
 }
 

@@ -43,12 +43,9 @@
         <!-- ---------------------------------------------------------------------------- -->
         <form name="cityStateNeighForm" class="form-horizontal" role="form">
             <div class="form-group">
-               <!-- <label class="col-sm-3 control-label" for="modalStateInput">State</label> -->
-                
-                    <div class="col-sm-7 col-xs-offset-2">
-                        <state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="city.state" required></state-options>
-                    </div>
-                
+               <div class="col-sm-7 col-xs-offset-2">
+                    <state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="city.state" required></state-options>
+                </div>
             </div>
 
             <div class="form-group">
@@ -91,16 +88,15 @@
         <!-- ---------------------------------------------------------------------------- -->
         <form name="cityStateUpdateForm" class="form-horizontal" role="form">
             <div class="form-group">
-                <!-- <label class="col-sm-3 control-label" for="cityNameUpdate">Name</label> -->
                 <div class="col-sm-7 col-xs-offset-2">
-                    <input type="text" id="cityNameUpdate" class="form-control" ng-model="city.name" placeholder="Name">
+                    <state-options id="modalStateInput" class="field" name="modalStateInput" ng-model="city.state" required></state-options>
                 </div>
             </div>
 
             <div class="form-group">
-                <!-- <label class="col-sm-3 control-label" for="cityStateUpdate">State</label> -->
+                <!-- <label class="col-sm-3 control-label" for="cityInput">City</label> -->
                 <div class="col-sm-7 col-xs-offset-2">
-                    <input type="text" id="cityStateUpdate" class="form-control" ng-model="city.state" placeholder="State">
+                    <input type="text" id="cityInput1" class="form-control" ng-model="city.name" placeholder="City">
                 </div>
             </div>
 

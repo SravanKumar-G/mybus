@@ -3,8 +3,8 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.BookingDAO;
 import com.mybus.exception.BadRequestException;
+import com.mybus.model.ServiceForm;
 import com.mybus.model.ServiceReport;
-import com.mybus.model.SubmittedServiceReport;
 import com.mybus.service.ServiceReportsManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -65,6 +65,18 @@ public class ServiceReportController {
 											   @ApiParam(value = "id")@PathVariable final String id) {
 		try{
 			ServiceReport report = serviceReportsManager.getReport(id);
+			return report;
+		}catch (Exception e) {
+			throw new BadRequestException("Error loading report");
+		}
+	}
+
+	@RequestMapping(value = "serviceForm/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load one service report", response = JSONObject.class)
+	public ServiceForm getServiceForm(HttpServletRequest request,
+										  @ApiParam(value = "id")@PathVariable final String id) {
+		try{
+			ServiceForm report = serviceReportsManager.getForm(id);
 			return report;
 		}catch (Exception e) {
 			throw new BadRequestException("Error loading report");

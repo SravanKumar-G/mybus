@@ -13,16 +13,9 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
         $scope.headline = "Branch Offices";
         $scope.count = 0;
         $scope.offices = {};
-        $scope.loadAll = function () {
-            branchOfficeManager.loadAll(function(data){
-                $scope.offices =data;
-                $scope.count = data.length;
-            });
-        };
         $scope.addOffice = function () {
             $state.go('editbranchoffice');
         };
-        $scope.loadAll();
 
         $scope.edit = function(office){
             $location.url('branchoffice/'+office.id,{'idParam':office.id});
@@ -34,6 +27,32 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
             $scope.loadAll();
         });
 
+        $scope.currentPageOfOffices = [];
+        var loadTableData = function (tableParams) {
+            branchOfficeManager.loadAll(function(data){
+                if(angular.isArray(data)) {
+                    $scope.offices =data;
+                    $scope.count = data.length;
+                    $scope.offices = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                    tableParams.total(data.length);
+                    $scope.currentPageOfOffices = $scope.offices.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                }
+            });
+        };
+        $scope.officeTableParams = new NgTableParams({
+            page: 1,
+            count: 100,
+            sorting: {
+                fullName: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfOffices.length,
+            getData: function (params) {
+                loadTableData(params);
+            }
+        });
+
+
     })
 
     //
@@ -42,7 +61,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
     .controller('EditBranchOfficeController', function($scope,$stateParams,userManager,$window,$log, cityManager, $location, cancelManager,branchOfficeManager ) {
         $scope.headline = "Edit Branch Office";
         $scope.id=$stateParams.id;
-        cityManager.getCities(function(data) {
+        cityManager.getActiveCityNames(function(data) {
             $scope.cities = data;
             userManager.getUserNames(function(users) {
                 $scope.users= users;
@@ -94,7 +113,6 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
         var branchOffices = {};
         return {
             loadAll: function (callback) {
-                $log.debug("fetching branch offices data ...");
                 $http.get('/api/v1/branchOffices')
                     .then(function (response) {
                         callback(response.data);

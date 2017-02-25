@@ -11,11 +11,11 @@ import java.util.*;
  * Created by skandula on 2/13/16.
  */
 @ToString
-@ApiModel(value = "SubmittedServiceReport")
+@ApiModel(value = "ServiceForm")
 @Getter
 @Setter
-public class SubmittedServiceReport extends AbstractDocument  {
-    public static final String COLLECTION_NAME = "SubmittedServiceReport";
+public class ServiceForm extends AbstractDocument  {
+    public static final String COLLECTION_NAME = "ServiceForm";
     private final ServiceStatus status = ServiceStatus.SUBMITTED;
     private String serviceReportId;
     private String serviceNumber;
@@ -34,7 +34,8 @@ public class SubmittedServiceReport extends AbstractDocument  {
     private String verifiedBy;
     private String conductorInfo;
     private int seatsCount;
-    public SubmittedServiceReport() {
+    private String notes;
+    public ServiceForm() {
         this.staff = new HashSet<>();
         this.bookings = new ArrayList<>();
     }

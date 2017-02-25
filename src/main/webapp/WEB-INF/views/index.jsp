@@ -15,9 +15,11 @@
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="node_modules/angular/angular.js"></script>
-    <script src="node_modules/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="node_modules/angular-animate/angular-animate.js"></script>
+
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+    <script src="node_modules/angular-strap/dist/angular-strap.js"></script>
+    <script src="node_modules/angular-strap/dist/angular-strap.tpl.min.js"></script>
     <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
     <script src="node_modules/ng-table/bundles/ng-table.js"></script>
@@ -30,6 +32,9 @@
     <script src="js/modules/branchOfficeModules.js"></script>
     <script src="js/modules/serviceReportsModule.js"></script>
     <script src="js/modules/expensesModule.js"></script>
+    <script src="js/modules/routeModule.js"></script>
+    <script src="js/modules/cancelModule.js"></script>
+    <script src="js/modules/roleModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -163,8 +168,7 @@
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu label="ExpenseTypes" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="IncomeTypes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>

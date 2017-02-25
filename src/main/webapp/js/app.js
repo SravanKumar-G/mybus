@@ -12,7 +12,9 @@ var myBus = angular.module('myBus', [
   'myBus.vehicleModule',
   'myBus.branchOfficeModule',
   'myBus.serviceReportsModule',
-  'myBus.expensesModule'
+  'myBus.expensesModule',
+  'myBus.routeModule',
+  'myBus.roleModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -34,6 +36,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/servicereport/:id',
                 templateUrl: 'partials/serviceReport.tpl.html',
                 controller: 'ServiceReportController'
+            })
+            .state('serviceform/:id', {
+                level:2,
+                url:'/serviceform/:id',
+                templateUrl: 'partials/serviceform.tpl.html',
+                controller: 'ServiceFormController'
             })
             .state('servicereports', {
                 level:2,
@@ -117,7 +125,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             .state('roles', {
                 url:'/roles',
                 templateUrl: 'partials/roles.tpl.html',
-                controller: 'RolesController'
+                controller: 'RoleController'
             })
             .state('busdetails', {
             	level:1,

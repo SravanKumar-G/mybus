@@ -74,7 +74,7 @@ public class BranchOfficeManager {
         }
         List<BranchOffice> branchOffices = IteratorUtils.toList(mongoQueryDAO.
                 getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query, pageable).iterator());
-        Map<String, String> cityNames = cityManager.getCityNames(false);
+        Map<String, String> cityNames = cityManager.getCityNamesMap();
         Map<String, String> userNames = userManager.getUserNames(false);
         branchOffices.parallelStream().forEach(office -> {
             office.getAttributes().put(BranchOffice.CITY_NAME, cityNames.get(office.getCityId()));

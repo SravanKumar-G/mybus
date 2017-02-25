@@ -3,11 +3,11 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
-import com.mybus.dao.SubmittedServiceReportDAO;
+import com.mybus.dao.ServiceFormDAO;
 import com.mybus.model.Booking;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.ServiceReportStatus;
-import com.mybus.model.SubmittedServiceReport;
+import com.mybus.model.ServiceForm;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -33,12 +33,12 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     private ServiceReportsManager serviceReportsManager;
 
     @Autowired
-    private SubmittedServiceReportDAO submittedServiceReportDAO;
+    private ServiceFormDAO serviceFormDAO;
 
     @Before
     @After
     public void cleanup() {
-        submittedServiceReportDAO.deleteAll();
+        serviceFormDAO.deleteAll();
         serviceReportStatusDAO.deleteAll();
     }
     @Test
@@ -89,9 +89,9 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             serviceReport.getBookings().add(booking);
         }
         serviceReport.setNetCashIncome(3000);
-        SubmittedServiceReport report = serviceReportsManager.submitReport(serviceReport);
-        Iterable<SubmittedServiceReport> submittedServiceReports = submittedServiceReportDAO.findAll();
-        assertEquals(1, IteratorUtils.toList(submittedServiceReports.iterator()).size());
+        ServiceForm report = serviceReportsManager.submitReport(serviceReport);
+        Iterable<ServiceForm> serviceForms = serviceFormDAO.findAll();
+        assertEquals(1, IteratorUtils.toList(serviceForms.iterator()).size());
         assertEquals(5, report.getBookings().size());
         assertTrue(3000 == report.getNetCashIncome());
         assertEquals(18, report.getSeatsCount());

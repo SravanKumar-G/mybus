@@ -6,48 +6,42 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
   //
   // ============================= List All ===================================
   //
-    .controller('UsersController', function($scope,$state, $http, $log, $filter, NgTableParams, $location, usSpinnerService,userManager) {
+    .controller('UsersController', function($scope,$state, $http, $log, $filter, NgTableParams, $location,userManager, roleManager) {
       $scope.headline = "Users";
       //$scope.users = [];
       $scope.userCount = 0;
 
-      $scope.startSpin = function(){
-        usSpinnerService.spin('spinner-1');
-      };
-      $scope.stopSpin = function(){
-        usSpinnerService.stop('spinner-1');
-      };
-
       $scope.currentPageOfUsers = [];
       var loadTableData = function (tableParams, $defer) {
           userManager.getUsers(function (data) {
-              $scope.users = data;
-              $scope.userCount = data.length;
-              var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-              $scope.allUsers = orderedData;
-              tableParams.total(data.length);
-              if (angular.isDefined($defer)) {
-                  $defer.resolve(orderedData);
+              if(angular.isArray(data)) {
+                  $scope.users = data;
+                  $scope.userCount = data.length;
+                  var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                  $scope.allUsers = orderedData;
+                  tableParams.total(data.length);
+                  if (angular.isDefined($defer)) {
+                      $defer.resolve(orderedData);
+                  }
+                  $scope.currentPageOfUsers = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
               }
-              $scope.currentPageOfUsers = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
           });
       };
       $scope.userContentTableParams = new NgTableParams({
         page: 1,
-        count: 50,
+        count: 100,
         sorting: {
-          state: 'asc',
-          name: 'asc'
+          fullName: 'asc'
         }
       }, {
         total: $scope.currentPageOfUsers.length,
-        getData: function ($defer, params) {
-          $scope.$on('UsersInitComplete', function (e, value) {
+        getData: function (params) {
             loadTableData(params);
-          });
         }
       });
-
+    $scope.$on('UsersInitComplete', function (e, value) {
+        loadTableData( $scope.userContentTableParams );
+    });
     userManager.fetchAllUsers();
 
     $scope.$on('CreateUserCompleted',function(e,value){
@@ -77,17 +71,21 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,$log, $location,agentPlanManager, roleManager,cancelManager ) {
+    .controller('UserAddController', function($scope,userManager,$window,$log, $location, roleManager, cityManager, cancelManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
         $scope.user = {};
         $scope.planTypes = [];
         $scope.roles =[];
+        $scope.cities = [];
         $scope.rolesInit = function(){
         	roleManager.getAllRoles(function(data){
         		$scope.roles = data;
         	});
+            cityManager.getActiveCityNames(function(data){
+                $scope.cities = data;
+            });
         }
         $scope.rolesInit();
         $scope.usersFromManager=[];
@@ -101,13 +99,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
-
-        $scope.loadFromPlanType = function(){
-            agentPlanManager.getPlans(function (data) {
-                $scope.planTypes = data;
-            });
-        };
-        $scope.loadFromPlanType();
 
         $scope.callBlurFunction = function(userPassword){
             $scope.user.password = userPassword;
@@ -141,25 +132,29 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log, $modal,userManager,$window,roleManager,cancelManager) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.id;
         $scope.user={};
         $scope.roles =[];
-        $scope.rolesInit = function(){
+        $scope.cities =[];
+            $scope.rolesInit = function(){
         	roleManager.getAllRoles(function(data){
         		$scope.roles = data;
         	});
         }
         $scope.rolesInit();
         $scope.loadUserWithId = function(){
-            userManager.getUserWithId($scope.id,function(data){
-                $scope.user=data;
-                $scope.confirmPassword = $scope.user.password;
-            })
+            cityManager.getActiveCityNames(function(data) {
+                $scope.cities = data;
+                console.log("city names..." + JSON.stringify($scope.cities));
+                userManager.getUserWithId($scope.id, function (data) {
+                    $scope.user = data;
+                    $scope.confirmPassword = $scope.user.password;
+                });
+            });
         };
         $scope.loadUserWithId();
-
         $scope.save = function(){
             if($scope.userForm.$invalid) {
                 swal("Error!","Please fix the errors in the user form","error");
@@ -212,8 +207,8 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             fetchAllUsers: function () {
                 $log.debug("fetching routes data ...");
                 $http.get('/api/v1/users')
-                    .then(function (data) {
-                        users=data;
+                    .then(function (response) {
+                        users=response.data;
                         $rootScope.$broadcast('UsersInitComplete');
                     },function (error) {
                         $log.debug("error retrieving users");
@@ -221,18 +216,24 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             },
 
             getUsers: function (callback) {
-                $http.get('/api/v1/users')
-                    .then(function (data) {
-                        callback(data);
-                        $rootScope.$broadcast('FetchingUsersComplete');
-                    },function (error) {
-                        $log.debug("error retrieving cities");
-                    });
+                if(users) {
+                    callback(users);
+                } else {
+                    $http.get('/api/v1/users')
+                        .then(function (response) {
+                            users=response.data;
+                            callback(response.data);
+                            $rootScope.$broadcast('FetchingUsersComplete');
+                        },function (error) {
+                            $log.debug("error retrieving cities");
+                        });
+                }
+
             },
             getUserNames: function (callback) {
                 $http.get('/api/v1/userNames')
-                    .then(function (data) {
-                        callback(data);
+                    .then(function (response) {
+                        callback(response.data);
                         $rootScope.$broadcast('FetchingUserNamesComplete');
                     },function (error) {
                         $log.debug("error retrieving user names");
@@ -245,8 +246,8 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             },
 
             createUser: function(user,callback){
-                $http.post('/api/v1/user',user).then(function(data){
-                    callback(data);
+                $http.post('/api/v1/user',user).then(function(response){
+                    callback(response.data);
                     $rootScope.$broadcast('CreateUserCompleted');
                 },function (err,status) {
                     sweetAlert("Error",err.message,"error");
@@ -254,13 +255,13 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             },
 
             getUserWithId:function(id,callback){
-                $http.get("/api/v1/userId/" + id).then(function(data){
-                    callback(data);
+                $http.get("/api/v1/userId/" + id).then(function(response){
+                    callback(response.data);
                 })
             },
             updateUser : function (user,callback,errorcallback) {
-                $http.put('/api/v1/userEdit/'+user.id,user).then(function(data){
-                    callback(data);
+                $http.put('/api/v1/userEdit/'+user.id,user).then(function(response){
+                    callback(response.data);
                     $rootScope.$broadcast('UpdateUserCompleted');
                 },function (data, status, header, config) {
                     errorcallback(data);
@@ -277,7 +278,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     confirmButtonText: "Yes, delete it!",
                     confirmButtonColor: "#ec6c62"},function(){
 
-                    $http.delete('api/v1/user/'+id).then(function(data){
+                    $http.delete('api/v1/user/'+id).then(function(response){
                         $rootScope.$broadcast('DeleteUserCompleted');
                         swal("Deleted!", "Route was successfully deleted!", "success");
                     },function () {
@@ -308,9 +309,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             getGroupsForCurrentUser: function (callback, forceRefresh) {
                 if (currentGroups === null || forceRefresh) {
                     $http.get('/api/v1/user/groups')
-                        .then(function (groups) {
-                            currentGroups = groups;
-                            return angular.isFunction(callback) && callback(null, groups);
+                        .then(function (response) {
+                            currentGroups = response.data;
+                            return angular.isFunction(callback) && callback(null, currentGroups);
                         },function (err) {
                             $log.error('Error getting current user\'s groups. ' + angular.toJson(err));
                             return angular.isFunction(callback) && callback(err);

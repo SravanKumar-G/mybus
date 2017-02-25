@@ -69,7 +69,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
             cityDAO.save(city);
         }
         
-        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/activeCityNames"), currentUser));
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/allCityNames"), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(
                 jsonPath("$.234").value("Name2"));

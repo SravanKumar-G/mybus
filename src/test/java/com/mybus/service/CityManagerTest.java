@@ -6,6 +6,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.model.User;
+import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.*;
 
@@ -102,14 +104,7 @@ public class CityManagerTest extends AbstractControllerIntegrationTest{
             }
             city = cityDAO.save(city);
         }
-        Map<String, String> cityNames = cityManager.getCityNames(false);
-        assertEquals(5, cityNames.values().size());
-        cityNames.values().parallelStream().forEach(name -> {
-            assertTrue(name.equals("TestCity2") ||
-                    name.equals("TestCity4")||
-                    name.equals("TestCity6")||
-                    name.equals("TestCity8")||
-                    name.equals("TestCity10"));
-        });
+       List<City> cities = IteratorUtils.toList(cityManager.getCityNames(false).iterator());
+        assertEquals(5, cities.size());
     }
 }

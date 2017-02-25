@@ -1,9 +1,6 @@
 package com.mybus.service;
 
-import com.mybus.dao.BookingDAO;
-import com.mybus.dao.ServiceReportDAO;
-import com.mybus.dao.ServiceReportStatusDAO;
-import com.mybus.dao.SubmittedServiceReportDAO;
+import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.awt.print.Book;
 import java.util.*;
 
 /**
@@ -42,7 +40,10 @@ public class ServiceReportsManager {
     private BookingDAO bookingDAO;
 
     @Autowired
-    private SubmittedServiceReportDAO submittedServiceReportDAO;
+    private ExpenseDAO expenseDAO;
+
+    @Autowired
+    private ServiceFormDAO serviceFormDAO;
 
     public JSONObject getDownloadStatus(String date) {
         JSONObject response = new JSONObject();
@@ -87,22 +88,26 @@ public class ServiceReportsManager {
             }
         }
         //round up the digits
-        report.setNetRedbusIncome((double) Math.round(report.getNetRedbusIncome() * 100) / 100);
-        report.setNetOnlineIncome((double) Math.round(report.getNetOnlineIncome() * 100) / 100);
-        report.setNetCashIncome((double) Math.round(report.getNetCashIncome() * 100) / 100);
-
-        report.setNetIncome(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome());
+        report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
+        report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
+        report.setNetCashIncome(roundUp(report.getNetCashIncome()));
+        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }
-    public SubmittedServiceReport submitReport(ServiceReport serviceReport) {
+    private double roundUp(double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
+    public ServiceForm submitReport(ServiceReport serviceReport) {
         logger.info("submitting the report");
-        SubmittedServiceReport submittedServiceReport = new SubmittedServiceReport();
-        submittedServiceReport.setServiceReportId(serviceReport.getId());
+        ServiceForm serviceForm = new ServiceForm();
+        serviceForm.setServiceReportId(serviceReport.getId());
         Map<String,List<String>> seatBookings = new HashMap<>();
         Booking redbusBooking = new Booking();
+        redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
         Booking onnlineBooking = new Booking();
-        double rebBusIncome =0, onlineIncome =0;
+        onnlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
+        double cashIncome = 0;
         for(Booking booking: serviceReport.getBookings()) {
             if(BookingTypeManager.isRedbusBooking(booking)) {
                 if(seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
@@ -127,26 +132,58 @@ public class ServiceReportsManager {
                 onnlineBooking.setNetAmt(onnlineBooking.getNetAmt() + booking.getNetAmt());
             } else {
                 //add dues based on agent
-                submittedServiceReport.getBookings().add(booking);
+                booking.setId(null);
+                booking.setServiceId(null);
+                serviceForm.getBookings().add(booking);
                 String[] seats = booking.getSeats().split(",");
-                submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + seats.length);
+                booking.setSeatsCount(seats.length);
+                serviceForm.setSeatsCount(serviceForm.getSeatsCount() + seats.length);
+                cashIncome += booking.getNetAmt();
             }
         }
-        submittedServiceReport.getBookings().add(redbusBooking);
-        submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + redbusBooking.getSeatsCount());
-        submittedServiceReport.getBookings().add(onnlineBooking);
-        submittedServiceReport.setSeatsCount(submittedServiceReport.getSeatsCount() + onnlineBooking.getSeatsCount());
-        submittedServiceReport.setExpenses(serviceReport.getExpenses());
-        submittedServiceReport.setNetCashIncome(serviceReport.getNetCashIncome());
-        submittedServiceReport.setSource(serviceReport.getSource());
-        submittedServiceReport.setDestination(serviceReport.getDestination());
-        submittedServiceReport.setBusType(serviceReport.getBusType());
-        submittedServiceReport.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
-        submittedServiceReport.setJDate(serviceReport.getJDate());
-        submittedServiceReport.setConductorInfo(serviceReport.getConductorInfo());
-        submittedServiceReport =  submittedServiceReportDAO.save(submittedServiceReport);
-        serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, submittedServiceReport.getId());
+
+        redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
+        onnlineBooking.setNetAmt(roundUp(onnlineBooking.getNetAmt()));
+        serviceForm.getBookings().add(redbusBooking);
+        serviceForm.setSeatsCount(serviceForm.getSeatsCount() + redbusBooking.getSeatsCount());
+        serviceForm.getBookings().add(onnlineBooking);
+        serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onnlineBooking.getSeatsCount());
+        serviceForm.setExpenses(serviceReport.getExpenses());
+        serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
+        serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
+        serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
+        serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
+        serviceForm.setSource(serviceReport.getSource());
+        serviceForm.setDestination(serviceReport.getDestination());
+        serviceForm.setBusType(serviceReport.getBusType());
+        serviceForm.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
+        serviceForm.setJDate(serviceReport.getJDate());
+        serviceForm.setConductorInfo(serviceReport.getConductorInfo());
+        serviceForm.setNotes(serviceReport.getNotes());
+        ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
+        for(Booking booking:serviceForm.getBookings()) {
+            booking.setFormId(savedForm.getId());
+        }
+        for(Expense expense: serviceReport.getExpenses()) {
+            expense.setServiceId(serviceForm.getId());
+        }
+        expenseDAO.save(serviceReport.getExpenses());
+        bookingDAO.save(serviceForm.getBookings());
+        serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         serviceReportDAO.save(serviceReport);
-        return submittedServiceReport;
+        return serviceForm;
+    }
+
+    public ServiceForm getForm(String id) {
+        ServiceForm report = serviceFormDAO.findOne(id);
+        Iterable<Booking> bookings = bookingDAO.findByFormId(report.getId());
+        //round up the digits
+        report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
+        report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
+        report.setNetCashIncome(roundUp(report.getNetCashIncome()));
+        report.setNetIncome(roundUp(report.getNetIncome()));
+        report.setExpenses(IteratorUtils.toList(expenseDAO.findByServiceId(id).iterator()));
+        report.setBookings(IteratorUtils.toList(bookings.iterator()));
+        return report;
     }
 }

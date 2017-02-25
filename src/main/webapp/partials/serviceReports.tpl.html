@@ -38,12 +38,14 @@
 
     <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams" ng-show="downloaded">
         <tr ng-repeat="service in currentPageOfReports">
-            <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.serviceNumber }}</td>
-            <td data-title="'Type'"  sortable="'busType'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.busType }}</td>
-            <td data-title="'From'"  sortable="'source'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.source }}</td>
-            <td data-title="'To'"  sortable="'destination'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.destination }}</td>
-            <td data-title="'Vehicle'"  sortable="'vehicleRegNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.vehicleRegNumber }}</td>
-            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service.id)">{{ service.attributes.submittedId }}</td>
+            <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.serviceNumber }}</td>
+            <td data-title="'Type'"  sortable="'busType'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.busType }}</td>
+            <td data-title="'From'"  sortable="'source'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.source }}</td>
+            <td data-title="'To'"  sortable="'destination'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.destination }}</td>
+            <td data-title="'Vehicle'"  sortable="'vehicleRegNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.vehicleRegNumber }}</td>
+            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">
+                <span ng-show="{{ service.attributes.formId != null}}">Submitted</span>
+            </td>
          </tr>
         <tr ng-if="!currentPageOfReports || currentPageOfReports.length === 0">
             <td colspan="5">No reports exist. </td>

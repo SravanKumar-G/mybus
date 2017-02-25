@@ -20,7 +20,7 @@ import java.util.*;
 
 public class ServiceReport extends AbstractDocument  {
     public static final String COLLECTION_NAME = "serviceReport";
-    public static final String SUBMITTED_ID = "submittedId";
+    public static final String SUBMITTED_ID = "formId";
 
     private String serviceName;
     private String serviceNumber;
@@ -39,8 +39,10 @@ public class ServiceReport extends AbstractDocument  {
     private double netIncome;
     private String submittedBy;
     private String verifiedBy;
+    private int totalSeats;
     private ServiceStatus status;
     private String conductorInfo;
+    private String notes;
     public ServiceReport() {
         this.staff = new HashSet<>();
         this.expenses = new ArrayList<>();

@@ -1,5 +1,4 @@
 <legend>{{ headline }}</legend>
-<h4>{{headline}}</h4>
 
 <span class="small-text">Total: {{ count }}</span>
 <div class="toolbar-button-div pull-right">
@@ -7,22 +6,22 @@
 </div>
 
 
-<table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
+<table class="table table-bordered table-condensed table-hover table-striped" ng-table="officeTableParams">
     <tr ng-repeat="office in offices">
-        <td data-title="'Name'" class="col-sm-2" sortable="'lastName'">{{ office.name }}</td>
-        <td data-title="'City'" class="col-sm-1" sortable="'lastName'">{{ office.attributes.cityName }}</td>
-        <td data-title="'Manager'" class="col-sm-2"sortable="'firstName'">{{ office.attributes.managerName }}</td>
-        <td data-title="'Contact'" class="col-sm-1" sortable="'userName'">{{ office.contact }}</td>
-        <td data-title="'Email'" class="col-sm-2" sortable="'contact'">{{ office.email }}</td>
-        <td data-title="'Address'" class="col-sm-2" sortable="'type'">{{ office.address }}</td>
-        <td class="col-sm-2">
+        <td data-title="'Name'" class="col-sm-2" sortable="'name'">{{ office.name }}</td>
+        <td data-title="'City'" class="col-sm-1" sortable="'attributes.cityName'">{{ office.attributes.cityName }}</td>
+        <td data-title="'Manager'" class="col-sm-2" >{{ office.attributes.managerName }}</td>
+        <td data-title="'Contact'" class="col-sm-1" sortable="'contact'">{{ office.contact }}</td>
+        <td data-title="'Email'" class="col-sm-2" sortable="'email'">{{ office.email }}</td>
+        <td data-title="'Address'" class="col-sm-2" sortable="'address'">{{ office.address }}</td>
+        <td class="col-sm-1">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="edit(office)">
                     <span class="glyphicon glyphicon-pencil"></span></md-icon>
             </md-button>
             <md-button >
                 <md-icon type="button" class="btn" ng-click="delete(office)">
-                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+                    <span class="glyphicon glyphicon-trash"></span></md-icon>
             </md-button>
         </td>
     </tr>

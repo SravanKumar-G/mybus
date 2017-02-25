@@ -6,7 +6,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
   // ==================================================================================================================
   // ====================================    CitiesController   ================================================
   // ==================================================================================================================
-    .controller('CitiesController', function ($scope, $http, $log, NgTableParams, $filter, cityManager, $location) {
+    .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope) {
         $log.debug('CitiesController loading');
         $scope.headline = "Cities";
         $scope.allCities = [];
@@ -39,7 +39,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
         $scope.cityContentTableParams = new NgTableParams({
             page: 1,
-            count:25,
+            count:50,
             sorting: {
                 name: 'asc'
             }
@@ -53,7 +53,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
 //---------------------------------------------------------------------------------------------------------------------
     $scope.handleClickAddStateCity = function (size) {
-        var modalInstance = $modal.open({
+        $rootScope.modalInstance = $uibModal.open({
             templateUrl: 'add-city-state-modal.html',
             controller: 'AddStateCityModalController',
             size: size,
@@ -63,7 +63,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                 }
             }
         });
-        modalInstance.result.then(function (data) {
+        $rootScope.modalInstance.result.then(function (data) {
             $log.debug("results from modal: " + angular.toJson(data));
             $scope.cityContentTableParams.reload();
         }, function () {
@@ -71,7 +71,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         });
     };
     $scope.handleClickUpdateStateCity = function(cityId){
-        var modalInstance = $modal.open({
+        $rootScope.modalInstance = $uibModal.open({
             templateUrl : 'update-city-state-modal.html',
             controller : 'UpdateStateCityModalController',
             resolve : {
@@ -85,32 +85,28 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
   })
     // ========================== Modal - Update City, State  =================================
 
-    .controller('UpdateStateCityModalController', function ($scope, $state, $modalInstance, $http, $log, cityManager, passId) {
+    .controller('UpdateStateCityModalController', function ($scope, $state, $uibModal, $http, $log, cityManager, passId, $rootScope) {
         $scope.city = {};
-
         $scope.displayCity = function(data){
             $scope.city = data;
         };
-
         $scope.setCityIntoModal = function(passId){
             cityManager.getCity(passId,$scope.displayCity);
-
         };
         $scope.setCityIntoModal(passId);
-
         $scope.ok = function () {
             if ($scope.city.id === null || $scope.city.name === null || $scope.city.state === null) {
                 $log.error("null city or state.  nothing was added.");
-                $modalInstance.close(null);
+                $rootScope.modalInstance.close(null);
             }
             cityManager.updateCity($scope.city, function (data) {
                 $state.transitionTo('cities');
-                $modalInstance.close(data);
+                $rootScope.modalInstance.close(data);
             });
         };
 
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $rootScope.modalInstance.dismiss('cancel');
         };
 
         $scope.isInputValid = function () {
@@ -122,7 +118,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 //
     // ========================== Modal - Add City, State  =================================
     //
-    .controller('AddStateCityModalController', function ($scope, $modalInstance,$state, $http, $log, cityManager) {
+    .controller('AddStateCityModalController', function ($scope, $rootScope,$uibModal,$state, $http, $log, cityManager) {
         $scope.city = {
             name: null,
             state: null
@@ -130,16 +126,16 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         $scope.ok = function () {
             if ($scope.city.name === null || $scope.city.state === null) {
                 $log.error("null city or state.  nothing was added.");
-                $modalInstance.close(null);
+                $rootScope.modalInstance.close(null);
             }
             cityManager.createCity($scope.city, function(data){
                 $state.go($state.$current, null, { reload: true });
-                $modalInstance.close(data);
+                $rootScope.modalInstance.close(data);
             });
         };
         
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $rootScope.modalInstance.dismiss('cancel');
         };
 
         $scope.isInputValid = function () {
@@ -147,7 +143,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                     ($scope.city.state || '') !== '';
         };
 
-    }).factory('cityManager', function ($rootScope, $http, $log, $window) {
+    }).factory('cityManager', function ($rootScope, $http, $log, $location) {
         var cities = {}
             , rawChildDataWithGeoMap = {};
         return {
@@ -163,6 +159,14 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             },
             getCities: function (callback) {
                 $http.get('/api/v1/cities')
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error retrieving cities");
+                    });
+            },
+            getActiveCityNames:function(callback) {
+                $http.get('/api/v1/activeCityNames')
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
@@ -203,7 +207,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                         callback(response.data);
                         swal("Great", "Your City has been successfully added", "success");
                     },function(err,status) {
-                        sweetAlert("Error",err.message,"error");
+                        sweetAlert("Error",err.data.message,"error");
                     });
             },
             getCity: function (id, callback) {
@@ -225,7 +229,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                         .then(function (response) {
                             //callback(response.data);
                             sweetAlert("Great", "Your City has been successfully deleted", "success");
-                            $window.location = "#/cities";
+                           $location.url("/cities");
                         },function (error) {
                             sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
                         });
@@ -237,6 +241,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                     sweetAlert("Great","Your City has been successfully updated", "success");
                     $rootScope.$broadcast('updateCityCompleteEvent');
                 },function (error) {
+                    console.log(JSON.stringify(error));
                     sweetAlert("Oops..", "Error updating City data!", "error" + angular.toJson(error));
                 })
             },
@@ -326,7 +331,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         $scope.dateOptions = {
             initDate: new Date()
         }
-    }).controller('BoardingPointsListController', function ($scope, $http, $log, NgTableParams,$state,$stateParams, $filter, cityManager) {
+    }).controller('BoardingPointsListController', function ($scope, $http,$uibModal, $log, NgTableParams,$state,$stateParams, $filter, cityManager, $rootScope) {
         $log.debug('BoardingPointsListController');
         $scope.headline = "Boarding Points";
         $scope.cityId = $stateParams.id;
@@ -334,7 +339,6 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         var loadTableData = function (tableParams, $defer) {
             cityManager.getCity($scope.cityId, function(data) {
                 $scope.city = data;
-                console.log("found city"+angular.toJson($scope.city));
                 var orderedData = tableParams.sorting() ? $filter('orderBy')($scope.city.boardingPoints, tableParams.orderBy()) : $scope.city.boardingPoints;
                 tableParams.total($scope.city.boardingPoints.length);
                 if (angular.isDefined($defer)) {
@@ -352,7 +356,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             }
         }, {
             total: $scope.currentPageOfBoardingPoints.length,
-            getData: function ($defer, params) {
+            getData: function (params) {
                 loadTableData(params);
             }
         });
@@ -362,7 +366,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         },
         //-----------------------------------------------------------------------------------------------------------
         $scope.handleClickAddBoardingPoint = function () {
-            var modalInstance = $modal.open({
+            $rootScope.modalInstance = $uibModal.open({
                 templateUrl: 'add-boardingpoint-to-city-state-modal.html',
                 controller: 'AddBoardingPointController',
                 resolve: {
@@ -376,7 +380,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             })
         },
         $scope. updateBpOnClick = function(id) {
-            var modalInstance = $modal.open({
+            $rootScope.modalInstance = $uibModal.open({
                 templateUrl: 'update-boardingPt.html',
                 controller: 'UpdateBoardingPtController',
                 resolve: {
@@ -398,21 +402,21 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
     })
 
     // ========================== Modal - Boarding point controller =================================
-    .controller('AddBoardingPointController', function ($scope, $modalInstance,$state, $http,$log,city, cityManager) {
+    .controller('AddBoardingPointController', function ($scope, $uibModal,$state, $http,$log,city, cityManager, $rootScope) {
         $scope.boardingPoint = {};
         $scope.city = city;
         $scope.ok = function () {
             if ($scope.boardingPoint.name === null || $scope.boardingPoint.contact === null || $scope.boardingPoint.landmark === null) {
                 $log.error("null name or contact or landmark.  nothing was added.");
-                $modalInstance.close(null);
+                $rootScope.modalInstance.close(null);
             }
             cityManager. createBordingPoint(city.id,$scope.boardingPoint, function(data){
                 $state.go($state.$current, null, { reload: true });
-                $modalInstance.close(data);
+                $rootScope.modalInstance.close(data);
             });
         };
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $rootScope.modalInstance.dismiss('cancel');
         };
         $scope.isInputValid = function () {
             return ($scope.boardingPoint.name || '') !== '' &&
@@ -421,7 +425,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         };
     })
 //======================Model - updateBpController=============================================
-    .controller('UpdateBoardingPtController', function ($scope, $modalInstance, $state,$http,BpId,cityId, $log,cityManager) {
+    .controller('UpdateBoardingPtController', function ($scope, $uibModal, $state,$http,BpId,cityId, $log,cityManager, $rootScope) {
         $scope.setBpIntoView = function(cityId,BpId){
             cityManager.getBp(cityId,BpId,function(data){
                 $scope.boardingPoint=data;
@@ -431,11 +435,11 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         $scope.ok = function (BpId) {
             cityManager.updateBp(cityId,$scope.boardingPoint, function(data) {
                 $state.go($state.$current, null, { reload: true });
-                $modalInstance.close(data);
+                $rootScope.modalInstance.close(data);
             })
         }
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $rootScope.modalInstance.dismiss('cancel');
         };
     });
 

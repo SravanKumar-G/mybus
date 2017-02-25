@@ -44,9 +44,9 @@ public class UserController extends MyBusBaseController{
 
     @RequestMapping(value = "users", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the users available", response = User.class, responseContainer = "List")
-    public ResponseEntity<List<User>> getUsers(HttpServletRequest request)
+    public List<User> getUsers(HttpServletRequest request)
     {
-        return new ResponseEntity<List<User>>((List<User>) userDAO.findAll(), HttpStatus.OK);
+        return userManager.findAll();
     }
 
     @RequestMapping(value = "userNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

@@ -2,17 +2,12 @@
 /*global angular, _*/
 
 angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
-.controller("AmenitiesController",function($rootScope, $scope, $filter, $log,NgTableParams, amenitiesManager){
-	
+.controller("AmenitiesController",function($rootScope, $scope, $uibModal, $filter, $log,NgTableParams, amenitiesManager){
 	$scope.headline = "Amenities";
-	
 	$scope.amenities = [];
-	
 	$scope.currentPageOfAmenities=[];
-	
 	$scope.amenity = {};
 	 var loadTableData = function (tableParams, $defer) {
-		 console.log('loading table data');
          var data = amenitiesManager.getAmenities();
 		 if(tableParams) {
 			 var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
@@ -48,11 +43,11 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 		 }
      );
 	 amenitiesManager.fechAmenities();
-	$scope.getAllAmenities = function(){
+	 $scope.getAllAmenities = function(){
 		amenitiesManager.getAllAmenities(function(data){
 			$scope.amenities =data;
 		});
-	};
+	 };
 	
 	$scope.getAmenityById = function(){ 
 		amenitiesManager.getAmenityByID($scope.amenity.id,function(data){
@@ -67,7 +62,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 	}
 
 	$scope.handleClickAddAmenity = function (size) {
-	    var modalInstance = $modal.open({
+		$rootScope.modalInstance = $uibModal.open({
 	        templateUrl: 'add-Amenity-modal.html',
 	        controller: 'AddAmenityModalController',
 	        size: size,
@@ -77,7 +72,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 	            }
 	        }
 	    });
-	    modalInstance.result.then(function (data) {
+		$rootScope.modalInstance.result.then(function (data) {
 	        $log.debug("results from modal: " + angular.toJson(data));
 	        //$scope.cityContentTableParams.reload();
 	    }, function () {
@@ -86,7 +81,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 	};
 
 	$scope.handleClickUpdateAmenity = function(amenityID){
-	    var modalInstance = $modal.open({
+		$rootScope.modalInstance = $uibModal.open({
 	        templateUrl : 'update-amenity-modal.html',
 	        controller : 'UpdateAmenityModalController',
 	        resolve : {
@@ -101,29 +96,26 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 })
 // ========================== Modal - Update Amenity  =================================
 
-.controller('UpdateAmenityModalController', function ($scope, $modalInstance, $http, $log, amenitiesManager, amenityId) {
+.controller('UpdateAmenityModalController', function ($scope, $rootScope, $uibModal, $http, $log, amenitiesManager, amenityId) {
 	$log.debug("in UpdateAmenityModalController");
     $scope.amenity = {};
- 
 	$scope.updateAmenity =function(){ 
 		amenitiesManager.updateAmenity($scope.amenity,function(data){
 			$scope.amenity = data;
-			$modalInstance.close(data);
+			$rootScope.modalInstance.close(data);
 		});
 	};
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+		$rootScope.modalInstance.dismiss('cancel');
     };
 
     $scope.isInputValid = function () {
         return ($scope.amenity.name || '') !== '';
-            
     };
+		console.log("loading amenity info....");
     amenitiesManager.getAmenityByID(amenityId,function(data){
     	$scope.amenity = data;
 	});
-	
-    
     $scope.resetAmenity = function(){
 		$scope.amenity= {};
 	};
@@ -132,7 +124,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 //
 // ========================== Modal - Add Amenity =================================
 //
-.controller('AddAmenityModalController', function ($scope, $modalInstance,$state, $http, $log, amenitiesManager) {
+.controller('AddAmenityModalController', function ($scope,$state, $http, $log, $rootScope,amenitiesManager) {
 	$log.debug("in AddAmenityModalController");
 	
     $scope.amenity = {
@@ -143,12 +135,12 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
     $scope.addAmenity = function(){ 
     	amenitiesManager.addAmenity($scope.amenity,function(data){
     		$scope.amenity = data;
-    		$modalInstance.close(data);
+			$rootScope.modalInstance.close(data);
     	});
     };
 	
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+		$rootScope.modalInstance.dismiss('cancel');
     };
 
     $scope.isInputValid = function () {

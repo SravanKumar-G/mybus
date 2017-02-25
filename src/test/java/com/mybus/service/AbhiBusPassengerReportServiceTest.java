@@ -3,17 +3,10 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
-import io.swagger.annotations.Authorization;
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by srinikandula on 2/20/17.
@@ -59,11 +52,12 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
         }
 
     }
-    */
+
 
     @Test
     @Ignore
     public void testDownloadSingleReport() throws Exception {
        abhiBusPassengerReportService.downloadReport("2017-02-20");
     }
+     */
 }

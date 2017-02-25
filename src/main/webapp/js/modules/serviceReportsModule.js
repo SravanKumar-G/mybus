@@ -9,13 +9,43 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
     //
     // ============================= List All ===================================
     //
-    .controller('ServiceReportsController', function($scope,$state, $http, $log, $filter, NgTableParams, $location, serviceReportsManager) {
+    .controller('ServiceReportsController', function($scope) {
         $scope.headline = "Service Reports";
-        $scope.count = 0;
-        $scope.offices = {};
 
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, expensesManager) {
+    .controller('ServiceFormController', function($scope,$state, $http, $log, $stateParams,$filter, NgTableParams, $location, serviceReportsManager) {
+        $scope.headline = "Service Form";
+        $scope.service = {};
+        $scope.formId = $stateParams.id;
+        $scope.allBookings = [];
+        $scope.currentPageOfBookings = [];
+        var loadTableData = function (tableParams, $defer) {
+            serviceReportsManager.getForm($scope.formId, function (data) {
+                $scope.service = data;
+                $scope.downloaded = true;
+                $scope.allBookings = tableParams.sorting() ? $filter('orderBy')($scope.service.bookings, tableParams.orderBy()) : $scope.service.bookings;
+                tableParams.total($scope.allBookings.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve($scope.allBookings);
+                }
+                $scope.currentPageOfBookings = $scope.allBookings.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+
+            });
+        }
+        $scope.bookingsTableParams = new NgTableParams({
+            page: 1,
+            count:99999,
+            sorting: {
+                ticketNo: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfBookings.length,
+            getData: function (params) {
+                loadTableData(params);
+            }
+        });
+    })
+    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
@@ -32,6 +62,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     $defer.resolve($scope.allBookings);
                 }
                 $scope.currentPageOfBookings = $scope.allBookings.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                $scope.countSeats();
             });
         };
         $scope.bookingsTableParams = new NgTableParams({
@@ -46,16 +77,19 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 loadTableData(params);
             }
         });
-        loadTableData($scope.bookingsTableParams);
+        //loadTableData($scope.bookingsTableParams);
         $scope.isOnlineBooking = function(booking) {
-            return booking.bookedBy =='ONLINE' || booking.bookedBy =='REDBUS-API' || booking.bookedBy =='PAYTM-API';
+            return !$scope.isNotOnlineBooking(booking);
         }
         $scope.isNotOnlineBooking = function(booking) {
-            return booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API' && booking.bookedBy !='PAYTM-API';
+            return booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
+                && booking.bookedBy !='PAYTM-API'
+                && booking.bookedBy !='YATRA-API'
+                && booking.bookedBy !='abhibus-mantis'
+                && booking.bookedBy !='ABHIBUS';
         }
 
         $scope.calculateNet = function() {
-
             var netCashIncome = 0;
             var expenseTotal = 0;
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
@@ -72,15 +106,33 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
             netCashIncome-=expenseTotal;
             $scope.service.netCashIncome = netCashIncome.toFixed(2);
-            $scope.service.netIncome = parseFloat($scope.service.netCashIncome) +
+            $scope.service.netIncome = (parseFloat($scope.service.netCashIncome) +
                                         parseFloat($scope.service.netRedbusIncome) +
-                                        parseFloat($scope.service.netOnlineIncome);
+                                        parseFloat($scope.service.netOnlineIncome)).toFixed(2);
+            for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
+                var booking = $scope.currentPageOfBookings[i];
+                if (booking.due) {
+                    netCashIncome -= parseFloat(booking.netAmt);
+                }
+            }
+            $scope.service.netCashIncome = netCashIncome.toFixed(2);
+        }
+        $scope.countSeats = function(){
+            var seatsCount = 0;
+            for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
+                if($scope.currentPageOfBookings[i].seats){
+                    seatsCount +=$scope.currentPageOfBookings[i].seats.split(",").length;
+                }
+            }
+            $scope.service.totalSeats = seatsCount;
         }
         $scope.addBooking= function() {
-            $scope.currentPageOfBookings.push({'index':$scope.currentPageOfBookings.length,'paymentType':"CASH",'name':"service"});
+            $scope.currentPageOfBookings.push({'index':$scope.currentPageOfBookings.length, 'paymentType':"CASH"});
+            $scope.service.bookings = $scope.currentPageOfBookings;
         }
         $scope.deleteBooking= function(booking) {
             $scope.currentPageOfBookings.splice(booking.index,1);
+            $scope.service.bookings = $scope.currentPageOfBookings;
             $scope.calculateNet();
         }
         $scope.addExpense = function(){
@@ -109,7 +161,8 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     sweetAlert("Great", "The report successfully submitted", "success");
                     $location.url('serviceReports');
                 },function (error) {
-                    sweetAlert("Oops...", "Error submitting the report", "error" + angular.toJson(error));
+                    console.log("error saving the report")
+                    sweetAlert("Oops...", "Error submitting the report", "error");
                 });
             });
         }
@@ -245,10 +298,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 loadTableData(params);
             }
         });
-        $scope.goToServiceReport = function(id) {
-            $location.url('servicereport/' + id, {'idParam':id});
+        $scope.goToServiceReport = function(service) {
+            if(service.attributes.formId) {
+                $location.url('serviceform/' + service.attributes.formId);
+            } else {
+                $location.url('servicereport/' + service.id);
+            }
         }
-    }).factory('serviceReportsManager', function ($http, $log,$rootScope) {
+    }).factory('serviceReportsManager', function ($http, $log) {
         var serviceReports = {};
         return {
             getServiceReportStatus:function(date, callback) {
@@ -281,6 +338,15 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading service reports");
+                    });
+            },
+            getForm:function(id,callback) {
+                console.log('loading the form');
+                $http.get('/api/v1/serviceForm/'+id)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error loading service form");
                     });
             },
             submitReport:function(serviceReport,successcallback, errorcallback) {

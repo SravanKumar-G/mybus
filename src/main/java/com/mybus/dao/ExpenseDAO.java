@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExpenseDAO extends PagingAndSortingRepository<Expense, String> {
     Iterable<Expense> findByType(ExpenseType type);
+    Iterable<Expense> findByServiceId(String serviceId);
 }
