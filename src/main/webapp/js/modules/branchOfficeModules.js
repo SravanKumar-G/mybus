@@ -80,7 +80,9 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
             $scope.managerName = item.firstName;
             $scope.office.managerId= item.id;
         };
-
+        $scope.launchUserAdd = function() {
+            $location.url('/user/');
+        }
         $scope.save = function() {
             if($scope.thisForm.$dirty){
                 $scope.thisForm.submitted = true;

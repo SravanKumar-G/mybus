@@ -30,6 +30,7 @@
         <label class="col-sm-2 control-label" for="city">Manager<span class="data-required">*</span></label>
         <div class="col-sm-4" ng-class="{ 'has-error': thisForm.manager.$invalid && thisForm.manager.$dirty }">
             <select id="manager" ng-options="user.id as user.fullName for user in users" class="form-control" ng-model="office.managerId" required></select>
+            <a ng-click="launchUserAdd()">Add New User</a>
             <!--
             <input id="manager" type="text" placeholder="Manager" ng-model="managerName"  typeahead="user.firstName for user in users | filter:$viewValue | limitTo:8"
                    class="form-control" typeahead-min-length="1" typeahead-on-select="selectManager($item)"
