@@ -1,0 +1,53 @@
+<legend>{{ headline }}</legend>
+<div ng-controller="DatepickerPopupCtrl">
+    <div class="row" ng-show="!loading">
+        <div class="col-sm-1"/>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-default" ng-click="previousDay()"><i class="glyphicon glyphicon-chevron-left"></i></button>
+        </div>
+
+        <div class="col-sm-3">
+            <p class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
+                       is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                       close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-default" ng-click="nextDay()"><i class="glyphicon glyphicon-chevron-right"></i></button>
+        </div>
+        <div class="col-sm-4">
+            <div class="toolbar-button-div pull-right">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="downloadReports()" ng-show="!downloaded">
+                    <span class="glyphicon glyphicon-plus"></span> Download Passenger Report
+                </button>
+                <p ng-show="downloaded">The report was downloaded on {{downloadedOn}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="loading">
+        loading reports data for {{date}}...
+    </div>
+    <table class="table table-bordered table-condensed table-hover"  ng-show="downloaded">
+        <tr><td>Total:{{currentPageOfReports.length}}</td> <td>Submitted:{{submitted}}</td> <td>Verified:{{verified}}</td></tr>
+    </table>
+
+    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams" ng-show="downloaded">
+        <tr ng-repeat="service in currentPageOfReports">
+            <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.serviceNumber }}</td>
+            <td data-title="'Type'"  sortable="'busType'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.busType }}</td>
+            <td data-title="'From'"  sortable="'source'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.source }}</td>
+            <td data-title="'To'"  sortable="'destination'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.destination }}</td>
+            <td data-title="'Vehicle'"  sortable="'vehicleRegNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.vehicleRegNumber }}</td>
+            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">
+                <span ng-show="{{ service.attributes.formId != null}}">Submitted</span>
+            </td>
+         </tr>
+        <tr ng-if="!currentPageOfReports || currentPageOfReports.length === 0">
+            <td colspan="5">No reports exist. </td>
+        </tr>
+    </table>
+</div>

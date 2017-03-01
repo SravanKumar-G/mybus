@@ -1,5 +1,4 @@
 <legend>{{ headline }}</legend>
-<h4>{{headline}}</h4>
 
 <br/>
 <form name="thisForm" class="form-horizontal" autocomplete="off" role="form">
@@ -20,18 +19,23 @@
     <div class="form-group">
         <label class="col-sm-2 control-label" for="city">City<span class="data-required">*</span></label>
         <div class="col-sm-4" ng-class="{ 'has-error': thisForm.city.$invalid && thisForm.city.$dirty }">
-            <input id="city" type="text" placeholder="City" ng-model="cityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
-                   class="form-control" typeahead-min-length="1" typeahead-on-select="selectFromCity($item)"
-                   typeahead-select-on-exact="true" required>
-            <input id="fromCityInputId"type="hidden" ng-model="office.cityId" >
+            <select id="city" ng-options="city.id as city.name for city in cities" class="form-control" ng-model="office.cityId" required></select>
+
+            <!-- <input id="city" type="text" placeholder="City" ng-model="cityName"  typeahead="city.name for city in cities | filter:$viewValue | limitTo:8"
+                    class="form-control" typeahead-min-length="1" typeahead-on-select="selectFromCity($item)"
+                    typeahead-select-on-exact="true" required>
+             <input id="fromCityInputId"type="hidden" ng-model="office.cityId" >-->
         </div>
 
         <label class="col-sm-2 control-label" for="city">Manager<span class="data-required">*</span></label>
         <div class="col-sm-4" ng-class="{ 'has-error': thisForm.manager.$invalid && thisForm.manager.$dirty }">
+            <select id="manager" ng-options="user.id as user.fullName for user in users" class="form-control" ng-model="office.managerId" required></select>
+            <!--
             <input id="manager" type="text" placeholder="Manager" ng-model="managerName"  typeahead="user.firstName for user in users | filter:$viewValue | limitTo:8"
                    class="form-control" typeahead-min-length="1" typeahead-on-select="selectManager($item)"
                    typeahead-select-on-exact="true" required>
             <input id="managerid"type="hidden" ng-model="office.managerId" >
+            -->
         </div>
     </div>
 

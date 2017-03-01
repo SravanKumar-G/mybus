@@ -4,7 +4,7 @@
 "use strict";
 
 angular.module('myBus.roleModules', ['ngTable', 'ui.bootstrap'])
-.controller("RolesController",function($scope, $log, ngTableParams, $location, $modal, $state, $filter, roleManager){
+.controller("RolesController",function($scope, $log, NgTableParams, $location, $modal, $state, $filter, roleManager){
 
 	$scope.headline="User Roles";
 	
@@ -20,7 +20,7 @@ angular.module('myBus.roleModules', ['ngTable', 'ui.bootstrap'])
         }
         $scope.currentPageRoles = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
     };
-    $scope.rolesContentTableParams = new ngTableParams({
+    $scope.rolesContentTableParams = new NgTableParams({
         page: 1,
         count:25,
         sorting: {

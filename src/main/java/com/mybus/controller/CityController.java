@@ -9,6 +9,7 @@ import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,7 +46,7 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
-    public Map<String, String> getActiveCityNames(HttpServletRequest request) {
+    public Iterable<City> getActiveCityNames(HttpServletRequest request) {
         return cityManager.getCityNames(false);
     }
 
@@ -51,7 +54,7 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "allCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Map<String, String> getAllCityNames(HttpServletRequest request) {
-        return cityManager.getCityNames(true);
+       return cityManager.getCityNamesMap();
     }
 
 

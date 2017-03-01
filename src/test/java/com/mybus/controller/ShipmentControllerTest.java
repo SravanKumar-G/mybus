@@ -133,7 +133,7 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
             Shipment shipment = ShipmentTestService.createNew();
             if(i == 1) {
                 Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DATE, 1);
+                cal.set(Calendar.DATE, cal.get(Calendar.DATE)-3);
                 shipment.setDispatchDate(cal.getTime());
             }
             shipmentDAO.save(shipment);

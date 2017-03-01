@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
-import sun.security.util.Password;
 
 /**
  * Created by skandula on 3/31/15.
@@ -47,14 +45,13 @@ public class User extends AbstractDocument implements AttributesDocument{
     private String email;
     @RequiresValue
     private long contact;
-    @RequiresValue
     private long secondaryContact;
     private String address1;
     private String address2;
     private String city;
     private String state;
     @RequiresValue
-    private UserType userType;
+    private String role;
     private String planType;
 
     public User(JSONObject json){
@@ -94,8 +91,8 @@ public class User extends AbstractDocument implements AttributesDocument{
         if(json.containsKey("state")) {
             this.state = json.get("state").toString();
         }
-        if(json.containsKey("userType")){
-            this.setUserType(UserType.valueOf(json.get("userType").toString()));
+        if(json.containsKey("role")){
+            this.role = json.get("role").toString();
         }
         if(json.containsKey("planType")){
             this.planType = json.get("planType").toString();
@@ -107,12 +104,12 @@ public class User extends AbstractDocument implements AttributesDocument{
         return false;
     }
     public User(final String firstName, final String lastName, final String userName, final String password,
-                boolean active, UserType userType){
+                boolean active, String role){
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
         this.active = active;
-        this.userType = userType;
+        this.role = role;
     }
 
     public User(final String firstName, final String lastName, final String userName, final String password,
@@ -132,7 +129,7 @@ public class User extends AbstractDocument implements AttributesDocument{
                 final String address2,
                 final String city,
                 final String state,
-                final UserType userType,
+                final String role,
                 final String planType){
         this.firstName = firstName;
         this.lastName = lastName;
@@ -146,7 +143,7 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.address2 = address2;
         this.city = city;
         this.state = state;
-        this.userType = userType;
+        this.role = role;
         this.planType = planType;
     }
     public User(final String firstName, final String lastName, final String userName, final String password,
@@ -156,7 +153,7 @@ public class User extends AbstractDocument implements AttributesDocument{
                 final String address2,
                 final String city,
                 final String state,
-                final UserType userType,
+                final String role,
                 final String planType){
         this.firstName = firstName;
         this.lastName = lastName;
@@ -168,7 +165,7 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.address2 = address2;
         this.city = city;
         this.state = state;
-        this.userType = userType;
+        this.role = role;
         this.planType = planType;
     }
     public String getFullName(){

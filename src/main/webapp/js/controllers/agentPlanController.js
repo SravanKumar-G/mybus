@@ -9,7 +9,7 @@ angular.module('myBus.agentPlanModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= List All ===================================
     //
-    .controller('AgentPlanController', function($scope, $http, $log, $modal, $filter, ngTableParams, $location, usSpinnerService, agentPlanManager, $rootScope) {
+    .controller('AgentPlanController', function($scope, $http, $log, $modal, $filter, NgTableParams, $location, usSpinnerService, agentPlanManager, $rootScope) {
         console.log("in AgentPlanController");
         $scope.headline = "Agent Plan Type";
         $scope.currentPageOfPlans = [];
@@ -40,7 +40,7 @@ angular.module('myBus.agentPlanModule', ['ngTable', 'ui.bootstrap'])
             agentPlanManager.fetchAllPlans();
         });
 
-        $scope.planContentTableParams = new ngTableParams({
+        $scope.planContentTableParams = new NgTableParams({
             page: 1,
             count: 50,
             sorting: {

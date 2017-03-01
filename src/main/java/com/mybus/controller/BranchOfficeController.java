@@ -40,6 +40,15 @@ public class BranchOfficeController extends MyBusBaseController{
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "branchOffice/names", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get all names of branchOffices available", response = BranchOffice.class, responseContainer = "List")
+    public Iterable<BranchOffice> getNamesMap(HttpServletRequest request,
+                                         @ApiParam(value = "JSON Query") @RequestBody(required = false) final JSONObject query,
+                                         final Pageable pageable) {
+        return branchOfficeManager.getNames();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "branchOffice", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a BranchOffice")

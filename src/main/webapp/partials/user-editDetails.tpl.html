@@ -2,7 +2,7 @@
 
 <!--- Edit User Form------->
 
-        <form name="thisForm" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
+        <form name="userForm" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="editUsernameInput">Username<span class="data-required">*</span></label>
                 <div class="col-sm-4" ng-class="{ 'has-error': thisForm.usernameInput.$invalid && thisForm.usernameInput.$dirty }">
@@ -54,9 +54,9 @@
                     <input type="email" id="editEmailInput" name="emailInput" class="form-control" ng-model="user.email" placeholder="Email" required>
                 </div>
 
-                <label class="col-sm-2 control-label" for="editEmailInput">Secondary contact <span class="data-required">*</span></label>
+                <label class="col-sm-2 control-label" for="editEmailInput">Secondary contact</label>
                 <div class="col-sm-4" ng-class="{ 'has-error': thisForm.secondaryContact.$invalid && thisForm.secondaryContact.$dirty }">
-                    <input type="number" id="secondaryContact" name="secondaryContact" class="form-control" ng-model="user.secondaryContact" ng-minlength="10" ng-maxlength="10" placeholder="Secondary contact" required>
+                    <input type="number" id="secondaryContact" name="secondaryContact" class="form-control" ng-model="user.secondaryContact" ng-minlength="10" ng-maxlength="10" placeholder="Secondary contact">
                 </div>
             </div>
 
@@ -68,45 +68,29 @@
 
                 <label class="col-sm-2 control-label" for="editCityInput">City</label>
                 <div class="col-sm-4">
-                    <input type="text" id="editCityInput" class="form-control" ng-model="user.city" placeholder="City">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="editStateInput">State</label>
-                <div class="col-sm-4">
-                    <input type="text" id="editStateInput" class="form-control" ng-model="user.state" placeholder="State">
+                    <select id="editCityInput" ng-options="city.id as city.name for city in cities" class="form-control" ng-model="user.city" required></select>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">User Type<span class="data-required">*</span></label>
                 <div class="col-sm-4">
-                	<label class="radio-inline" ng-repeat="role in roles"><input type="radio" ng-model="user.userType" value="{{role.name | uppercase}}" required>{{role.name}}</label>
+                    <select ng-options="role.id as role.name for role in roles" class="form-control" ng-model="user.role" required></select>
                 </div>
 
                 <label class="col-sm-2 control-label checkbox" for="editActiveInput">Active</label>
                 <div class="col-xs-1">
-                    <input type="checkbox" id="editActiveInput" class="form-check-input" ng-model="user.active">
+                    <input type="checkbox" id="editActiveInput" class="form-control form-check-input" ng-model="user.active">
                 </div>
             </div>
 
-            <div class="form-group" ng-show="user.userType=='AGENT'">
-                <label class="col-sm-2 control-label" for="editPlanTypeInput">Agent Plan Type<span class="data-required">*</span></label>
-                <div class="col-sm-4">
-                    <select name="planTypeInput" id="editPlanTypeInput" class="form-control" ng-model="user.planType"
-                            ng-options="planType.id as planType.name for planType in planTypes">
-                        <option value="">--Select Agent Plan Type--</option>
-                    </select>
-                </div>
-            </div>
 
            <div class="form-group row">
                 <div class="col-sm-4 text-right">
                     <button class="btn btn-primary" ng-click="save()">Save</button>
                 </div>
                 <div class="col-sm-3 next">
-                    <button  class="btn btn-danger" ng-click="cancelUser(thisForm)">Cancel</button>
+                    <button  class="btn btn-danger" ng-click="cancelUser(userForm)">Cancel</button>
                 </div>
             </div>
 

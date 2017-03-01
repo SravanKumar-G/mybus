@@ -6,10 +6,8 @@ import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
-import com.mybus.model.UserType;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -37,6 +35,9 @@ public class UserManager {
     @Autowired
     private PlanTypeDAO planTypeDAO;
 
+    @Autowired
+    private CityManager cityManager;
+
     public User findOne(String userId) {
         return userDAO.findOne(userId);
     }
@@ -46,7 +47,7 @@ public class UserManager {
         if (duplicateUser != null && !duplicateUser.getId().equals(user.getId())) {
             throw new RuntimeException("A user already exists with username");
         }
-        validateAgent(user);
+        //validateAgent(user);
         if(logger.isDebugEnabled()) {
             logger.debug("Saving user: [{}]", user);
         }
@@ -56,7 +57,7 @@ public class UserManager {
     public User updateUser(User user) {
         Preconditions.checkNotNull(user, "The user can not be null");
         Preconditions.checkNotNull(user.getId(), "Unknown user for update");
-        validateAgent(user);
+        //validateAgent(user);
         User loadedUser = userDAO.findOne(user.getId());
         try {
             loadedUser.merge(user);
@@ -124,6 +125,15 @@ public class UserManager {
         }
     }
 
+    public List<User> findAll() {
+        List<User> users = IteratorUtils.toList(userDAO.findAll().iterator());
+        Map<String, String> cityNames = cityManager.getCityNamesMap();
+        for(User user:users) {
+            user.getAttributes().put("cityName", cityNames.get(user.getCity()));
+        }
+        return users;
+    }
+/*
     private void validateAgent(User user){
         if (user.getUserType().equals(UserType.AGENT)) {
             Preconditions.checkNotNull(user.getPlanType(), "Agent planType is required");
@@ -136,4 +146,5 @@ public class UserManager {
             }
         }
     }
+    */
 }

@@ -7,7 +7,7 @@ angular.module('myBus.layoutEditModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    BusLayoutController   ================================================
   // ==================================================================================================================
 
-  .controller('BusLayoutEditController', function ($rootScope,$window, $scope, $http, $log, ngTableParams, $modal, $filter, busLayoutManager,cancelManager, $stateParams, $location, $cacheFactory) {
+  .controller('BusLayoutEditController', function ($rootScope,$window, $scope, $http, $log, NgTableParams, $modal, $filter, busLayoutManager,cancelManager, $stateParams, $location, $cacheFactory) {
         $log.debug('BusLayoutController loading');
         var busLayoutEditCtrl = this;
 

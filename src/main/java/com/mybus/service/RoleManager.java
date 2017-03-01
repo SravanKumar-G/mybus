@@ -2,11 +2,14 @@ package com.mybus.service;
 
 import com.google.common.base.Preconditions;
 import com.mybus.dao.RoleDAO;
+import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Role;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,17 @@ public class RoleManager {
     @Autowired
     private RoleDAO roleDAO;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private MongoQueryDAO mongoQueryDAO;
+    public Iterable<Role> getRoleNames() {
+        JSONObject query = new JSONObject();
+        query.put("active", true);
+        String[] fields = {"name"};
+        return mongoQueryDAO.getDocuments(Role.class, Role.COLLECTION_NAME, fields, query, null);
+    }
     public Role saveRole(Role role) {
         //role.id =123, role.name=test
         //1234,test
@@ -43,28 +57,25 @@ public class RoleManager {
 
 
     public Role updateRole(Role role) {
-
         Preconditions.checkNotNull(role, "The role can not be null");
         Preconditions.checkNotNull(role.getId(), "Unknown role for update");
-
         Role loadedRole = roleDAO.findOneByName(role.getName());
         if((loadedRole != null) && (loadedRole.getName().equals(role.getName()))){
             throw new RuntimeException("cannot update role with the same name");
         }else {
-                try {
-                	loadedRole = roleDAO.findOne(role.getId());
-                    loadedRole.merge(role);
-                } catch (Exception e) {
-                    logger.error("Error merging role", e);
-                    throw new BadRequestException("Error merging role info");
-                }
+            try {
+                loadedRole = roleDAO.findOne(role.getId());
+                loadedRole.merge(role);
+            } catch (Exception e) {
+                logger.error("Error merging role", e);
+                throw new BadRequestException("Error merging role info");
             }
+        }
         return saveRole(loadedRole);
     }
 
 
     public boolean deleteRole(String roleId) {
-
         Preconditions.checkNotNull(roleId, "The role id can not be null");
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting role:[{}]" + roleId);

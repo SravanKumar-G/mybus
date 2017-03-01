@@ -68,7 +68,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
 
     private User createTestUser() {
 
-        User user = new User("FirstName"+new ObjectId().toString(),"LastName","UserName","test",true,UserType.ADMIN);
+        User user = new User("FirstName"+new ObjectId().toString(),"LastName","UserName","test",true,"ADMIN");
         return userDAO.save( user);
     }
 
@@ -100,7 +100,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
-        user.put("userType","ADMIN");
+        user.put("role","ADMIN");
         user.put("password","sample");
 
         JSONObject planType = new JSONObject();
@@ -135,8 +135,8 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
-        user.put("userType","AGENT");
-        user.put("password","sample");
+        user.put("role","AGENT");
+       // user.put("password","sample");
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/user")
                 .content(getObjectMapper().writeValueAsBytes(user))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
@@ -152,7 +152,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         actions.andExpect(jsonPath("$.lastName").value(user.getLastName()));
         actions.andExpect(jsonPath("$.userName").value(user.getUserName()));
         actions.andExpect(jsonPath("$.active").value(true));
-        actions.andExpect(jsonPath("$.userType").value("ADMIN"));
+        actions.andExpect(jsonPath("$.role").value("ADMIN"));
         List<User> userList = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(2, userList.size());
     }
@@ -182,7 +182,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
-        user.put("userType","ADMIN");
+        user.put("role","ADMIN");
         user.put("planType","plan1");
         user.put("password","sample");
 
@@ -210,7 +210,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
-        user.put("userType","ADMIN");
+        user.put("role","ADMIN");
         user.put("planType","plan1");
         user.put("password","sample");
 
@@ -244,18 +244,18 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
-        user.put("userType","ADMIN");
+        user.put("role","ADMIN");
         user.put("planType","plan1");
         user.put("password","sample");
 
         User newUser = userManager.saveUser(new User(user));
-        newUser.setUserType(UserType.MANAGER);
+        newUser.setRole("MANAGER");
         ResultActions actions2 = mockMvc.perform(asUser(put(format("/api/v1/userEdit/%s", newUser.getId()))
                 .content(getObjectMapper().writeValueAsBytes(newUser))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(2,userList1.size());
         newUser = userDAO.findOne(newUser.getId());
-        assertEquals(UserType.MANAGER.toString(), newUser.getUserType().toString());
+        assertEquals("MANAGER", newUser.getRole());
     }
 }

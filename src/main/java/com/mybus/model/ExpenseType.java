@@ -5,7 +5,6 @@ package com.mybus.model;
  */
 
 public enum ExpenseType {
-
     SALARY,
     VEHICLEMAINTAINANCE,
     FUEL,

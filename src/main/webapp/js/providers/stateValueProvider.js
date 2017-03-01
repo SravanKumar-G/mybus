@@ -8,8 +8,8 @@ angular.module('myBus')
       });
     }({
       'AP': 'Andhra Pradesh',
-      'AR': 'Arunachal Pradesh',
-      'AS': 'Assam',
-      'BH': 'Bihar',
-      'CG': 'Chhattisgarh'
+      'KA': 'Karnataka',
+      'MH': 'Maharastra',
+      'TN': 'Tamilnadu',
+      'TS': 'Telangana'
     }));

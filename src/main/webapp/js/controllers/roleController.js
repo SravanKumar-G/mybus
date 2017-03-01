@@ -9,7 +9,7 @@ angular.module('myBus.roleModules', ['ui.bootstrap'])
     // ====================================    RoutesController   ================================================
     // ==================================================================================================================
 
-    .controller('RoleController', function ($scope,$modal, $log, roleManager,$filter,ngTableParams,$location) {
+    .controller('RoleController', function ($scope,$modal, $log, roleManager,$filter,NgTableParams,$location) {
 
         $log.debug('RoleController loading');
         $scope.headline = "Roles";
@@ -47,7 +47,7 @@ angular.module('myBus.roleModules', ['ui.bootstrap'])
             routesManager.fetchAllRoutes();
         });
 
-        $scope.routeContentTableParams = new ngTableParams({
+        $scope.routeContentTableParams = new NgTableParams({
             page: 1,
             count: 50,
             sorting: {

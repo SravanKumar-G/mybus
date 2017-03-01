@@ -150,11 +150,11 @@ public class CityManager {
     }
 
     /**
-     * Module to build a map of <cityId, cityName>,
+     *
      * @param allCities -- when true all the names will be returned, when false only active city names are returned
      * @return
      */
-    public Map<String, String> getCityNames(boolean allCities) {
+    public Iterable<City> getCityNames(boolean allCities) {
         String fields[] = {City.KEY_NAME};
         JSONObject query = new JSONObject();
         if(!allCities) {
@@ -162,11 +162,17 @@ public class CityManager {
         }
         List<City> cities = IteratorUtils.toList(mongoQueryDAO
                 .getDocuments(City.class, City.COLLECTION_NAME, fields, query, null).iterator());
-        Map<String, String> map = cities.stream().collect(
-                Collectors.toMap(City::getId, city -> city.getName()));
-        return map;
+        return cities;
     }
 
+    public Map<String, String> getCityNamesMap() {
+        List<City> cities = IteratorUtils.toList(getCityNames(true).iterator());
+        Map<String, String> cityNames = new HashMap<>();
+        for(City city: cities) {
+            cityNames.put(city.getId(), city.getName());
+        }
+        return cityNames;
+    }
     public Iterable<City> findAll(){
         return cityDAO.findAll();
     }

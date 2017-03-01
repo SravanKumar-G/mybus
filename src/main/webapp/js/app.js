@@ -4,43 +4,56 @@
 
 var myBus = angular.module('myBus', [
   'ui.router',
-  'ngAnimate',
-  'ngTouch',
   'ngTable',
-  'dndLists',
-  'ui.bootstrap',
-  'angularSpinner',
-  'myBus.routesModules',
-  'myBus.citiesModules',
-  'myBus.expensesModules',
-  'myBus.boardingPointModule',
-  'myBus.vehicleModule',
-  'myBus.personModules',
-  'myBus.layoutModules',
-  'myBus.layoutEditModules',
-  'myBus.serviceModules',
-  'myBus.serviceEditModules',
-  'myBus.homeModule',
-  'myBus.busDetailModule',
+  'myBus.header',
   'myBus.userModule',
-  'myBus.agentPlanModule',
-  'myBus.paymentModule',
-  'myBus.tripModule',
   'myBus.amenitiesModule',
-  'myBus.roleModules',
-  'myBus.bookingModules',
-  'myBus.shipmentModule',
-  'myBus.branchOfficeModule'
+  'myBus.cityModule',
+  'myBus.vehicleModule',
+  'myBus.branchOfficeModule',
+  'myBus.serviceReportsModule',
+  'myBus.expensesModule',
+  'myBus.routeModule',
+  'myBus.roleModule',
+  'myBus.agentModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
+            .state('agents',{
+                url:'/agents',
+                templateUrl: 'partials/agents.tpl.html',
+                controller: 'AgentController'
+            })
+            .state('amenities',{
+                url:'/amenities',
+                templateUrl: 'partials/amenities.tpl.html',
+                controller: 'AmenitiesController'
+            })
             .state('dashboard', {
             	level:1,
                 url:'/dashboard',
                 templateUrl: 'partials/home.tpl.html',
                 controller: 'HomeController'
+            })
+            .state('servicereport/:id', {
+                level:2,
+                url:'/servicereport/:id',
+                templateUrl: 'partials/serviceReport.tpl.html',
+                controller: 'ServiceReportController'
+            })
+            .state('serviceform/:id', {
+                level:2,
+                url:'/serviceform/:id',
+                templateUrl: 'partials/serviceform.tpl.html',
+                controller: 'ServiceFormController'
+            })
+            .state('servicereports', {
+                level:2,
+                url:'/serviceReports',
+                templateUrl: 'partials/serviceReports.tpl.html',
+                controller: 'ServiceReportsController'
             })
             .state('cities', {
             	url:'/cities',
@@ -84,6 +97,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
             })
+            .state('createvehicle', {
+                level:2,
+                url:'/vehicle/create',
+                templateUrl: 'partials/vehicle-edit.tpl.html',
+                controller: 'EditVehicleController'
+            })
             .state('layouts', {
             	level:1,
                 url:'/layouts',
@@ -112,7 +131,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             .state('roles', {
                 url:'/roles',
                 templateUrl: 'partials/roles.tpl.html',
-                controller: 'RolesController'
+                controller: 'RoleController'
             })
             .state('busdetails', {
             	level:1,
@@ -168,11 +187,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/payment.tpl.html',
                 controller: 'PaymentController'
             })
-            .state('amenities',{
-                url:'/amenities',
-                templateUrl: 'partials/amenities.tpl.html',
-                controller: 'AmenitiesController'
-            })
+
             .state('trip',{
             	level:2,
                 url:'/trip',
@@ -231,8 +246,8 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 	};
 
 
-	myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager,roleManager) {
-		$rootScope.menus=[];
+	myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager) {
+        $rootScope.menus=[];
 		appConfigManager.fetchAppSettings(function (err, cfg) {
 			$rootScope.appConfigManager = appConfigManager;
 		}, true);
@@ -248,8 +263,5 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 		$rootScope.$on('$stateChangeSuccess', function() {
 			console.log('Current state name: ' + $state.$current.name);
 		});
-		//categoriesManager.reloadCategoryData();
-		//classificationsManager.reloadClassificationData();
-		//citiesAndNeighborhoodsManager.fetchAllCityAndNeighborhoodData();
 });
 

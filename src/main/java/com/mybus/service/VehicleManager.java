@@ -22,7 +22,7 @@ public class VehicleManager {
     public Vehicle saveVehicle(Vehicle vehicle){
         Preconditions.checkNotNull(vehicle, "The vehicle can not be null");
         Preconditions.checkNotNull(vehicle.getRegNo(), "Registration number can not be null");
-        Preconditions.checkNotNull(vehicle.getType(), "Vehical type can not be null");
+        Preconditions.checkNotNull(vehicle.getVehicleType(), "Vehical type can not be null");
         Vehicle duplicateVehicle = vehicleDAO.findOneByRegNo(vehicle.getRegNo());
         if (duplicateVehicle != null && !duplicateVehicle.getId().equals(vehicle.getId())) {
             throw new RuntimeException("A Vehicle already exists with the same Registration number");
@@ -56,5 +56,14 @@ public class VehicleManager {
             throw new RuntimeException("Unknown user id");
         }
         return true;
+    }
+
+    /**
+     * Find a vehicle by either registration number or chasis number or engine number
+     * @param key
+     * @return
+     */
+    public Vehicle findVehicle(String key) {
+        return null;
     }
 }

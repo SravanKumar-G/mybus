@@ -1,0 +1,76 @@
+<legend>{{ headline }}</legend>
+
+<span ng-show="!loading">
+
+
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="refreshAgents()">
+    	<span class="glyphicon glyphicon-plus"></span> Refresh
+    </button>
+</div>
+Total: {{count}}
+<br/>
+<br/>
+<table class="table table-bordered table-condensed table-hover" ng-table="agentTableParams">
+    <tr ng-repeat="agent in currentPageOfAgents">
+        <td data-title="'UserName'"  sortable="'username'" class="clickable-item col-sm-2" >{{ agent.username }}</td>
+        <td data-title="'FirstName'"  sortable="'firstname'" class="clickable-item col-sm-2" >{{ agent.firstname }}</td>
+        <td data-title="'Mobile'"  sortable="'mobile'" class="clickable-item col-sm-2" >{{ agent.mobile }}</td>
+        <td data-title="'Landline'"  sortable="'landline'" class="clickable-item col-sm-2" >{{ agent.landline }}</td>
+        <td data-title="'Branchname'"  sortable="'branchname'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
+        <td class="col-sm-1">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="editAgent(agent.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!currentPageOfAgents || currentPageOfAgents.length === 0">
+        <td colspan="4">No Agent exist.  </td>
+    </tr>
+</table>
+
+</span>
+
+<div ng-show="loading">
+    Please wait while the agents data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
+<script type="text/ng-template" id="edit-agent-modal.html">
+
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-sm-11">
+                <h3 class="modal-title">Edit Agent</h3>
+            </div>
+            <div class="col-sm-1">
+                <md-button>
+                    <md-icon type="button" class="btn-sm" ng-click="cancel()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form name="agentUpdateForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    UserName : {{agent.username}}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="branchOffice">BranchOffice</label>
+                <div class="col-sm-4">
+                    <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="agent.branchOfficeId" required></select>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="saveAgent()">Update</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

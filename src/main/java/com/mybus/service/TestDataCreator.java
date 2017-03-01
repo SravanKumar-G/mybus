@@ -40,7 +40,7 @@ public class TestDataCreator {
                 user.setLastName("Lname");
                 user.setPassword("123");
                 user.setUserName("bill");
-                user.setUserType(UserType.ADMIN);
+                user.setRole("ADMIN");
                 userDAO.save(user);
             } else {
                 logger.debug("Test data already created");

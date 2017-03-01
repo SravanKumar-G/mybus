@@ -7,7 +7,7 @@ angular.module('myBus.expensesModules', ['ngTable', 'ui.bootstrap'])
   // ====================================    ExpensesController   ================================================
   // ==================================================================================================================
 
-  .controller('ExpensesController', function ($scope, $http, $log, ngTableParams, $modal, $filter, expensesManager, $location) {
+  .controller('ExpensesController', function ($scope, $http, $log, NgTableParams, $modal, $filter, expensesManager, $location) {
     $log.debug('ExpensesController loading');
 
     $scope.GLOBAL_PENDING_NEIGHBORHOOD_NAME = '(PENDING)';
@@ -40,7 +40,7 @@ angular.module('myBus.expensesModules', ['ngTable', 'ui.bootstrap'])
       $location.url('/expenses/' + id);
     };
         
-    $scope.expensesContentTableParams = new ngTableParams({
+    $scope.expensesContentTableParams = new NgTableParams({
       page: 1,
       count: 50,
       sorting: {

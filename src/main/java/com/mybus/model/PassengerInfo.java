@@ -9,26 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@Setter
+@Getter
 public class PassengerInfo {
 	
-	@Setter
-	@Getter
 	private String name;
-	
-	@Setter
-	@Getter
 	private int age;
-	
-	@Setter
-	@Getter
 	private String gender;
-	
-	@Setter
-	@Getter
 	private String seatNumber;
-	
-	@Setter
-	@Getter
 	private double seatFare;
 	
 	/**
