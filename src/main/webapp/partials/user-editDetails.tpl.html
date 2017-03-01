@@ -76,6 +76,8 @@
                 <label class="col-sm-2 control-label">User Type<span class="data-required">*</span></label>
                 <div class="col-sm-4">
                     <select ng-options="role.id as role.name for role in roles" class="form-control" ng-model="user.role" required></select>
+                    <a ng-click="launchRoleAdd()">Add New Role</a>
+
                 </div>
 
                 <label class="col-sm-2 control-label checkbox" for="editActiveInput">Active</label>

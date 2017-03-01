@@ -2,6 +2,7 @@ package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.ServiceReportStatus;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -50,7 +51,13 @@ public class ABAgentService {
             Map info = (HashMap) a;
             if(info.get("status").toString().equalsIgnoreCase("active")){
                 String userName = info.get("username").toString();
-                if(agentDAO.findByUsername(userName).iterator().hasNext()){
+                Iterator<Agent> iterator = agentDAO.findByUsername(userName).iterator();
+                if(iterator.hasNext()){
+                    Agent agent = iterator.next();
+                    if(agent.getBranchOfficeId() == null) {
+                        agent.getAttributes().put(BranchOffice.KEY_NAME, "Not Assigned");
+                        agentDAO.save(agent);
+                    }
                     logger.debug("Skipping downloading of existing agent: "+ userName);
                     continue;
                 }

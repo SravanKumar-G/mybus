@@ -127,6 +127,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.cancelUser = function(theForm){
             cancelManager.cancel(theForm);
         }
+        $scope.launchRoleAdd = function(){
+            $location.url('/roles');
+        }
     })
 
     //
