@@ -23,5 +23,6 @@ public class Agent extends AbstractDocument {
     private String mobile;
     private String landline;
     private String address;
+    private String branchOfficeId;
     private String branchName;
 }

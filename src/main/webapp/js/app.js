@@ -14,12 +14,18 @@ var myBus = angular.module('myBus', [
   'myBus.serviceReportsModule',
   'myBus.expensesModule',
   'myBus.routeModule',
-  'myBus.roleModule'
+  'myBus.roleModule',
+  'myBus.agentModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
+            .state('agents',{
+                url:'/agents',
+                templateUrl: 'partials/agents.tpl.html',
+                controller: 'AgentController'
+            })
             .state('amenities',{
                 url:'/amenities',
                 templateUrl: 'partials/amenities.tpl.html',

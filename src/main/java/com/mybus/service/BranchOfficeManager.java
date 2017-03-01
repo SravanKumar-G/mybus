@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,8 +52,12 @@ public class BranchOfficeManager {
         Preconditions.checkNotNull(branchOffice, "No BranchOffice found with id");
         City city = cityManager.findOne(branchOffice.getCityId());
         User user = userManager.findOne(branchOffice.getManagerId());
-        branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
-        branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+        if(city != null) {
+            branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
+        }
+        if(user != null) {
+            branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+        }
         return branchOffice;
     }
 
@@ -90,4 +95,18 @@ public class BranchOfficeManager {
         branchOfficeDAO.delete(branchOffice);
     }
 
+    public List<BranchOffice> getNames() {
+        String[] fields = {"name"};
+        List<BranchOffice> offices = IteratorUtils.toList(mongoQueryDAO
+                .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, null, null).iterator());
+        return offices;
+    }
+    public Map<String, String> getNamesMap() {
+        List<BranchOffice> offices = getNames();
+        Map<String, String> namesMap = new HashMap<>();
+        for(BranchOffice office: offices) {
+            namesMap.put(office.getId(), office.getName());
+        }
+        return namesMap;
+    }
 }

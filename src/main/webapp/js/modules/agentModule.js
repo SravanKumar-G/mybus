@@ -3,37 +3,82 @@
 /*global angular, _*/
 
 angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
-    .controller('AgentController', function($scope,$state, $http, $log, $filter, NgTableParams, $location, agentManager) {
+    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager) {
         $scope.headline = "Agents";
         $scope.count = 0;
         $scope.agents = {};
+        $scope.loading =false;
         $scope.currentPageOfAgents = [];
         var loadTableData = function (tableParams) {
-            branchOfficeManager.loadAll(function(data){
+            $scope.loading = true;
+            agentManager.loadAll(function(data){
                 if(angular.isArray(data)) {
-                    $scope.offices =data;
+                    $scope.loading = false;
                     $scope.count = data.length;
-                    $scope.offices = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                    $scope.agents = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
                     tableParams.total(data.length);
-                    $scope.currentPageOfOffices = $scope.offices.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    $scope.currentPageOfAgents = $scope.agents.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    $scope.count = $scope.currentPageOfAgents.length;
                 }
             });
         };
-        $scope.officeTableParams = new NgTableParams({
+        $scope.agentTableParams = new NgTableParams({
             page: 1,
-            count: 100,
+            count: 5000,
             sorting: {
                 fullName: 'asc'
             }
         }, {
-            total: $scope.currentPageOfOffices.length,
+            total: $scope.currentPageOfAgents.length,
             getData: function (params) {
                 loadTableData(params);
             }
         });
+        $scope.refreshAgents = function() {
+            $scope.loading = true;
+            agentManager.download(function(data) {
+                $scope.loading = false;
+                loadTableData($scope.agentTableParams);
+            })
+        };
+
+        $scope.editAgent = function(agentId){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl: 'edit-agent-modal.html',
+                controller: 'EditAgentController',
+                resolve: {
+                    agentId: function () {
+                        return agentId;
+                    }
+                }
+            });
+        }
+        $scope.$on('AgentUpdated', function (e, value) {
+            loadTableData($scope.agentTableParams);
+        });
     })
-    .controller('EditAgentController', function($scope,$stateParams,userManager,$window,$log, cityManager, $location, cancelManager,branchOfficeManager ) {
+    .controller('EditAgentController', function($scope,$rootScope, $stateParams,agentId,agentManager, branchOfficeManager ) {
         $scope.headline = "Edit Agent";
+        $scope.agent = {};
+        $scope.offices = [];
+        agentManager.load(agentId, function(data){
+            $scope.agent = data;
+            branchOfficeManager.loadNames(function(data) {
+                $scope.offices = data;
+            });
+        });
+        $scope.saveAgent = function(){
+            agentManager.save($scope.agent,function(data){
+                $scope.agent = data;
+                $rootScope.modalInstance.close(data);
+                swal("Great", "Agent has been updated successfully", "success");
+            });
+        };
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+
 
 
     }).factory('agentManager', function ($http, $log,$rootScope) {
@@ -48,7 +93,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                     });
             },
             download: function (callback) {
-                $http.get('/api/v1/agent/downloadAll')
+                $http.get('/api/v1/agent/download')
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
@@ -58,7 +103,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
             },
             save: function(agent, callback) {
                 if(agent.id) {
-                    $http.put('/api/v1/agent/'+agent.id,agent).then(function(response){
+                    $http.put('/api/v1/agent/',agent).then(function(response){
                         if(angular.isFunction(callback)){
                             callback(response.data);
                         }
@@ -66,17 +111,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                     },function (err,status) {
                         sweetAlert("Error",err.data.message,"error");
                     });
-                } else {
-                    $http.post('/api/v1/branchOffice',branchOffice).then(function(response){
-                        if(angular.isFunction(callback)){
-                            callback(response.data);
-                        }
-                        $rootScope.$broadcast('BranchOfficeCreated');
-                    },function (err,status) {
-                        sweetAlert("Error",err.data.message,"error");
-                    });
                 }
-
             },
             load: function(agentId,callback) {
                 $http.get('/api/v1/agent/'+agentId)
@@ -85,7 +120,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                         $rootScope.$broadcast('AgentLoadComplete');
                     },function (error) {
                         $log.debug("error retrieving agent info");
-                        sweetAlert("Error",err.data.message,"error");
+                        sweetAlert("Error",error.data.message,"error");
                     });
             }
         }

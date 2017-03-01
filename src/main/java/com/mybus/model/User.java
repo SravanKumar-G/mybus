@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.mapping.Field;
-import sun.security.util.Password;
 
 /**
  * Created by skandula on 3/31/15.

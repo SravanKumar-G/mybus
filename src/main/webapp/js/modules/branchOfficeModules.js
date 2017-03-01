@@ -121,6 +121,15 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving branchOffices");
                     });
             },
+            loadNames: function (callback) {
+                $http.get('/api/v1/branchOffice/names')
+                    .then(function (response) {
+                        callback(response.data);
+                        $rootScope.$broadcast('BranchOfficesLoadComplete');
+                    },function (error) {
+                        $log.debug("error retrieving branchOffices");
+                    });
+            },
             save: function(branchOffice, callback) {
                 if(branchOffice.id) {
                     $http.put('/api/v1/branchOffice/'+branchOffice.id,branchOffice).then(function(response){

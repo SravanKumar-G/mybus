@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,9 +23,11 @@ public class BranchOffice extends AbstractDocument implements AttributesDocument
     public static final String COLLECTION_NAME="branchOffice";
     public static final String CITY_NAME="cityName";
     public static final String MANAGER_NAME="managerName";
+    public static final String KEY_NAME = "branchName";
 
     public static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    @Field(KEY_NAME)
     @RequiresValue
     private String name;
 

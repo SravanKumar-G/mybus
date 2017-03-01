@@ -35,6 +35,7 @@
     <script src="js/modules/routeModule.js"></script>
     <script src="js/modules/cancelModule.js"></script>
     <script src="js/modules/roleModule.js"></script>
+    <script src="js/modules/agentModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -165,6 +166,7 @@
                                 <a href="#"><i class="fa fa-book fa-lg"></i> Master</a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
+                                <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
