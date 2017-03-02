@@ -54,7 +54,6 @@ public class MongoQueryDAO {
         }
         if (queryInfo != null) {
             for(Object key:queryInfo.keySet()) {
-
                 if(collectionName.equals("shipment") && key.toString().equals("dispatchDate")) {
                     String dateValues[] = queryInfo.get(key.toString()).toString().split(",");
                     Date start = null;
@@ -68,7 +67,9 @@ public class MongoQueryDAO {
                         e.printStackTrace();
                     }
                     query.addCriteria(where(key.toString()).gte(start));
-                } else {
+                } else if(queryInfo.get(key.toString()) instanceof Date){
+                    query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString())));
+                }else {
                     query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString())));
                 }
             }

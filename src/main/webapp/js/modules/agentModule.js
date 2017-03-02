@@ -57,7 +57,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
             loadTableData($scope.agentTableParams);
         });
     })
-    .controller('EditAgentController', function($scope,$rootScope, $stateParams,agentId,agentManager, branchOfficeManager ) {
+    .controller('EditAgentController', function($scope,$rootScope, $location, $stateParams,agentId,agentManager, branchOfficeManager ) {
         $scope.headline = "Edit Agent";
         $scope.agent = {};
         $scope.offices = [];
@@ -78,7 +78,10 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
-
+        $scope.launchAddBranchOffice = function() {
+            $scope.cancel();
+            $location.url('/branchoffice/');
+        }
 
 
     }).factory('agentManager', function ($http, $log,$rootScope) {

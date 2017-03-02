@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -45,7 +46,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     public void testGetDownloadStatus() throws Exception {
         String date = "2017-02-01";
         ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(date);
+        serviceReportStatus.setReportDate(AbhiBusPassengerReportService.df.parse(date));
         serviceReportStatusDAO.save(serviceReportStatus);
         JSONObject status = serviceReportsManager.getDownloadStatus(date);
         assertTrue(Boolean.valueOf(status.get("downloaded").toString()));
@@ -59,9 +60,9 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testSubmitReport() {
+    public void testSubmitReport() throws ParseException {
         ServiceReport serviceReport = new ServiceReport();
-        serviceReport.setJDate("2016-02-22");
+        serviceReport.setJourneyDate(AbhiBusPassengerReportService.df.parse("2016-02-22"));
         serviceReport.setSource("Hyderabad");
         serviceReport.setDestination("Chennai");
         serviceReport.setBusType("Volvo");

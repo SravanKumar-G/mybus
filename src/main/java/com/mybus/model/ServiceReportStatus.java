@@ -17,11 +17,11 @@ import java.util.Date;
 @Getter
 @Setter
 public class ServiceReportStatus extends AbstractDocument  {
-    private String reportDate;
+    private Date reportDate;
     public ServiceReportStatus() {
 
     }
-    public ServiceReportStatus(String reportDate) {
+    public ServiceReportStatus(Date reportDate) {
         this.reportDate = reportDate;
     }
 }

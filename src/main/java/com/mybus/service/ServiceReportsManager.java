@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.awt.print.Book;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -45,10 +46,13 @@ public class ServiceReportsManager {
     @Autowired
     private ServiceFormDAO serviceFormDAO;
 
-    public JSONObject getDownloadStatus(String date) {
+    @Autowired
+    private BookingTypeManager bookingTypeManager;
+
+    public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
         Iterator<ServiceReportStatus> statusIterator = serviceReportStatusDAO
-                .findByReportDate(date).iterator();
+                .findByReportDate(AbhiBusPassengerReportService.df.parse(date)).iterator();
         if(statusIterator.hasNext()) {
             response.put("downloaded", true);
             response.put("downloadedOn", dtf.print(statusIterator.next().getCreatedAt()));
@@ -66,9 +70,9 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public Iterable<ServiceReport> getReports(String date) {
+    public Iterable<ServiceReport> getReports(Date date) {
         JSONObject query = new JSONObject();
-        query.put("jDate", date);
+        query.put(ServiceReport.JOURNEY_DATE, date);
         return serviceReportMongoDAO.findReports(query, null);
     }
 
@@ -76,15 +80,19 @@ public class ServiceReportsManager {
         ServiceReport report = serviceReportDAO.findOne(id);
         Iterable<Booking> bookings = bookingDAO.findByServiceId(report.getId());
         for(Booking booking:bookings) {
-            if(BookingTypeManager.isRedbusBooking(booking)){
+            if(bookingTypeManager.isRedbusBooking(booking)){
                 report.setNetRedbusIncome(report.getNetRedbusIncome() + booking.getNetAmt());
                 booking.setPaymentType(PaymentType.REDBUS);
-            } else if(BookingTypeManager.isOnlineBooking(booking)) {
+            } else if(bookingTypeManager.isOnlineBooking(booking)) {
                 report.setNetOnlineIncome(report.getNetOnlineIncome() + booking.getNetAmt());
                 booking.setPaymentType(PaymentType.ONLINE);
             } else {
                 report.setNetCashIncome(report.getNetCashIncome() + booking.getNetAmt());
                 booking.setPaymentType(PaymentType.CASH);
+                booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+                if(!booking.isHasValidAgent() && !report.isInvalid()) {
+                    report.setInvalid(true);
+                }
             }
         }
         //round up the digits
@@ -98,6 +106,7 @@ public class ServiceReportsManager {
     private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
     }
+
     public ServiceForm submitReport(ServiceReport serviceReport) {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
@@ -109,7 +118,7 @@ public class ServiceReportsManager {
         onnlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
         double cashIncome = 0;
         for(Booking booking: serviceReport.getBookings()) {
-            if(BookingTypeManager.isRedbusBooking(booking)) {
+            if(bookingTypeManager.isRedbusBooking(booking)) {
                 if(seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
                     seatBookings.put(BookingTypeManager.REDBUS_CHANNEL, new ArrayList<>());
                 }
@@ -121,7 +130,7 @@ public class ServiceReportsManager {
                 }
                 redbusBooking.setSeatsCount(redbusBooking.getSeatsCount()+seats.length);
                 redbusBooking.setNetAmt(redbusBooking.getNetAmt() + booking.getNetAmt());
-            }else  if(BookingTypeManager.isOnlineBooking(booking)) {
+            }else  if(bookingTypeManager.isOnlineBooking(booking)) {
                 String[] seats = booking.getSeats().split(",");
                 if(onnlineBooking.getSeats() == null) {
                     onnlineBooking.setSeats(booking.getSeats());
@@ -133,6 +142,7 @@ public class ServiceReportsManager {
             } else {
                 //add dues based on agent
                 booking.setId(null);
+                booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
                 booking.setServiceId(null);
                 serviceForm.getBookings().add(booking);
                 String[] seats = booking.getSeats().split(",");
@@ -157,7 +167,7 @@ public class ServiceReportsManager {
         serviceForm.setDestination(serviceReport.getDestination());
         serviceForm.setBusType(serviceReport.getBusType());
         serviceForm.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
-        serviceForm.setJDate(serviceReport.getJDate());
+        serviceForm.setJDate(serviceReport.getJourneyDate());
         serviceForm.setConductorInfo(serviceReport.getConductorInfo());
         serviceForm.setNotes(serviceReport.getNotes());
         ServiceForm savedForm =  serviceFormDAO.save(serviceForm);

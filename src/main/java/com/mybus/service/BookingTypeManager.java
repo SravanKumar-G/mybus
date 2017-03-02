@@ -1,14 +1,12 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.Booking;
-import com.mybus.model.BranchOffice;
-import com.mybus.model.City;
-import com.mybus.model.User;
+import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,18 +29,37 @@ public class BookingTypeManager {
     public static final String ONLINE_CHANNEL = "ONLINE";
     public static final String CASH_CHANNEL = "CASH";
 
-    public static boolean isRedbusBooking(Booking booking) {
+    @Autowired
+    private AgentDAO agentDAO;
+
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
+    public boolean isRedbusBooking(Booking booking) {
         return booking.getBookedBy().equalsIgnoreCase("REDBUS-API");
     }
-    public static boolean isOnlineBooking(Booking booking) {
+    public boolean isOnlineBooking(Booking booking) {
         if(booking.getBookedBy().equalsIgnoreCase("ONLINE") ||
                 booking.getBookedBy().equalsIgnoreCase("YATRAGENIE-API") ||
                 booking.getBookedBy().equalsIgnoreCase("PAYTM-API") ||
-                booking.getBookedBy().equalsIgnoreCase("ABHIBUS") ||
-                booking.getBookedBy().equalsIgnoreCase("")){
+                booking.getBookedBy().equalsIgnoreCase("ABHIBUS")){
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean hasValidAgent(Booking booking) {
+        Iterator<Agent> agents = agentDAO.findByUsername(booking.getBookedBy()).iterator();
+        if(agents.hasNext()) {
+            Agent agent = agents.next();
+            if(agent.getBranchOfficeId() != null) {
+                BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+                if(branchOffice != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

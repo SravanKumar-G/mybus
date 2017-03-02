@@ -64,6 +64,7 @@ Total: {{count}}
                 <label class="col-sm-4 control-label" for="branchOffice">BranchOffice</label>
                 <div class="col-sm-4">
                     <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="agent.branchOfficeId" required></select>
+                    <a ng-click="launchAddBranchOffice()">Add New Branch</a>
                 </div>
             </div>
         </form>

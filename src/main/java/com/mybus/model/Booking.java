@@ -31,7 +31,7 @@ public class Booking extends AbstractDocument{
     private double amount;
     private Payment payment;
     private String ticketNo;
-    private Date jouurneyDateTime;
+    private Date journeyDate;
     private String seats;
     private int seatsCount;
     private String source;
@@ -46,6 +46,7 @@ public class Booking extends AbstractDocument{
     private String orderId;
     private double netAmt;
     private boolean due;
+    private boolean hasValidAgent;
     public Booking() {
 
     }

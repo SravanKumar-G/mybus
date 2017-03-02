@@ -9,5 +9,5 @@ import java.util.Iterator;
 
 @Repository
 public interface ServiceReportDAO extends PagingAndSortingRepository<ServiceReport, String> {
-    Iterable<ServiceReport> findByJDate(String date);
+    Iterable<ServiceReport> findByJourneyDate(String date);
 }

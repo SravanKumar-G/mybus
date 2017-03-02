@@ -166,9 +166,13 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 });
             });
         }
+        $scope.launchAgents = function(){
+            $location.url('/agents');
+        }
     }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location) {
         $scope.parseDate = function(){
-            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth())+1)).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+            console.log('date '+ $scope.date + "  "+ $scope.dt.getUTCMonth());
         }
         $scope.today = function() {
             var date = new Date();
@@ -200,7 +204,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         };
         $scope.dateChanged = function() {
             console.log("date changed to "+ $scope.dt);
-            $scope.parseDate();
+            $scope.checkStatus();
         }
         $scope.dateOptions = {
             formatYear: 'yy',
@@ -264,16 +268,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $scope.downloadedOn=data.downloadedOn;
             });
         }
+        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
         $scope.nextDay = function() {
             var dt = $scope.dt;
-            dt.setDate(dt.getDate()+1);
-            $scope.dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+            dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
+            $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
         }
         $scope.previousDay = function() {
             var dt = $scope.dt;
-            dt.setDate(dt.getDate()-1);
-            $scope.dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+            dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
+            $scope.dt = dt;// new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
         }
         var loadTableData = function (tableParams, $defer) {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -25,6 +26,7 @@ public class AbhiBusPassengerReportService {
     private static final String ABHI_BUS_URL = "http://api.abhibus.com/abhibusoperators/srikrishna/server.php?SecurityKey=SRI*FDEU!@@%ANHSIRK";
     public static XmlRpcClient xmlRpcClient;
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
+    public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ServiceReportDAO serviceReportDAO;
@@ -59,7 +61,7 @@ public class AbhiBusPassengerReportService {
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
-            serviceReport.setJDate(date);
+            serviceReport.setJourneyDate(df.parse(date));
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceNumber(busService.get("ServiceId").toString());
             }
@@ -100,7 +102,7 @@ public class AbhiBusPassengerReportService {
                 try {
                     booking.setServiceId(serviceReport.getId());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
-                    //booking.setJouurneyDateTime(passengerInfo.get("JourneyDate"));
+                    //booking.setJourneyDate(passengerInfo.get("JourneyDate"));
                     //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString());
@@ -126,7 +128,7 @@ public class AbhiBusPassengerReportService {
         }
         serviceReportDAO.save(serviceReports);
         ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(date);
+        serviceReportStatus.setReportDate(df.parse(date));
         return serviceReportStatusDAO.save(serviceReportStatus);
     }
     public static void main(String args[]) {
