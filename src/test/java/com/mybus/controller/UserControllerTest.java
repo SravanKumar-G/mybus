@@ -1,6 +1,7 @@
 package com.mybus.controller;
 
 import com.google.gson.Gson;
+import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.PlanTypeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.*;
@@ -45,8 +46,13 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
+
+    private BranchOffice branchOffice;
 
     @Before
     public void setup() {
@@ -55,6 +61,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         currentUser = new User("test", "test", "test", "test", true,true);
         cleanup();
         currentUser = userDAO.save(currentUser);
+        branchOffice = branchOfficeDAO.save(new BranchOffice());
     }
 
     @After
@@ -67,7 +74,6 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
     }
 
     private User createTestUser() {
-
         User user = new User("FirstName"+new ObjectId().toString(),"LastName","UserName","test",true,"ADMIN");
         return userDAO.save( user);
     }
@@ -96,12 +102,12 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("firstName","fName");
         user.put("contact", "3452555");
         user.put("address1", "123 maple");
-        user.put("city","city");
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
         user.put("role","ADMIN");
         user.put("password","sample");
+        user.put("branchOfficeId",branchOffice.getId());
 
         JSONObject planType = new JSONObject();
         planType.put("name", "Pname");
@@ -131,7 +137,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("firstName","fName");
         user.put("contact", "3452555");
         user.put("address1", "123 maple");
-        user.put("city","city");
+        user.put("branchOfficeId",branchOffice.getId());
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
@@ -178,7 +184,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("firstName","fName");
         user.put("contact", "3452555");
         user.put("address1", "123 maple");
-        user.put("city","city");
+        user.put("branchOfficeId",branchOffice.getId());
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
@@ -206,13 +212,13 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("firstName","fName");
         user.put("contact", "3452555");
         user.put("address1", "123 maple");
-        user.put("city","city");
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");
         user.put("role","ADMIN");
         user.put("planType","plan1");
         user.put("password","sample");
+        user.put("branchOfficeId",branchOffice.getId());
 
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/user")
                 .content(getObjectMapper().writeValueAsBytes(user))
@@ -240,7 +246,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
         user.put("firstName","fName");
         user.put("contact", "3452555");
         user.put("address1", "123 maple");
-        user.put("city","city");
+        user.put("branchOfficeId",branchOffice.getId());
         user.put("state","state");
         user.put("email","email@email");
         user.put("lastName","lname");

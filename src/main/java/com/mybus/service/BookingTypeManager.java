@@ -50,10 +50,9 @@ public class BookingTypeManager {
     }
 
     public boolean hasValidAgent(Booking booking) {
-        Iterator<Agent> agents = agentDAO.findByUsername(booking.getBookedBy()).iterator();
-        if(agents.hasNext()) {
-            Agent agent = agents.next();
-            if(agent.getBranchOfficeId() != null) {
+       Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+        if(agent != null) {
+           if(agent.getBranchOfficeId() != null) {
                 BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
                 if(branchOffice != null) {
                     return true;

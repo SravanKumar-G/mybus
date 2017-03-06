@@ -65,7 +65,7 @@ public class BranchOfficeManagerTest  extends AbstractControllerIntegrationTest 
         for(int i=0; i<10; i++) {
             int randomIndex = new Double(Math.random()*10).intValue();
             branchOfficeDAO.save(new BranchOffice("officename" +i, cities.get(randomIndex).getId(),
-                    users.get(randomIndex).getId(), true, "email@e.com", 123456633, "Address"));
+                    users.get(randomIndex).getId(), true, "email@e.com", 123456633, "Address", 0));
         }
         //Map<String, String> cityNames = cityManager.getCityNames(false);
         Map<String, String> userNames = userManager.getUserNames(false);

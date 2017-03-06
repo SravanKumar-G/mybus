@@ -51,17 +51,12 @@ public class ABAgentService {
             Map info = (HashMap) a;
             if(info.get("status").toString().equalsIgnoreCase("active")){
                 String userName = info.get("username").toString();
-                Iterator<Agent> iterator = agentDAO.findByUsername(userName).iterator();
-                if(iterator.hasNext()){
-                    Agent agent = iterator.next();
-                    if(agent.getBranchOfficeId() == null) {
-                        agent.getAttributes().put(BranchOffice.KEY_NAME, "Not Assigned");
-                        agentDAO.save(agent);
-                    }
+                Agent agent = agentDAO.findByUsername(userName);
+                if(agent != null){
                     logger.debug("Skipping downloading of existing agent: "+ userName);
                     continue;
                 }
-                Agent agent = new Agent();
+                agent = new Agent();
                 if(info.containsKey("username")){
                     agent.setUsername(info.get("username").toString());
                 }

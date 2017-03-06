@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Collection;
 import java.util.Date;
@@ -17,7 +18,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class ServiceReportStatus extends AbstractDocument  {
+    @Indexed
     private Date reportDate;
+    private ReportDownloadStatus status;
     public ServiceReportStatus() {
 
     }

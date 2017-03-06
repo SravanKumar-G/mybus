@@ -1,7 +1,9 @@
 package com.mybus.service;
 
 import com.mybus.dao.*;
+import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -10,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
@@ -47,7 +50,16 @@ public class ServiceReportsManager {
     private ServiceFormDAO serviceFormDAO;
 
     @Autowired
+    private SessionManager sessionManager;
+
+    @Autowired
+    private BranchOfficeMongoDAO branchOfficeMongoDAO;
+
+    @Autowired
     private BookingTypeManager bookingTypeManager;
+
+    @Autowired
+    private TransactionManager transactionManager;
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
@@ -110,39 +122,43 @@ public class ServiceReportsManager {
     public ServiceForm submitReport(ServiceReport serviceReport) {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
+        serviceReport.setNetCashIncome(0);
         serviceForm.setServiceReportId(serviceReport.getId());
+        Map<String, Double> officeCashBalances = new HashMap<>();
         Map<String,List<String>> seatBookings = new HashMap<>();
         Booking redbusBooking = new Booking();
         redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
-        Booking onnlineBooking = new Booking();
-        onnlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
+        Booking onlineBooking = new Booking();
+        onlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
         double cashIncome = 0;
         for(Booking booking: serviceReport.getBookings()) {
-            if(bookingTypeManager.isRedbusBooking(booking)) {
-                if(seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
-                    seatBookings.put(BookingTypeManager.REDBUS_CHANNEL, new ArrayList<>());
-                }
-                String[] seats = booking.getSeats().split(",");
-                if(redbusBooking.getSeats() == null) {
-                    redbusBooking.setSeats(booking.getSeats());
-                } else {
-                    redbusBooking.setSeats(redbusBooking.getSeats() +","+booking.getSeats());
-                }
-                redbusBooking.setSeatsCount(redbusBooking.getSeatsCount()+seats.length);
-                redbusBooking.setNetAmt(redbusBooking.getNetAmt() + booking.getNetAmt());
-            }else  if(bookingTypeManager.isOnlineBooking(booking)) {
-                String[] seats = booking.getSeats().split(",");
-                if(onnlineBooking.getSeats() == null) {
-                    onnlineBooking.setSeats(booking.getSeats());
-                } else {
-                    onnlineBooking.setSeats(onnlineBooking.getSeats() + "," + booking.getSeats());
-                }
-                onnlineBooking.setSeatsCount(onnlineBooking.getSeatsCount()+seats.length);
-                onnlineBooking.setNetAmt(onnlineBooking.getNetAmt() + booking.getNetAmt());
+            if(bookingTypeManager.isRedbusBooking(booking) ){
+                processBooking(seatBookings, redbusBooking, booking);
+            } else if(bookingTypeManager.isOnlineBooking(booking)){
+                processBooking(seatBookings, onlineBooking, booking);
             } else {
                 //add dues based on agent
                 booking.setId(null);
                 booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+                if(!booking.isDue()) {
+                    serviceReport.setNetCashIncome(serviceReport.getNetCashIncome()+ booking.getNetAmt());
+                }
+                /*
+                if(!booking.isDue()){
+                    if(!booking.isHasValidAgent()) {
+                        throw new BadRequestException("Invalid Agent found "+ booking.getBookedBy());
+                    }
+                    Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+                    if(agent != null){
+                        //TODO add check
+                        transactionManager.createBookingTransaction(booking, agent);
+                        boolean updated = branchOfficeMongoDAO.updateCashBalance(agent.getBranchOfficeId(), booking.getNetAmt());
+                        if(!updated) {
+                            throw new BadRequestException("Updating cash balanace failed for agent "+ booking.getBookedBy());
+                        }
+                    }
+                }
+                */
                 booking.setServiceId(null);
                 serviceForm.getBookings().add(booking);
                 String[] seats = booking.getSeats().split(",");
@@ -152,16 +168,24 @@ public class ServiceReportsManager {
             }
         }
 
-        redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
-        onnlineBooking.setNetAmt(roundUp(onnlineBooking.getNetAmt()));
-        serviceForm.getBookings().add(redbusBooking);
-        serviceForm.setSeatsCount(serviceForm.getSeatsCount() + redbusBooking.getSeatsCount());
-        serviceForm.getBookings().add(onnlineBooking);
-        serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onnlineBooking.getSeatsCount());
-        serviceForm.setExpenses(serviceReport.getExpenses());
+        if(redbusBooking.getSeatsCount() > 0){
+            redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
+            serviceForm.getBookings().add(redbusBooking);
+            serviceForm.setSeatsCount(serviceForm.getSeatsCount() + redbusBooking.getSeatsCount());
+        }
+        if(onlineBooking.getSeatsCount() > 0) {
+            onlineBooking.setNetAmt(roundUp(onlineBooking.getNetAmt()));
+            serviceForm.getBookings().add(onlineBooking);
+            serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onlineBooking.getSeatsCount());
+        }
+        for(Expense expense : serviceReport.getExpenses()) {
+            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome()- expense.getAmount());
+        }
         serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
         serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
         serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
+        User currentUser = sessionManager.getCurrentUser();
+        branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
         serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
         serviceForm.setSource(serviceReport.getSource());
         serviceForm.setDestination(serviceReport.getDestination());
@@ -171,17 +195,33 @@ public class ServiceReportsManager {
         serviceForm.setConductorInfo(serviceReport.getConductorInfo());
         serviceForm.setNotes(serviceReport.getNotes());
         ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
-        for(Booking booking:serviceForm.getBookings()) {
-            booking.setFormId(savedForm.getId());
-        }
-        for(Expense expense: serviceReport.getExpenses()) {
-            expense.setServiceId(serviceForm.getId());
-        }
+        serviceForm.getBookings().stream().forEach(booking -> {booking.setFormId(savedForm.getId());});
+        serviceReport.getExpenses().stream().forEach(expense -> {expense.setFormId(savedForm.getId());});
         expenseDAO.save(serviceReport.getExpenses());
         bookingDAO.save(serviceForm.getBookings());
         serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         serviceReportDAO.save(serviceReport);
         return serviceForm;
+    }
+
+    private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking) {
+        if(bookingTypeManager.isRedbusBooking(booking)) {
+            if (seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
+                seatBookings.put(BookingTypeManager.REDBUS_CHANNEL, new ArrayList<>());
+            }
+        } else  if(bookingTypeManager.isOnlineBooking(booking)){
+            if (seatBookings.get(BookingTypeManager.ONLINE_CHANNEL) == null) {
+                seatBookings.put(BookingTypeManager.ONLINE_CHANNEL, new ArrayList<>());
+            }
+        }
+        String[] seats = booking.getSeats().split(",");
+        if(consolidation.getSeats() == null) {
+            consolidation.setSeats(booking.getSeats());
+        } else {
+            consolidation.setSeats(consolidation.getSeats() +","+booking.getSeats());
+        }
+        consolidation.setSeatsCount(consolidation.getSeatsCount()+seats.length);
+        consolidation.setNetAmt(consolidation.getNetAmt() + booking.getNetAmt());
     }
 
     public ServiceForm getForm(String id) {
@@ -192,7 +232,7 @@ public class ServiceReportsManager {
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
         report.setNetIncome(roundUp(report.getNetIncome()));
-        report.setExpenses(IteratorUtils.toList(expenseDAO.findByServiceId(id).iterator()));
+        report.setExpenses(IteratorUtils.toList(expenseDAO.findByFormId(id).iterator()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }

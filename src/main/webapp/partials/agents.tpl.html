@@ -3,12 +3,15 @@
 <span ng-show="!loading">
 
 
-<div class="toolbar-button-div pull-right">
+<div class="toolbar-button-div pull-right" ng-if="isAdmin()">
     <button type="button" class="btn btn-sm btn-primary" ng-click="refreshAgents()">
     	<span class="glyphicon glyphicon-plus"></span> Refresh
     </button>
 </div>
-Total: {{count}}
+    <div class="row">
+        <div class="col-sm-2">Total: {{count}} </div>
+        <div class="col-sm-2">Invalid count :{{invalidCount}}</div>
+    </div>
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="agentTableParams">
@@ -17,7 +20,8 @@ Total: {{count}}
         <td data-title="'FirstName'"  sortable="'firstname'" class="clickable-item col-sm-2" >{{ agent.firstname }}</td>
         <td data-title="'Mobile'"  sortable="'mobile'" class="clickable-item col-sm-2" >{{ agent.mobile }}</td>
         <td data-title="'Landline'"  sortable="'landline'" class="clickable-item col-sm-2" >{{ agent.landline }}</td>
-        <td data-title="'Branchname'"  sortable="'branchname'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
+        <td data-title="'CreatedOn'"  sortable="'createdAt'" class="clickable-item col-sm-2" >{{ agent.createdAt|date }}</td>
+        <td data-title="'Branchname'"  sortable="'agent.attributes.branchName'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
         <td class="col-sm-1">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="editAgent(agent.id)">

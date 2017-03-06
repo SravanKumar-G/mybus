@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
@@ -36,6 +37,8 @@
     <script src="js/modules/cancelModule.js"></script>
     <script src="js/modules/roleModule.js"></script>
     <script src="js/modules/agentModule.js"></script>
+    <script src="js/modules/dueReportModule.js"></script>
+
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -94,16 +97,15 @@
                         <li class="header_li_border">
                             <a class="welcome panel_title_color ng-binding">
                                 <i class="fa fa-calendar bigger-110"></i>
-                                &nbsp;15/01/2017  &nbsp;
-                                <i class="fa fa-clock-o bigger-110"></i>
-                                17:23:32
+                                &nbsp;{{currentDate()}}  &nbsp;
+
                             </a>
                         </li>
                         <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
                             <a href="#" class="dropdown-toggle welcome panel_title_color ng-binding" dropdown-toggle="" role="button" aria-expanded="false" aria-haspopup="true">
                                 Welcome &nbsp;
                                 <b href="" ui-sref-active="active" class="handCursor ng-binding">
-                                    Admin
+                                    {{userName()}}
                                 </b>
                                 <span class="caret navebar_caret"></span>
                             </a>
@@ -121,7 +123,7 @@
                             </ul>
                         </li>
                         <li class="header_li_border">
-                            <a href="#/logout" class="welcome panel_title_color ng-binding" ui-sref-active="active" ui-sref="logout">
+                            <a ng-click="logout()" class="welcome panel_title_color ng-binding" ui-sref-active="active" href="login?logout">
                                 <i class="fa fa-power-off panel_title_color"></i>
                                 Logout&nbsp; &nbsp;&nbsp;&nbsp;
                             </a>
@@ -157,8 +159,6 @@
                             </li>
                             <ul class="sub-menu collapse" id="service">
                                 <li>New Service 1</li>
-                                <li>New Service 2</li>
-                                <li>New Service 3</li>
                             </ul>
 
 
@@ -181,6 +181,7 @@
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu url="duereport" label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
                             </ul>
 
                             <li>

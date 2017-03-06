@@ -6,6 +6,7 @@ import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
 import org.apache.commons.collections.IteratorUtils;
@@ -33,10 +34,10 @@ public class UserManager {
     private MongoQueryDAO mongoQueryDAO;
 
     @Autowired
-    private PlanTypeDAO planTypeDAO;
+    private CityManager cityManager;
 
     @Autowired
-    private CityManager cityManager;
+    private BranchOfficeManager branchOfficeManager;
 
     public User findOne(String userId) {
         return userDAO.findOne(userId);
@@ -47,6 +48,8 @@ public class UserManager {
         if (duplicateUser != null && !duplicateUser.getId().equals(user.getId())) {
             throw new RuntimeException("A user already exists with username");
         }
+        BranchOffice office = branchOfficeManager.findOne(user.getBranchOfficeId());
+        user.getAttributes().put(BranchOffice.KEY_NAME, office.getName());
         //validateAgent(user);
         if(logger.isDebugEnabled()) {
             logger.debug("Saving user: [{}]", user);
@@ -127,10 +130,11 @@ public class UserManager {
 
     public List<User> findAll() {
         List<User> users = IteratorUtils.toList(userDAO.findAll().iterator());
+        /*
         Map<String, String> cityNames = cityManager.getCityNamesMap();
         for(User user:users) {
             user.getAttributes().put("cityName", cityNames.get(user.getCity()));
-        }
+        }*/
         return users;
     }
 /*

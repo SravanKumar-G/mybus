@@ -45,13 +45,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
         });
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager) {
+    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
         $scope.serviceId = $stateParams.id;
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
+        $scope.currentUser = userManager.getUser();
         var loadTableData = function (tableParams, $defer) {
             serviceReportsManager.getReport($scope.serviceId, function(data){
                 $scope.service = data;
@@ -139,7 +140,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             if(!$scope.service.expenses) {
                 $scope.service.expenses = [];
             }
-            $scope.service.expenses.push({'type':"OTHER",'serviceId':$scope.serviceId,'index':$scope.service.expenses.length+1});
+            $scope.service.expenses.push({'type':"OTHER",'index':$scope.service.expenses.length+1});
         }
         $scope.deleteExpense = function(expense){
             console.log('deleting expense..' + expense.index);
@@ -296,7 +297,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         };
         $scope.serviceReportTableParams = new NgTableParams({
             page: 1,
-            count:150,
+            count:250,
             sorting: {
                 source: 'asc'
             }

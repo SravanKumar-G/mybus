@@ -51,7 +51,12 @@ public class AbhiBusPassengerReportService {
 
     public ServiceReportStatus downloadReport(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
+        ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
+        serviceReportStatus.setReportDate(df.parse(date));
+        serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADING);
+        serviceReportStatusDAO.save(serviceReportStatus);
         init();
+
         Collection<ServiceReport> serviceReports = new ArrayList<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -102,13 +107,15 @@ public class AbhiBusPassengerReportService {
                 try {
                     booking.setServiceId(serviceReport.getId());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
-                    //booking.setJourneyDate(passengerInfo.get("JourneyDate"));
+                    booking.setJDate(passengerInfo.get("JourneyDate").toString());
                     //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString());
                     booking.setName(passengerInfo.get("PassengerName").toString());
                     booking.setSource(passengerInfo.get("Source").toString());
+                    booking.setDestination(passengerInfo.get("Destination").toString());
                     booking.setBookedBy(passengerInfo.get("BookedBy").toString());
+                    booking.setBookedDate(passengerInfo.get("BookedDate").toString());
                     booking.setBasicAmount(Double.valueOf(String.valueOf(passengerInfo.get("BasicAmt"))));
                     booking.setServiceTax(Double.parseDouble(String.valueOf(passengerInfo.get("ServiceTaxAmt"))));
                     booking.setCommission(Double.parseDouble(String.valueOf(passengerInfo.get("Commission"))));
@@ -127,8 +134,7 @@ public class AbhiBusPassengerReportService {
             serviceReports.add(serviceReport);
         }
         serviceReportDAO.save(serviceReports);
-        ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(df.parse(date));
+        serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);
         return serviceReportStatusDAO.save(serviceReportStatus);
     }
     public static void main(String args[]) {

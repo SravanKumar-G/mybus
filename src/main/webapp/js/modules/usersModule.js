@@ -71,7 +71,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,$log, $location, roleManager, cityManager, cancelManager ) {
+    .controller('UserAddController', function($scope,userManager,$window,$log, $location, roleManager, cityManager, branchOfficeManager, cancelManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
@@ -123,7 +123,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             }
             $location.url('/users');
         };
-
+        $scope.launchAddBranchOffice = function() {
+            $location.url('/branchoffice/');
+        }
         $scope.cancelUser = function(theForm){
             cancelManager.cancel(theForm);
         }
@@ -135,7 +137,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager, branchOfficeManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.id;
         $scope.user={};
@@ -146,6 +148,10 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         		$scope.roles = data;
         	});
         }
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
         $scope.rolesInit();
         $scope.loadUserWithId = function(){
             cityManager.getActiveCityNames(function(data) {
@@ -178,8 +184,13 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         };
         $scope.cancelUser = function(theForm){
             cancelManager.cancel(theForm);
-        }
-
+        };
+        $scope.launchAddBranchOffice = function() {
+            $location.url('/branchoffice/');
+        };
+        $scope.launchRoleAdd = function(){
+            $location.url('/roles');
+        };
     }).factory('userManager', function ($http, $log,$rootScope) {
 
         var GRP_READ_ONLY = "Read-only"

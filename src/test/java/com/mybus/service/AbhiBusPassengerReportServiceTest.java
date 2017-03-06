@@ -55,7 +55,6 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
     }
 
     @Test
-
     public void testDownloadSingleReport() throws Exception {
         abhiBusPassengerReportService.downloadReport("2017-02-20");
     }

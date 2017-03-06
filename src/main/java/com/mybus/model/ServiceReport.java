@@ -47,6 +47,7 @@ public class ServiceReport extends AbstractDocument  {
     public ServiceReport() {
         this.staff = new HashSet<>();
         this.expenses = new ArrayList<>();
+        this.bookings = new ArrayList<>();
     }
     public String getJDate(){
         if(this.journeyDate != null) {

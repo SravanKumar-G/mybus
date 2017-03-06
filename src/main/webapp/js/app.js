@@ -15,7 +15,8 @@ var myBus = angular.module('myBus', [
   'myBus.expensesModule',
   'myBus.routeModule',
   'myBus.roleModule',
-  'myBus.agentModule'
+  'myBus.agentModule',
+  'myBus.dueReportModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -36,6 +37,18 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/dashboard',
                 templateUrl: 'partials/home.tpl.html',
                 controller: 'HomeController'
+            })
+            .state('duereport', {
+                level:1,
+                url:'/duereport',
+                templateUrl: 'partials/duereport.tpl.html',
+                controller: 'DueReportController'
+            })
+            .state('officeduereport/:id', {
+                level:1,
+                url:'/officeduereport/:id',
+                templateUrl: 'partials/officeduereport.tpl.html',
+                controller: 'OfficeDueReportController'
             })
             .state('servicereport/:id', {
                 level:2,
@@ -256,10 +269,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 				userManager.getGroupsForCurrentUser();
                 console.log("currentuser is admin " + data.admin);
                 myBus.constant('currentuser', data);
+                $rootScope.currentuser = data;
 			}
-
 		});
-		$rootScope.userManager = userManager;
+
 		$rootScope.$on('$stateChangeSuccess', function() {
 			console.log('Current state name: ' + $state.$current.name);
 		});

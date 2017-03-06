@@ -3,18 +3,25 @@
 /*global angular, _*/
 
 angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
-    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager) {
+    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager, userManager) {
         $scope.headline = "Agents";
         $scope.count = 0;
         $scope.agents = {};
+        $scope.invalidCount = 0;
         $scope.loading =false;
         $scope.currentPageOfAgents = [];
         var loadTableData = function (tableParams) {
             $scope.loading = true;
             agentManager.loadAll(function(data){
+                $scope.invalidCount = 0;
                 if(angular.isArray(data)) {
                     $scope.loading = false;
                     $scope.count = data.length;
+                    _.each(data, function(agent, index){
+                        if(!agent.branchOfficeId){
+                            $scope.invalidCount++;
+                        }
+                    });
                     $scope.agents = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
                     tableParams.total(data.length);
                     $scope.currentPageOfAgents = $scope.agents.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
@@ -56,6 +63,9 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.$on('AgentUpdated', function (e, value) {
             loadTableData($scope.agentTableParams);
         });
+        $scope.isAdmin = function(){
+            return userManager.getUser().admin;
+        };
     })
     .controller('EditAgentController', function($scope,$rootScope, $location, $stateParams,agentId,agentManager, branchOfficeManager ) {
         $scope.headline = "Edit Agent";

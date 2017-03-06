@@ -1,10 +1,12 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
+import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
@@ -35,6 +37,9 @@ public class BranchOfficeManager {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private AgentDAO agentDAO;
+
 
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
@@ -50,13 +55,17 @@ public class BranchOfficeManager {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId is required");
         BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
         Preconditions.checkNotNull(branchOffice, "No BranchOffice found with id");
-        City city = cityManager.findOne(branchOffice.getCityId());
-        User user = userManager.findOne(branchOffice.getManagerId());
-        if(city != null) {
-            branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
+        if(branchOffice.getCityId() != null) {
+            City city = cityManager.findOne(branchOffice.getCityId());
+            if(city != null) {
+                branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
+            }
         }
-        if(user != null) {
-            branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+        if(branchOffice.getManagerId() != null) {
+            User user = userManager.findOne(branchOffice.getManagerId());
+            if(user != null) {
+                branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+            }
         }
         return branchOffice;
     }
@@ -109,4 +118,5 @@ public class BranchOfficeManager {
         }
         return namesMap;
     }
+
 }
