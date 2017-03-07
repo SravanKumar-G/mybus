@@ -8,13 +8,15 @@
     	<span class="glyphicon glyphicon-plus"></span> Refresh
     </button>
 </div>
-    <div class="row">
-        <div class="col-sm-2">Total: {{count}} </div>
-        <div class="col-sm-2">Invalid count :{{invalidCount}}</div>
-    </div>
-<br/>
-<br/>
-<table class="table table-bordered table-condensed table-hover" ng-table="agentTableParams">
+<div class="row">
+    <div class="col-sm-4">Search By Name: <input ng-model="query" ng-keyup="$event.keyCode == 13 ? searchFilter() : null" auto-focus> </div>
+    <div class="col-sm-2">Show Invalid :<input type="checkbox" ng-model="showInvalid" ng-change="init()"></div>
+    <div class="col-sm-1">Total: {{count}} </div>
+    <div class="col-sm-2">Invalid count :{{invalidCount}}</div>
+
+</div>
+
+<table class="table table-bordered table-striped table-condensed table-hover" ng-table="agentTableParams" hide-pagination="false">
     <tr ng-repeat="agent in currentPageOfAgents">
         <td data-title="'UserName'"  sortable="'username'" class="clickable-item col-sm-2" >{{ agent.username }}</td>
         <td data-title="'FirstName'"  sortable="'firstname'" class="clickable-item col-sm-2" >{{ agent.firstname }}</td>
@@ -30,9 +32,10 @@
         </td>
     </tr>
     <tr ng-if="!currentPageOfAgents || currentPageOfAgents.length === 0">
-        <td colspan="4">No Agent exist.  </td>
+        <td colspan="7">No Agent exist.  </td>
     </tr>
 </table>
+
 
 </span>
 

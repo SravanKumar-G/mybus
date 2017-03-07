@@ -1,6 +1,8 @@
 package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
+import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Shipment;
@@ -27,12 +29,18 @@ public class AgentManager {
     private AgentDAO agentDAO;
 
     @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
+    @Autowired
+    private AgentMongoDAO agentMongoDAO;
+
+    @Autowired
     private BranchOfficeManager branchOfficeManager;
 
     public Agent getAgent(String agentId) {
         Agent agent = agentDAO.findOne(agentId);
         if(agent.getBranchOfficeId() != null) {
-            BranchOffice branchOffice = branchOfficeManager.findOne(agent.getBranchOfficeId());
+            BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
             if(branchOffice != null) {
                 agent.getAttributes().put(BranchOffice.KEY_NAME, branchOffice.getName());
             }
@@ -44,12 +52,17 @@ public class AgentManager {
         return agentDAO.save(agent);
     }
 
-    public Iterable<Agent> findAll() {
-        List<Agent> agents = IteratorUtils.toList(agentDAO.findAll().iterator());
+    public Iterable<Agent> findAgents(String query, boolean showInvalid) {
+        List<Agent> agents = IteratorUtils.toList(agentMongoDAO.findAgents(query, showInvalid).iterator());
         Map<String, String> namesMap = branchOfficeManager.getNamesMap();
         agents.stream().forEach(agent -> {
             agent.getAttributes().put(BranchOffice.KEY_NAME, namesMap.get(agent.getBranchOfficeId()));
         });
         return agents;
     }
+
+    public long count(String query, boolean showInvalid) {
+        return agentMongoDAO.countAgents(query, showInvalid);
+    }
+
 }

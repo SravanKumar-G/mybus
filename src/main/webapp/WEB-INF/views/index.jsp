@@ -47,12 +47,13 @@
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
     <script src="js/directives/myMenu.js"></script>
-    <script src="js/directives/inputNumber.js"></script>
+    <script src="js/directives/someDirectives.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
+
     <link rel="stylesheet" href="css/app.css">
 
 </head>
