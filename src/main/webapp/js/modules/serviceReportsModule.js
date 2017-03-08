@@ -45,13 +45,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
         });
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager) {
+    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
         $scope.serviceId = $stateParams.id;
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
+        $scope.currentUser = userManager.getUser();
         var loadTableData = function (tableParams, $defer) {
             serviceReportsManager.getReport($scope.serviceId, function(data){
                 $scope.service = data;
@@ -139,7 +140,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             if(!$scope.service.expenses) {
                 $scope.service.expenses = [];
             }
-            $scope.service.expenses.push({'type':"OTHER",'serviceId':$scope.serviceId,'index':$scope.service.expenses.length+1});
+            $scope.service.expenses.push({'type':"EXPENSE",'index':$scope.service.expenses.length+1});
         }
         $scope.deleteExpense = function(expense){
             console.log('deleting expense..' + expense.index);
@@ -151,24 +152,23 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.calculateNet();
         }
         $scope.submitReport = function() {
-            swal({   title: "Please make sure all the data is accurate?",   text: "You will not be able to edit this form later !",   type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, submit it!",
-                closeOnConfirm: true }, function() {
-                serviceReportsManager.submitReport($scope.service, function (response) {
-                    //callback(response.data);
-                    sweetAlert("Great", "The report successfully submitted", "success");
-                    $location.url('serviceReports');
-                },function (error) {
-                    console.log("error saving the report")
-                    sweetAlert("Oops...", "Error submitting the report", "error");
-                });
+
+            serviceReportsManager.submitReport($scope.service, function (response) {
+                //callback(response.data);
+                sweetAlert("Great", "The report successfully submitted", "success");
+                $location.url('serviceReports');
+            },function (error) {
+                swal("Oops...", "Error submitting the report", "error");
             });
+
+        }
+        $scope.launchAgents = function(){
+            $location.url('/agents');
         }
     }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location) {
         $scope.parseDate = function(){
-            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth())+1)).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+            console.log('date '+ $scope.date + "  "+ $scope.dt.getUTCMonth());
         }
         $scope.today = function() {
             var date = new Date();
@@ -200,7 +200,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         };
         $scope.dateChanged = function() {
             console.log("date changed to "+ $scope.dt);
-            $scope.parseDate();
+            $scope.checkStatus();
         }
         $scope.dateOptions = {
             formatYear: 'yy',
@@ -264,16 +264,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $scope.downloadedOn=data.downloadedOn;
             });
         }
+        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
         $scope.nextDay = function() {
             var dt = $scope.dt;
-            dt.setDate(dt.getDate()+1);
-            $scope.dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+            dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
+            $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
         }
         $scope.previousDay = function() {
             var dt = $scope.dt;
-            dt.setDate(dt.getDate()-1);
-            $scope.dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+            dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
+            $scope.dt = dt;// new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
         }
         var loadTableData = function (tableParams, $defer) {
@@ -288,7 +292,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         };
         $scope.serviceReportTableParams = new NgTableParams({
             page: 1,
-            count:150,
+            count:250,
             sorting: {
                 source: 'asc'
             }

@@ -1,12 +1,11 @@
 package com.mybus.model;
 
-import com.mybus.annotations.RequiresValue;
+import com.mybus.service.ServiceConstants;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.json.simple.JSONObject;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.*;
 
@@ -21,18 +20,18 @@ import java.util.*;
 public class ServiceReport extends AbstractDocument  {
     public static final String COLLECTION_NAME = "serviceReport";
     public static final String SUBMITTED_ID = "formId";
-
+    public static final String JOURNEY_DATE = "journeyDate";
     private String serviceName;
     private String serviceNumber;
     private String source;
     private String destination;
     private String busType;
     private String vehicleRegNumber;
+    @Field(JOURNEY_DATE)
     private Date journeyDate;
-    private String jDate;
     private Set<VehicleStaff> staff;
     private Collection<Booking> bookings;
-    private List<Expense> expenses;
+    private Collection<Payment> expenses;
     private double netCashIncome;
     private double netRedbusIncome;
     private double netOnlineIncome;
@@ -43,9 +42,20 @@ public class ServiceReport extends AbstractDocument  {
     private ServiceStatus status;
     private String conductorInfo;
     private String notes;
+    private boolean invalid;
+    public String jDate;
     public ServiceReport() {
         this.staff = new HashSet<>();
         this.expenses = new ArrayList<>();
+        this.bookings = new ArrayList<>();
+    }
+    public String getJDate(){
+        if(this.journeyDate != null) {
+            return ServiceConstants.df.format(this.getJourneyDate());
+        } else {
+            return null;
+        }
+
     }
 
 }

@@ -1,12 +1,10 @@
 package com.mybus.model;
 
-import java.util.LinkedHashMap;
-
-import org.json.simple.JSONObject;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.LinkedHashMap;
 
 @NoArgsConstructor
 @Setter

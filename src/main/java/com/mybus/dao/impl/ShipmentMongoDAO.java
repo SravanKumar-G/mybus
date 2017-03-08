@@ -1,15 +1,11 @@
 package com.mybus.dao.impl;
 
 
-import com.mongodb.BasicDBObject;
 import com.mybus.model.Shipment;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by srinikandula on 12/11/16.

@@ -7,6 +7,6 @@ import com.mybus.model.BranchOffice;
  */
 public class BranchOfficeTestService {
     public static BranchOffice createNew() {
-        return new BranchOffice("OfficeName","1234", "123", true, "email@e.com", 123456, "address" );
+        return new BranchOffice("OfficeName","1234", "123", true, "email@e.com", 123456, "address" , 0);
     }
 }

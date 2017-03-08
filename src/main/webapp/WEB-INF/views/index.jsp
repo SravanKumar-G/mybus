@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
@@ -31,11 +32,13 @@
     <script src="js/modules/vehicleModule.js"></script>
     <script src="js/modules/branchOfficeModules.js"></script>
     <script src="js/modules/serviceReportsModule.js"></script>
-    <script src="js/modules/expensesModule.js"></script>
+    <script src="js/modules/paymentModule.js"></script>
     <script src="js/modules/routeModule.js"></script>
     <script src="js/modules/cancelModule.js"></script>
     <script src="js/modules/roleModule.js"></script>
     <script src="js/modules/agentModule.js"></script>
+    <script src="js/modules/dueReportModule.js"></script>
+
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -44,12 +47,13 @@
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
     <script src="js/directives/myMenu.js"></script>
-    <script src="js/directives/inputNumber.js"></script>
+    <script src="js/directives/someDirectives.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
+
     <link rel="stylesheet" href="css/app.css">
 
 </head>
@@ -94,16 +98,15 @@
                         <li class="header_li_border">
                             <a class="welcome panel_title_color ng-binding">
                                 <i class="fa fa-calendar bigger-110"></i>
-                                &nbsp;15/01/2017  &nbsp;
-                                <i class="fa fa-clock-o bigger-110"></i>
-                                17:23:32
+                                &nbsp;{{currentDate()}}  &nbsp;
+
                             </a>
                         </li>
                         <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
                             <a href="#" class="dropdown-toggle welcome panel_title_color ng-binding" dropdown-toggle="" role="button" aria-expanded="false" aria-haspopup="true">
                                 Welcome &nbsp;
                                 <b href="" ui-sref-active="active" class="handCursor ng-binding">
-                                    Admin
+                                    {{userName()}}
                                 </b>
                                 <span class="caret navebar_caret"></span>
                             </a>
@@ -121,7 +124,7 @@
                             </ul>
                         </li>
                         <li class="header_li_border">
-                            <a href="#/logout" class="welcome panel_title_color ng-binding" ui-sref-active="active" ui-sref="logout">
+                            <a ng-click="logout()" class="welcome panel_title_color ng-binding" ui-sref-active="active" href="login?logout">
                                 <i class="fa fa-power-off panel_title_color"></i>
                                 Logout&nbsp; &nbsp;&nbsp;&nbsp;
                             </a>
@@ -157,8 +160,6 @@
                             </li>
                             <ul class="sub-menu collapse" id="service">
                                 <li>New Service 1</li>
-                                <li>New Service 2</li>
-                                <li>New Service 3</li>
                             </ul>
 
 
@@ -181,6 +182,8 @@
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
                             </ul>
 
                             <li>

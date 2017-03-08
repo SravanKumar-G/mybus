@@ -1,15 +1,14 @@
 package com.mybus.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mybus.model.AbstractDocument;
 import com.mybus.model.AttributesDocument;
 import com.mybus.model.BusJourney;
 import com.mybus.model.JourneyType;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookingSessionInfo  extends AbstractDocument implements AttributesDocument{
 	

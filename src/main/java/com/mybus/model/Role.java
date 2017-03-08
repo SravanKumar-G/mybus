@@ -1,12 +1,11 @@
 package com.mybus.model;
 
-import java.util.Set;
-
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.simple.JSONObject;
+
+import java.util.Set;
 
 /**
  * Created by CrazyNaveen on 4/27/16.

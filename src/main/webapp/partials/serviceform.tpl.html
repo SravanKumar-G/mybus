@@ -1,6 +1,6 @@
 <div ng-show="downloaded" >
     <table class="table table-bordered table-condensed table-hover" >
-        <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date:{{service.jdate}}</td><td>{{service.busType}}</td></tr>
+        <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date: {{service.jdate | date}}</td><td>{{service.busType}}</td></tr>
         <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td></td></tr>
     </table>
     <table class="table table-bordered table-condensed table-hover">

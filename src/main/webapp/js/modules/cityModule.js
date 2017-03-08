@@ -251,7 +251,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                     callback(response.data);
                     sweetAlert("Great","Your BoardingPoint has been successfully added", "success");
                 },function (err,status) {
-                    sweetAlert("Error",err.message,"error");
+                    sweetAlert("Error",err.data.message,"error");
                 });
             },
             updateBp: function(cityId,boardingPoint,callback) {

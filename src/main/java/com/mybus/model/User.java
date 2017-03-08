@@ -48,11 +48,11 @@ public class User extends AbstractDocument implements AttributesDocument{
     private long secondaryContact;
     private String address1;
     private String address2;
-    private String city;
     private String state;
     @RequiresValue
     private String role;
     private String planType;
+    private String branchOfficeId;
 
     public User(JSONObject json){
         if(json.containsKey("id")) {
@@ -85,9 +85,6 @@ public class User extends AbstractDocument implements AttributesDocument{
         if(json.containsKey("address1")) {
             this.address1 = json.get("address1").toString();
         }
-        if(json.containsKey("city")) {
-            this.city = json.get("city").toString();
-        }
         if(json.containsKey("state")) {
             this.state = json.get("state").toString();
         }
@@ -96,6 +93,9 @@ public class User extends AbstractDocument implements AttributesDocument{
         }
         if(json.containsKey("planType")){
             this.planType = json.get("planType").toString();
+        }
+        if(json.containsKey("branchOfficeId")){
+            this.branchOfficeId = json.get("branchOfficeId").toString();
         }
     }
 
@@ -141,7 +141,6 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.contact = contact;
         this.address1 = address1;
         this.address2 = address2;
-        this.city = city;
         this.state = state;
         this.role = role;
         this.planType = planType;
@@ -163,7 +162,6 @@ public class User extends AbstractDocument implements AttributesDocument{
         this.contact = contact;
         this.address1 = address1;
         this.address2 = address2;
-        this.city = city;
         this.state = state;
         this.role = role;
         this.planType = planType;

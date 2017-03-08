@@ -7,5 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AgentDAO extends PagingAndSortingRepository<Agent, String> {
     Iterable<Agent> findByBranchName(String branchName);
-    Iterable<Agent> findByUsername(String username);
+    //Agent findByUsername(String username);
+    Agent findByUsername(String username);
+    Iterable<Agent> findByBranchOfficeId(String officeId);
+
 }

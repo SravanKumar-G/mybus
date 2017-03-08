@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface BookingDAO extends PagingAndSortingRepository<Booking, String> {
     Iterable<Booking> findByServiceId(String serviceId);
     Iterable<Booking> findByFormId(String formId);
+    Iterable<Booking> findByDue(boolean due);
+
 }

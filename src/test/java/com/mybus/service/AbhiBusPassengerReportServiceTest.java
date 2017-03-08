@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,11 +54,10 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
 
     }
 
-
     @Test
-    @Ignore
     public void testDownloadSingleReport() throws Exception {
-       abhiBusPassengerReportService.downloadReport("2017-02-20");
+        abhiBusPassengerReportService.downloadReport("2017-02-20");
     }
-     */
+*/
+
 }

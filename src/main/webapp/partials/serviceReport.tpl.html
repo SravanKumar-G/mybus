@@ -1,7 +1,7 @@
 <div ng-show="downloaded" >
     <table class="table table-bordered table-condensed table-hover" >
         <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date:{{service.jdate}}</td><td>{{service.busType}}</td></tr>
-        <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td></td></tr>
+        <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>Received At: {{currentUser.attributes.branchName}}</td><td></td></tr>
     </table>
     <table class="table table-bordered table-condensed table-hover">
         <tr><td>Net Income - Redbus</td><td>{{service.netRedbusIncome}}</td>
@@ -14,17 +14,18 @@
         <div class="col-sm-7" style="overflow-y: auto;height: 60%;">
             <h4>Bookings</h4>
             <table class="table table-bordered table-condensed table-hover" ng-table="bookingsTableParams">
-                <tr ng-repeat="booking in currentPageOfBookings">
+                <tr ng-repeat="booking in currentPageOfBookings" ng-s>
                     <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1">
-                        <span ng-show="booking.id != null">
-                             {{ booking.seats }}
+                        <span ng-show="booking.id != null" title="{{booking.seats}}">
+                             {{ booking.seats | cut:true:10:' ...'}}
                         </span>
                         <span ng-show="booking.id == null">
                              <input ng-model="booking.seats" style="width:100px;" ng-change="countSeats()">
                         </span>
                     </td>
-                    <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2">
-                        <span ng-show="booking.id != null">
+                    <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2"
+                        ng-style="isNotOnlineBooking(booking) && !booking.hasValidAgent && {'background-color':'red'}">
+                        <span ng-show="booking.id != null" >
                              {{ booking.bookedBy}}
                         </span>
                         <span ng-show="booking.id == null">
@@ -32,22 +33,22 @@
                         </span>
                     </td>
                     <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-1">
-                        <span ng-show="booking.id != null">
-                             {{ booking.name}}
+                        <span ng-show="booking.id != null" title="{{booking.name}}">
+                             {{ booking.name | cut:false:10:' ...'}}
                         </span>
                         <span ng-show="booking.id == null">
                              <input ng-model="booking.name" style="width:100px;">
                         </span>
                     </td>
-                    <td data-title="'NetAmt'"  sortable="'netAmt'" class="clickable-item col-md-2" >
+                    <td data-title="'NetAmt'"  class="clickable-item col-md-2" >
                         <span ng-show="isOnlineBooking(booking)">{{booking.netAmt}} </span>
                         <span ng-show="isNotOnlineBooking(booking)">
                             <div class="row">
                                 <div class="col-sm-5"><input type="number" ng-model="booking.netAmt" ng-change="calculateNet()" style="width:70px;">
                                 </div>
-                                <div class="col-sm-4"><input type="checkbox" ng-model="booking.due" ng-change="calculateNet()">IsDue</div>
-                                <div class="col-sm-1">
-                                    <span class="glyphicon glyphicon-remove-sign" ng-show="booking.index" ng-click="deleteBooking(booking)"></span>
+                                <div class="col-sm-4"><input type="checkbox" ng-model="booking.due" ng-change="calculateNet()">Due</div>
+                                <div class="col-sm-1" ng-if="booking.index">
+                                    <span class="glyphicon glyphicon-remove-sign"  ng-click="deleteBooking(booking)"></span>
                                 </div>
                             </div>
                         </span>
@@ -90,9 +91,10 @@
             </button>
         </div>
         <div class="col-sm-2">
-            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()">
+            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()" ng-show="!service.invalid">
                 <span class="glyphicon"></span> Submit Report
             </button>
+            <span ng-show="service.invalid" style="color:red;">Please assign branch offices to agents <a ng-click="launchAgents()">here</a></span>
         </div>
     </div>
 <br/>

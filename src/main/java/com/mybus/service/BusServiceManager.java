@@ -1,29 +1,23 @@
 package com.mybus.service;
 
-import static java.lang.String.format;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.LayoutDAO;
 import com.mybus.dao.RouteDAO;
 import com.mybus.dao.impl.BusServiceMongoDAO;
-import com.mybus.model.BusService;
-import com.mybus.model.BusServicePublishStatus;
-import com.mybus.model.City;
-import com.mybus.model.Route;
-import com.mybus.model.ServiceFare;
-import com.mybus.model.ServiceFrequency;
+import com.mybus.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 /**
  * Created by schanda on 02/02/16.

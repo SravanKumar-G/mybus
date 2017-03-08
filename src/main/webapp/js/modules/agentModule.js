@@ -3,37 +3,60 @@
 /*global angular, _*/
 
 angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
-    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager) {
+    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager, userManager) {
         $scope.headline = "Agents";
         $scope.count = 0;
         $scope.agents = {};
+        $scope.invalidCount = 0;
         $scope.loading =false;
         $scope.currentPageOfAgents = [];
+        $scope.agentsCount = 0;
+        $scope.agentTableParams = {};
+        $scope.showInvalid = false;
+        $scope.query = "";
         var loadTableData = function (tableParams) {
             $scope.loading = true;
-            agentManager.loadAll(function(data){
+            agentManager.loadAll($scope.query,$scope.showInvalid, function(data){
+                $scope.count = data.length;
+                $scope.invalidCount = 0;
                 if(angular.isArray(data)) {
                     $scope.loading = false;
-                    $scope.count = data.length;
+                    _.each(data, function(agent, index){
+                        if(!agent.branchOfficeId){
+                            $scope.invalidCount++;
+                        }
+                    });
                     $scope.agents = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
                     tableParams.total(data.length);
+                    tableParams.data = $scope.agents;
                     $scope.currentPageOfAgents = $scope.agents.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-                    $scope.count = $scope.currentPageOfAgents.length;
                 }
             });
         };
-        $scope.agentTableParams = new NgTableParams({
-            page: 1,
-            count: 5000,
-            sorting: {
-                fullName: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfAgents.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
+
+        $scope.init = function() {
+            agentManager.count($scope.query,$scope.showInvalid, function(agentsCount){
+                $scope.agentTableParams = new NgTableParams({
+                    page: 1, // show first page
+                    count:10,
+                    sorting: {
+                        fullName: 'asc'
+                    },
+                }, {
+                    counts:[],
+                    total:agentsCount,
+                    getData: function (params) {
+                        loadTableData(params);
+                    }
+                });
+            });
+        };
+
+        $scope.init();
+        $scope.searchFilter = function(){
+            $scope.init();
+        }
+
         $scope.refreshAgents = function() {
             $scope.loading = true;
             agentManager.download(function(data) {
@@ -56,8 +79,11 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.$on('AgentUpdated', function (e, value) {
             loadTableData($scope.agentTableParams);
         });
+        $scope.isAdmin = function(){
+            return userManager.getUser().admin;
+        };
     })
-    .controller('EditAgentController', function($scope,$rootScope, $stateParams,agentId,agentManager, branchOfficeManager ) {
+    .controller('EditAgentController', function($scope,$rootScope, $location, $stateParams,agentId,agentManager, branchOfficeManager ) {
         $scope.headline = "Edit Agent";
         $scope.agent = {};
         $scope.offices = [];
@@ -78,18 +104,29 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
-
+        $scope.launchAddBranchOffice = function() {
+            $scope.cancel();
+            $location.url('/branchoffice/');
+        }
 
 
     }).factory('agentManager', function ($http, $log,$rootScope) {
         var agents = {};
         return {
-            loadAll: function (callback) {
-                $http.get('/api/v1/agent/all')
+            loadAll: function (query, showInvalid,callback) {
+                $http.get('/api/v1/agent/all?query='+query+"&showInvalid="+showInvalid)
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving agents");
+                    });
+            },
+            count: function (query, showInvalid, callback) {
+                $http.get('/api/v1/agent/count?query='+query+"&showInvalid="+showInvalid)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error retrieving agents count");
                     });
             },
             download: function (callback) {

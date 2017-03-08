@@ -1,12 +1,8 @@
 package com.mybus.dao.impl;
 
-import com.google.common.base.Preconditions;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mybus.exception.BadRequestException;
-import com.mybus.model.Shipment;
-import com.mybus.util.ServiceUtils;
-import org.joda.time.DateTime;
+import com.mybus.service.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +12,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,21 +48,22 @@ public class MongoQueryDAO {
         }
         if (queryInfo != null) {
             for(Object key:queryInfo.keySet()) {
-
                 if(collectionName.equals("shipment") && key.toString().equals("dispatchDate")) {
                     String dateValues[] = queryInfo.get(key.toString()).toString().split(",");
                     Date start = null;
                     Date end = null;
                     try {
-                        start = Shipment.dateTimeFormat.parse(dateValues[0]);
+                        start = ServiceConstants.df.parse(dateValues[0]);
                         if(dateValues.length == 2) {
-                            end = Shipment.dateTimeFormat.parse(dateValues[1]);
+                            end = ServiceConstants.df.parse(dateValues[1]);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     query.addCriteria(where(key.toString()).gte(start));
-                } else {
+                } else if(queryInfo.get(key.toString()) instanceof Date){
+                    query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString())));
+                }else {
                     query.addCriteria(where(key.toString()).is(queryInfo.get(key.toString())));
                 }
             }

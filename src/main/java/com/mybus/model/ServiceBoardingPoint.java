@@ -6,12 +6,10 @@ package com.mybus.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.joda.time.DateTime;
+import org.springframework.util.Assert;
 
 import java.util.LinkedHashMap;
-
-import org.joda.time.DateTime;
-import org.json.simple.JSONObject;
-import org.springframework.util.Assert;
 
 /**
  * @author  schanda on 02/13/16.

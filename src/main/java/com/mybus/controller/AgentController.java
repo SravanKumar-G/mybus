@@ -2,15 +2,9 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.AgentDAO;
-import com.mybus.dao.BookingDAO;
-import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
-import com.mybus.model.ServiceForm;
-import com.mybus.model.ServiceReport;
-import com.mybus.model.Shipment;
 import com.mybus.service.ABAgentService;
 import com.mybus.service.AgentManager;
-import com.mybus.service.ServiceReportsManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -54,10 +48,19 @@ public class AgentController {
 		return response;
 	}
 
+	@RequestMapping(value = "agent/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get Agents count", response = Long.class)
+	public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
+						 @RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
+		return agentManager.count(query,showInvalid);
+	}
+
 	@RequestMapping(value = "agent/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
-	public Iterable<Agent> getAllAgents(HttpServletRequest request) {
-		return agentManager.findAll();
+	public Iterable<Agent> getAllAgents(HttpServletRequest request,
+										@RequestParam(required = false, value = "query") String query,
+										@RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
+		return agentManager.findAgents(query, showInvalid);
 	}
 
 	@RequestMapping(value = "agent/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
