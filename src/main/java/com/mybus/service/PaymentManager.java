@@ -1,7 +1,5 @@
 package com.mybus.service;
 
-import com.mybus.dao.AgentDAO;
-import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
@@ -29,7 +27,7 @@ public class PaymentManager {
     private BranchOfficeMongoDAO branchOfficeMongoDAO;
 
     public Payment updatePayment(Payment payment) {
-        if(payment.getStatus() != null && payment.getStatus().equals(Payment.APPROVED)){
+        if(payment.getStatus() != null && payment.getStatus().equals(Payment.STATUS_APPROVED)){
             if(payment.getType().equals(PaymentType.EXPENSE)){
                 branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), (0-payment.getAmount()));
             } else if(payment.getType().equals(PaymentType.INCOME)){

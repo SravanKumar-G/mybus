@@ -1,5 +1,7 @@
-<div ng-show="!loading">
-    <legend>{{ headline }}</legend>
+<div ng-show="!loading" class="container">
+    <legend ng-if="!user.admin">Payment for office : <b>{{user.attributes.branchName}}</b></legend>
+    <legend ng-if="user.admin">Payments</legend>
+
     <div class="toolbar-button-div pull-right">
         <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddPayment()" ng-if="canAddPayment()"><span class="glyphicon glyphicon-plus"></span> Add</button>
     </div>
@@ -10,15 +12,25 @@
             <td data-title="'Type'" sortable="'type'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.type}}</td>
             <td data-title="'Amount'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.amount}}</td>
             <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.description}}</td>
-            <td data-title="'CreatedBy'" class="clickable-item" ng-click="goToExpense(expense.id)">{{getUserName(payment.createdBy)}}</td>
             <td data-title="'CreatedOn'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt| date}}</td>
             <td data-title="'Branch'" class="clickable-item" ng-if="user.admin">{{payment.branchOfficeId}}</td>
-            <td>
+            <td data-title="'Action'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+                <span ng-if="!payment.status">
+                    <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve</a>
+                    <a ng-click="approveOrRejectPayment(payment)">Reject</a>
+                </span>
+                <span ng-if="payment.status">
+                   {{payment.status}}
+                </span>
+            </td>
+            <td style="width:10%">
                 <md-icon type="button" class="btn" ng-click="edit(payment.id)">
                     <span class="glyphicon glyphicon-pencil" ng-if="payment.status == null"></span></md-icon>
-                <md-icon type="button" class="btn" ng-click="delete(payment.id)">
+                <md-icon type="button" class="btn" ng-click="delete(payment.id)" ng-if="payment.status == null">
                     <span class="glyphicon glyphicon-trash"></span></md-icon>
+
             </td>
+
         </tr>
         <tr ng-if="!currentPageOfPayments || currentPageOfPayments.length === 0">
             <td colspan="7">No entries exist.  Please add some.</td>

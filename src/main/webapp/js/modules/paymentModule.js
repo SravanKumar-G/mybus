@@ -6,6 +6,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         $scope.payments = [];
         $scope.loading = false;
         $scope.query = {};
+        $scope.user = userManager.getUser();
         $scope.currentPageOfPayments=[];
         $scope.canAddPayment = function() {
             var user = userManager.getUser();
@@ -55,13 +56,24 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             paymentManager.delete(paymentId, function(data){
                 $scope.init();
             });
+        };
+        $scope.approveOrRejectPayment = function(payment, status){
+            if(status == "Approve"){
+                payment.status ="Approved";
+            } else {
+                payment.status ="Rejected";
+            }
+            paymentManager.save(payment, function(data){
+                swal("Great", "Payment is updated", "success");
+            });
         }
     }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager){
         $scope.today = function() {
             $scope.dt = new Date();;
         };
+        $scope.user = userManager.getUser();
 
-        $scope.payment = {'type':'EXPENSE'};
+        $scope.payment = {'type':'EXPENSE','branchOfficeId':$scope.user.branchOfficeId};
         $scope.today();
         $scope.date = null;
         $scope.format = 'dd-MMMM-yyyy';
@@ -84,7 +96,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 $location.url('/payments');
             });
         }
-        $scope.user = userManager.getUser();
 
 
         $scope.inlineOptions = {

@@ -426,6 +426,7 @@ li.tab.active a{
     color : white;
 }
 
+table.table.table-hover{ width:100%; }
 
 
 .nav-side-menu {
