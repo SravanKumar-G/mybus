@@ -21,7 +21,15 @@ pre.tiny-debug {
     color: red;
 }
 
+.row {
+    margin-right:0px
+}
 
+.view-container{
+    position: absolute;
+    top: 100px;
+    z-index: -1;
+}
 .arrow {
     cursor: pointer;
     display: block;
@@ -353,6 +361,8 @@ li.tab.active a{
     text-transform: uppercase;
     padding-right: 0;
     border-bottom: 1px solid #c5d4c4;
+    position: fixed;
+    width: 100%;
 }
 
 .navbar-default .navbar-nav>li>a{
@@ -428,6 +438,7 @@ li.tab.active a{
     width: 200px;
     height: 100%;
     color: #e1ffff;
+    top: 67px;
 }
 .nav-side-menu .brand {
     background-color: #23282e;
