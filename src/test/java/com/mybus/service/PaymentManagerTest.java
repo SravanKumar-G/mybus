@@ -54,8 +54,8 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
         assertEquals(0, branchOffice1.getCashBalance(), 0.0);
         assertEquals(5000, branchOffice2.getCashBalance(), 0.0);
-        payment1.setStatus(Payment.APPROVED);
-        payment2.setStatus(Payment.APPROVED);
+        payment1.setStatus(Payment.STATUS_APPROVED);
+        payment2.setStatus(Payment.STATUS_APPROVED);
         payment1 = paymentManager.updatePayment(payment1);
         payment2 = paymentManager.updatePayment(payment2);
         branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());

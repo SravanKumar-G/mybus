@@ -18,7 +18,11 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class Payment extends AbstractDocument {
-    public static final String APPROVED = "approved";
+    public static final String STATUS_APPROVED = "Approved";
+    public static final String STATUS_REJECTED = "Rejected";
+
+    public static final String BRANCHOFFICEID = "branchOfficeId";
+
     private Date date;
     private String dateStr;
     private String name;
