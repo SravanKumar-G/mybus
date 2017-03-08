@@ -92,7 +92,7 @@ p:hover{
 /*navbar*/
 .navbar-default .navbar-brand{
     border: 1px solid transparent;
-    color: #2f9e43;
+    color: #fff;
     font-size: 33px;
     padding: 10px 0px;
     height: auto;
@@ -104,20 +104,20 @@ ul.nav.navbar-nav.navbar-right{
     margin-top: 10px;
 }
 .navbar-default .navbar-brand span{
-    color: #583b54;
+    color: #313131;
 }
 .navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover{
-    color: #2f9e43;
+    color: #fff;
 }
 .navbar-default {
-    background-color: #fff;
+    background-color: #2f9e43;
     border-color: transparent;
     padding: 5px 0px;
     border-radius: 0;
     text-transform: uppercase;
 }
 .navbar-default .navbar-nav>li>a{
-    color: #2f9e43;
+    color: #fff;
     padding-right: 20px;
     padding-left: 20px;
     border: 1px solid transparent;
@@ -131,7 +131,7 @@ ul.nav.navbar-nav.navbar-right{
 }
 .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover{
     color: #2f9e43;
-    background: #e8f9ff;
+    background: #fff;
 }
 .navbar-nav>li>a {
     padding-top: 8px;
@@ -140,7 +140,7 @@ ul.nav.navbar-nav.navbar-right{
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover{
     background-color: transparent;
     color: #2f9e43;
-    background: #e8f9ff;
+    background: #fff;
 }
 /*Home*/
 .flexslider{
@@ -209,17 +209,30 @@ ul.nav.navbar-nav.navbar-right{
     background: #2f9e43;
 }
 #loginContainer a span{
-    padding: .5em 2em;
+    padding: 1em 2em;
     color: #FFF;
 }
+#loginContainer a span:hover{
+    color: #2f9e43;
+    background: #fff;
+}
+
 #loginButton {
     position:relative;
     z-index:30;
     cursor:pointer;
+    text-decoration: none;
+    font-size: 12;
+    font-weight: 600;
+    top: 3px;
+}
+#loginContainer .active  span{
+    color: #2f9e43;
+    background: #f7f7f7;
 }
 #loginBox {
     position: absolute;
-    top: 45px;
+    top: 50px;
     left: -282px;
     display: none;
     z-index: 99999;
@@ -413,8 +426,9 @@ input:focus {
     background: #fff;
     letter-spacing: 1px;
     padding: 30px;
-    transition: all .7s ease-in;
+    transition: all .3s ease-in;
     margin: 10px 0px;
+    cursor:pointer;
 }
 .icon{
     padding: 20px 0;
@@ -432,7 +446,7 @@ input:focus {
     line-height: 170%;
 }
 .offer-item:hover{
-    box-shadow: 0 0 30px rgba(125, 125, 125, 0.1);
+    box-shadow: 0 0 5px #555;
 }
 
 
