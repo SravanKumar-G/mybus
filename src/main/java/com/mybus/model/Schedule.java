@@ -1,15 +1,14 @@
 package com.mybus.model;
 
-import java.time.DayOfWeek;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.joda.time.DateTime;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.DayOfWeek;
+import java.util.Set;
 /**
  * 
  * @author Suresh K

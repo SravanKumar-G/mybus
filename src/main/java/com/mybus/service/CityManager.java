@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.impl.CityMongoDAO;
 import com.mybus.dao.impl.MongoQueryDAO;

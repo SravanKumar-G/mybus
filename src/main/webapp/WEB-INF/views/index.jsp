@@ -32,7 +32,7 @@
     <script src="js/modules/vehicleModule.js"></script>
     <script src="js/modules/branchOfficeModules.js"></script>
     <script src="js/modules/serviceReportsModule.js"></script>
-    <script src="js/modules/expensesModule.js"></script>
+    <script src="js/modules/paymentModule.js"></script>
     <script src="js/modules/routeModule.js"></script>
     <script src="js/modules/cancelModule.js"></script>
     <script src="js/modules/roleModule.js"></script>
@@ -182,7 +182,8 @@
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu url="duereport" label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
                             </ul>
 
                             <li>

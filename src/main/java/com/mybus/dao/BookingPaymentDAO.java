@@ -1,16 +1,14 @@
 package com.mybus.dao;
 
-import com.mybus.model.Amenity;
+import com.mybus.model.BookingPayment;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * 
- * @author yks-Srinivas
- *
+ * Created by skandula on 3/31/15.
  */
 
 @Repository
-public interface AmenityDAO  extends PagingAndSortingRepository<Amenity, String> {
+public interface BookingPaymentDAO extends PagingAndSortingRepository<BookingPayment, String> {
 
 }

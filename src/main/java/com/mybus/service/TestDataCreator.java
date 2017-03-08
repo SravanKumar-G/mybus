@@ -5,7 +5,6 @@ import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.PaymentGateway;
 import com.mybus.model.User;
-import com.mybus.model.UserType;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

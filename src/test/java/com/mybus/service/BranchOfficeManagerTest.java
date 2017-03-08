@@ -14,10 +14,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by srinikandula on 12/13/16.
@@ -35,9 +37,6 @@ public class BranchOfficeManagerTest  extends AbstractControllerIntegrationTest 
 
     @Autowired
     private BranchOfficeManager branchOfficeManager;
-
-    @Autowired
-    private CityManager cityManager;
 
     @Autowired
     private UserManager userManager;

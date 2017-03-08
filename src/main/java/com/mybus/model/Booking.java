@@ -1,10 +1,11 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -28,9 +29,9 @@ public class Booking extends AbstractDocument{
     private String state;
     private String country;
     private String postalCode;
-    private PaymentType paymentType;
+    private BookingType paymentType;
     private double amount;
-    private Payment payment;
+    private BookingPayment payment;
     private String ticketNo;
     private Date journeyDate;
     private String jDate;

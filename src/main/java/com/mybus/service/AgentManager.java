@@ -5,18 +5,12 @@ import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
-import com.mybus.model.Shipment;
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.xmlrpc.client.XmlRpcClient;
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 
 /**

@@ -1,12 +1,10 @@
 package com.mybus.model;
 
-import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 

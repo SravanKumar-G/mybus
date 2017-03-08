@@ -3,18 +3,19 @@ package com.mybus.service;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
-import com.mybus.model.*;
+import com.mybus.model.Booking;
+import com.mybus.model.ReportDownloadStatus;
+import com.mybus.model.ServiceReport;
+import com.mybus.model.ServiceReportStatus;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -26,7 +27,6 @@ public class AbhiBusPassengerReportService {
     private static final String ABHI_BUS_URL = "http://api.abhibus.com/abhibusoperators/srikrishna/server.php?SecurityKey=SRI*FDEU!@@%ANHSIRK";
     public static XmlRpcClient xmlRpcClient;
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
-    public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ServiceReportDAO serviceReportDAO;
@@ -52,7 +52,7 @@ public class AbhiBusPassengerReportService {
     public ServiceReportStatus downloadReport(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
         ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(df.parse(date));
+        serviceReportStatus.setReportDate(ServiceConstants.df.parse(date));
         serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADING);
         serviceReportStatusDAO.save(serviceReportStatus);
         init();
@@ -66,7 +66,7 @@ public class AbhiBusPassengerReportService {
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
-            serviceReport.setJourneyDate(df.parse(date));
+            serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceNumber(busService.get("ServiceId").toString());
             }

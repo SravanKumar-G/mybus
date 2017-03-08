@@ -26,7 +26,7 @@ public class ServiceForm extends AbstractDocument  {
     private Date jDate;
     private Set<VehicleStaff> staff;
     private Collection<Booking> bookings;
-    private Collection<Expense> expenses;
+    private Collection<Payment> expenses;
     private double netCashIncome;
     private double netRedbusIncome;
     private double netOnlineIncome;

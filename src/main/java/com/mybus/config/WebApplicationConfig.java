@@ -1,15 +1,9 @@
 package com.mybus.config;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Executor;
-
-import javax.xml.transform.Source;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybus.SystemProperties;
+import com.mybus.SystemProperties.SysProps;
+import com.mybus.interceptors.AuthenticationInterceptor;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.slf4j.Logger;
@@ -55,17 +49,20 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mybus.SystemProperties;
-import com.mybus.SystemProperties.SysProps;
-import com.mybus.interceptors.AuthenticationInterceptor;
-
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.xml.transform.Source;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Executor;
+
+import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableWebMvc

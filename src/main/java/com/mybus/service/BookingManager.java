@@ -2,23 +2,15 @@ package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
-import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
-import com.mybus.model.BranchOffice;
-import com.mybus.model.BranchOfficeDue;
-import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by skandula on 2/13/16.

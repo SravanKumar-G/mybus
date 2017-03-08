@@ -211,7 +211,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         var users = {};
 
         return {
-
             validateUserInfo: function(user, confirmPassword) {
                 if(user.password !== confirmPassword) {
                     return false;
@@ -228,7 +227,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving users");
                     });
             },
-
             getUsers: function (callback) {
                 if(users) {
                     callback(users);
@@ -253,12 +251,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving user names");
                     });
             },
-
-
             getAllUsers: function () {
                 return users;
             },
-
             createUser: function(user,callback){
                 $http.post('/api/v1/user',user).then(function(response){
                     callback(response.data);
@@ -267,7 +262,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     sweetAlert("Error",err.message,"error");
                 });
             },
-
             getUserWithId:function(id,callback){
                 $http.get("/api/v1/userId/" + id).then(function(response){
                     callback(response.data);
@@ -281,7 +275,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     errorcallback(data);
                 });
             },
-
             deleteUser : function (id){
                 swal({
                     title: "Are you sure?",
@@ -395,26 +388,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     }
                 }
                 return isBusAdm;
-            },
-
-            canAddPOI: function () {
-                return this.isAuthor() || this.isPublisher() || this.isAdmin();
-            },
-
-            canEditPOI: function (businessId) {
-                return this.isPublisher() || this.isAdmin() || this.isBusinessAdmin(businessId);
-            },
-
-            canAddOrEditPOI: function (isAdd, businessId) {
-                return isAdd ? this.canAddPOI() : this.canEditPOI(businessId);
-            },
-
-            canViewAPIDocs: function () {
-                return this.isDeveloper() || this.isAdmin() || this.isPublisher() || this.isAuthor();
-            },
-
-            canViewBusinesses: function () {
-                return this.isReadOnly() || this.isAuthor() || this.isPublisher() || this.isAdmin() || this.isBusinessAdmin();
             }
         };
     });

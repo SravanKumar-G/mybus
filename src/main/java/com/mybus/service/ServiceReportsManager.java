@@ -3,7 +3,6 @@ package com.mybus.service;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
-import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -12,11 +11,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-
-import java.awt.print.Book;
 import java.text.ParseException;
 import java.util.*;
 
@@ -44,7 +40,7 @@ public class ServiceReportsManager {
     private BookingDAO bookingDAO;
 
     @Autowired
-    private ExpenseDAO expenseDAO;
+    private PaymentDAO paymentDAO;
 
     @Autowired
     private ServiceFormDAO serviceFormDAO;
@@ -64,7 +60,7 @@ public class ServiceReportsManager {
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
         Iterator<ServiceReportStatus> statusIterator = serviceReportStatusDAO
-                .findByReportDate(AbhiBusPassengerReportService.df.parse(date)).iterator();
+                .findByReportDate(ServiceConstants.df.parse(date)).iterator();
         if(statusIterator.hasNext()) {
             response.put("downloaded", true);
             response.put("downloadedOn", dtf.print(statusIterator.next().getCreatedAt()));
@@ -94,13 +90,13 @@ public class ServiceReportsManager {
         for(Booking booking:bookings) {
             if(bookingTypeManager.isRedbusBooking(booking)){
                 report.setNetRedbusIncome(report.getNetRedbusIncome() + booking.getNetAmt());
-                booking.setPaymentType(PaymentType.REDBUS);
+                booking.setPaymentType(BookingType.REDBUS);
             } else if(bookingTypeManager.isOnlineBooking(booking)) {
                 report.setNetOnlineIncome(report.getNetOnlineIncome() + booking.getNetAmt());
-                booking.setPaymentType(PaymentType.ONLINE);
+                booking.setPaymentType(BookingType.ONLINE);
             } else {
                 report.setNetCashIncome(report.getNetCashIncome() + booking.getNetAmt());
-                booking.setPaymentType(PaymentType.CASH);
+                booking.setPaymentType(BookingType.CASH);
                 booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
                 if(!booking.isHasValidAgent() && !report.isInvalid()) {
                     report.setInvalid(true);
@@ -178,7 +174,7 @@ public class ServiceReportsManager {
             serviceForm.getBookings().add(onlineBooking);
             serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onlineBooking.getSeatsCount());
         }
-        for(Expense expense : serviceReport.getExpenses()) {
+        for(Payment expense : serviceReport.getExpenses()) {
             serviceReport.setNetCashIncome(serviceReport.getNetCashIncome()- expense.getAmount());
         }
         serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
@@ -197,7 +193,7 @@ public class ServiceReportsManager {
         ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
         serviceForm.getBookings().stream().forEach(booking -> {booking.setFormId(savedForm.getId());});
         serviceReport.getExpenses().stream().forEach(expense -> {expense.setFormId(savedForm.getId());});
-        expenseDAO.save(serviceReport.getExpenses());
+        paymentDAO.save(serviceReport.getExpenses());
         bookingDAO.save(serviceForm.getBookings());
         serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         serviceReportDAO.save(serviceReport);
@@ -232,7 +228,7 @@ public class ServiceReportsManager {
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
         report.setNetIncome(roundUp(report.getNetIncome()));
-        report.setExpenses(IteratorUtils.toList(expenseDAO.findByFormId(id).iterator()));
+        report.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }

@@ -2,8 +2,6 @@ package com.mybus.dao.impl;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
-import com.mybus.model.Booking;
-import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

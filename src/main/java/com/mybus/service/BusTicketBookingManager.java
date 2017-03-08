@@ -1,24 +1,13 @@
 package com.mybus.service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.mybus.model.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
-import com.mybus.model.BusJourney;
-import com.mybus.model.EmailData;
-import com.mybus.model.JourneyType;
-import com.mybus.model.ServiceBoardingPoint;
-import com.mybus.model.ServiceDropingPoint;
+import java.util.*;
 
 @Service
 public class BusTicketBookingManager {

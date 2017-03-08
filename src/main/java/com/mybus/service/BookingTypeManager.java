@@ -1,23 +1,14 @@
 package com.mybus.service;
 
-import com.google.common.base.Preconditions;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.dao.RequiredFieldValidator;
-import com.mybus.dao.impl.MongoQueryDAO;
-import com.mybus.exception.BadRequestException;
-import com.mybus.model.*;
-import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONObject;
+import com.mybus.model.Agent;
+import com.mybus.model.Booking;
+import com.mybus.model.BranchOffice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by srinikandula on 12/12/16.

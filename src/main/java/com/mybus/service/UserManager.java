@@ -1,13 +1,11 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.dao.PlanTypeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
-import com.mybus.model.City;
 import com.mybus.model.User;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;

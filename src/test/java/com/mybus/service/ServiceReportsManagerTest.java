@@ -66,7 +66,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     public void testGetDownloadStatus() throws Exception {
         String date = "2017-02-01";
         ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(AbhiBusPassengerReportService.df.parse(date));
+        serviceReportStatus.setReportDate(ServiceConstants.df.parse(date));
         serviceReportStatusDAO.save(serviceReportStatus);
         JSONObject status = serviceReportsManager.getDownloadStatus(date);
         assertTrue(Boolean.valueOf(status.get("downloaded").toString()));

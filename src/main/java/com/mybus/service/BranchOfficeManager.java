@@ -6,7 +6,6 @@ import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;

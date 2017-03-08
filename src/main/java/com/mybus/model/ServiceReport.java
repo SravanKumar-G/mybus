@@ -1,6 +1,6 @@
 package com.mybus.model;
 
-import com.mybus.service.AbhiBusPassengerReportService;
+import com.mybus.service.ServiceConstants;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class ServiceReport extends AbstractDocument  {
     private Date journeyDate;
     private Set<VehicleStaff> staff;
     private Collection<Booking> bookings;
-    private List<Expense> expenses;
+    private Collection<Payment> expenses;
     private double netCashIncome;
     private double netRedbusIncome;
     private double netOnlineIncome;
@@ -51,7 +51,7 @@ public class ServiceReport extends AbstractDocument  {
     }
     public String getJDate(){
         if(this.journeyDate != null) {
-            return AbhiBusPassengerReportService.df.format(this.getJourneyDate());
+            return ServiceConstants.df.format(this.getJourneyDate());
         } else {
             return null;
         }

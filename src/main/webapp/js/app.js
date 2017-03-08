@@ -12,7 +12,7 @@ var myBus = angular.module('myBus', [
   'myBus.vehicleModule',
   'myBus.branchOfficeModule',
   'myBus.serviceReportsModule',
-  'myBus.expensesModule',
+  'myBus.paymentModule',
   'myBus.routeModule',
   'myBus.roleModule',
   'myBus.agentModule',
@@ -92,11 +92,17 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/states.html',
                 controller: 'CitiesController'
             })
-            .state('expenses', {
+            .state('payments', {
             	level:1,
-                url:'/expenses',
-                templateUrl: 'partials/expenses-list.tpl.html',
-                controller: 'ExpensesController'
+                url:'/payments',
+                templateUrl: 'partials/payments-list.tpl.html',
+                controller: 'PaymentController'
+            })
+            .state('payment', {
+                level:1,
+                url:'/payment',
+                templateUrl: 'partials/paymentAdd.tpl.html',
+                controller: 'EditPaymentController'
             })
             .state('city/:id', {
             	level:2,
@@ -194,13 +200,6 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/account.tpl.html',
                 controller: 'AccountController'
             })
-            .state('payment',{
-            	level:1,
-                url:'/payment',
-                templateUrl: 'partials/payment.tpl.html',
-                controller: 'PaymentController'
-            })
-
             .state('trip',{
             	level:2,
                 url:'/trip',
@@ -267,7 +266,6 @@ myBus.config(['$stateProvider','$urlRouterProvider',
 		userManager.getCurrentUser(function (err,data) {
 			if (!err) {
 				userManager.getGroupsForCurrentUser();
-                console.log("currentuser is admin " + data.admin);
                 myBus.constant('currentuser', data);
                 $rootScope.currentuser = data;
 			}

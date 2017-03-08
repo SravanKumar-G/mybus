@@ -5,7 +5,7 @@ import com.mybus.dao.BookingDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.ServiceForm;
 import com.mybus.model.ServiceReport;
-import com.mybus.service.AbhiBusPassengerReportService;
+import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,7 +55,7 @@ public class ServiceReportController {
 	public Iterable<ServiceReport> loadReports(HttpServletRequest request,
 									  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
-			return serviceReportsManager.getReports(AbhiBusPassengerReportService.df.parse(travelDate));
+			return serviceReportsManager.getReports(ServiceConstants.df.parse(travelDate));
 		}catch (Exception e) {
 			throw new BadRequestException("Error loading reports");
 		}

@@ -1,9 +1,9 @@
 package com.mybus.model;
 
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 /**
  * This busjourn
  */

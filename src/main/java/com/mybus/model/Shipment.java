@@ -7,12 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -26,7 +22,6 @@ import java.util.Date;
 @Setter
 public class Shipment extends AbstractDocument implements AttributesDocument{
     public static final String COLLECTION_NAME="shipment";
-    public static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequiresValue
     private String fromCityId;

@@ -140,7 +140,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             if(!$scope.service.expenses) {
                 $scope.service.expenses = [];
             }
-            $scope.service.expenses.push({'type':"OTHER",'index':$scope.service.expenses.length+1});
+            $scope.service.expenses.push({'type':"EXPENSE",'index':$scope.service.expenses.length+1});
         }
         $scope.deleteExpense = function(expense){
             console.log('deleting expense..' + expense.index);
@@ -152,20 +152,15 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.calculateNet();
         }
         $scope.submitReport = function() {
-            swal({   title: "Please make sure all the data is accurate?",   text: "You will not be able to edit this form later !",   type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, submit it!",
-                closeOnConfirm: true }, function() {
-                serviceReportsManager.submitReport($scope.service, function (response) {
-                    //callback(response.data);
-                    sweetAlert("Great", "The report successfully submitted", "success");
-                    $location.url('serviceReports');
-                },function (error) {
-                    console.log("error saving the report")
-                    sweetAlert("Oops...", "Error submitting the report", "error");
-                });
+
+            serviceReportsManager.submitReport($scope.service, function (response) {
+                //callback(response.data);
+                sweetAlert("Great", "The report successfully submitted", "success");
+                $location.url('serviceReports');
+            },function (error) {
+                swal("Oops...", "Error submitting the report", "error");
             });
+
         }
         $scope.launchAgents = function(){
             $location.url('/agents');

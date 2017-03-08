@@ -1,52 +1,66 @@
 package com.mybus.service;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.mybus.SystemProperties;
 import com.mybus.controller.AbstractControllerIntegrationTest;
-import com.mybus.dao.PaymentResponseDAO;
-import com.mybus.model.PaymentResponse;
-import com.mybus.util.Status;
-
-import org.joda.time.DateTime;
-
+import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.dao.PaymentDAO;
+import com.mybus.model.BranchOffice;
+import com.mybus.model.Payment;
+import com.mybus.model.PaymentType;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import static org.junit.Assert.*;
+/**
+ * Created by srinikandula on 3/8/17.
+ */
 public class PaymentManagerTest extends AbstractControllerIntegrationTest {
-	
-	private static final Logger LOGGER= LoggerFactory.getLogger(PaymentManagerTest.class);
-	
-	@Autowired
-	private PaymentResponseDAO paymentResponseDAO;
-	
-	@Autowired
-	PaymentManager paymentManager;
 
-	@Autowired
-	private SystemProperties systemProperties;
+    @Autowired
+    private PaymentDAO paymentDAO;
 
-	@Test
-	public void addAmount(){
-		PaymentResponse pr = new PaymentResponse();
-		pr.setAmount(100);
-		pr.setMerchantrefNo("403993715514355049");
-		pr.setPaymentId("1461056823205");
-		pr.setPaymentType("PG");
-		pr.setPaymentName("PAYU");
-		Status status = new Status();
-		status.setStatusCode(200);
-		status.setStatusMessage("Payment has success");
-		status.setSuccess(true);
-		DateTime doj = new DateTime(2016,04,25,11,30);
-		pr.setStatus(status);
-		paymentResponseDAO.save(pr);
-	}
-	
-	@Test
-	public void refundAmount(){
-		DateTime busStartTime = new DateTime(2016,05,25,11,30);
-		paymentManager.refundAmount(busStartTime,100);
-	}
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
 
+    @Autowired
+    private PaymentManager paymentManager;
+
+    @After
+    @Before
+    public void cleanup() {
+        paymentDAO.deleteAll();
+        branchOfficeDAO.deleteAll();
+    }
+
+    @Test
+    public void testUpdatePayment() {
+        BranchOffice branchOffice1 = branchOfficeDAO.save(new BranchOffice());
+
+        BranchOffice branchOffice2 = new BranchOffice();
+        branchOffice2.setCashBalance(5000);
+        branchOffice2 = branchOfficeDAO.save(branchOffice2);
+        Payment payment1 = new Payment();
+        payment1.setBranchOfficeId(branchOffice1.getId());
+        payment1.setType(PaymentType.INCOME);
+        payment1.setAmount(1000);
+        Payment payment2 = new Payment();
+        payment2.setType(PaymentType.EXPENSE);
+        payment2.setBranchOfficeId(branchOffice2.getId());
+        payment2.setAmount(2000);
+
+        paymentManager.updatePayment(payment1);
+        paymentManager.updatePayment(payment2);
+        branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());
+        branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
+        assertEquals(0, branchOffice1.getCashBalance(), 0.0);
+        assertEquals(5000, branchOffice2.getCashBalance(), 0.0);
+        payment1.setStatus(Payment.APPROVED);
+        payment2.setStatus(Payment.APPROVED);
+        payment1 = paymentManager.updatePayment(payment1);
+        payment2 = paymentManager.updatePayment(payment2);
+        branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());
+        branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
+        assertEquals(1000, branchOffice1.getCashBalance(), 0.0);
+        assertEquals(3000, branchOffice2.getCashBalance(), 0.0);
+    }
 }

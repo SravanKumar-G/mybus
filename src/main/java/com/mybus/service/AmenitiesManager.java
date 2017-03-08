@@ -1,13 +1,12 @@
 package com.mybus.service;
 
+import com.google.common.base.Preconditions;
+import com.mybus.dao.AmenityDAO;
+import com.mybus.model.Amenity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.google.common.base.Preconditions;
-import com.mybus.dao.AmenityDAO;
-import com.mybus.model.Amenity;
 
 /**
  * 
