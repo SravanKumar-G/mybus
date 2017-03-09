@@ -9,12 +9,11 @@
     <table class="table table-bordered table-condensed table-hover" ng-table="paymentTableParams">
         <tr ng-repeat="payment in currentPageOfPayments">
             <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
-            <td data-title="'Type'" sortable="'type'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.type}}</td>
-            <td data-title="'Amount'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.amount}}</td>
-            <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.description}}</td>
             <td data-title="'CreatedOn'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt| date}}</td>
-            <td data-title="'Branch'" class="clickable-item" ng-if="user.admin">{{payment.branchOfficeId}}</td>
-            <td data-title="'Action'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+            <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.description}}</td>
+            <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
+            <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+            <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
                 <span ng-if="!payment.status">
                     <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve</a>
                     <a ng-click="approveOrRejectPayment(payment)">Reject</a>

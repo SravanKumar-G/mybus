@@ -64,6 +64,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 payment.status ="Rejected";
             }
             paymentManager.save(payment, function(data){
+                $rootScope.$broadcast('UpdateHeader');
                 swal("Great", "Payment is updated", "success");
             });
         }
@@ -182,7 +183,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         if (angular.isFunction(callback)) {
                             callback(response.data);
                         }
-                        $rootScope.$broadcast('PaymentsUpdated');
+                        $rootScope.$broadcast('UpdateHeader');
                     }, function (err, status) {
                         sweetAlert("Error", err.data.message, "error");
                     });
@@ -191,7 +192,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         if (angular.isFunction(callback)) {
                             callback(response.data);
                         }
-                        $rootScope.$broadcast('ExpensesUpdated');
+                        $rootScope.$broadcast('UpdateHeader');
                     }, function (err, status) {
                         sweetAlert("Error", err.data.message, "error");
                     });

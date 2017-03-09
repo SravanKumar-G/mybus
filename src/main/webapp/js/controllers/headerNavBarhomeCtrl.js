@@ -9,8 +9,9 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
     //
     // ============================= List All ===================================
     //
-    .controller('headerNavBarhomeCtrl', function($scope, userManager) {
-        console.log("in headerNavBarhomeCtrl");
+    .controller('headerNavBarhomeCtrl', function($scope, userManager, branchOfficeManager) {
+        $scope.branchOffice = {};
+        $scope.user = {};
         $scope.currentDate = function(){
             var today = new Date();
             var dd = today.getDate();
@@ -28,13 +29,30 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
         };
 
         $scope.userName = function() {
-            var user = userManager.getUser();
-            if(user != null) {
-                return user.firstName+" ,"+ user.lastName;
+            $scope.user= userManager.getUser();
+            if($scope.user != null) {
+                return $scope.user.firstName+" ,"+ $scope.user.lastName;
             } else {
                 return null;
             }
 
         }
+        $scope.isAdmin = function() {
+            var user = userManager.getUser();
+            return user.admin;
+        }
+        $scope.updateHeader = function(){
+            if($scope.user && $scope.user.branchOfficeId) {
+                branchOfficeManager.load($scope.user.branchOfficeId, function(data){
+                    $scope.branchOffice = data;
+                });
+            }
+        };
+        $scope.$watch('user', function(){
+            $scope.updateHeader();
+        });
+        $scope.$on('UpdateHeader', function(){
+            $scope.updateHeader();
+        });
     });
 

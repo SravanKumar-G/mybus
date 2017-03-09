@@ -79,6 +79,10 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.planTypes = [];
         $scope.roles =[];
         $scope.cities = [];
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
         $scope.rolesInit = function(){
         	roleManager.getAllRoles(function(data){
         		$scope.roles = data;

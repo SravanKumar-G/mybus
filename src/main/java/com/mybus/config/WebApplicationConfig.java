@@ -147,7 +147,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setMaxPageSize(Integer.MAX_VALUE);
         resolver.setFallbackPageable(new PageRequest(0, Integer.MAX_VALUE, null));
-        resolver.setPrefix("page.");
+        //resolver.setPrefix("page.");
         resolver.setOneIndexedParameters(true);
         return resolver;
     }

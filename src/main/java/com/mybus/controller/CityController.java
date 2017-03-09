@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,8 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
-    public Iterable<City> getCities(HttpServletRequest request) {
-        return cityDAO.findAll();
+    public Iterable<City> getCities(HttpServletRequest request, final Pageable pageable) {
+        return cityDAO.findAll(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
