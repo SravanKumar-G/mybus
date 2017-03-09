@@ -3,6 +3,7 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
+import com.mybus.model.ResponseData;
 import com.mybus.service.ABAgentService;
 import com.mybus.service.AgentManager;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +53,8 @@ public class AgentController {
 	@RequestMapping(value = "agent/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get Agents count", response = Long.class)
 	public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
-						 @RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
+						 @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+						 final Pageable pageable) {
 		return agentManager.count(query,showInvalid);
 	}
 
@@ -62,6 +65,16 @@ public class AgentController {
 										@RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
 		return agentManager.findAgents(query, showInvalid);
 	}
+
+	@RequestMapping(value = "agents", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
+	public ResponseData<Agent> getAgents(HttpServletRequest request,
+										@RequestParam(required = false, value = "query") String query,
+										@RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+										 final Pageable pageable) {
+		return agentManager.findAgents(query, showInvalid, pageable);
+	}
+
 
 	@RequestMapping(value = "agent/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get agent ", response = JSONObject.class)

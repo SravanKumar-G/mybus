@@ -69,10 +69,7 @@ public class MongoQueryDAO {
             }
         }
         if (pageable != null) {
-            query.skip(pageable.getOffset());
-            query.limit(pageable.getPageSize());
-            DBObject sort = query.getSortObject();
-            //sort.
+            query.with(pageable);
         }
         return mongoTemplate.find(query, className, collectionName);
     }

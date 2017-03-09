@@ -5,34 +5,40 @@
 /*global angular, _*/
 
 angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap'])
-    .controller('DueReportController', function($scope, dueReportManager, NgTableParams, $filter, $location) {
+    .controller('DueReportController', function($scope, dueReportManager, NgTableParams, $filter, $location, userManager) {
         $scope.headline = "Due Report";
         $scope.allDues = [];
         $scope.currentPageOfDues = [];
         $scope.loading = false;
-        var loadTableData = function (tableParams) {
-            $scope.loading = true;
-            dueReportManager.loadReports(function (data) {
-                $scope.loading = false;
-                if(angular.isArray(data)) {
-                    $scope.allDues = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                    tableParams.total($scope.allDues.length);
-                    $scope.currentPageOfDues = $scope.allDues.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+        $scope.user = userManager.getUser();
+        if(!$scope.user.admin) {
+            $location.url('officeduereport/'+$scope.user.branchOfficeId);
+        } else{
+            var loadTableData = function (tableParams) {
+                $scope.loading = true;
+                dueReportManager.loadReports(function (data) {
+                    $scope.loading = false;
+                    if(angular.isArray(data)) {
+                        $scope.allDues = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                        tableParams.total($scope.allDues.length);
+                        $scope.currentPageOfDues = $scope.allDues.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    }
+                });
+            }
+            $scope.duesTableParams = new NgTableParams({
+                page: 1,
+                count:99999,
+                sorting: {
+                    name: 'asc'
+                }
+            }, {
+                total: $scope.currentPageOfDues.length,
+                getData: function (params) {
+                    loadTableData(params);
                 }
             });
         }
-        $scope.duesTableParams = new NgTableParams({
-            page: 1,
-            count:99999,
-            sorting: {
-                name: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfDues.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
+
         $scope.goToDueReport = function(officeId) {
             console.log('relaod report..');
             $location.url('officeduereport/'+officeId);

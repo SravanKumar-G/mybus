@@ -1,4 +1,5 @@
-<div class="row" ng-show="!loading">
+
+<div class="container" ng-show="!loading">
     <legend>{{ headline }}</legend>
     <div class="row">
         <div class="col-sm-2"> Branch: <b>{{officeDue.name}}</b></div>
@@ -21,7 +22,7 @@
         </tr>
 
         <tr ng-if="!currentPageOfDues || currentPageOfDues.length === 0">
-            <td colspan="6">No dues found for branch {{officeDue.name}}. </td>
+            <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
         </tr>
     </table>
 </div>

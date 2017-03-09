@@ -77,6 +77,18 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 jsonPath("$.456").value("Name4"));
     }
 
+
+    @Test
+    public void testPagination()  throws Exception{
+        for(int i=1; i<= 40; i++ ) {
+            City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
+            cityDAO.save(city);
+        }
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/cities?page=3&size=5&sort=name"), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(5)));
+    }
     @Test
     public void testGetAllCityNames() throws Exception {
     	String[] ids = {"123", "234", "345", "456"};
