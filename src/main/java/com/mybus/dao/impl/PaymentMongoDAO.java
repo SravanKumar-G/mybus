@@ -47,6 +47,8 @@ public class PaymentMongoDAO {
 
     public Query preparePaymentQuery(JSONObject query) {
         Query q = new Query();
+        //filter the form expenses from the report
+        q.addCriteria(Criteria.where("formId").exists(false));
         //filter the payments by office if the user is not admin
         if(!sessionManager.getCurrentUser().isAdmin()) {
             q.addCriteria(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));

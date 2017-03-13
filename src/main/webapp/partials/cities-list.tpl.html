@@ -6,22 +6,23 @@
 </div>
 <br/>
 <br/>
-<table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
-    <tr ng-repeat="city in currentPageOfCities" ng-class="city.active?'':'bg-danger'">
-        <td data-title="'City'"  sortable="'name'" class="clickable-item col-md-6" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
-        <td data-title="'State'"  sortable="'state'" class="clickable-item col-md-4" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
-        <td class="col-md-2">
-        <md-button>
-            <md-icon type="button" class="btn" ng-click="handleClickUpdateStateCity(city.id)">
-            <span class="glyphicon glyphicon-pencil"></span></md-icon>
-        </md-button>
-        </td>
-    </tr>
-    <tr ng-if="!currentPageOfCities || currentPageOfCities.length === 0">
-        <td colspan="4">No cities exist.  Please add some.</td>
-    </tr>
-</table>
-
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed table-hover" ng-table="cityContentTableParams">
+        <tr ng-repeat="city in currentPageOfCities" ng-class="city.active?'':'bg-danger'">
+            <td data-title="'City'"  sortable="'name'" class="clickable-item col-md-6" ng-click="goToBoardingPointsList(city.id)">{{ city.name }}</td>
+            <td data-title="'State'"  sortable="'state'" class="clickable-item col-md-4" ng-click="goToBoardingPointsList(city.id)">{{ city.state }}</td>
+            <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="handleClickUpdateStateCity(city.id)">
+                <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+            </td>
+        </tr>
+        <tr ng-if="!currentPageOfCities || currentPageOfCities.length === 0">
+            <td colspan="4">No cities exist.  Please add some.</td>
+        </tr>
+    </table>
+</div>
 <!-- modal popup for adding city/state -->
 
 <script type="text/ng-template" id="add-city-state-modal.html">

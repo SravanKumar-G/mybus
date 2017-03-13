@@ -38,7 +38,7 @@
     <script src="js/modules/roleModule.js"></script>
     <script src="js/modules/agentModule.js"></script>
     <script src="js/modules/dueReportModule.js"></script>
-
+    <script src="js/modules/serviceComboModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -156,8 +156,6 @@
                                 </a>
                             </li>
 
-
-
                             <li data-toggle="collapse" data-target="#service" class="collapsed">
                                 <a href="#"><i class="fa fa-globe fa-lg"></i> Services</a>
                             </li>
@@ -174,6 +172,7 @@
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12" ng-if="isAdmin()"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>

@@ -269,6 +269,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         ];
 
         $scope.nextDay = function() {
+            console.log('next day..');
             var dt = $scope.dt;
             dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
             $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());

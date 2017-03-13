@@ -16,7 +16,8 @@ var myBus = angular.module('myBus', [
   'myBus.routeModule',
   'myBus.roleModule',
   'myBus.agentModule',
-  'myBus.dueReportModule'
+  'myBus.dueReportModule',
+  'myBus.serviceComboModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -67,6 +68,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/serviceReports',
                 templateUrl: 'partials/serviceReports.tpl.html',
                 controller: 'ServiceReportsController'
+            })
+            .state('servicecombo', {
+                level:2,
+                url:'/servicecombo',
+                templateUrl: 'partials/serviceCombo.tpl.html',
+                controller: 'ServiceComboController'
             })
             .state('cities', {
             	url:'/cities',
