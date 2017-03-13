@@ -157,9 +157,11 @@ public class ServiceReportsManager {
                 */
                 booking.setServiceId(null);
                 serviceForm.getBookings().add(booking);
-                String[] seats = booking.getSeats().split(",");
-                booking.setSeatsCount(seats.length);
-                serviceForm.setSeatsCount(serviceForm.getSeatsCount() + seats.length);
+                if(booking.getSeats() != null) {
+                    String[] seats = booking.getSeats().split(",");
+                    booking.setSeatsCount(seats.length);
+                    serviceForm.setSeatsCount(serviceForm.getSeatsCount() + seats.length);
+                }
                 cashIncome += booking.getNetAmt();
             }
         }

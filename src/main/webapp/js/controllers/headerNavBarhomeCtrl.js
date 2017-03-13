@@ -39,7 +39,11 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
         }
         $scope.isAdmin = function() {
             var user = userManager.getUser();
-            return user.admin;
+            if(user != null) {
+                return user.admin;
+            } else {
+                return false;
+            }
         }
         $scope.updateHeader = function(){
             if($scope.user && $scope.user.branchOfficeId) {

@@ -1,0 +1,79 @@
+<legend>{{ headline }}</legend>
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickEdit()">
+    	<span class="glyphicon glyphicon-plus"></span> Add Service Combo
+    </button>
+</div>
+<table class="table table-bordered table-condensed table-hover" ng-table="serviceComboTableParams">
+    <tr ng-repeat="service in currentPageOfCombos">
+        <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item col-md-6" >{{service.serviceNumber }}</td>
+        <td data-title="'ComboNumbers'" sortable="'comboNumbers'"  class="clickable-item col-md-4">{{service.comboNumbers}}</td>
+        <td data-title="'Status'" sortable="'active'"  class="clickable-item col-md-4"><span ng-if="!service.active">InActive</span><span ng-if="service.active">Active</span></td>
+        <td class="col-md-2">
+	        <md-button>
+	            <md-icon type="button" class="btn" ng-click="handleClickEdit(service.id)">
+	            <span class="glyphicon glyphicon-pencil"></span></md-icon>
+	        </md-button>
+        </td>
+        <td class="col-md-2">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="delete(service.id)">
+                    <span class="glyphicon glyphicon-remove"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+    <tr ng-if="!currentPageOfCombos || currentPageOfCombos.length === 0">
+        <td colspan="4">No Service Combos exist.  Please add some.</td>
+    </tr>
+</table>
+
+
+<!-- modal popup for adding Amenity -->
+
+<script type="text/ng-template" id="update-serviceCombo-modal.html">
+	<div class="modal-header">
+		<div class="row">
+            <div class="col-sm-11">
+        		<h3 class="modal-title">Add/Edit</h3>
+    		</div>
+ 			<div class="col-sm-1">
+        		<md-button>
+            		<md-icon type="button" class="btn-sm" ng-click="cancel()">
+               			<span class="glyphicon glyphicon-remove"></span>
+					</md-icon>
+           		</md-button>
+        	</div>
+		</div>
+	</div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="amenityForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                 <div class="col-sm-7 col-xs-offset-2">
+                     <input type="text" id="serviceNumber" class="form-control" ng-model="serviceCombo.serviceNumber" placeholder="Service Number">
+                 </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="comboNumbers" class="form-control" ng-model="serviceCombo.comboNumbers" placeholder="Combo Numbers">
+                </div>
+            </div>
+
+         	<div class="form-group">
+               <label class="col-sm-4 control-label checkbox" for="activeInactive">Active</label> 
+               <div class="col-sm-1">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="serviceCombo.active">
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="save()">Save</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+
