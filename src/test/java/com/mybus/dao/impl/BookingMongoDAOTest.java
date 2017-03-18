@@ -55,7 +55,7 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
             agentDAO.save(agent);
         }
         String[] agentNames = {"agent0", "agent1", "agent2", "agent34"};
-        List<Booking> bookings = bookingMongoDAO.findDueBookingsByAgentNames(Arrays.asList(agentNames));
+        List<Booking> bookings = bookingMongoDAO.findDueBookings(Arrays.asList(agentNames), null);
         assertEquals(3, bookings.size());
     }
 

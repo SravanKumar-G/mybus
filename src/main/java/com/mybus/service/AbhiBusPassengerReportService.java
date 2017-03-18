@@ -113,6 +113,7 @@ public class AbhiBusPassengerReportService {
                     //booking.setServiceId(serviceReport.getId());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
                     booking.setJDate(passengerInfo.get("JourneyDate").toString());
+                    booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
                     //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString());

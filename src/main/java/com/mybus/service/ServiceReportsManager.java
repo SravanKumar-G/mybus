@@ -45,17 +45,12 @@ public class ServiceReportsManager {
     @Autowired
     private ServiceFormDAO serviceFormDAO;
 
-    @Autowired
-    private SessionManager sessionManager;
-
-    @Autowired
-    private BranchOfficeMongoDAO branchOfficeMongoDAO;
 
     @Autowired
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
-    private TransactionManager transactionManager;
+    private PaymentManager paymentManager;
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
@@ -182,8 +177,7 @@ public class ServiceReportsManager {
         serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
         serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
         serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
-        User currentUser = sessionManager.getCurrentUser();
-        branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
+        //branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
         serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
         serviceForm.setSource(serviceReport.getSource());
         serviceForm.setDestination(serviceReport.getDestination());
@@ -193,6 +187,7 @@ public class ServiceReportsManager {
         serviceForm.setConductorInfo(serviceReport.getConductorInfo());
         serviceForm.setNotes(serviceReport.getNotes());
         ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
+        paymentManager.createPayment(serviceForm);
         serviceForm.getBookings().stream().forEach(booking -> {booking.setFormId(savedForm.getId());});
         serviceReport.getExpenses().stream().forEach(expense -> {expense.setFormId(savedForm.getId());});
         paymentDAO.save(serviceReport.getExpenses());

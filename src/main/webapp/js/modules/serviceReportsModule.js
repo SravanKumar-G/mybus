@@ -168,7 +168,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
     }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location) {
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
-            console.log('date '+ $scope.date + "  "+ $scope.dt.getUTCMonth());
         }
         $scope.today = function() {
             var date = new Date();
@@ -310,7 +309,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $location.url('servicereport/' + service.id);
             }
         }
-    }).factory('serviceReportsManager', function ($http, $log) {
+    }).factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};
         return {
             getServiceReportStatus:function(date, callback) {
@@ -357,6 +356,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             submitReport:function(serviceReport,successcallback, errorcallback) {
                 $http.post('/api/v1/serviceReport', serviceReport)
                     .then(function (response) {
+                        $rootScope.$broadcast('UpdateHeader');
                         successcallback(response.data);
                     },function (error) {
                         $log.debug("error loading service reports");

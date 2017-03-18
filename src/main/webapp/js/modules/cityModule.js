@@ -148,10 +148,11 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             , rawChildDataWithGeoMap = {};
         return {
             fetchAllCities: function () {
-                $log.debug("fetching cities data ...");
                 $http.get('/api/v1/cities')
                     .then(function (response) {
-                        cities = response.data;
+                        cities = response.data.content;
+                        $log.debug("fetching cities data ..." + response.data.content);
+
                         $rootScope.$broadcast('cityAndBoardingPointsInitComplete');
                     },function (error) {
                         $log.debug("error retrieving cities");

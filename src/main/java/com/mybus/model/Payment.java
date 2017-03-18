@@ -18,9 +18,11 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class Payment extends AbstractDocument {
+    public static final String STATUS_AUTO = "Auto";
     public static final String STATUS_APPROVED = "Approved";
     public static final String STATUS_REJECTED = "Rejected";
-
+    public static final String SERVIVE_FROM_PAYMENT = "Service Form";
+    public static final String BOOKING_DUE_PAYMENT = "Booking Due";
     public static final String BRANCHOFFICEID = "branchOfficeId";
 
     private Date date;
@@ -33,4 +35,5 @@ public class Payment extends AbstractDocument {
     private String formId;
     private String branchOfficeId;
     private String status;
+    private String serviceFormId;
 }

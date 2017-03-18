@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -30,6 +32,6 @@ public class BranchOfficeDue extends AbstractDocument {
     private double totalDue;
     private double cashBalance;
     private List<Booking> bookings;
-
+    private Collection duesByDate;
 
 }
