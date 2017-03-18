@@ -3,8 +3,8 @@
     <table class="table table-bordered table-condensed table-hover" ng-table="duesTableParams">
         <tr ng-repeat="dueReport in currentPageOfDues">
             <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-2" ng-click="goToDueReport(dueReport.branchOfficeId)">{{ dueReport.name }}</td>
-            <td data-title="'Cash Balance'"  sortable="'cashBalance'" class="clickable-item col-md-2" ng-click="goToDueReport(dueReport.branchOfficeId)">{{ dueReport.cashBalance }}</td>
-            <td data-title="'Total Due'"  sortable="'totalDue'" class="clickable-item col-md-2" ng-click="goToDueReport(dueReport.branchOfficeId)">{{ dueReport.totalDue }}</td>
+            <td data-title="'Cash Balance'"  sortable="'cashBalance'" class="clickable-item col-md-2"> <a ng-click="gotoPayments()">{{ dueReport.cashBalance }}</a></td>
+            <td data-title="'Total Due'"  sortable="'totalDue'" class="clickable-item col-md-2"><a ng-click="goToDueReport(dueReport.branchOfficeId)">{{ dueReport.totalDue | number : 2}}</a></td>
         </tr>
 
         <tr ng-if="!currentPageOfDues || currentPageOfDues.length === 0">

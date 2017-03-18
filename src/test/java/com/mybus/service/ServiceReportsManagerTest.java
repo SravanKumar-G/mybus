@@ -52,6 +52,9 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     @Autowired
     private BookingManager bookingManager;
 
+    @Autowired
+    private PaymentDAO paymentDAO;
+
     @Before
     @After
     public void cleanup() {
@@ -61,6 +64,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         serviceFormDAO.deleteAll();
         serviceReportDAO.deleteAll();
         serviceReportStatusDAO.deleteAll();
+        paymentDAO.deleteAll();
     }
     @Test
     public void testGetDownloadStatus() throws Exception {
@@ -126,9 +130,14 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         assertEquals(2, offices.size());
         offices.stream().forEach(office -> {
             if(office.getName().equals("Office2")) {
-                assertEquals(5000, office.getCashBalance(),0.0);
+                assertEquals(5000, office.getCashBalance(), 0.0);
             }
         });
+        List<Payment> payments = IteratorUtils.toList(paymentDAO.findAll().iterator());
+        assertEquals(1, payments.size());
+        assertEquals(payments.get(0).getType(), PaymentType.INCOME);
+        assertEquals(5000, payments.get(0).getAmount(), 0.0);
+
         List<BranchOfficeDue> officeDues = dueReportManager.getBranchOfficeDueReports();
         assertEquals(2, officeDues.size());
         officeDues.stream().forEach(office -> {
@@ -150,6 +159,11 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
                 assertEquals(0, office.getTotalDue(),0.0);
                 assertEquals(7500, office.getCashBalance(),0.0);
             }
+        });
+        payments = IteratorUtils.toList(paymentDAO.findAll().iterator());
+        assertEquals(2, payments.size());
+        payments.stream().forEach(payment -> {
+            assertEquals(payment.getType(), PaymentType.INCOME);
         });
     }
 }

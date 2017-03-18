@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import com.mybus.dao.AgentDAO;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
@@ -18,16 +19,21 @@ public class PaymentManager {
     private static final Logger logger = LoggerFactory.getLogger(PaymentManager.class);
 
     @Autowired
-    private PaymentMongoDAO paymentMongoDAO;
+    private PaymentDAO paymentDAO;
 
     @Autowired
-    private PaymentDAO paymentDAO;
+    private SessionManager sessionManager;
+
+    @Autowired
+    private AgentDAO agentDAO;
 
     @Autowired
     private BranchOfficeMongoDAO branchOfficeMongoDAO;
 
     public Payment updatePayment(Payment payment) {
-        if(payment.getStatus() != null && payment.getStatus().equals(Payment.STATUS_APPROVED)){
+        logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
+        if(payment.getStatus() != null && (payment.getStatus().equals(Payment.STATUS_APPROVED) ||
+                payment.getStatus().equals(Payment.STATUS_AUTO))){
             if(payment.getType().equals(PaymentType.EXPENSE)){
                 branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), (0-payment.getAmount()));
             } else if(payment.getType().equals(PaymentType.INCOME)){
@@ -35,6 +41,36 @@ public class PaymentManager {
             }
         }
         return paymentDAO.save(payment);
+    }
+
+    /**
+     * Create payment for given office and update office's cash balance
+     * @param booking
+     * @return
+     */
+    public Payment createPayment(Booking booking) {
+        Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+        Payment payment = new Payment();
+        payment.setBranchOfficeId(agent.getBranchOfficeId());
+        payment.setAmount(booking.getNetAmt());
+        payment.setDate(booking.getJourneyDate());
+        payment.getAttributes().put("BookingId", booking.getId());
+        payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
+        payment.setType(PaymentType.INCOME);
+        payment.setStatus(Payment.STATUS_AUTO);
+        return updatePayment(payment);
+    }
+    public Payment createPayment(ServiceForm serviceForm) {
+        User currentUser = sessionManager.getCurrentUser();
+        Payment payment = new Payment();
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
+        payment.setAmount(serviceForm.getNetCashIncome());
+        payment.setType(PaymentType.INCOME);
+        payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDescription(Payment.SERVIVE_FROM_PAYMENT);
+        payment.setServiceFormId(serviceForm.getId());
+        payment.setDate(serviceForm.getJDate());
+        return updatePayment(payment);
     }
 
     public void delete(String paymentId) {

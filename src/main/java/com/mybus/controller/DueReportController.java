@@ -47,7 +47,17 @@ public class DueReportController extends MyBusBaseController{
     public BranchOfficeDue getBranchDueReport(HttpServletRequest request,
                                @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
                                             final Pageable pageable) {
-        return dueReportManager.getBranchOfficeDueReport(id);
+        return dueReportManager.findOfficeDuesGroupByDate(id);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/office/{id}/{date}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get branch office due report", response = BranchOfficeDue.class )
+    public BranchOfficeDue getBranchDueReportByDate(HttpServletRequest request,
+                                              @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
+                                              @PathVariable(value = "date", required = true) String date,
+                                              final Pageable pageable) {
+        return dueReportManager.getOfficeDuesByDate(id, date);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

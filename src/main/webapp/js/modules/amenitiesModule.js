@@ -19,13 +19,6 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 			 $scope.currentPageOfAmenities = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
 		 }
      };
-	
-     $scope.$on('amenitiesInitComplete', function (e, value) {
-         loadTableData($scope.amenitiesContentTableParams);
-     });
-     $scope.$on('amenitiesinitStart', function (e, value) {
-    	 amenitiesManager.fechAmenities();
-     });
      $scope.amenitiesContentTableParams = new NgTableParams(
 		 {
 			 page: 1,
@@ -37,11 +30,16 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 		 {
 			 total: $scope.currentPageOfAmenities.length,
 			 getData: function (params) {
-				 console.log('sort..');
 				 loadTableData(params);
 			 }
 		 }
      );
+	$scope.$on('amenitiesInitComplete', function (e, value) {
+		loadTableData($scope.amenitiesContentTableParams);
+	});
+	$scope.$on('amenitiesinitStart', function (e, value) {
+		amenitiesManager.fechAmenities();
+	});
 	 amenitiesManager.fechAmenities();
 	 $scope.getAllAmenities = function(){
 		amenitiesManager.getAllAmenities(function(data){
@@ -65,12 +63,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 		$rootScope.modalInstance = $uibModal.open({
 	        templateUrl: 'add-Amenity-modal.html',
 	        controller: 'AddAmenityModalController',
-	        size: size,
-	        resolve: {
-	            neighborhoodId: function () {
-	                return null;
-	            }
-	        }
+	        size: size
 	    });
 		$rootScope.modalInstance.result.then(function (data) {
 	        $log.debug("results from modal: " + angular.toJson(data));
@@ -214,7 +207,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 				text: "Are you sure you want to delete this Amenity?",
 				type: "warning",
 				showCancelButton: true,
-				closeOnConfirm: false,
+				closeOnConfirm: true,
 				confirmButtonText: "Yes, delete it!",
 				confirmButtonColor: "#ec6c62"},function(){
 
@@ -224,9 +217,9 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 					swal("Deleted!", "Amenity has been deleted successfully!", "success");
 				},function(error){
 					swal("Oops", "We couldn't connect to the server!", "error");
-				})
+				});
 
-			})
+			});
 		}
 	}
 

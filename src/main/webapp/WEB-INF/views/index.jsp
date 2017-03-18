@@ -74,7 +74,7 @@
                     <div class="nav navbar-nav navbar-right navbar_background_clr">
                         <!-- ngIf: privlgeAndCheck.showInchargeAmounts -->
                         <li class="dropdown header_li_border" ng-if="!isAdmin()">
-                           <a href="#!/payments"> Cash Balance: {{branchOffice.cashBalance}}</a>
+                           <a href="#!/payments"> Cash Balance: {{branchOffice.cashBalance|number:2}}</a>
                         </li>
                         <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
                             <a href="#" class="dropdown-toggle panel_title_color" dropdown-toggle="" role="button" ng-click="getNotification()" aria-expanded="false" aria-haspopup="true">

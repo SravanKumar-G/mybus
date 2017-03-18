@@ -51,6 +51,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/officeduereport.tpl.html',
                 controller: 'OfficeDueReportController'
             })
+            .state('officeduereport/:id/:date', {
+                level:1,
+                url:'/officeduereport/:id/:date',
+                templateUrl: 'partials/officeduereportByDate.tpl.html',
+                controller: 'OfficeDueByDateReportController'
+            })
             .state('servicereport/:id', {
                 level:2,
                 url:'/servicereport/:id',
