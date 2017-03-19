@@ -46,7 +46,6 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
             }
         }
         $scope.updateHeader = function(){
-            console.log('updating header..');
             if($scope.user && $scope.user.branchOfficeId) {
                 branchOfficeManager.load($scope.user.branchOfficeId, function(data){
                     $scope.branchOffice = data;

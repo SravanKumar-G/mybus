@@ -6,10 +6,14 @@ import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -29,6 +33,11 @@ public class PaymentManager {
 
     @Autowired
     private BranchOfficeMongoDAO branchOfficeMongoDAO;
+
+    @Autowired
+    private UserManager userManager;
+    @Autowired
+    private PaymentMongoDAO paymentMongoDAO;
 
     public Payment updatePayment(Payment payment) {
         logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
@@ -79,5 +88,13 @@ public class PaymentManager {
             throw new BadRequestException("Payment can not be deleted");
         }
         paymentDAO.delete(payment);
+    }
+    public Iterable<Payment> findPayments(JSONObject query, Pageable pageable) {
+        Iterable<Payment> payments = paymentMongoDAO.find(query, pageable);
+        Map<String, String> userNames = userManager.getUserNames(true);
+        payments.forEach(payment -> {
+            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+        });
+        return payments;
     }
 }

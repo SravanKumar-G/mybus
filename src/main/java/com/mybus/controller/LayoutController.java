@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value = "LayoutController", description = "Management of the seats of a Bus")
 public class LayoutController extends MyBusBaseController{
@@ -35,7 +35,6 @@ public class LayoutController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "layouts", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
 	@ApiOperation(value = "Get all the layouts available", response = Layout.class, responseContainer = "List")
 	public Iterable<Layout> getLayouts(HttpServletRequest request) {
 		return layoutDAO.findAll();
@@ -43,7 +42,6 @@ public class LayoutController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "activelayoutnames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get names of the active layout as key value pair", response = Map.class, responseContainer = "Map")
     public Map<String, String> getActiveLayoutNames(HttpServletRequest request) {
         return layoutManager.getLayoutNames(false);
@@ -51,7 +49,6 @@ public class LayoutController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "layout", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Create a layout", response = Layout.class)
 	public Layout createLayout(HttpServletRequest request,
 			@ApiParam(value = "JSON for Layout to be created") @RequestBody final Layout layout) {
@@ -60,7 +57,6 @@ public class LayoutController extends MyBusBaseController{
 	}
 
 	@RequestMapping(value = "layout/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
 	@ApiOperation(value = "Get the Layout JSON", response = Layout.class)
 	public Layout getLayout(HttpServletRequest request,
 			@ApiParam(value = "Id of the Layout to be found") @PathVariable final String id) {
@@ -70,7 +66,6 @@ public class LayoutController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "layout/{id}", method = RequestMethod.DELETE)
-	@ResponseBody
 	@ApiOperation(value = "Delete a layout")
 	public JSONObject deleteLayout(HttpServletRequest request,
 			@ApiParam(value = "Id of the layout to be deleted") @PathVariable final String id) {
@@ -82,7 +77,6 @@ public class LayoutController extends MyBusBaseController{
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "layout", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
 	@ApiOperation(value = "Update a layout", response = Layout.class)
 	public Layout updateLayout(HttpServletRequest request,
 			@ApiParam(value = "JSON for layout") @RequestBody final Layout layout) {
@@ -91,7 +85,6 @@ public class LayoutController extends MyBusBaseController{
 	}
 
 	@RequestMapping(value = "layout/default/{layoutType}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ResponseBody
 	@ApiOperation(value = "Get the default Layout JSON", response = Layout.class)
 	public Layout getDefaultLayout(HttpServletRequest request,
 			@ApiParam(value = "default layout for the layoutType") @PathVariable final String layoutType) {

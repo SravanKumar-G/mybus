@@ -32,7 +32,7 @@ public class PaymentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Iterable<Payment> getUserInfo(HttpServletRequest request, final Pageable pageable) {
-        return paymentMongoDAO.find(null);
+        return paymentManager.findPayments(null, pageable);
     }
 
 
