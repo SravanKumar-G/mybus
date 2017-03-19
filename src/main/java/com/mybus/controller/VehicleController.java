@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 public class VehicleController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);
@@ -33,7 +33,6 @@ public class VehicleController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicles", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get all the vehicles available", response = User.class, responseContainer = "List")
     public Iterable<Vehicle> getVehicles(HttpServletRequest request) {
         logger.info("geting all vehicles...");
@@ -42,7 +41,6 @@ public class VehicleController extends MyBusBaseController{
     }
 
     @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get the Vehicle JSON", response = Vehicle.class)
     public Vehicle getVehicle(HttpServletRequest request,
                               @ApiParam(value = "Id of the Vehicle to be found") @PathVariable final String id) {
@@ -52,7 +50,6 @@ public class VehicleController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value = "Create a new vehicle")
     public ResponseEntity createUser(HttpServletRequest request,
                                      @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
@@ -62,7 +59,6 @@ public class VehicleController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     @ApiOperation(value ="Update vehicle", response = User.class)
     public ResponseEntity updateVehicle(HttpServletRequest request,
                                         @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id,

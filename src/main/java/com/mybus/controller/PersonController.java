@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by skandula on 1/7/16.
  */
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 public class PersonController extends MyBusBaseController{
 
