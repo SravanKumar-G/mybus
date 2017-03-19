@@ -6,6 +6,7 @@ import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,14 +39,14 @@ public class PaymentMongoDAO {
     }
 
     public long count(JSONObject query) {
-        return  mongoTemplate.count(preparePaymentQuery(query), Payment.class);
+        return  mongoTemplate.count(preparePaymentQuery(query, null), Payment.class);
     }
 
-    public Iterable<Payment> find(JSONObject query) {
-        return  mongoTemplate.find(preparePaymentQuery(query), Payment.class);
+    public Iterable<Payment> find(JSONObject query, Pageable pageable) {
+        return  mongoTemplate.find(preparePaymentQuery(query, pageable), Payment.class);
     }
 
-    public Query preparePaymentQuery(JSONObject query) {
+    public Query preparePaymentQuery(JSONObject query, Pageable pageable) {
         Query q = new Query();
         //filter the form expenses from the report
         q.addCriteria(Criteria.where("formId").exists(false));
@@ -77,6 +78,9 @@ public class PaymentMongoDAO {
                     e.printStackTrace();
                 }
             }
+        }
+        if(pageable != null) {
+            q.with(pageable);
         }
         return q;
     }

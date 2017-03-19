@@ -16,6 +16,7 @@
             </td>
             <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
             <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+            <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
             <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
                 <span ng-if="!payment.status">
                     <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve</a>
