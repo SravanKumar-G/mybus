@@ -13,28 +13,22 @@ import java.util.Date;
  */
 
 @ToString
-@ApiModel(value = "Payment")
+@ApiModel(value = "CashTransfer")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Payment extends AbstractDocument {
+public class CashTransfer extends AbstractDocument {
     public static final String STATUS_AUTO = "Auto";
     public static final String STATUS_APPROVED = "Approved";
     public static final String STATUS_REJECTED = "Rejected";
-    public static final String SERVIVE_FROM_PAYMENT = "Service Form";
-    public static final String BOOKING_DUE_PAYMENT = "Booking Due";
-    public static final String CASH_TRANSFER = "Cash Transfer";
-    public static final String BRANCHOFFICEID = "branchOfficeId";
+    public static final String FROM_OFFICE_ID = "fromOfficeId";
+    public static final String TO_OFFICE_ID = "toOfficeId";
 
     private Date date;
-    private String dateStr;
-    private String name;
     private int index;
     private String description;
-    private PaymentType type;
     private double amount;
-    private String formId;
-    private String branchOfficeId;
+    private String fromOfficeId;
+    private String toOfficeId;
     private String status;
-    private String serviceFormId;
 }
