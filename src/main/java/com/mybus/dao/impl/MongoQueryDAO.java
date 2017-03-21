@@ -27,8 +27,7 @@ public class MongoQueryDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /**
-     *
+    /**@link getDocuments()
      * @param className
      * @param collectionName
      * @param fields
@@ -36,6 +35,7 @@ public class MongoQueryDAO {
      * @param pageable
      * @return
      */
+
     public Iterable getDocuments(final Class className, String collectionName, final String[] fields,
                                     final JSONObject queryInfo, final Pageable pageable) {
         /*Preconditions.checkArgument(mongoTemplate.collectionExists(collectionName),
@@ -75,13 +75,14 @@ public class MongoQueryDAO {
     }
 
     /**
-     *
+     * * @deprecated  As of release 01-Mar-2017, replaced by {@link #getDocuments
      * @param collectionName
      * @param fields
      * @param queryInfo
      * @param pageable
      * @return
      */
+    @Deprecated
     public Iterable getDocuments(String collectionName, final String[] fields,
                                  final JSONObject queryInfo, final Pageable pageable) {
         return getDocuments(BasicDBObject.class, collectionName, fields, queryInfo, pageable);

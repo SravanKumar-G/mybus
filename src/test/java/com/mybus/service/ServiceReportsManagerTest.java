@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.*;
 import com.mybus.model.*;
+import com.mybus.test.util.UserTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -10,8 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.print.Book;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -46,6 +50,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
     @Autowired
     private SessionManager sessionManager;
+
     @Autowired
     private DueReportManager dueReportManager;
 
@@ -65,6 +70,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         serviceReportDAO.deleteAll();
         serviceReportStatusDAO.deleteAll();
         paymentDAO.deleteAll();
+        userDAO.deleteAll();
     }
     @Test
     public void testGetDownloadStatus() throws Exception {
@@ -109,7 +115,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         agent2.setBranchOfficeId(office2.getId());
         agent2 = agentDAO.save(agent2);
         ServiceReport serviceReport = new ServiceReport();
-
+        serviceReport.setJourneyDate(new Date());
         for(int i=0; i<3; i++) {
             Booking booking = new Booking();
             booking.setBookedBy(agent2.getUsername());
@@ -165,5 +171,33 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         payments.stream().forEach(payment -> {
             assertEquals(payment.getType(), PaymentType.INCOME);
         });
+    }
+    @Test
+    public void testRefreshServiceReport() {
+        User user = UserTestService.createNew();
+        BranchOffice office = new BranchOffice();
+        office = branchOfficeDAO.save(office);
+        user.setBranchOfficeId(office.getId());
+        sessionManager.setCurrentUser(user);
+        Calendar calendar = Calendar.getInstance();
+        for(int i=0; i<3; i++) {
+            ServiceReport report = new ServiceReport();
+            calendar.add(Calendar.DAY_OF_MONTH, i);
+            report.setJourneyDate(calendar.getTime());
+            report.setServiceNumber("Service"+i);
+            report = serviceReportDAO.save(report);
+            for(int b=0;b<5;b++) {
+                Booking booking = new Booking();
+                booking.setServiceId(report.getId());
+                booking.setNetAmt(100);
+                if(b == 3){
+                    booking.setDue(true);
+                }
+                report.getBookings().add(bookingDAO.save(booking));
+            }
+            serviceReportsManager.submitReport(report);
+        }
+        office = branchOfficeDAO.findOne(office.getId());
+        assertEquals(1200, office.getCashBalance(), 0.0);
     }
 }

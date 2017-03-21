@@ -12,7 +12,7 @@
         <tr ng-repeat="booking in currentPageOfDues">
             <td data-title="'Booked By'"  sortable="'bookedBy'" class="clickable-item col-md-1" >{{ booking.bookedBy }}</td>
             <td data-title="'Passenger'" class="clickable-item col-md-1" >{{booking.name}} {{booking.phoneNo}}</td>
-            <td data-title="'Route'" class="clickable-item col-md-1" >{{booking.source}} - {{booking.destination}}</td>
+            <td data-title="'Route'" sortable="'serviceNumber'" class="clickable-item col-md-1" >{{booking.source}} - {{booking.destination}} ({{booking.serviceName}} - {{booking.serviceNumber}})</td>
             <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1" >{{booking.seats }}</td>
             <td data-title="'Journey Date'"  sortable="'jdate'" class="clickable-item col-md-1" >{{booking.jdate }}</td>
             <td data-title="'Booked On'" sortable="'bookedDate'" class="clickable-item col-md-1" >{{booking.bookedDate }}</td>

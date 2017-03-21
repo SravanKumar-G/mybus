@@ -51,6 +51,8 @@ public class Booking extends AbstractDocument{
     private double netAmt;
     private boolean due;
     private boolean hasValidAgent;
+    private String serviceName;
+    private String serviceNumber;
     public Booking() {
 
     }

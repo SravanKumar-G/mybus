@@ -27,9 +27,15 @@ public class BookingTypeManager {
     private BranchOfficeDAO branchOfficeDAO;
 
     public boolean isRedbusBooking(Booking booking) {
+        if(booking.getBookedBy() == null) {
+            return false;
+        }
         return booking.getBookedBy().equalsIgnoreCase("REDBUS-API");
     }
     public boolean isOnlineBooking(Booking booking) {
+        if(booking.getBookedBy() == null) {
+            return false;
+        }
         if(booking.getBookedBy().equalsIgnoreCase("ONLINE") ||
                 booking.getBookedBy().equalsIgnoreCase("YATRAGENIE-API") ||
                 booking.getBookedBy().equalsIgnoreCase("PAYTM-API") ||
@@ -41,7 +47,10 @@ public class BookingTypeManager {
     }
 
     public boolean hasValidAgent(Booking booking) {
-       Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+        if(booking.getBookedBy() == null) {
+            return false;
+        }
+        Agent agent = agentDAO.findByUsername(booking.getBookedBy());
         if(agent != null) {
            if(agent.getBranchOfficeId() != null) {
                 BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());

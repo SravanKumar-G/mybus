@@ -123,6 +123,15 @@ public class ServiceReportsManager {
         onlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
         double cashIncome = 0;
         for(Booking booking: serviceReport.getBookings()) {
+            //Need to set journey date for service bookings
+            if(booking.getJourneyDate() == null) {
+                booking.setJourneyDate(serviceReport.getJourneyDate());
+                booking.setJDate(ServiceConstants.df.format(serviceReport.getJourneyDate()));
+                booking.setDestination(serviceReport.getDestination());
+                booking.setSource(serviceReport.getSource());
+                booking.setServiceName(serviceReport.getServiceName());
+                booking.setServiceNumber(serviceReport.getServiceNumber());
+            }
             if(bookingTypeManager.isRedbusBooking(booking) ){
                 processBooking(seatBookings, redbusBooking, booking);
             } else if(bookingTypeManager.isOnlineBooking(booking)){
