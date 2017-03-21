@@ -68,8 +68,8 @@ public class MongoQueryControllerTest extends AbstractControllerIntegrationTest 
             city.setId(ids[i-1]);
             cityDAO.save(city);
         }
-    /*
-         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/documents/city")
+
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/documents/city")
                 .param("fields", "name,field"), currentUser));
         actions.andExpect(status().isOk());
         MockHttpServletResponse response =  actions.andReturn().getResponse();
@@ -81,6 +81,5 @@ public class MongoQueryControllerTest extends AbstractControllerIntegrationTest 
             Assert.assertTrue(result.containsKey("_id"));
             Assert.assertFalse(result.containsKey("field"));
         }
-        */
     }
 }

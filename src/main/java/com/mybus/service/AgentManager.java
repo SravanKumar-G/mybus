@@ -3,15 +3,20 @@ package com.mybus.service;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
+import com.mybus.dao.impl.MongoQueryDAO;
+import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.ResponseData;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +38,9 @@ public class AgentManager {
 
     @Autowired
     private BranchOfficeManager branchOfficeManager;
+
+    @Autowired
+    private MongoQueryDAO mongoQueryDAO;
 
     public Agent getAgent(String agentId) {
         Agent agent = agentDAO.findOne(agentId);
@@ -70,6 +78,17 @@ public class AgentManager {
     }
     public long count(String query, boolean showInvalid) {
         return agentMongoDAO.countAgents(query, showInvalid);
+    }
+
+    public Iterable<AgentNameDTO> getAgentNames() {
+        String[] fields = {"username"};
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE, new Sort("username"));
+        Iterable<Agent> agents = mongoQueryDAO.getDocuments(Agent.class, "agent", fields, null, pageable);
+        List<AgentNameDTO> agentNames = new ArrayList<>();
+        agents.forEach(agent -> {
+                    agentNames.add(new AgentNameDTO(agent.getId(), agent.getUsername()));
+                });
+        return agentNames;
     }
 
 }

@@ -159,6 +159,16 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving agent info");
                         sweetAlert("Error",error.data.message,"error");
                     });
+            },
+            getNames: function(callback) {
+                $http.get('/api/v1/agentNames/')
+                    .then(function (response) {
+                        callback(response.data);
+                        $rootScope.$broadcast('AgentNamesLoadComplete');
+                    },function (error) {
+                        $log.debug("error retrieving agent info");
+                        sweetAlert("Error",error.data.message,"error");
+                    });
             }
         }
     });

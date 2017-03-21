@@ -8,7 +8,7 @@
     <table class="table table-bordered table-condensed table-hover" ng-table="duesTableParams">
         <tr ng-repeat="due in currentPageOfDues">
             <td data-title="'Date'"  sortable="'date'" class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)"><a ng-click="showDueReportByDate(due.date)">{{ due.date }}</a></td>
-            <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)" >{{due.totalDue}} </td>
+            <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)" >{{due.totalDue| number:2}} </td>
         </tr>
 
         <tr ng-if="!currentPageOfDues || currentPageOfDues.length === 0">

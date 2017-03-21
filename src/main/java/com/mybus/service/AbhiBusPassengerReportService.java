@@ -54,6 +54,12 @@ public class AbhiBusPassengerReportService {
         }
     }
 
+    /**
+     * Module that downloads the passenger report creates service reports and bookings
+     * @param date
+     * @return
+     * @throws Exception
+     */
     public ServiceReportStatus downloadReport(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
         ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
@@ -111,6 +117,8 @@ public class AbhiBusPassengerReportService {
                 Booking booking = new Booking();
                 try {
                     //booking.setServiceId(serviceReport.getId());
+                    booking.setServiceName(serviceReport.getServiceName());
+                    booking.setServiceNumber(serviceReport.getServiceNumber());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
                     booking.setJDate(passengerInfo.get("JourneyDate").toString());
                     booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));

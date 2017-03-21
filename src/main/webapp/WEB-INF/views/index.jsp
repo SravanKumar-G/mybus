@@ -170,7 +170,7 @@
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12" ng-if="isAdmin()"></my-menu>
+                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>

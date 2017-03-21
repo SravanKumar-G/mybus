@@ -45,13 +45,17 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
         });
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager) {
+    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
         $scope.serviceId = $stateParams.id;
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
+        $scope.agents = [];
+        agentManager.getNames(function(names){
+            $scope.agents = names;
+        });
         $scope.currentUser = userManager.getUser();
         var loadTableData = function (tableParams, $defer) {
             serviceReportsManager.getReport($scope.serviceId, function(data){

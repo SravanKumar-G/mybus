@@ -29,7 +29,7 @@
                              {{ booking.bookedBy}}
                         </span>
                         <span ng-show="booking.id == null">
-                             <input ng-model="booking.bookedBy" style="width:100px;">
+                             <select ng-options="agent.username as agent.username for agent in agents" class="form-control" ng-model="booking.bookedBy"></select>
                         </span>
                     </td>
                     <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-1">

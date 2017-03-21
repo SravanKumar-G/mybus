@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.AgentDAO;
+import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.model.ResponseData;
 import com.mybus.service.ABAgentService;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
 
 /**
  *
@@ -75,6 +77,11 @@ public class AgentController {
 		return agentManager.findAgents(query, showInvalid, pageable);
 	}
 
+	@RequestMapping(value = "agentNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
+	public Iterable<AgentNameDTO> getAgentNames(HttpServletRequest request) {
+		return agentManager.getAgentNames();
+	}
 
 	@RequestMapping(value = "agent/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get agent ", response = JSONObject.class)
