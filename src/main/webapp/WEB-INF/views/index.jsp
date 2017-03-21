@@ -144,7 +144,7 @@
         </nav>
         <div class="row">
             <div class="col-xs-2">
-                <div class="nav-side-menu">
+                <div id="sidebar-menu" class="nav-side-menu">
                     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
 
                     <div class="menu-list">
@@ -157,7 +157,7 @@
                             </li>
 
                             <li data-toggle="collapse" data-target="#service" class="collapsed">
-                                <a href="#"><i class="fa fa-globe fa-lg"></i> Services</a>
+                                <a><i class="fa fa-globe fa-lg"></i> Services <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="service">
                                 <li>New Service 1</li>
@@ -165,7 +165,7 @@
 
 
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
-                                <a href="#"><i class="fa fa-book fa-lg"></i> Master</a>
+                                <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
@@ -180,7 +180,7 @@
                                 <my-menu label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
-                                <a href="#"><i class="fa fa-book fa-lg"></i>Reports</a>
+                                <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
@@ -213,7 +213,7 @@
                 </div>
             </div>
         </div>
-
+<script src="js/directives/menu.js"></script>
 
 </body>
 </html>
