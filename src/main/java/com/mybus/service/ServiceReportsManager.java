@@ -196,7 +196,7 @@ public class ServiceReportsManager {
         serviceForm.setConductorInfo(serviceReport.getConductorInfo());
         serviceForm.setNotes(serviceReport.getNotes());
         ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
-        paymentManager.createPayment(serviceForm);
+        paymentManager.createPayment(serviceForm, false);
         serviceForm.getBookings().stream().forEach(booking -> {booking.setFormId(savedForm.getId());});
         serviceReport.getExpenses().stream().forEach(expense -> {expense.setFormId(savedForm.getId());});
         paymentDAO.save(serviceReport.getExpenses());
@@ -237,5 +237,23 @@ public class ServiceReportsManager {
         report.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
+    }
+
+    public Iterable<ServiceReport> refreshReport(Date date) {
+        JSONObject query = new JSONObject();
+        query.put(ServiceReport.JOURNEY_DATE, date);
+        Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(query, null);
+        serviceReports.forEach(serviceReport -> {
+            if(serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
+                String formId = serviceReport.getAttributes().get(ServiceReport.SUBMITTED_ID);
+                ServiceForm serviceForm = serviceFormDAO.findOne(formId);
+                paymentManager.createPayment(serviceForm, true);
+                serviceFormDAO.delete(serviceForm);
+                bookingDAO.deleteByFormId(formId);
+            }
+            serviceReportDAO.delete(serviceReport);
+            bookingDAO.deleteByServiceId(serviceReport.getId());
+        });
+        return serviceReportDAO.findAll();
     }
 }

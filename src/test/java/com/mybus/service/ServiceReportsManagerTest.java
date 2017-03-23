@@ -173,7 +173,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         });
     }
     @Test
-    public void testRefreshServiceReport() {
+    public void testRefreshServiceReport() throws ParseException {
         User user = UserTestService.createNew();
         BranchOffice office = new BranchOffice();
         office = branchOfficeDAO.save(office);
@@ -183,7 +183,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         for(int i=0; i<3; i++) {
             ServiceReport report = new ServiceReport();
             calendar.add(Calendar.DAY_OF_MONTH, i);
-            report.setJourneyDate(calendar.getTime());
+            report.setJourneyDate(ServiceConstants.df.parse(ServiceConstants.df.format(calendar.getTime())));
             report.setServiceNumber("Service"+i);
             report = serviceReportDAO.save(report);
             for(int b=0;b<5;b++) {
@@ -199,5 +199,12 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         office = branchOfficeDAO.findOne(office.getId());
         assertEquals(1200, office.getCashBalance(), 0.0);
+        serviceReportsManager.refreshReport(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())));
+        office = branchOfficeDAO.findOne(office.getId());
+        assertEquals(800, office.getCashBalance(), 0.0);
+        List<ServiceReport> reports = IteratorUtils.toList(serviceReportDAO.findAll().iterator());
+        assertEquals(2, reports.size());
+        List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());
+        assertEquals(20, bookings.size());
     }
 }

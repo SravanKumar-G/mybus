@@ -69,15 +69,19 @@ public class PaymentManager {
         payment.setStatus(Payment.STATUS_AUTO);
         return updatePayment(payment);
     }
-    public Payment createPayment(ServiceForm serviceForm) {
+
+    public Payment createPayment(ServiceForm serviceForm, boolean deleteForm) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(serviceForm.getNetCashIncome());
-        payment.setType(PaymentType.INCOME);
+        if(deleteForm){
+            payment.setType(PaymentType.EXPENSE);
+        } else {
+            payment.setType(PaymentType.INCOME);
+        }
         payment.setStatus(Payment.STATUS_AUTO);
-        payment.setDescription(Payment.SERVIVE_FROM_PAYMENT);
-        payment.setServiceFormId(serviceForm.getId());
+        payment.setDescription("Service form refresh");
         payment.setDate(serviceForm.getJDate());
         return updatePayment(payment);
     }
