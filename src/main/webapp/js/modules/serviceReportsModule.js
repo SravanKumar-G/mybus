@@ -44,6 +44,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 loadTableData(params);
             }
         });
+
     })
     .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager) {
         $scope.headline = "Service Report";
@@ -177,8 +178,12 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             var date = new Date();
             date.setDate(date.getDate() -1);
             $scope.dt = date;
+            $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
             $scope.parseDate();
         };
+
+
+
         $scope.today();
         $scope.date = null;
         $scope.downloadedOn = null;
@@ -258,14 +263,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             });
         }
         $scope.checkStatus();
+
         $scope.downloadReports = function() {
-            $scope.loading = true;
-            $scope.parseDate();
-            serviceReportsManager.downloadReports($scope.date, function(data){
-                $scope.downloaded = data.downloaded;
-                $scope.loading = false;
-                $scope.downloadedOn=data.downloadedOn;
-            });
+            if($scope.dt >= $scope.tomorrow){
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else{
+                $scope.loading = true;
+                $scope.parseDate();
+                serviceReportsManager.downloadReports($scope.date, function(data){
+                    $scope.downloaded = data.downloaded;
+                    $scope.loading = false;
+                    $scope.downloadedOn=data.downloadedOn;
+                });
+            }
         }
         $scope.monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"

@@ -37,4 +37,5 @@ public class Payment extends AbstractDocument {
     private String branchOfficeId;
     private String status;
     private String serviceFormId;
+    private String vehicleId;
 }

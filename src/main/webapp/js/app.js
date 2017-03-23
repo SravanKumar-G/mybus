@@ -17,7 +17,8 @@ var myBus = angular.module('myBus', [
   'myBus.roleModule',
   'myBus.agentModule',
   'myBus.dueReportModule',
-  'myBus.serviceComboModule'
+  'myBus.serviceComboModule',
+  'myBus.vehicleExpensesModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -128,6 +129,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/vehicles',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
+            })
+            .state('vehicleexpenses', {
+                level:1,
+                url:'/vehicleexpenses',
+                templateUrl: 'partials/vehicleExpenses.tpl.html',
+                controller: 'VehicleExpensesController'
             })
             .state('createvehicle', {
                 level:2,
