@@ -9,5 +9,6 @@ import java.util.Date;
 @Repository
 public interface ServiceReportStatusDAO extends PagingAndSortingRepository<ServiceReportStatus, String> {
     Iterable<ServiceReportStatus> findByReportDate(Date downloadedOn);
+    void deleteByReportDate(Date date);
 
 }

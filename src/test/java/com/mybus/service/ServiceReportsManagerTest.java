@@ -199,7 +199,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         office = branchOfficeDAO.findOne(office.getId());
         assertEquals(1200, office.getCashBalance(), 0.0);
-        serviceReportsManager.refreshReport(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())));
+        serviceReportsManager.clearServiceReports(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())));
         office = branchOfficeDAO.findOne(office.getId());
         assertEquals(800, office.getCashBalance(), 0.0);
         List<ServiceReport> reports = IteratorUtils.toList(serviceReportDAO.findAll().iterator());

@@ -169,7 +169,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.launchAgents = function(){
             $location.url('/agents');
         }
-    }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location) {
+    }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location ,userManager) {
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
@@ -258,6 +258,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             });
         }
         $scope.checkStatus();
+
         $scope.downloadReports = function() {
             $scope.loading = true;
             $scope.parseDate();
@@ -266,6 +267,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $scope.loading = false;
                 $scope.downloadedOn=data.downloadedOn;
             });
+        }
+
+        $scope.refreshReports = function() {
+            $scope.loading = true;
+            $scope.parseDate();
+            serviceReportsManager.refreshReports($scope.date, function(data){
+                $scope.downloaded = data.downloaded;
+                $scope.loading = false;
+                $scope.downloadedOn=data.downloadedOn;
+            });
+        }
+        $scope.isAdmin = function() {
+            var currentUser = userManager.getUser();
+            return currentUser.admin;
         }
         $scope.monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
@@ -330,6 +345,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving service reports");
+                    });
+            },
+            refreshReports: function (date, callback) {
+                $http.get('/api/v1/serviceReport/refresh?travelDate='+date)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error refreshing service reports");
                     });
             },
             loadReports:function(date,callback) {

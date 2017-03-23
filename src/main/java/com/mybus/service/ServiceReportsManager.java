@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -239,12 +240,12 @@ public class ServiceReportsManager {
         return report;
     }
 
-    public Iterable<ServiceReport> refreshReport(Date date) {
+    public void clearServiceReports(Date date) {
         JSONObject query = new JSONObject();
         query.put(ServiceReport.JOURNEY_DATE, date);
         Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(query, null);
         serviceReports.forEach(serviceReport -> {
-            if(serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
+            if (serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
                 String formId = serviceReport.getAttributes().get(ServiceReport.SUBMITTED_ID);
                 ServiceForm serviceForm = serviceFormDAO.findOne(formId);
                 paymentManager.createPayment(serviceForm, true);
@@ -254,6 +255,17 @@ public class ServiceReportsManager {
             serviceReportDAO.delete(serviceReport);
             bookingDAO.deleteByServiceId(serviceReport.getId());
         });
-        return serviceReportDAO.findAll();
+        serviceReportStatusDAO.deleteByReportDate(date);
+        serviceReportStatusDAO.save(new ServiceReportStatus(date, ReportDownloadStatus.DOWNLOADING));
+    }
+
+    public Iterable<ServiceReport> refreshReport(Date date) {
+        clearServiceReports(date);
+        try {
+            reportService.downloadReport(ServiceConstants.df.format(date));
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to download reports", e);
+        }
+        return serviceReportDAO.findByJourneyDate(date);
     }
 }

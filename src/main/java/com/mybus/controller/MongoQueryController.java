@@ -25,7 +25,7 @@ public class MongoQueryController extends MyBusBaseController{
 
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
-
+    /*
     @RequestMapping(value = "documents/{collectionName}", method = RequestMethod.GET,
             produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get documents from a colletion with specific fields queried.",
@@ -40,5 +40,5 @@ public class MongoQueryController extends MyBusBaseController{
         }
         return mongoQueryDAO.getDocuments(collectionName, f, query, null);
     }
-
+*/
 }
