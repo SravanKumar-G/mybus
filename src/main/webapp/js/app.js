@@ -9,6 +9,7 @@ var myBus = angular.module('myBus', [
   'myBus.userModule',
   'myBus.amenitiesModule',
   'myBus.cityModule',
+  'myBus.cashTransfersModule',
   'myBus.vehicleModule',
   'myBus.branchOfficeModule',
   'myBus.serviceReportsModule',
@@ -32,6 +33,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/amenities',
                 templateUrl: 'partials/amenities.tpl.html',
                 controller: 'AmenitiesController'
+            })
+            .state('cashtransfers',{
+                url:'/cashtransfers',
+                templateUrl: 'partials/cashTransfers.tpl.html',
+                controller: 'cashTransfersController'
             })
             .state('dashboard', {
             	level:1,
