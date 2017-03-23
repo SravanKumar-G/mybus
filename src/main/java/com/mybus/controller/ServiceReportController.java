@@ -62,6 +62,18 @@ public class ServiceReportController {
 		}
 	}
 
+	@RequestMapping(value = "serviceReport/refresh", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)
+	public Iterable<ServiceReport> refreshReports(HttpServletRequest request,
+											   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+		try{
+			return serviceReportsManager.refreshReport(ServiceConstants.df.parse(travelDate));
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new BadRequestException("Error loading reports");
+		}
+	}
+
 	@RequestMapping(value = "serviceReport/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service report", response = JSONObject.class)
 	public ServiceReport getServiceReport(HttpServletRequest request,

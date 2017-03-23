@@ -3,7 +3,6 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.CashTransferMongoDAO;
 import com.mybus.model.CashTransfer;
-import com.mybus.model.City;
 import com.mybus.model.Payment;
 import com.mybus.service.CashTransferManager;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +34,7 @@ public class CashTransferController extends MyBusBaseController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ApiOperation(value = "Get all the cash transfers available", response = City.class, responseContainer = "List")
+    @ApiOperation(value = "Get all the cash transfers available", response = CashTransfer.class, responseContainer = "List")
     public Iterable<CashTransfer> get(HttpServletRequest request, final Pageable pageable) {
         return cashTransferMongoDAO.find(null, pageable);
     }
