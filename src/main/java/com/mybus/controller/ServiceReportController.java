@@ -70,7 +70,7 @@ public class ServiceReportController {
 			return serviceReportsManager.refreshReport(ServiceConstants.df.parse(travelDate));
 		}catch (Exception e) {
 			e.printStackTrace();
-			throw new BadRequestException("Error loading reports");
+			throw new BadRequestException("Error refreshing reports", e);
 		}
 	}
 
@@ -99,9 +99,10 @@ public class ServiceReportController {
 	}
 
 	@RequestMapping(value = "serviceReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Post service report", response = JSONObject.class)
+	@ApiOperation(value ="Submit service report", response = JSONObject.class)
 	public void submitReport(HttpServletRequest request,
 				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
 		 serviceReportsManager.submitReport(serviceReport);
 	}
+
 }
