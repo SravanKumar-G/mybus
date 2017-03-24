@@ -97,6 +97,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
                 .paths(regex("/api/.*"))
                 .build()
                 .apiInfo(apiInfo());
+                //.ignoredParameterTypes(Pageable.class, PagedResourcesAssembler.class);
     }
 
     private ApiInfo apiInfo() {

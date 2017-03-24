@@ -7,6 +7,8 @@ import com.mybus.model.Agent;
 import com.mybus.model.ResponseData;
 import com.mybus.service.ABAgentService;
 import com.mybus.service.AgentManager;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -68,6 +70,16 @@ public class AgentController {
 		return agentManager.findAgents(query, showInvalid);
 	}
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+					value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+					value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+					value = "Sorting criteria in the format: property(,asc|desc). " +
+							"Default sort order is ascending. " +
+							"Multiple sort criteria are supported.")
+	})
 	@RequestMapping(value = "agents", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
 	public ResponseData<Agent> getAgents(HttpServletRequest request,

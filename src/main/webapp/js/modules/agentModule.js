@@ -15,40 +15,44 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.showInvalid = false;
         $scope.query = "";
         var loadTableData = function (tableParams) {
+            //console.log(JSON.stringify(tableParams));
+            //console.log(tableParams.page());
             $scope.loading = true;
-            agentManager.loadAll($scope.query,$scope.showInvalid, function(data){
-                $scope.count = data.length;
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:tableParams.sorting()};
+            console.log(JSON.stringify(pageable));
+            agentManager.getAgents($scope.query,$scope.showInvalid,pageable, function(response){
+                //$scope.count = data.total;
                 $scope.invalidCount = 0;
-                if(angular.isArray(data)) {
+                if(angular.isArray(response.data)) {
                     $scope.loading = false;
-                    _.each(data, function(agent, index){
+                    _.each(response.data, function(agent, index){
                         if(!agent.branchOfficeId){
                             $scope.invalidCount++;
                         }
                     });
-                    $scope.agents = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                    tableParams.total(data.length);
+                    //$scope.agents = tableParams.sorting() ? $filter('orderBy')(response.data, tableParams.orderBy()) : response.data;
+                    $scope.agents = response.data;
+                    tableParams.total(response.total);
                     tableParams.data = $scope.agents;
-                    $scope.currentPageOfAgents = $scope.agents.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    $scope.currentPageOfAgents =  $scope.agents;
                 }
             });
         };
 
         $scope.init = function() {
-            agentManager.count($scope.query,$scope.showInvalid, function(agentsCount){
-                $scope.agentTableParams = new NgTableParams({
-                    page: 1, // show first page
-                    count:10,
-                    sorting: {
-                        fullName: 'asc'
-                    },
-                }, {
-                    counts:[],
-                    total:agentsCount,
-                    getData: function (params) {
-                        loadTableData(params);
-                    }
-                });
+            $scope.agentTableParams = new NgTableParams({
+                page: 1, // show first page
+                size:10,
+                count:10,
+                sorting: {
+                    username: 'asc'
+                },
+            }, {
+                counts:[],
+                total:809,
+                getData: function (params) {
+                    loadTableData(params);
+                }
             });
         };
 
@@ -113,22 +117,15 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
     }).factory('agentManager', function ($http, $log,$rootScope) {
         var agents = {};
         return {
-            loadAll: function (query, showInvalid,callback) {
-                $http.get('/api/v1/agent/all?query='+query+"&showInvalid="+showInvalid)
+            getAgents: function (query, showInvalid, pageable, callback) {
+                $http({url:'/api/v1/agents?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving agents");
                     });
             },
-            count: function (query, showInvalid, callback) {
-                $http.get('/api/v1/agent/count?query='+query+"&showInvalid="+showInvalid)
-                    .then(function (response) {
-                        callback(response.data);
-                    },function (error) {
-                        $log.debug("error retrieving agents count");
-                    });
-            },
+
             download: function (callback) {
                 $http.get('/api/v1/agent/download')
                     .then(function (response) {

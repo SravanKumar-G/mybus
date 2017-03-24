@@ -66,6 +66,13 @@ public class AgentManager {
         return agents;
     }
 
+    /**
+     *
+     * @param query
+     * @param showInvalid
+     * @param pageable
+     * @return
+     */
     public ResponseData<Agent> findAgents(String query, boolean showInvalid,Pageable pageable) {
         ResponseData<Agent> responseData = new ResponseData<>();
         responseData.setTotal(count(query, showInvalid));
@@ -74,6 +81,7 @@ public class AgentManager {
         agents.stream().forEach(agent -> {
             agent.getAttributes().put(BranchOffice.KEY_NAME, namesMap.get(agent.getBranchOfficeId()));
         });
+        responseData.setData(agents);
         return responseData;
     }
     public long count(String query, boolean showInvalid) {
