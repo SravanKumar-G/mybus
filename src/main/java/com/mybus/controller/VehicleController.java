@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,5 +78,12 @@ public class VehicleController extends MyBusBaseController{
         JSONObject response = new JSONObject();
         response.put("deleted", vehicleManager.deleteVehicle(id));
         return response;
+    }
+    @RequestMapping(value = "vehicle/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get vehicle count", response = Long.class)
+    public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
+                         @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+                         final Pageable pageable) {
+        return vehicleDAO.count();
     }
 }
