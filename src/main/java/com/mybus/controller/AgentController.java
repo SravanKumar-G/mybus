@@ -4,7 +4,6 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
-import com.mybus.model.ResponseData;
 import com.mybus.service.ABAgentService;
 import com.mybus.service.AgentManager;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,13 +14,13 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
 
 /**
  *
@@ -62,14 +61,6 @@ public class AgentController {
 		return agentManager.count(query,showInvalid);
 	}
 
-	@RequestMapping(value = "agent/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
-	public Iterable<Agent> getAllAgents(HttpServletRequest request,
-										@RequestParam(required = false, value = "query") String query,
-										@RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
-		return agentManager.findAgents(query, showInvalid);
-	}
-
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
 					value = "Results page you want to retrieve (0..N)"),
@@ -82,7 +73,7 @@ public class AgentController {
 	})
 	@RequestMapping(value = "agents", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
-	public ResponseData<Agent> getAgents(HttpServletRequest request,
+	public Page<Agent> getAgents(HttpServletRequest request,
 										@RequestParam(required = false, value = "query") String query,
 										@RequestParam(required = false, value = "showInvalid") boolean showInvalid,
 										 final Pageable pageable) {

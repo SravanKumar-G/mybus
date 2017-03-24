@@ -2,7 +2,6 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.PaymentMongoDAO;
-import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,10 +31,15 @@ public class PaymentController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Iterable<Payment> getUserInfo(HttpServletRequest request, final Pageable pageable) {
+    public Page<Payment> getPayments(HttpServletRequest request, final Pageable pageable) {
         return paymentManager.findPayments(null, pageable);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payment/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Payment getPayment(HttpServletRequest request, @PathVariable final String id) {
+        return paymentManager.findOne(id);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)

@@ -145,23 +145,16 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
     }).factory('cityManager', function ($rootScope, $http, $log, $location) {
         var cities = {}
-            , rawChildDataWithGeoMap = {};
+            , rawChildDataWithGeoMap = {}, totalCount = 0;
         return {
             fetchAllCities: function () {
                 $http.get('/api/v1/cities')
                     .then(function (response) {
                         cities = response.data.content;
+                        totalCount= response.totalElements;
                         $log.debug("fetching cities data ..." + response.data.content);
 
                         $rootScope.$broadcast('cityAndBoardingPointsInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving cities");
-                    });
-            },
-            getCities: function (callback) {
-                $http.get('/api/v1/cities')
-                    .then(function (response) {
-                        callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving cities");
                     });
@@ -174,11 +167,11 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving cities");
                     });
             },
-            getAllData: function () {
-                return cities;
-            },
             getAllCities: function () {
                 return cities;
+            },
+            getTotalCount : function() {
+                return totalCount;
             },
             getChildrenByParentId: function (parentId) {
                 if (!parentId) {

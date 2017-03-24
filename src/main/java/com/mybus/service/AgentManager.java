@@ -7,14 +7,10 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
-import com.mybus.model.ResponseData;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,16 +69,15 @@ public class AgentManager {
      * @param pageable
      * @return
      */
-    public ResponseData<Agent> findAgents(String query, boolean showInvalid,Pageable pageable) {
-        ResponseData<Agent> responseData = new ResponseData<>();
-        responseData.setTotal(count(query, showInvalid));
+    public Page<Agent> findAgents(String query, boolean showInvalid,Pageable pageable) {
+        long total = (count(query, showInvalid));
         List<Agent> agents = IteratorUtils.toList(agentMongoDAO.findAgents(query, showInvalid, pageable).iterator());
         Map<String, String> namesMap = branchOfficeManager.getNamesMap();
         agents.stream().forEach(agent -> {
             agent.getAttributes().put(BranchOffice.KEY_NAME, namesMap.get(agent.getBranchOfficeId()));
         });
-        responseData.setData(agents);
-        return responseData;
+        Page<Agent> page = new PageImpl<Agent>(agents, pageable, total);
+        return page;
     }
     public long count(String query, boolean showInvalid) {
         return agentMongoDAO.countAgents(query, showInvalid);
