@@ -33,10 +33,15 @@ public class PaymentController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Page<Payment> getUserInfo(HttpServletRequest request, final Pageable pageable) {
+    public Page<Payment> getPayments(HttpServletRequest request, final Pageable pageable) {
         return paymentManager.findPayments(null, pageable);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payment/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Payment getPayment(HttpServletRequest request, @PathVariable final String id) {
+        return paymentManager.findOne(id);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)

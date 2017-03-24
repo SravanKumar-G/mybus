@@ -108,4 +108,12 @@ public class PaymentManager {
         Page<Payment> page = new PageImpl<>(payments, pageable, count);
         return page;
     }
+
+    public Payment findOne(String id) {
+        Payment payment = paymentDAO.findOne(id);
+        if(payment == null) {
+            throw new BadRequestException("No Payment found");
+        }
+        return payment;
+    }
 }
