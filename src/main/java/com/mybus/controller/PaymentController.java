@@ -2,9 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.PaymentMongoDAO;
-import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
-import com.mybus.model.ResponseData;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

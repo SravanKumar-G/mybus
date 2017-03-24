@@ -7,7 +7,6 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import com.mybus.model.ResponseData;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;

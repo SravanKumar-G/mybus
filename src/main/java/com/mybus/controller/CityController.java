@@ -5,7 +5,6 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import com.mybus.model.ResponseData;
 import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
