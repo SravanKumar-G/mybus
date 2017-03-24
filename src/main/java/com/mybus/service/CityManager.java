@@ -7,11 +7,14 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
+import com.mybus.model.ResponseData;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -36,6 +39,9 @@ public class CityManager {
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
 
+    public Page<City> findAll(Pageable pageable) {
+        return  cityDAO.findAll(pageable);
+    }
     public City findOne(String cityId){
         return cityDAO.findOne(cityId);
     }
@@ -172,9 +178,7 @@ public class CityManager {
         }
         return cityNames;
     }
-    public Iterable<City> findAll(){
-        return cityDAO.findAll();
-    }
+
     public void deleteAll() {
         cityDAO.deleteAll();
     }

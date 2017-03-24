@@ -62,14 +62,6 @@ public class AgentController {
 		return agentManager.count(query,showInvalid);
 	}
 
-	@RequestMapping(value = "agent/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
-	public Iterable<Agent> getAllAgents(HttpServletRequest request,
-										@RequestParam(required = false, value = "query") String query,
-										@RequestParam(required = false, value = "showInvalid") boolean showInvalid) {
-		return agentManager.findAgents(query, showInvalid);
-	}
-
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
 					value = "Results page you want to retrieve (0..N)"),

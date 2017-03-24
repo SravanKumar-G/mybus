@@ -24,7 +24,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
             var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
             agentManager.getAgents($scope.query,$scope.showInvalid,pageable, function(response){
                 $scope.invalidCount = 0;
-                if(angular.isArray(response.data)) {
+                if(angular.isArray(response.data.content)) {
                     $scope.loading = false;
                     _.each(response.data, function(agent, index){
                         if(!agent.branchOfficeId){
@@ -32,7 +32,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                         }
                     });
                     //$scope.agents = tableParams.sorting() ? $filter('orderBy')(response.data, tableParams.orderBy()) : response.data;
-                    $scope.agents = response.data;
+                    $scope.agents = response.data.content;
                     tableParams.total(response.total);
                     tableParams.data = $scope.agents;
                     $scope.currentPageOfAgents =  $scope.agents;

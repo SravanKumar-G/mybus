@@ -5,6 +5,7 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
+import com.mybus.model.ResponseData;
 import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,8 +39,8 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
-    public Iterable<City> getCities(HttpServletRequest request, final Pageable pageable) {
-        return cityDAO.findAll(pageable);
+    public Page<City> getCities(HttpServletRequest request, final Pageable pageable) {
+        return cityManager.findAll(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

@@ -58,7 +58,7 @@ public class AgentControllerTest extends AbstractControllerIntegrationTest{
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/agents?page=3&size=5&sort=name"), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.total").value(40));
-        actions.andExpect(jsonPath("$.data").isArray());
-        actions.andExpect(jsonPath("$.data", Matchers.hasSize(5)));
+        actions.andExpect(jsonPath("$.data.content").isArray());
+        actions.andExpect(jsonPath("$.data.content", Matchers.hasSize(5)));
     }
 }
