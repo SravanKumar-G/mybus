@@ -15,13 +15,14 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.showInvalid = false;
         $scope.query = "";
         var loadTableData = function (tableParams) {
-            //console.log(JSON.stringify(tableParams));
-            //console.log(tableParams.page());
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:tableParams.sorting()};
-            console.log(JSON.stringify(pageable));
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
             agentManager.getAgents($scope.query,$scope.showInvalid,pageable, function(response){
-                //$scope.count = data.total;
                 $scope.invalidCount = 0;
                 if(angular.isArray(response.data)) {
                     $scope.loading = false;
