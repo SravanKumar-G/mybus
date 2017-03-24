@@ -14,7 +14,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.showInvalid = false;
         $scope.query = "";
         var loadTableData = function (tableParams) {
-            var sortingProps = tableParams.sorting();
+            var sortingProps = tableParams.sorting(); //{'name':'asc'}  --- name,asc,   {'username':'desc'}  -- username,desc
             var sortProps = ""
             for(var prop in sortingProps) {
                 sortProps += prop+"," +sortingProps[prop];

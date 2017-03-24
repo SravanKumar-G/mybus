@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,8 +46,8 @@ public class RouteController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "routes", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the routes available", response = Route.class, responseContainer = "List")
-    public Iterable<Route> getAll(HttpServletRequest request) {
-        return routeDAO.findAll();
+    public Page<Route> getAll(HttpServletRequest request, Pageable pageable) {
+        return routeDAO.findAll(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
