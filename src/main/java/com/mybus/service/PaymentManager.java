@@ -6,13 +6,18 @@ import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -93,12 +98,14 @@ public class PaymentManager {
         }
         paymentDAO.delete(payment);
     }
-    public Iterable<Payment> findPayments(JSONObject query, Pageable pageable) {
-        Iterable<Payment> payments = paymentMongoDAO.find(query, pageable);
+    public Page<Payment> findPayments(JSONObject query, Pageable pageable) {
+        List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
+        long count =  paymentMongoDAO.count(query);
         Map<String, String> userNames = userManager.getUserNames(true);
         payments.forEach(payment -> {
             payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
         });
-        return payments;
+        Page<Payment> page = new PageImpl<>(payments, pageable, count);
+        return page;
     }
 }
