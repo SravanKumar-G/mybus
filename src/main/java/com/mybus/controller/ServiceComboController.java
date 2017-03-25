@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +35,19 @@ public class ServiceComboController {
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombos", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "Get all the ServicCombos available", response = Amenity.class, responseContainer = "List")
-	public Iterable<ServiceCombo> getAll() {
+	@ApiOperation(value = "Get all the ServicCombos available", response = Page.class)
+	public Page<ServiceCombo> getAll(final Pageable pageable) {
 		LOGGER.debug("Get all the ServicCombos available");
-		return serviceComboDAO.findAll();
+		return serviceComboDAO.findAll(pageable);
 	}
 
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "serviceCombos/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value = "Get count")
+	public long count() {
+		LOGGER.debug("Get all the ServicCombos available");
+		return serviceComboDAO.count();
+	}
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombo", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add serviceCombo")

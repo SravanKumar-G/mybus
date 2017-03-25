@@ -65,15 +65,15 @@ public class RoleControllerTest  extends AbstractControllerIntegrationTest{
     public void testGetRoles() throws Exception {
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/roles"), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(0)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(0)));
         for(int i=0;i<3;i++){
             roleDAO.save(new Role("Test"+i));
         }
         actions = mockMvc.perform(asUser(get("/api/v1/roles"), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(3)));
     }
 
     @Test

@@ -6,6 +6,8 @@ import com.mybus.model.Amenity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,8 +24,8 @@ public class AmenitiesManager {
 	@Autowired
 	private AmenityDAO amenityDAO; 
 	
-	public Iterable<Amenity> findAll(){
-		return amenityDAO.findAll();
+	public Page<Amenity> findAll(Pageable pageable){
+		return amenityDAO.findAll(pageable);
 	}
 	
 	public Amenity save(Amenity amenity){
@@ -59,5 +61,9 @@ public class AmenitiesManager {
 	}
 	public void deleteAll() {
 		amenityDAO.deleteAll();
+	}
+
+	public long count() {
+		return amenityDAO.count();
 	}
 }

@@ -14,6 +14,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +83,7 @@ public class BranchOfficeManager {
         return branchOfficeDAO.save(branchOfficeCopy);
     }
 
-    public Iterable<BranchOffice> find(JSONObject query, final Pageable pageable) {
+    public Page<BranchOffice> find(JSONObject query, final Pageable pageable) {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
@@ -93,9 +95,13 @@ public class BranchOfficeManager {
             office.getAttributes().put(BranchOffice.CITY_NAME, cityNames.get(office.getCityId()));
             office.getAttributes().put(BranchOffice.MANAGER_NAME, userNames.get(office.getManagerId()));
         });
-        return branchOffices;
+        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices, pageable, branchOffices.size());
+        return page;
     }
 
+    public long count(JSONObject query) {
+        return mongoQueryDAO.count(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query);
+    }
     public void delete(String branchOfficeId) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
         BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);

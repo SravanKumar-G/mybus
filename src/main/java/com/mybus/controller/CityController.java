@@ -43,6 +43,12 @@ public class CityController extends MyBusBaseController{
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "cities/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get Count", response = City.class, responseContainer = "List")
+    public long getCount(HttpServletRequest request, final Pageable pageable) {
+        return cityManager.count();
+    }
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Iterable<City> getActiveCityNames(HttpServletRequest request) {

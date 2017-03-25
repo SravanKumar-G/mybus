@@ -5,6 +5,8 @@ import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by srinikandula on 3/19/17.
@@ -30,8 +33,10 @@ public class CashTransferMongoDAO {
         return  mongoTemplate.count(preparePaymentQuery(query, null), CashTransfer.class);
     }
 
-    public Iterable<CashTransfer> find(JSONObject query, Pageable pageable) {
-        return  mongoTemplate.find(preparePaymentQuery(query, pageable), CashTransfer.class);
+    public Page<CashTransfer> find(JSONObject query, Pageable pageable) {
+        List<CashTransfer> cashTransfers = mongoTemplate.find(preparePaymentQuery(query, pageable), CashTransfer.class);
+        Page<CashTransfer> page = new PageImpl<CashTransfer>(cashTransfers, pageable, count(query));
+        return  page;
     }
 
     public Query preparePaymentQuery(JSONObject query, Pageable pageable) {
