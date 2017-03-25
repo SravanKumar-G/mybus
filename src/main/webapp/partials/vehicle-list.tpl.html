@@ -6,7 +6,7 @@
 <table class="table table-bordered table-condensed table-hover" ng-table="vehicleContentTableParams">
     <tr ng-repeat="vehicle in currentPageOfVehicles" ng-class="vehicle.active?'':'bg-danger'">
         <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-6">{{ vehicle.vehicleType }}</td>
-        <td data-title="'Registration #'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
+        <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
         <td data-title="'Description'" class="clickable-item col-md-4">{{ vehicle.description }}</td>
         <td data-title="'Active'" class="clickable-item col-md-4">{{ vehicle.active }}</td>
         <td>

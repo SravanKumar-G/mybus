@@ -10,38 +10,51 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         $scope.vehiclesCount = 0;
         $scope.currentPageOfVehicles = [];
         $scope.id = $stateParams.id;
+
+
+
+
         var loadTableData = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
             $scope.loading = true;
-            var data = vehicleManager.getVehicles(function (data) {
-                $scope.count = data.length;
-                if (angular.isArray(data)) {
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            vehicleManager.getVehicles($scope.query,pageable, function(response){
+                if(angular.isArray(response.content)){
                     $scope.loading = false;
+                    $scope.vehicles = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.vehicles;
+                    $scope.currentPageOfVehicles = $scope.vehicles;
                 }
-
-            $scope.vehicles = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-            tableParams.total(data.length);
-            tableParams.data = $scope.vehicles;
-            $scope.currentPageOfVehicles = $scope.vehicles.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-            });
-        }
-
-        $scope.init = function() {
-            vehicleManager.count(function(vehiclesCount){
-                $scope.vehicleContentTableParams = new NgTableParams({
-                    page: 1,
-                    count: 10,
-                    sorting: {
-                        vehicleType: 'asc'
-                    }
-                }, {
-                    counts: [],
-                    total: vehiclesCount,
-                    getData: function (params) {
-                        loadTableData(params);
-                    }
-                });
             })
-        }
+        };
+
+        $scope.init = function(){
+            vehicleManager.count($scope.query,function(vehiclesCount){
+                $scope.vehicleContentTableParams = new NgTableParams(
+                    {
+                        page: 1,
+                        size: 10,
+                        count: 10,
+                        sorting: {
+                            regNo: 'asc'
+                        }
+                    },
+                    {
+                        counts:[],
+                        total: vehiclesCount,
+                        getData: function (params) {
+                            loadTableData(params);
+                        }
+                    }
+                )
+            })
+        };
         $scope.init();
 
         $scope.$on('reloadVehicleInfo',function(e,value){
@@ -131,32 +144,22 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         var vehicles = {}
             , rawChildDataWithGeoMap = {};
         return {
-            fetchAllVehicles: function () {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
-                    .then(function (response) {
-                        vehicles = response.data;
-                        $rootScope.$broadcast('vehicleInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
-                    });
-            },
-            getVehicles: function (callback) {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
+            getVehicles: function (query, pageable, callback) {
+                $http({url: '/api/v1/vehicles?query=' + query, method: "GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
+                    }, function(error){
+                        swal("oops", error, "error");
                     });
             },
+
             getAllData: function () {
                 return vehicles;
             },
             getAllVehicles: function () {
                 return vehicles;
             },
-            count: function (callback) {
+            count: function (query,callback) {
                 $http.get('/api/v1/vehicle/count')
                     .then(function (response) {
                         callback(response.data);

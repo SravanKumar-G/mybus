@@ -7,9 +7,9 @@
 
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="officeTableParams">
-    <tr ng-repeat="office in offices">
+    <tr ng-repeat="office in currentPageOfOffices">
         <td data-title="'Name'" class="col-sm-2" sortable="'name'">{{ office.name }}</td>
-        <td data-title="'City'" class="col-sm-1" sortable="'attributes.cityName'">{{ office.attributes.cityName }}</td>
+        <td data-title="'City'" class="col-sm-2" sortable="'attributes.cityName'">{{ office.attributes.cityName }}</td>
         <td data-title="'Manager'" class="col-sm-2" >{{ office.attributes.managerName }}</td>
         <td data-title="'Contact'" class="col-sm-1" sortable="'contact'">{{ office.contact }}</td>
         <td data-title="'Email'" class="col-sm-2" sortable="'email'">{{ office.email }}</td>
@@ -19,6 +19,8 @@
                 <md-icon type="button" class="btn" ng-click="edit(office)">
                     <span class="glyphicon glyphicon-pencil"></span></md-icon>
             </md-button>
+        </td>
+        <td class="col-sm-1">
             <md-button >
                 <md-icon type="button" class="btn" ng-click="delete(office)">
                     <span class="glyphicon glyphicon-trash"></span></md-icon>
