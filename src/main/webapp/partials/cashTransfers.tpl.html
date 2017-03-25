@@ -5,7 +5,7 @@
     <div class="toolbar-button-div pull-right">
         <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddCashTransfer()" ng-if="canAddCashTransfer()"><span class="glyphicon glyphicon-plus"></span> Add</button>
     </div>
-    Total: {{cashTransfers.length}}
+    Total: {{count}}
     <table class="table table-bordered table-condensed table-hover" ng-table="cashTransferTableParams">
         <tr ng-repeat="cashTransfer in currentPageOfCashTransfers">
             <td data-title="'Date'" sortable="'date'">{{cashTransfer.date | date}}</td>
@@ -28,7 +28,7 @@
             </td>
             <td style="width:10%">
                 <md-icon type="button" class="btn" ng-click="edit(cashTransfer.id)">
-                    <span class="glyphicon glyphicon-pencil" ng-if="cashTransfer.status == null" ng-click="handleClickUpdateCashTransfer(id)" ></span></md-icon>
+                    <span class="glyphicon glyphicon-pencil" ng-if="cashTransfer.status == null" ng-click="handleClickUpdateCashTransfer(cashTransfer.id)" ></span></md-icon>
                 <md-icon type="button" class="btn" ng-click="delete(cashTransfer.id)" ng-if="cashTransfer.status == null" ng-click="delete(id)">
                     <span class="glyphicon glyphicon-trash"></span></md-icon>
 
@@ -116,7 +116,7 @@
     <div class="modal-body">
 
         <!-- ---------------------------------------------------------------------------- -->
-        <form name="addNewExpenseForm" class="form-horizontal" role="form">
+        <form name="updateCashTransferForm" class="form-horizontal" role="form">
             <div class="form-group">
 
                 <div class="form-group">
@@ -161,7 +161,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="add()">Save</button>
+        <button class="btn btn-primary" ng-click="add(cashTransfer.id)">Save</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

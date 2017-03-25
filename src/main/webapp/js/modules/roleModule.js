@@ -7,34 +7,58 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 	.controller("RoleController",function($scope, $rootScope, $log, NgTableParams, $location, $uibModal, $state, $filter, roleManager){
 
 		$scope.headline="User Roles";
+        $scope.roles = [];
+		$scope.currentPageOfRoles={};
+        $scope.loading = false;
+        $scope.count = 0;
+        $scope.query = {};
 
-		$scope.currentPageRoles={};
-
-		var loadTableData = function (tableParams, $defer) {
-			var data = roleManager.getRoles();
-			var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-			$scope.roles= orderedData;
-			tableParams.total(data.length);
-			if (angular.isDefined($defer)) {
-				$defer.resolve(orderedData);
-			}
-			$scope.currentPageRoles = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+		var loadTableData = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
+            $scope.loading = true;
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+			roleManager.getAllRoles($scope.query,pageable, function(response) {
+				console.log(response.content)
+                if(angular.isArray(response.content)) {
+                    $scope.loading = false;
+                    $scope.roles = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.roles;
+                    $scope.currentPageOfRoles = $scope.roles;
+                }
+			})
 		};
-		$scope.rolesContentTableParams = new NgTableParams({
+
+        $scope.init = function() {
+            roleManager.count($scope.query, function(rolesCount){
+		$scope.roleContentTableParams = new NgTableParams({
 			page: 1,
-			count:25,
+			size:1,
+			count:1,
 			sorting: {
-				state: 'asc',
 				name: 'asc'
 			}
 		}, {
-			total: $scope.currentPageRoles.length,
-			getData: function (params) {
-				$scope.$on('roleInitComplete', function (e, value) {
-					loadTableData(params);
-				});
-			}
+            counts:[],
+            total:rolesCount,
+            getData: function (params) {
+                loadTableData(params);
+            	}
+			});
+            });
+        };
+
+        $scope.init();
+
+		$scope.$on('roleInitComplete', function (e, value) {
+			$scope.init();
 		});
+
 		$scope.deleteRole = function(roleID){
 			roleManager.deleteRole(roleID,function(data){
 				$modalInstance.close();
@@ -43,10 +67,6 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 
 		$scope.$on('roleInit',function(e,value){
 			roleManager.fechAllRoles()
-		});
-
-		$scope.$on('roleInitComplete',function(e,value){
-			loadTableData($scope.rolesContentTableParams)
 		});
 
 		$scope.handleClickAddNewRole = function (size) {
@@ -183,7 +203,7 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 			$scope.isEditable = $scope.isEditable?false:true;
 			$log.debug("edit managing roles");
 		}
-	}).factory('roleManager', function ($rootScope, $http,$filter) {
+	}).factory('roleManager', function ($rootScope, $http,$filter,$log) {
 	var roles=[];
 	return {
 		fechAllRoles : function(){
@@ -198,20 +218,28 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 		getRoles : function(){
 			return roles;
 		},
-		getAllRoles : function(callback){
-			$http.get('/api/v1/roles')
+		getAllRoles : function(query, pageable, callback){
+			$http({url:'/api/v1/roles?query='+query,method: "GET",params: pageable})
 				.then(function (response) {
 					callback(response.data);
 				},function(err,status) {
 					sweetAlert("Error",err.message,"error");
 				});
 		},
+        count: function (query, callback) {
+            $http.get('/api/v1/roles/count',{})
+                .then(function (response) {
+                    callback(response.data);
+                },function (error) {
+                    $log.debug("error retrieving roles");
+                });
+        },
 		createRole : function (role,callback) {
 			$http.post('/api/v1/createRole',role)
 				.then(function (response) {
 					callback(response.data);
-					$rootScope.$broadcast("roleInit");
 					swal("Great", "Role has been successfully added", "success");
+                    $rootScope.$broadcast("roleInit");
 				},function(err) {
 					sweetAlert("Error",err.message,"error");
 				});
