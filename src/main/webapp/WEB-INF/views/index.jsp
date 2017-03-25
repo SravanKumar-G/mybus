@@ -39,6 +39,8 @@
     <script src="js/modules/agentModule.js"></script>
     <script src="js/modules/dueReportModule.js"></script>
     <script src="js/modules/serviceComboModule.js"></script>
+    <script src="js/modules/cashTransfersModule.js"></script>
+    <script src="js/modules/vehicleExpensesModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>

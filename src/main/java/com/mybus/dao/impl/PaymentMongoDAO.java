@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.text.ParseException;
 import java.util.Date;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * Created by skandula on 4/1/15.
  */
@@ -55,27 +57,38 @@ public class PaymentMongoDAO {
             q.addCriteria(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
         if(query != null) {
-
-            if (query.containsKey("description")) {
-                q.addCriteria(Criteria.where("description").regex(query.get("description").toString()));
-            }
-            if (query.containsKey("startDate")) {
-                String startDate = query.get("startDate").toString();
-                try {
-                    Date start = ServiceConstants.df.parse(startDate);
-
-                    q.addCriteria(Criteria.where("startDate").gte(start));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+            for(Object key:query.keySet()) {
+                String keyStr = key.toString();
+                if (keyStr.equals("description")) {
+                    q.addCriteria(Criteria.where("description").regex(query.get("description").toString()));
                 }
-            }
-            if (query.containsKey("endDate")) {
-                String startDate = query.get("endDate").toString();
-                try {
-                    Date start = ServiceConstants.df.parse(startDate);
-                    q.addCriteria(Criteria.where("endDate").lte(start));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if (keyStr.equals("startDate")) {
+                    String startDate = query.get("startDate").toString();
+                    try {
+                        Date start = ServiceConstants.df.parse(startDate);
+
+                        q.addCriteria(Criteria.where("startDate").gte(start));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (keyStr.equals("endDate")) {
+                    String startDate = query.get("endDate").toString();
+                    try {
+                        Date start = ServiceConstants.df.parse(startDate);
+                        q.addCriteria(Criteria.where("endDate").lte(start));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }else  {
+                    if(query.get(keyStr) != null) {
+                        String queryVal = query.get(keyStr).toString();
+                        if(queryVal.equalsIgnoreCase("null")){
+                            q.addCriteria(where(keyStr).exists(false));
+                        }else {
+                            q.addCriteria(where(keyStr).is(queryVal));
+                        }
+                    }
                 }
             }
         }

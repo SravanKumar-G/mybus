@@ -152,9 +152,9 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         var payments = {};
         return {
             load: function (query, callback) {
-                $http.get('/api/v1/payments')
+                $http.post('/api/v1/payments', query)
                     .then(function (response) {
-                        payments = response.data;
+                        payments = response.data.content;
                         callback(payments);
                         $rootScope.$broadcast('paymentsInitComplete');
                     },function (error) {
@@ -166,7 +166,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error retrieving payments");
+                        $log.debug("error retrieving payments count");
                     });
             },
             delete: function (paymentId, callback) {
@@ -174,7 +174,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error retrieving payments");
+                        $log.debug("error deleting payment");
                     });
             },
             save: function(payment,callback) {
@@ -199,7 +199,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 }
             },
             getAllData: function () {
-                return expenses;
+                return payments;
             },
             getOneById: function (id) {
                 return _.first(_.select(expenses, function (value) {
