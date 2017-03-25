@@ -27,6 +27,12 @@ public class MongoQueryDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    public long count(final Class className, String collectionName, final String[] fields,
+                      final JSONObject queryInfo) {
+        Query query = prepareQuery(collectionName, fields, queryInfo, null);
+        return mongoTemplate.count(query, collectionName);
+    }
+
     /**@link getDocuments()
      * @param className
      * @param collectionName
@@ -40,6 +46,11 @@ public class MongoQueryDAO {
                                     final JSONObject queryInfo, final Pageable pageable) {
         /*Preconditions.checkArgument(mongoTemplate.collectionExists(collectionName),
                 new BadRequestException("No collection found with name " + collectionName));*/
+        Query query = prepareQuery(collectionName, fields, queryInfo, pageable);
+        return mongoTemplate.find(query, className, collectionName);
+    }
+
+    private Query prepareQuery(String collectionName, String[] fields, JSONObject queryInfo, Pageable pageable) {
         Query query = new Query();
         if (fields != null) {
             for(String field :fields){
@@ -71,7 +82,7 @@ public class MongoQueryDAO {
         if (pageable != null) {
             query.with(pageable);
         }
-        return mongoTemplate.find(query, className, collectionName);
+        return query;
     }
 
     /**

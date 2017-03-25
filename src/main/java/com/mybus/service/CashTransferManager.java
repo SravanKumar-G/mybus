@@ -62,4 +62,8 @@ public class CashTransferManager {
     public void delete(String id){
         cashTransferDAO.delete(id);
     }
+
+    public CashTransfer findOne(String id) {
+        return cashTransferDAO.findOne(id);
+    }
 }

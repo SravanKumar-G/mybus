@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,11 +37,17 @@ public class RoleController extends MyBusBaseController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "roles", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ApiOperation(value = "Get all the roles available", response = Role.class, responseContainer = "list")
-    public Iterable<Role> getRoles(HttpServletRequest request) {
-        return roleDAO.findAll();
+    @ApiOperation(value = "Get all the roles available", response = Page.class)
+    public Page<Role> getRoles(HttpServletRequest request, final Pageable pageable) {
+        return roleDAO.findAll(pageable);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "roles/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get count", response = Page.class)
+    public long count(HttpServletRequest request) {
+        return roleDAO.count();
+    }
 
     @RequestMapping(value = "createRole", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)

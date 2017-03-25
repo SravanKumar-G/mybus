@@ -39,6 +39,8 @@
     <script src="js/modules/agentModule.js"></script>
     <script src="js/modules/dueReportModule.js"></script>
     <script src="js/modules/serviceComboModule.js"></script>
+    <script src="js/modules/cashTransfersModule.js"></script>
+    <script src="js/modules/vehicleExpensesModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -186,6 +188,8 @@
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
+                                <my-menu label="VehicleExpenses" class="nav navbar-nav col-md-12"></my-menu>
+
                             </ul>
 
                             <li>
