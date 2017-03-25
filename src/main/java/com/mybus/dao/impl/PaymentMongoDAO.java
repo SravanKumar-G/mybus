@@ -81,13 +81,10 @@ public class PaymentMongoDAO {
                         e.printStackTrace();
                     }
                 }else  {
-                    if(query.get(keyStr) != null) {
-                        String queryVal = query.get(keyStr).toString();
-                        if(queryVal.equalsIgnoreCase("null")){
-                            q.addCriteria(where(keyStr).exists(false));
-                        }else {
-                            q.addCriteria(where(keyStr).is(queryVal));
-                        }
+                    if(query.get(keyStr) == null || query.get(keyStr).toString().equals("null")) {
+                        q.addCriteria(where(keyStr).exists(false));
+                    }else {
+                        q.addCriteria(where(keyStr).is(query.get(keyStr).toString()));
                     }
                 }
             }
