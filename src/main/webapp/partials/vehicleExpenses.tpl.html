@@ -1,52 +1,52 @@
 <div ng-show="!loading" class="container">
-        <legend ng-if="!user.admin">Payment for office : <b>{{user.attributes.branchName}}</b></legend>
-        <legend ng-if="user.admin">Payments</legend>
+    <legend ng-if="!user.admin">Payment for office : <b>{{user.attributes.branchName}}</b></legend>
+    <legend ng-if="user.admin">Payments</legend>
 
-        <div class="toolbar-button-div pull-right">
-            <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddPayment()" ng-if="canAddPayment()"><span class="glyphicon glyphicon-plus"></span> Add</button>
-        </div>
-        Total {{payments.length}}
-        <table class="table table-bordered table-condensed table-hover" ng-table="paymentTableParams">
-            <tr ng-repeat="payment in currentPageOfPayments">
-                <td data-title="'Expense Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
-                <td data-title="'Vehicle RegNo'" class="clickable-item" sortable="'vehicleId'" >{{payment.attributes.vehicleRegNo}}</td>
-                <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
-                    <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
-                    <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
-                </td>
-                <!--
-                <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
-               -->
-                <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)" ><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
-                <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
-                <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+    <div class="toolbar-button-div pull-right">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddPayment()" ng-if="canAddPayment()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+    </div>
+    Total {{count}}
+    <table class="table table-bordered table-condensed table-hover" ng-table="paymentTableParams">
+        <tr ng-repeat="payment in currentPageOfPayments">
+            <td data-title="'Expense Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
+            <td data-title="'Vehicle RegNo'" class="clickable-item" sortable="'vehicleId'" >{{payment.attributes.vehicleRegNo}}</td>
+            <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
+                <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
+                <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
+            </td>
+            <!--
+            <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
+           -->
+            <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)" ><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+            <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
+            <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
                 <span ng-if="!payment.status">
                     <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve</a>
                     <a ng-click="approveOrRejectPayment(payment)">Reject</a>
                 </span>
-                    <span ng-if="payment.status">
+                <span ng-if="payment.status">
                    {{payment.status}}
                 </span>
-                </td>
-                <td style="width:10%">
-                    <md-icon type="button" class="btn" ng-click="edit(payment.id)">
-                        <span class="glyphicon glyphicon-pencil" ng-if="payment.status == null"></span></md-icon>
-                    <md-icon type="button" class="btn" ng-click="delete(payment.id)" ng-if="payment.status == null">
-                        <span class="glyphicon glyphicon-trash"></span></md-icon>
+            </td>
+            <td style="width:10%">
+                <md-icon type="button" class="btn" ng-click="handleClickUpdatePayment(payment.id)">
+                    <span class="glyphicon glyphicon-pencil" ng-if="payment.status == null"></span></md-icon>
+                <md-icon type="button" class="btn" ng-click="delete(payment.id)" ng-if="payment.status == null">
+                    <span class="glyphicon glyphicon-trash"></span></md-icon>
 
-                </td>
+            </td>
 
-            </tr>
-            <tr ng-if="!currentPageOfPayments || currentPageOfPayments.length === 0">
-                <td colspan="7">No entries exist.  Please add some.</td>
-            </tr>
-        </table>
-    </div>
+        </tr>
+        <tr ng-if="!currentPageOfPayments || currentPageOfPayments.length === 0">
+            <td colspan="7">No entries exist.  Please add some.</td>
+        </tr>
+    </table>
+</div>
 
 
-    <div ng-show="loading">
-        Please wait while the agents data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-    </div>
+<div ng-show="loading">
+    Please wait while the agents data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
 
 
 <!-------------------------------- add ----------------------------------->
@@ -81,7 +81,6 @@
                             <option value=null></option>
                         </select>
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -127,7 +126,7 @@
 
 <!----------------------------------- Update -------------------------------------------->
 
-<script type="text/ng-template" id="update-expense-modal.html">
+<script type="text/ng-template" id="update-payment-modal.html">
     <div class="modal-header">
         <h3 class="modal-title">Add</h3>
     </div>
@@ -150,6 +149,15 @@
                         </p>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">vehicle RegNo</label>
+                    <div class="col-sm-6">
+                        <select id="updateVehicleId" ng-options="vehicle.id as vehicle.regNo for vehicle in vehicles" class="form-control" ng-model="payment.vehicleId" requried>
+                            <option value=null></option>
+                        </select>
+                    </div>
+                </div>
+
 
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Description</label>
@@ -169,9 +177,9 @@
                     <label class="col-sm-3 control-label">Type</label>
                     <div class="col-sm-6">
                         <p class="input-group">
-                          <!--  <input type="radio" ng-model="payment.type" value="EXPENSE" value="EXPENSE"> Expense
-                            <input type="radio" ng-model="payment.type" value="INCOME" value="INCOME"> Income
-                        -->
+                            <!--  <input type="radio" ng-model="payment.type" value="EXPENSE" value="EXPENSE"> Expense
+                              <input type="radio" ng-model="payment.type" value="INCOME" value="INCOME"> Income
+                          -->
                         </p>
                     </div>
                 </div>

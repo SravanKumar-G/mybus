@@ -6,7 +6,7 @@
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="roleContentTableParams">
-	<tr ng-repeat="role in currentPageRoles" ng-class="role.name?'':'bg-danger'">
+	<tr ng-repeat="role in currentPageOfRoles" ng-class="role.name?'':'bg-danger'">
 		<td  data-title="'Role Name'" sortable="'name'" class="clickable-item col-md-6" >{{role.name}}</td>
 		<td class="col-md-2">
 	        <md-button>
@@ -21,7 +21,7 @@
             </md-button>
         </td>
    </tr>
-    <tr ng-if="!currentPageRoles || currentPageRoles.length === 0">
+    <tr ng-if="!currentPageOfRoles || currentPageOfRoles.length === 0">
         <td colspan="4">No expenses exist.  Please add some.</td>
     </tr>
 </table>
