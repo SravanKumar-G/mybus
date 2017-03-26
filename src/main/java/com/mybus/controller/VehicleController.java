@@ -11,7 +11,10 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.data.domain.Page;
+=======
+>>>>>>> Vehicle List and Expenses added
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,14 +44,7 @@ public class VehicleController extends MyBusBaseController{
         Page<Vehicle> vs= vehicleDAO.findAll(pageable);
         return  vs;
     }
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "vehicles/count", method = RequestMethod.GET)
-    @ApiOperation(value = "Get count")
-    public long count(HttpServletRequest request) {
-        logger.info("geting vehicles count...");
-        return vehicleDAO.count();
-    }
+    
     @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get the Vehicle JSON", response = Vehicle.class)
     public Vehicle getVehicle(HttpServletRequest request,
