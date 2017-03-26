@@ -4,31 +4,25 @@
 angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
   // ==================================================================================================================
-  // ====================================    CitiesController   ================================================
+  // ====================================    CitiesController   =======================================================
   // ==================================================================================================================
 
 
-
-    .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope) {
+    .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope,paginationService) {
         $log.debug('CitiesController loading');
         $scope.headline = "Cities";
-        $scope.allCities = [];
         $scope.currentPageOfCities = [];
-        $scope.citiesTableParams = {};
         $scope.loading =false;
         $scope.cities = {};
         $scope.count = 0;
-        $scope.showInvalid = false;
-        $scope.query = "";
+        var pageable ;
+
         var loadTableData = function (tableParams) {
-            var sortingProps = tableParams.sorting();
-            var sortProps = "";
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
+            paginationService.pagination(tableParams, function(response){
+            pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+        });
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-            cityManager.getCities($scope.query,$scope.showInvalid,pageable, function(response){
+            cityManager.getCities(pageable, function(response){
                 $scope.invalidCount = 0;
                 if(angular.isArray(response.content)) {
                     $scope.loading = false;
@@ -44,7 +38,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         $scope.init = function() {
             cityManager.count(function(citiesCount){
             $scope.cityContentTableParams = new NgTableParams({
-                page: 1, // show first page
+                page: 1,
                 size:10,
                 count:10,
                 sorting: {
@@ -174,8 +168,8 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         var cities = {}
             , rawChildDataWithGeoMap = {}, totalCount = 0;
         return {
-            getCities: function (query, showInvalid, pageable, callback) {
-                $http({url:'/api/v1/cities?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
+            getCities: function ( pageable, callback) {
+                $http({url:'/api/v1/cities',method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {

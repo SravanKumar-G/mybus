@@ -7,25 +7,17 @@
 // ====================================    Routes  Controller    =============================================== //
 // ============================================================================================================= //
 
-    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,NgTableParams,$location,cityManager) {
+    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,paginationService,NgTableParams,$location,cityManager) {
         $log.debug('RoutesController loading');
         $scope.headline = "Routes";
-        $scope.route = {};
-        $scope.currentPageOfRoutes = [];
-        $scope.count = 0;
-        $scope.showInvalid = false;
-        $scope.query = "";
+        var pageable;
 
 
         var loadTableData = function (tableParams) {
-                var sortingProps = tableParams.sorting();
-                var sortProps = "";
-                for(var prop in sortingProps) {
-                    sortProps += prop+"," +sortingProps[prop];
-                }
-                $scope.loading = true;
-                var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-                routesManager.getRoutes($scope.query,$scope.showInvalid,pageable, function(data){
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+                routesManager.getRoutes(pageable, function(data){
                     if (angular.isArray(data.content)) {
                         $scope.allRoutes = data.content;
                         cityManager.getActiveCityNames(function (info) {
@@ -113,7 +105,6 @@
 
         $scope.cities = [];
         $scope.selectedViaCities = [];
-        $scope.selectedViaCity = {};
         $scope.route = {
             name: null,
             viaCities: [],
@@ -170,17 +161,15 @@
             if (index != -1) {
                 $scope.route.viaCities.splice(index, 1);
                 $scope.selectedViaCities.splice(index, 1);
-                console.log("city removed with Id" + cityId);
             }
             else {
-                console.log("city already removed from list");
                 swal("Oops", "city already removed from list", "error");
             }
         };
         $scope.routesFromManager = [];
         var pageable;
         $scope.onMouseLeave = function (Name) {
-            routesManager.getRoutes($scope.query,$scope.showInvalid,pageable, function (data) {
+            routesManager.getRoutes(pageable, function (data) {
                 $scope.routesFromManager = data;
             });
             angular.forEach($scope.routesFromManager, function (route) {
@@ -230,8 +219,8 @@
         var routes = {};
 
         return{
-            getRoutes: function (query, showInvalid, pageable, callback) {
-                $http({url:'/api/v1/routes?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
+            getRoutes: function (pageable, callback) {
+                $http({url:'/api/v1/routes',method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
@@ -255,9 +244,6 @@
                     });
             },
 
-            getAllRoutes: function () {
-                return routes;
-            },
 
             count: function (callback) {
                 $http.get('/api/v1/routes/count')
