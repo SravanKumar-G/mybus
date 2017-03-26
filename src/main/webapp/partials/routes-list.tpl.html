@@ -1,5 +1,5 @@
 <legend>{{ headline }}</legend>
-
+Total No of Routes = {{count}}
 <div class="toolbar-button-div pull-right">
      <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddNewRoute()"><span class="glyphicon glyphicon-plus"></span> Add New Route</button>
 </div>
@@ -50,7 +50,6 @@
         <!-- ---------------------------------------------------------------------------- -->
         <form name="routeAddForm" class="form-horizontal" role="form" autocomplete="off">
             <div class="form-group">
-                <!-- <label class="col-sm-3 control-label" for="modalRouteName">Name</label> -->
                     <div class="col-sm-7 col-xs-offset-2">
                         <input name="modalRouteName" type="text" id="routeInput" class="form-control" ng-model="route.name" placeholder="Enter name for the Route"
                                ng-mouseleave="onMouseLeave(route.name)">
