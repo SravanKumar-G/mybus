@@ -204,7 +204,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     }).factory('paymentManager', function ($rootScope, $http, $log) {
         var payments = {};
         return {
-            load: function (query, callback) {
+            load: function (query,pageable, callback) {
                 $http.post('/api/v1/payments', query)
                     .then(function (response) {
                         payments = response.data.content;

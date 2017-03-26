@@ -19,7 +19,8 @@ var myBus = angular.module('myBus', [
   'myBus.agentModule',
   'myBus.dueReportModule',
   'myBus.serviceComboModule',
-  'myBus.vehicleExpensesModule'
+  'myBus.vehicleExpensesModule',
+  'myBus.paginationService'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
