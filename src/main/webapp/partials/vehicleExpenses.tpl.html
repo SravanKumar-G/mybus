@@ -174,16 +174,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Type</label>
-                    <div class="col-sm-6">
-                        <p class="input-group">
-                            <!--  <input type="radio" ng-model="payment.type" value="EXPENSE" value="EXPENSE"> Expense
-                              <input type="radio" ng-model="payment.type" value="INCOME" value="INCOME"> Income
-                          -->
-                        </p>
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="col-sm-3 control-label" for="branchOffice">Branch</label>
                     <div class="col-sm-6">
                         <select id="updateBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="payment.branchOfficeId" ng-if="user.admin"></select>

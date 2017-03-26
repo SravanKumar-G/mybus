@@ -24,8 +24,8 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             paymentManager.load($scope.query,pageable, function(response){
                 if(angular.isArray(response.content)) {
                     $scope.vehicleExpenses = response.content;
-                    vehicleManager.getVehicles(function(data){
-                        $scope.vehicles = data;
+                    vehicleManager.getVehicles(pageable,function(data){
+                        $scope.vehicles = data.content;
                         angular.forEach($scope.vehicleExpenses, function (payment) {
                             angular.forEach($scope.vehicles, function (vehicle) {
                                 if(vehicle.id == payment.vehicleId){
@@ -106,14 +106,14 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
         }
     })
     .controller("EditVehicleExpensesController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,vehicleManager, paymentManager, userManager, branchOfficeManager, paymentId) {
+        var pageable;
         $scope.today = function () {
             $scope.dt = new Date();
         };
         $scope.user = userManager.getUser();
         $scope.loadVehicles = function () {
-            vehicleManager.getVehicles(function (data) {
-                $scope.vehicles = data;
-
+            vehicleManager.getVehicles(pageable, function (data) {
+                $scope.vehicles = data.content;
             })
         };
         $scope.loadVehicles();
