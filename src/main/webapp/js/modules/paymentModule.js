@@ -117,7 +117,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         });
 
         $scope.cancel = function () {
-            $location.url('/payments');
+            $rootScope.modalInstance.dismiss('cancel');
         };
         $scope.showType = function () {
             console.log($scope.payment);
@@ -127,8 +127,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             $scope.setPaymentIntoModal = function (paymentId) {
                 paymentManager.getPaymentById(paymentId, function (data) {
                     $scope.payment = data;
-                    console.log("payment ID:" + paymentId)
-                    console.log("payment data:" + $scope.payment)
                 });
             };
             $scope.setPaymentIntoModal(paymentId);
@@ -205,9 +203,9 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         var payments = {};
         return {
             load: function (query,pageable, callback) {
-                $http.post('/api/v1/payments', query)
+                $http({url: '/api/v1/payments?query='+query, method: "POST", params: pageable})
                     .then(function (response) {
-                        payments = response.data.content;
+                        payments = response.data;
                         callback(payments);
                         $rootScope.$broadcast('paymentsInitComplete');
                     }, function (error) {
@@ -230,13 +228,24 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error deleting payment");
                     });
             },
+            getPaymentById: function (id,callback) {
+                $log.debug("fetching payment data ...");
+                $http.get('/api/v1/payment/'+id)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (err,status) {
+                        sweetAlert("Error",err.message,"error");
+                    });
+            },
             save: function (payment, callback) {
                 if (!payment.id) {
                     $http.post('/api/v1/payment/', payment).then(function (response) {
                         if (angular.isFunction(callback)) {
                             callback(response.data);
+                            $rootScope.$broadcast('UpdateHeader');
+                            swal("Great", "Saved successfully", "success");
+                            $rootScope.modalInstance.dismiss('success');
                         }
-                        $rootScope.$broadcast('UpdateHeader');
                     }, function (err, status) {
                         sweetAlert("Error", err.data.message, "error");
                     });
@@ -244,8 +253,10 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     $http.put('/api/v1/payment/', payment).then(function (response) {
                         if (angular.isFunction(callback)) {
                             callback(response.data);
+                            $rootScope.$broadcast('UpdateHeader');
+                            swal("Great", "Saved successfully", "success");
+                            $rootScope.modalInstance.dismiss('success');
                         }
-                        $rootScope.$broadcast('UpdateHeader');
                     }, function (err, status) {
                         sweetAlert("Error", err.data.message, "error");
                     });

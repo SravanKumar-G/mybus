@@ -144,7 +144,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
 
 
             loadNames: function (callback) {
-                $http.get('/api/v1/branchOffices/names')
+                $http.get('/api/v1/branchOffice/names')
                     .then(function (response) {
                         callback(response.data);
                         $rootScope.$broadcast('BranchOfficesLoadComplete');
