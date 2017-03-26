@@ -2,41 +2,54 @@
 /*global angular, _*/
 
 angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
-.controller("ServiceComboController",function($rootScope, $scope, $uibModal, $location, $filter, $log,NgTableParams, serviceComboManager){
-	$scope.headline = "Service Combos";
-	$scope.serviceCombos = [];
-	$scope.currentPageOfCombos=[];
-	var loadTableData = function (tableParams) {
-		serviceComboManager.getAll(function(data){
-		 if(tableParams) {
-			 var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-			 $scope.serviceCombos = orderedData;
-			 tableParams.total(orderedData.length);
-			 $scope.currentPageOfCombos = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-		 }
-		});
-	};
-	$scope.$on('reloadServiceCombo', function (e, value) {
-		loadTableData($scope.serviceComboTableParams);
-	});
-	$scope.serviceComboTableParams = new NgTableParams(
-		{
-		 page: 1,
-		 count:25,
-		 sorting: {
-			 name: 'asc'
-		 }
-		},
-		{
-		 total: $scope.currentPageOfCombos.length,
-		 getData: function (params) {
-			 loadTableData(params);
-		 }
-		});
+.controller("ServiceComboController",function($rootScope, $scope, $uibModal, $location, $filter, $log,NgTableParams,paginationService,serviceComboManager) {
+    $scope.headline = "Service Combos";
+    $scope.loading = false;
+    $scope.currentPageOfCombos = [];
+    var pageable ;
+    var loadTableData = function (tableParams) {
+        $scope.loading = true;
+        paginationService.pagination(tableParams, function(response){
+            pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+        });
+        serviceComboManager.getAll(pageable, function (response) {
+            if (angular.isArray(response.content)) {
+                $scope.loading = false;
+                $scope.serviceCombos = response.content;
+                tableParams.total(response.totalElemets);
+                $scope.count = response.totalElements;
+                tableParams.data = $scope.serviceCombos;
+                $scope.currentPageOfCombos = $scope.serviceCombos;
+            }
+        });
+    };
 
+    $scope.init = function() {
+        serviceComboManager.count(function (serviceCombosCount) {
+            $scope.serviceComboTableParams = new NgTableParams({
+                    page: 1,
+                    size: 10,
+                    count: 10,
+                    sorting: {
+                        serviceNumber : 'asc'
+                    }
+                },{
+                    counts:[],
+                    total: serviceCombosCount,
+                    getData: function (params) {
+                        loadTableData(params);
+                    }
+			});
+		})
+	}
+
+    $scope.init();
+
+    $scope.$on('reloadServiceCombo', function (e, value) {
+        $scope.init();
+    });
 	$scope.delete = function(id){
 		serviceComboManager.delete(id,function(data){
-			console.log('deleted ...');
 		});
 	}
 
@@ -55,7 +68,6 @@ angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
 // ========================== Modal - Update Amenity  =================================
 
 .controller('EditServiceComboModalController', function ($scope, $rootScope, $location, $uibModal, $http, $log, serviceComboManager, comboId) {
-	$log.debug("in EditServiceComboModalController comboId"+ comboId);
     $scope.serviceCombo = {};
 	$scope.save =function(){
 		serviceComboManager.save($scope.serviceCombo,function(data){
@@ -82,8 +94,9 @@ angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
 .factory("serviceComboManager",function($rootScope,$http,$location,$log){
 	var serviceCombos = [];
 	return {
-		getAll : function(callback){
-			$http.get("/api/v1/serviceCombos").then(function(response){
+		getAll : function(pageable, callback){
+			$http({url: '/api/v1/serviceCombos',method: "GET",params: pageable})
+                .then(function(response){
 				serviceCombos= response.data;
 				callback(serviceCombos);
 			},function(error){
@@ -93,6 +106,14 @@ angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
 		getServiceCombos :function(){
 			return serviceCombos;
 		},
+		count: function (callback) {
+        $http.get('/api/v1/serviceCombos/count',{})
+            .then(function (response) {
+                callback(response.data);
+            },function (error) {
+                $log.debug("error retrieving service combos");
+            });
+        },
 		save: function(serviceCombo,callback) {
 			if(!serviceCombo.id) {
 				$http.post("/api/v1/serviceCombo",serviceCombo).then(function(response){
@@ -127,7 +148,7 @@ angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
 				text: "Are you sure you want to delete this ServiceCombo?",
 				type: "warning",
 				showCancelButton: true,
-				closeOnConfirm: true,
+				closeOnConfirm: false,
 				confirmButtonText: "Yes, delete it!",
 				confirmButtonColor: "#ec6c62"},function(){
 				$http.delete("/api/v1/serviceCombo/"+id).then(function(data){

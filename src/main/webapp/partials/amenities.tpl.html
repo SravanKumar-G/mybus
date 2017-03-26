@@ -6,7 +6,7 @@
 </div>
 <br/>
 <br/>
-<table class="table table-bordered table-condensed table-hover" ng-table="amenityContentTableParams">
+<table class="table table-bordered table-condensed table-hover" ng-table="amenityTableParams">
     <tr ng-repeat="amenity in currentPageOfAmenities">
         <td data-title="'Amenity'"  sortable="'name'" class="clickable-item col-md-6" >{{ amenity.name }}</td>
         <td data-title="'Status'" sortable="'active'"  class="clickable-item col-md-4"><span ng-if="!amenity.active">InActive</span><span ng-if="amenity.active">Active</span></td>

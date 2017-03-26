@@ -7,20 +7,24 @@
 // ====================================    Routes  Controller    =============================================== //
 // ============================================================================================================= //
 
-    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,NgTableParams,$location,cityManager) {
+    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,paginationService,NgTableParams,$location,cityManager) {
         $log.debug('RoutesController loading');
         $scope.headline = "Routes";
-        $scope.route = {};
-        $scope.currentPageOfRoutes = [];
+        var pageable;
+
+
         var loadTableData = function (tableParams) {
-            var data = routesManager.getRoutes(function (data) {
-                    if (angular.isArray(data)) {
-                        $scope.allRoutes = data;
-                        cityManager.getCities(function (info) {
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+                routesManager.getRoutes(pageable, function(data){
+                    if (angular.isArray(data.content)) {
+                        $scope.allRoutes = data.content;
+                        cityManager.getActiveCityNames(function (info) {
                             $scope.cities = info;
                             angular.forEach($scope.allRoutes, function (route) {
                                 // for each route
-                                angular.forEach($scope.cities.content, function (city) {
+                                angular.forEach($scope.cities, function (city) {
                                     // for each city
                                     if (city.id == route.fromCityId) {
                                         route.attributes.fromCity = city.name;
@@ -33,17 +37,19 @@
                             });
                         });
                     }
-                $scope.route = tableParams.sorting () ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                tableParams.total(data.length);
-                tableParams.data = $scope.route;
-                $scope.currentPageOfRoutes = $scope.route.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
 
+                    $scope.loading = false;
+                    $scope.routes = data.content;
+                    tableParams.total(data.totalElements);
+                    $scope.count = data.totalElements;
+                    tableParams.data = $scope.routes;
+                    $scope.currentPageOfRoutes =  $scope.routes;
             })
 
         };
 
         $scope.init = function(){
-            //routesManager.count(function(routesCount){
+            routesManager.count(function(routesCount){
                 $scope.routeContentTableParams = new NgTableParams({
                 page: 1,
                 count: 10,
@@ -52,19 +58,18 @@
                 }
                 }, {
                     counts: [],
-                    total: $scope.currentPageOfRoutes.length,
+                    total: routesCount,
                     getData: function (params) {
                                loadTableData(params);
                     }
-                    //  });
+                     });
                 });
         };
         $scope.init();
         $scope.$on('RoutesInitComplete', function (e, value) {
-           loadTableData($scope.routeContentTableParams);
+                $scope.init();
         });
 
-        routesManager.fetchAllRoutes();
         $scope.handleClickDeleteRoute = function(passId){
             routesManager.deleteRoute(passId);
         };
@@ -100,7 +105,6 @@
 
         $scope.cities = [];
         $scope.selectedViaCities = [];
-        $scope.selectedViaCity = {};
         $scope.route = {
             name: null,
             viaCities: [],
@@ -157,27 +161,26 @@
             if (index != -1) {
                 $scope.route.viaCities.splice(index, 1);
                 $scope.selectedViaCities.splice(index, 1);
-                console.log("city removed with Id" + cityId);
             }
             else {
-                console.log("city already removed from list");
                 swal("Oops", "city already removed from list", "error");
             }
         };
         $scope.routesFromManager = [];
+        var pageable;
         $scope.onMouseLeave = function (Name) {
-            routesManager.getRoutes(function (data) {
+            routesManager.getRoutes(pageable, function (data) {
                 $scope.routesFromManager = data;
             });
             angular.forEach($scope.routesFromManager, function (route) {
                 if (route.name == Name) {
-                    swal("oops!", "Route already exist", "error");
+                    swal("Route already exist", "error");
                 }
             })
         };
         $scope.loadCities = function () {
-            cityManager.getCities(function (data) {
-                $scope.cities = data.content;
+            cityManager.getActiveCityNames(function (data) {
+                $scope.cities = data;
             });
         };
         $scope.loadCities();
@@ -216,32 +219,18 @@
         var routes = {};
 
         return{
-            fetchAllRoutes: function () {
-                $log.debug("fetching routes data no callback...");
-                $http.get('/api/v1/routes')
-                    .then(function (response) {
-                        routes = response.data;
-                        $rootScope.$broadcast('RoutesInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving cities");
-                    });
-            },
-
-            getRoutes: function (callback) {
-                $log.debug("fetching routes data  withh callback...");
-                $http.get('/api/v1/routes')
+            getRoutes: function (pageable, callback) {
+                $http({url:'/api/v1/routes',method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                        $rootScope.$broadcast('RoutesComplete');
                     },function (error) {
-                        $log.debug("error retrieving cities");
+                        $log.debug("error retrieving Routes");
                     });
             },
 
             getActiveRouteNames: function() {
                 return $http({
                     method:'GET',
-                    //url:'/api/v1/documents/route?fields=id,name'
                     url:'/api/v1/routes'
                 });
             },
@@ -255,12 +244,9 @@
                     });
             },
 
-            getAllRoutes: function () {
-                return routes;
-            },
 
             count: function (callback) {
-                $http.get('/api/v1/route/count')
+                $http.get('/api/v1/routes/count')
                     .then(function (response) {
                         callback(response.data);
                     }, function (error) {
@@ -270,6 +256,7 @@
             createRoute: function(route,callback) {
                 $http.post('/api/v1/route', route).then(function (response) {
                     callback(response.data);
+                    swal("Added!", "Route was successfully Added!", "success");
                     $rootScope.$broadcast('RoutesInitComplete');
                 }, function (err, status) {
                     sweetAlert("Error", err.message, "error");
@@ -287,7 +274,7 @@
                     confirmButtonText: "Yes, delete it!",
                     confirmButtonColor: "#ec6c62"},function(){
 
-                    $http.delete('/api/v1/route/' + routeId).then(function (response) {
+                    $http.delete('/api/v1/route/' + routeId).then(function () {
                         $rootScope.$broadcast('RoutesInitComplete');
                         swal("Deleted!", "Route was successfully deleted!", "success");
                     },function () {
@@ -298,6 +285,7 @@
             updateRoute: function(route,callback){
                 $http.put('/api/v1/route/'+route.id,route).then(function(response){
                     callback(response.data);
+                    swal("Updated!", "Route was successfully Updated!", "success");
                     $rootScope.$broadcast('RoutesInitComplete');
                 },function(){
                     sweetAlert("Error","Error Updating Route");

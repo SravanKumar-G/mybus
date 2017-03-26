@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +36,7 @@ public class CashTransferController extends MyBusBaseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cash transfers available", response = CashTransfer.class, responseContainer = "List")
-    public Iterable<CashTransfer> get(HttpServletRequest request, final Pageable pageable) {
+    public Page<CashTransfer> get(HttpServletRequest request, final Pageable pageable) {
         return cashTransferMongoDAO.find(null, pageable);
     }
 
@@ -70,6 +71,14 @@ public class CashTransferController extends MyBusBaseController {
         cashTransferManager.delete(id);
         response.put("deleted", true);
         return response;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get a cash transfer", response = Payment.class)
+    public CashTransfer get(HttpServletRequest request,
+                             @ApiParam(value = "Id of the Payment to be removed") @PathVariable final String id) {
+        logger.debug("get cash transfer called");
+        return cashTransferManager.findOne(id);
     }
 
 }

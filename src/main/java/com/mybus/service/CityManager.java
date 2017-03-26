@@ -41,6 +41,10 @@ public class CityManager {
     public Page<City> findAll(Pageable pageable) {
         return  cityDAO.findAll(pageable);
     }
+
+    public long count() {
+        return cityDAO.count();
+    }
     public City findOne(String cityId){
         return cityDAO.findOne(cityId);
     }

@@ -5,7 +5,7 @@
 /*global angular, _*/
 
 angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("VehicleExpensesController",function($rootScope, $scope, $filter,vehicleManager, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
+    .controller("VehicleExpensesController",function($rootScope, $scope, $filter,vehicleManager,paginationService, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
         $scope.payments = [];
         $scope.loading = false;
         $scope.query = {};
@@ -15,31 +15,32 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
         }
-
+        var pageable ;
         var loadTableData = function (tableParams) {
             $scope.loading = true;
-            paymentManager.load($scope.query, function(data){
-                $scope.count = data.length;
-                if(angular.isArray(data)) {
-                    $scope.vehicleExpenses = data;
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+            paymentManager.load($scope.query,pageable, function(response){
+                if(angular.isArray(response.content)) {
+                    $scope.vehicleExpenses = response.content;
                     vehicleManager.getVehicles(function(data){
                         $scope.vehicles = data;
                         angular.forEach($scope.vehicleExpenses, function (payment) {
-                        // for each expense
                             angular.forEach($scope.vehicles, function (vehicle) {
                                 if(vehicle.id == payment.vehicleId){
                                     payment.attributes.vehicleRegNo = vehicle.regNo;
                                 }
                             });
-
                         });
                     })
                 }
                 $scope.loading = false;
-                $scope.payments = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                tableParams.total(data.length);
+                $scope.payments = response.content;
+                tableParams.total(response.totalElemets);
+                $scope.count = response.totalElements;
                 tableParams.data = $scope.payments;
-                $scope.currentPageOfPayments = $scope.payments.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                $scope.currentPageOfPayments = $scope.payments;
             });
         };
 
@@ -47,6 +48,7 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             paymentManager.count($scope.query, function(paymentsCount){
                 $scope.paymentTableParams = new NgTableParams({
                     page: 1, // show first page
+                    size: 10,
                     count:10,
                     sorting: {
                         fullName: 'asc'
@@ -60,19 +62,32 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
                 });
             });
         };
-
         $scope.init();
-
         $rootScope.$on('UpdateHeader',function (e,value) {
             $scope.init();
         });
         $scope.handleClickAddPayment = function() {
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl: 'add-expense-modal.html',
-                controller: 'EditPaymentController'
+                controller: 'EditVehicleExpensesController',
+                resolve : {
+                    paymentId : function(){
+                        return null;
+                    }
+                }
             })
         };
-
+        $scope.handleClickUpdatePayment = function(paymentId){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'update-payment-modal.html',
+                controller : 'EditVehicleExpensesController',
+                resolve : {
+                    paymentId : function(){
+                        return paymentId;
+                    }
+                }
+            });
+        };
         $scope.delete = function(paymentId) {
             paymentManager.delete(paymentId, function(data){
                 $scope.init();
@@ -90,93 +105,104 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             });
         }
     })
-    .controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,vehicleManager, paymentManager, userManager, branchOfficeManager){
-    $scope.today = function() {
-        $scope.dt = new Date();
-    };
-    $scope.user = userManager.getUser();
-    $scope.loadVehicles = function () {
-       vehicleManager.getVehicles(function(data){
-           $scope.vehicles = data;
+    .controller("EditVehicleExpensesController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,vehicleManager, paymentManager, userManager, branchOfficeManager, paymentId) {
+        $scope.today = function () {
+            $scope.dt = new Date();
+        };
+        $scope.user = userManager.getUser();
+        $scope.loadVehicles = function () {
+            vehicleManager.getVehicles(function (data) {
+                $scope.vehicles = data;
 
-        })
-    };
+            })
+        };
         $scope.loadVehicles();
 
+        $scope.payment = {'type': 'EXPENSE', 'branchOfficeId': $scope.user.branchOfficeId};
+        $scope.today();
+        $scope.date = null;
+        $scope.format = 'dd-MMMM-yyyy';
 
-    $scope.payment = {'type':'EXPENSE','branchOfficeId':$scope.user.branchOfficeId};
-    $scope.today();
-    $scope.date = null;
-    $scope.format = 'dd-MMMM-yyyy';
-
-    $scope.offices = [];
-    branchOfficeManager.loadNames(function(data) {
-        $scope.offices = data;
-    });
-
-    $scope.cancel = function () {
-        $rootScope.modalInstance.dismiss('cancel');
-    };
-    $scope.showType = function() {
-        console.log($scope.payment);
-    };
-    $scope.add = function(){
-        $scope.payment.date = $scope.dt;
-        paymentManager.save($scope.payment, function(data){
-            swal("Great", "Saved successfully", "success");
-            $location.url('/vehicleexpenses');
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function (data) {
+            $scope.offices = data;
         });
-    }
 
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+        $scope.showType = function () {
+            console.log($scope.payment);
+        };
 
-    $scope.inlineOptions = {
-        customClass: getDayClass,
-        minDate: new Date(),
-        showWeeks: true
-    };
-    $scope.dateChanged = function() {
+        if (paymentId) {
+            $scope.setPaymentIntoModal = function (paymentId) {
+                paymentManager.getPaymentById(paymentId, function (data) {
+                    $scope.payment = data;
+                });
+            };
+            $scope.setPaymentIntoModal(paymentId);
+        }
 
-    }
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        minDate: new Date(),
-        startingDay: 1
-    };
-    // Disable weekend selection
-    function disabled(data) {
-        var date = data.date,
-            mode = data.mode;
-        return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-    }
+        $scope.add = function () {
+            if (paymentId) {
+                paymentManager.save(paymentId, $scope.payment, function (data) {
+                    swal("Great", "Saved successfully", "success");
+                });
+            }
+            $scope.payment.date = $scope.dt;
+            paymentManager.save($scope.payment, function (data) {
+                swal("Great", "Saved successfully", "success");
+                $location.url('/vehicleexpenses');
+            });
+        }
 
-    $scope.toggleMin = function() {
-        $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-        $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-    };
-    $scope.toggleMin();
-    $scope.open1 = function() {
-        $scope.popup1.opened = true;
-    };
-    $scope.setDate = function(year, month, day) {
-        $scope.dt = new Date(year, month, day);
-    };
-    $scope.popup1 = {
-        opened: false
-    };
-    function getDayClass(data) {
-        var date = data.date,
-            mode = data.mode;
-        if (mode === 'day') {
-            var dayToCheck = new Date(date).setHours(0,0,0,0);
-            for (var i = 0; i < $scope.events.length; i++) {
-                var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+        $scope.inlineOptions = {
+            customClass: getDayClass,
+            minDate: new Date(),
+            showWeeks: true
+        };
+        $scope.dateChanged = function () {
 
-                if (dayToCheck === currentDay) {
-                    return $scope.events[i].status;
+        }
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            minDate: new Date(),
+            startingDay: 1
+        };
+        // Disable weekend selection
+        function disabled(data) {
+            var date = data.date,
+                mode = data.mode;
+            return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+        }
+        $scope.toggleMin = function () {
+            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+        };
+        $scope.toggleMin();
+        $scope.open1 = function () {
+            $scope.popup1.opened = true;
+        };
+        $scope.setDate = function (year, month, day) {
+            $scope.dt = new Date(year, month, day);
+        };
+        $scope.popup1 = {
+            opened: false
+        };
+        function getDayClass(data) {
+            var date = data.date,
+                mode = data.mode;
+            if (mode === 'day') {
+                var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
+                for (var i = 0; i < $scope.events.length; i++) {
+                    var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
+
+                    if (dayToCheck === currentDay) {
+                        return $scope.events[i].status;
+                    }
                 }
             }
+            return '';
         }
-        return '';
-    }
-});
-
+    });

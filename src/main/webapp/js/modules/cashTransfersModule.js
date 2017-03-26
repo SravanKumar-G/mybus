@@ -2,29 +2,28 @@
 /*global angular, _*/
 
 angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
-    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
-        $scope.cashTransfers = [];
+    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
         $scope.loading = false;
-        $scope.query = {};
         $scope.user = userManager.getUser();
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
         };
-
+        var pageable ;
         var loadTableData = function (tableParams) {
             $scope.loading = true;
-            cashTransferManager.load($scope.query, function(data) {
-                $scope.count = data.length;
-                if (angular.isArray(data)) {
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+            cashTransferManager.load(pageable, function(response) {
+                if (angular.isArray(response.content)) {
                     $scope.loading = false;
-                    $scope.brn = data;
+                    $scope.brn = response.content;
                     branchOfficeManager.loadNames(function (data) {
                         $scope.branches = data;
                         angular.forEach($scope.brn, function (cashTransfer) {
                             angular.forEach($scope.branches, function (branchOffice) {
-                                // for each branch
                                 if (branchOffice.id == cashTransfer.fromOfficeId) {
                                     cashTransfer.attributes.fromOfficeId = branchOffice.name;
                                 }
@@ -32,7 +31,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                                     cashTransfer.attributes.toOfficeId = branchOffice.name;
                                 }
                             })
-
                         })
                     });
                     userManager.getUserNames(function (data) {
@@ -46,18 +44,21 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
 
                         })
                     });
-                    $scope.cashTransfers = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                    tableParams.total(data.length);
+                    $scope.loading = false;
+                    $scope.cashTransfers = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
                     tableParams.data = $scope.cashTransfers;
-                    $scope.currentPageOfCashTransfers = $scope.cashTransfers.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    $scope.currentPageOfCashTransfers = $scope.cashTransfers;
                 }
             })
         };
 
         $scope.init = function() {
-            cashTransferManager.count($scope.query, function(cashTransfersCount){
+            cashTransferManager.count(function(cashTransfersCount){
                 $scope.cashTransferTableParams = new NgTableParams({
-                    page: 1, // show first page
+                    page: 1,
+                    size:10,
                     count:10,
                     sorting: {
                         date: 'asc'
@@ -80,7 +81,12 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
         $scope.handleClickAddCashTransfer = function() {
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl: 'add-cashTransfer-modal.html',
-                controller: 'editCashTransferController'
+                controller: 'editCashTransferController',
+                resolve : {
+                    cashTransferId : function(){
+                        return null;
+                    }
+                }
             });
         };
 
@@ -117,7 +123,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             });
         }
     })
-    .controller("editCashTransferController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, cashTransferManager, userManager, branchOfficeManager){
+    .controller("editCashTransferController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,cashTransferId, cashTransferManager, userManager, branchOfficeManager){
     $scope.today = function() {
         $scope.dt = new Date();
     };
@@ -125,7 +131,9 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
 
     $scope.cashTransfer = {
         toOfficeId :'',
-        fromOfficeId : ''
+        fromOfficeId : '',
+        amount:'',
+        description:''
     };
     $scope.today();
     $scope.date = null;
@@ -142,15 +150,30 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     $scope.showType = function() {
         console.log($scope.cashTransfer);
     };
+
+    if(cashTransferId) {
+            $scope.setCashTransferIntoModal = function (cashTransferId) {
+                cashTransferManager.getCashTransferById(cashTransferId, function (data) {
+                    $scope.cashTransfer = data;
+                });
+            };
+            $scope.setCashTransferIntoModal(cashTransferId);
+    }
+
     $scope.add = function(){
-        if( $scope.cashTransfer.fromOfficeId.length <= 1 )
-        {
-            $scope.cashTransfer.fromOfficeId = $scope.user.branchOfficeId;
+        if(cashTransferId){
+            cashTransferManager.save(cashTransferId, $scope.cashTransfer, function (data) {
+                swal("Great", "Saved successfully", "success");
+            });
         }
-        $scope.cashTransfer.date = $scope.dt;
-        cashTransferManager.save($scope.cashTransfer, function(data){
-            swal("Great", "Saved successfully", "success");
-        });
+        else{
+            if( $scope.cashTransfer.fromOfficeId.length <= 1 )
+            {
+                $scope.cashTransfer.fromOfficeId = $scope.user.branchOfficeId;
+            }
+            $scope.cashTransfer.date = $scope.dt;
+            cashTransferManager.save($scope.cashTransfer, function(data){})
+        }
     };
 
     $scope.inlineOptions = {
@@ -205,8 +228,8 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     .factory('cashTransferManager', function ($rootScope, $http, $log) {
     var cashTransfer = {};
     return {
-        load: function (query, callback) {
-            $http.get('/api/v1/cashTransfer/all')
+        load: function (pageable, callback) {
+            $http({url:'/api/v1/cashTransfer/all',method: "GET",params: pageable})
                 .then(function (response) {
                     cashTransfer = response.data;
                     callback(cashTransfer);
@@ -215,13 +238,21 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     $log.debug("error retrieving cashTransfers");
                 });
         },
-        count: function (query, callback) {
+        count: function (callback) {
             $http.post('/api/v1/cashTransfer/count',{})
                 .then(function (response) {
                     callback(response.data);
                 },function (error) {
                     $log.debug("error retrieving cashTransfers");
                 });
+        },
+        getCashTransferById : function(cashTransferId,callback){
+            $http.get("/api/v1/cashTransfer/"+cashTransferId)
+                .then(function(response){
+                    callback(response.data)
+                },function(error){
+                    swal("oops", error, "error");
+                })
         },
         delete: function (cashTransferId, callback) {
             swal({
@@ -242,14 +273,17 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                         });
                         })
              },
-        save: function(cashTransfer,callback) {
+        save: function(cashTransferId,cashTransfer,callback) {
             if (!cashTransfer.id) {
-                $http.post('/api/v1/cashTransfer/', cashTransfer).then(function (response) {
+                $http.post('/api/v1/cashTransfer/', cashTransferId)
+                    .then(function (response) {
                     if (angular.isFunction(callback)) {
                         callback(response.data);
                     }
-                    $rootScope.$broadcast('UpdateHeader');
+                    swal("Great", "Saved successfully", "success");
                     $rootScope.modalInstance.dismiss('success');
+                    $rootScope.$broadcast('UpdateHeader');
+
                 }, function (err, status) {
                     sweetAlert("Error", err.data.message, "error");
                 });

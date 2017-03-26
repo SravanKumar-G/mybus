@@ -2,7 +2,7 @@
 /*global angular,_*/
 
 angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
-    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
+    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log,paginationService, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
         $log.debug('vehicleController');
         $scope.vehicle = {};
         $scope.count = 0;
@@ -10,38 +10,46 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         $scope.vehiclesCount = 0;
         $scope.currentPageOfVehicles = [];
         $scope.id = $stateParams.id;
+        var pageable ;
+
         var loadTableData = function (tableParams) {
-            $scope.loading = true;
-            var data = vehicleManager.getVehicles(function (data) {
-                $scope.count = data.length;
-                if (angular.isArray(data)) {
-                    $scope.loading = false;
-                }
-
-            $scope.vehicles = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-            tableParams.total(data.length);
-            tableParams.data = $scope.vehicles;
-            $scope.currentPageOfVehicles = $scope.vehicles.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-        }
-
-        $scope.init = function() {
-            vehicleManager.count(function(vehiclesCount){
-                $scope.vehicleContentTableParams = new NgTableParams({
-                    page: 1,
-                    count: 10,
-                    sorting: {
-                        vehicleType: 'asc'
-                    }
-                }, {
-                    counts: [],
-                    total: vehiclesCount,
-                    getData: function (params) {
-                        loadTableData(params);
-                    }
-                });
+            $scope.loading = true;
+            vehicleManager.getVehicles(pageable, function(response){
+                if(angular.isArray(response.content)){
+                    $scope.loading = false;
+                    $scope.vehicles = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.vehicles;
+                    $scope.currentPageOfVehicles = $scope.vehicles;
+                }
             })
-        }
+        };
+
+        $scope.init = function(){
+            vehicleManager.count(function(vehiclesCount){
+                $scope.vehicleContentTableParams = new NgTableParams(
+                    {
+                        page: 1,
+                        size: 10,
+                        count: 10,
+                        sorting: {
+                            regNo: 'asc'
+                        }
+                    },
+                    {
+                        counts:[],
+                        total: vehiclesCount,
+                        getData: function (params) {
+                            loadTableData(params);
+                        }
+                    }
+                )
+            })
+        };
         $scope.init();
 
         $scope.$on('reloadVehicleInfo',function(e,value){
@@ -88,8 +96,7 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             $scope.setVehicleIntoModal = function (vehicleId) {
                 vehicleManager.getVehicleById(vehicleId, function (data) {
                     $scope.vehicle = data;
-                    console.log("vehicle ID:" + vehicleId)
-                    console.log("vehicle data:" + $scope.vehicle)
+
                 });
             };
             $scope.setVehicleIntoModal(vehicleId);
@@ -131,25 +138,15 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         var vehicles = {}
             , rawChildDataWithGeoMap = {};
         return {
-            fetchAllVehicles: function () {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
-                    .then(function (response) {
-                        vehicles = response.data;
-                        $rootScope.$broadcast('vehicleInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
-                    });
-            },
-            getVehicles: function (callback) {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
+            getVehicles: function ( pageable, callback) {
+                $http({url: '/api/v1/vehicles', method: "GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
+                    }, function(error){
+                        swal("oops", error, "error");
                     });
             },
+
             getAllData: function () {
                 return vehicles;
             },
@@ -157,7 +154,7 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
                 return vehicles;
             },
             count: function (callback) {
-                $http.get('/api/v1/vehicle/count')
+                $http.get('/api/v1/vehicle/count',{})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
@@ -196,7 +193,6 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
                     });
             },
             deleteVehicle: function(id,callback) {
-                console.log("deleteVehicle() invoked");
                 swal({   title: "Are you sure?",   text: "You will not be able to recover this vehicle !",
                     type: "warning",
                     showCancelButton: true,

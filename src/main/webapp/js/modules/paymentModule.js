@@ -14,15 +14,21 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         }
 
         var loadTableData = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
             $scope.loading = true;
-            paymentManager.load($scope.query, function(data){
-                $scope.count = data.length;
-                if(angular.isArray(data)) {
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            paymentManager.load($scope.query,pageable, function(response){
+                if(angular.isArray(response.content)) {
                     $scope.loading = false;
-                    $scope.payments = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                    tableParams.total(data.length);
+                    $scope.payments = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
                     tableParams.data = $scope.payments;
-                    $scope.currentPageOfPayments = $scope.payments.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                    $scope.currentPageOfPayments = $scope.payments;
                 }
             });
         };
@@ -31,6 +37,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             paymentManager.count($scope.query, function(paymentsCount){
                 $scope.paymentTableParams = new NgTableParams({
                     page: 1, // show first page
+                    size:10,
                     count:10,
                     sorting: {
                         fullName: 'asc'
@@ -50,8 +57,32 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             $scope.init();
         }
         $scope.handleClickAddPayment = function() {
-            $location.url('/payment');
-        }
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'add-payment-modal.html',
+                controller : 'EditPaymentController',
+                resolve : {
+                    paymentId : function(){
+                        return null;
+                    }
+                }
+            });
+        };
+
+        $rootScope.$on('UpdateHeader',function (e,value) {
+            $scope.init();
+        });
+
+        $scope.handleClickUpdatePayment = function(paymentId){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'update-payment-modal.html',
+                controller : 'EditPaymentController',
+                resolve : {
+                    paymentId : function(){
+                        return paymentId;
+                    }
+                }
+            });
+        };
         $scope.delete = function(paymentId) {
             paymentManager.delete(paymentId, function(data){
                 $scope.init();
@@ -68,31 +99,54 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Payment is updated", "success");
             });
         }
-    }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager){
-        $scope.today = function() {
-            $scope.dt = new Date();;
+    }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
+        $scope.today = function () {
+            $scope.dt = new Date();
+            ;
         };
         $scope.user = userManager.getUser();
 
-        $scope.payment = {'type':'EXPENSE','branchOfficeId':$scope.user.branchOfficeId};
+        $scope.payment = {'type': 'EXPENSE', 'branchOfficeId': $scope.user.branchOfficeId};
         $scope.today();
         $scope.date = null;
         $scope.format = 'dd-MMMM-yyyy';
 
         $scope.offices = [];
-        branchOfficeManager.loadNames(function(data) {
+        branchOfficeManager.loadNames(function (data) {
             $scope.offices = data;
         });
 
         $scope.cancel = function () {
             $location.url('/payments');
         };
-        $scope.showType = function() {
+        $scope.showType = function () {
             console.log($scope.payment);
         };
-        $scope.add = function(){
+
+        if (paymentId) {
+            $scope.setPaymentIntoModal = function (paymentId) {
+                paymentManager.getPaymentById(paymentId, function (data) {
+                    $scope.payment = data;
+                    console.log("payment ID:" + paymentId)
+                    console.log("payment data:" + $scope.payment)
+                });
+            };
+            $scope.setPaymentIntoModal(paymentId);
+        }
+
+        $scope.add = function () {
+            if (paymentId) {
+                if ($scope.updatePaymentForm.$invalid) {
+                    swal("Error!", "Please fix the errors in the form", "error");
+                    return;
+                }
+                paymentManager.save(paymentId, $scope.payment, function (data) {
+                    swal("Great", "Saved successfully", "success");
+                });
+            }
+
             $scope.payment.date = $scope.dt;
-            paymentManager.save($scope.payment, function(data){
+            paymentManager.save($scope.payment, function (data) {
                 swal("Great", "Saved successfully", "success");
                 $location.url('/payments');
             });
@@ -104,7 +158,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             minDate: new Date(),
             showWeeks: true
         };
-        $scope.dateChanged = function() {
+        $scope.dateChanged = function () {
 
         }
         $scope.dateOptions = {
@@ -119,15 +173,15 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
         }
 
-        $scope.toggleMin = function() {
+        $scope.toggleMin = function () {
             $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
             $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
         };
         $scope.toggleMin();
-        $scope.open1 = function() {
+        $scope.open1 = function () {
             $scope.popup1.opened = true;
         };
-        $scope.setDate = function(year, month, day) {
+        $scope.setDate = function (year, month, day) {
             $scope.dt = new Date(year, month, day);
         };
         $scope.popup1 = {
@@ -137,17 +191,16 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             var date = data.date,
                 mode = data.mode;
             if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0,0,0,0);
+                var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
                 for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+                    var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
 
                     if (dayToCheck === currentDay) {
                         return $scope.events[i].status;
                     }
                 }
             }
-            return '';
-        }
+        };
     }).factory('paymentManager', function ($rootScope, $http, $log) {
         var payments = {};
         return {
@@ -157,27 +210,27 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         payments = response.data.content;
                         callback(payments);
                         $rootScope.$broadcast('paymentsInitComplete');
-                    },function (error) {
+                    }, function (error) {
                         $log.debug("error retrieving payments");
                     });
             },
             count: function (query, callback) {
-                $http.post('/api/v1/payments/count',{})
+                $http.post('/api/v1/payments/count', {})
                     .then(function (response) {
                         callback(response.data);
-                    },function (error) {
+                    }, function (error) {
                         $log.debug("error retrieving payments count");
                     });
             },
             delete: function (paymentId, callback) {
-                $http.delete('/api/v1/payment/'+paymentId)
+                $http.delete('/api/v1/payment/' + paymentId)
                     .then(function (response) {
                         callback(response.data);
-                    },function (error) {
+                    }, function (error) {
                         $log.debug("error deleting payment");
                     });
             },
-            save: function(payment,callback) {
+            save: function (payment, callback) {
                 if (!payment.id) {
                     $http.post('/api/v1/payment/', payment).then(function (response) {
                         if (angular.isFunction(callback)) {
@@ -206,6 +259,5 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     return value.id === id;
                 }));
             }
-        };
+        }
     });
-
