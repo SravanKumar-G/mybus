@@ -4,28 +4,28 @@
 angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 .controller("AmenitiesController",function($rootScope, $scope, $uibModal, $filter, $log,NgTableParams,paginationService, amenitiesManager){
 	$scope.headline = "Amenities";
-	$scope.amenities = [];
+	$scope.amenityTableParams = {};
     $scope.loading = false;
 	$scope.currentPageOfAmenities=[];
     $scope.amenitiesCount = 0;
 	$scope.amenity = {};
 	var pageable ;
-
-         var loadTableData = function (tableParams) {
-             paginationService.pagination(tableParams, function(response){
-                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
-             });
-         $scope.loading = true;
-         amenitiesManager.getAllAmenities(pageable, function(response){
-		 if(angular.isArray(response.content)){
-             $scope.loading = false;
-			 $scope.amenities = response.content;
-			 tableParams.total(response.totalElements);
-             $scope.count = response.totalElements;
-             tableParams.data = $scope.amenities;
-			 $scope.currentPageOfAmenities = $scope.amenities;
-		 }
-     })
+	console.log("amenities controller...");
+	var loadTableData = function (tableParams) {
+		paginationService.pagination(tableParams, function(response){
+			pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+		});
+		$scope.loading = true;
+		amenitiesManager.getAllAmenities(pageable, function(response){
+			if(angular.isArray(response.content)){
+				$scope.loading = false;
+				$scope.amenities = response.content;
+				tableParams.total(response.totalElements);
+				$scope.count = response.totalElements;
+				tableParams.data = $scope.amenities;
+				$scope.currentPageOfAmenities = $scope.amenities;
+			}
+		})
 	 };
 
 	 $scope.init = function(){

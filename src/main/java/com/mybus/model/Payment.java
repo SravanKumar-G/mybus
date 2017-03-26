@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
@@ -16,10 +17,11 @@ import java.util.Date;
 @ApiModel(value = "Payment")
 @Getter
 @Setter
-@NoArgsConstructor
+
 public class Payment extends AbstractDocument {
     public static final String STATUS_AUTO = "Auto";
     public static final String STATUS_APPROVED = "Approved";
+    public static final String STATUS_PENDING = "Pending";
     public static final String STATUS_REJECTED = "Rejected";
     public static final String SERVIVE_FROM_PAYMENT = "Service Form";
     public static final String BOOKING_DUE_PAYMENT = "Booking Due";
@@ -38,4 +40,7 @@ public class Payment extends AbstractDocument {
     private String status;
     private String serviceFormId;
     private String vehicleId;
+    public Payment() {
+        //this.status = STATUS_PENDING;
+    }
 }

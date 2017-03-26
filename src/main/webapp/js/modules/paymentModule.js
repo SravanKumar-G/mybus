@@ -99,175 +99,165 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Payment is updated", "success");
             });
         }
-    }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId){
-    $scope.today = function() {
-        $scope.dt = new Date();;
-    };
-    $scope.user = userManager.getUser();
-
-    $scope.payment = {'type':'EXPENSE','branchOfficeId':$scope.user.branchOfficeId};
-    $scope.today();
-    $scope.date = null;
-    $scope.format = 'dd-MMMM-yyyy';
-
-    $scope.offices = [];
-    branchOfficeManager.loadNames(function(data) {
-        $scope.offices = data;
-    });
-
-    $scope.cancel = function () {
-        $location.url('/payments');
-    };
-    $scope.showType = function() {
-        console.log($scope.payment);
-    };
-
-    if(paymentId) {
-        $scope.setPaymentIntoModal = function (paymentId) {
-            paymentManager.getPaymentById(paymentId, function (data) {
-                $scope.payment = data;
-                console.log("payment ID:" + paymentId)
-                console.log("payment data:" + $scope.payment)
-            });
+    }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
+        $scope.today = function () {
+            $scope.dt = new Date();
+            ;
         };
-        $scope.setPaymentIntoModal(paymentId);
-    }
+        $scope.user = userManager.getUser();
 
-    $scope.add = function(){
-        if(paymentId){
-            if ($scope.updatePaymentForm.$invalid) {
-                swal("Error!", "Please fix the errors in the form", "error");
-                return;
+        $scope.payment = {'type': 'EXPENSE', 'branchOfficeId': $scope.user.branchOfficeId};
+        $scope.today();
+        $scope.date = null;
+        $scope.format = 'dd-MMMM-yyyy';
+
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function (data) {
+            $scope.offices = data;
+        });
+
+        $scope.cancel = function () {
+            $location.url('/payments');
+        };
+        $scope.showType = function () {
+            console.log($scope.payment);
+        };
+
+        if (paymentId) {
+            $scope.setPaymentIntoModal = function (paymentId) {
+                paymentManager.getPaymentById(paymentId, function (data) {
+                    $scope.payment = data;
+                    console.log("payment ID:" + paymentId)
+                    console.log("payment data:" + $scope.payment)
+                });
+            };
+            $scope.setPaymentIntoModal(paymentId);
+        }
+
+        $scope.add = function () {
+            if (paymentId) {
+                if ($scope.updatePaymentForm.$invalid) {
+                    swal("Error!", "Please fix the errors in the form", "error");
+                    return;
+                }
+                paymentManager.save(paymentId, $scope.payment, function (data) {
+                    swal("Great", "Saved successfully", "success");
+                });
             }
-            paymentManager.save(paymentId, $scope.payment, function (data) {
+
+            $scope.payment.date = $scope.dt;
+            paymentManager.save($scope.payment, function (data) {
                 swal("Great", "Saved successfully", "success");
+                $location.url('/payments');
             });
         }
 
-        $scope.payment.date = $scope.dt;
-        paymentManager.save($scope.payment, function(data){
-            swal("Great", "Saved successfully", "success");
-            $location.url('/payments');
-        });
-    }
 
+        $scope.inlineOptions = {
+            customClass: getDayClass,
+            minDate: new Date(),
+            showWeeks: true
+        };
+        $scope.dateChanged = function () {
 
-    $scope.inlineOptions = {
-        customClass: getDayClass,
-        minDate: new Date(),
-        showWeeks: true
-    };
-    $scope.dateChanged = function() {
+        }
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            minDate: new Date(),
+            startingDay: 1
+        };
+        // Disable weekend selection
+        function disabled(data) {
+            var date = data.date,
+                mode = data.mode;
+            return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
+        }
 
-    }
-    $scope.dateOptions = {
-        formatYear: 'yy',
-        minDate: new Date(),
-        startingDay: 1
-    };
-    // Disable weekend selection
-    function disabled(data) {
-        var date = data.date,
-            mode = data.mode;
-        return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-    }
+        $scope.toggleMin = function () {
+            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+        };
+        $scope.toggleMin();
+        $scope.open1 = function () {
+            $scope.popup1.opened = true;
+        };
+        $scope.setDate = function (year, month, day) {
+            $scope.dt = new Date(year, month, day);
+        };
+        $scope.popup1 = {
+            opened: false
+        };
+        function getDayClass(data) {
+            var date = data.date,
+                mode = data.mode;
+            if (mode === 'day') {
+                var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
+                for (var i = 0; i < $scope.events.length; i++) {
+                    var currentDay = new Date($scope.events[i].date).setHours(0, 0, 0, 0);
 
-    $scope.toggleMin = function() {
-        $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-        $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-    };
-    $scope.toggleMin();
-    $scope.open1 = function() {
-        $scope.popup1.opened = true;
-    };
-    $scope.setDate = function(year, month, day) {
-        $scope.dt = new Date(year, month, day);
-    };
-    $scope.popup1 = {
-        opened: false
-    };
-    function getDayClass(data) {
-        var date = data.date,
-            mode = data.mode;
-        if (mode === 'day') {
-            var dayToCheck = new Date(date).setHours(0,0,0,0);
-            for (var i = 0; i < $scope.events.length; i++) {
-                var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                if (dayToCheck === currentDay) {
-                    return $scope.events[i].status;
+                    if (dayToCheck === currentDay) {
+                        return $scope.events[i].status;
+                    }
                 }
             }
-        }
-        return '';
-    }
-}).factory('paymentManager', function ($rootScope, $http, $log) {
-    var payments = {};
-    return {
-        load: function (query, pageable, callback) {
-            $http({url:'/api/v1/payments?query='+query,method: "GET",params: pageable})
-                .then(function (response) {
-                    payments = response.data;
-                    callback(payments);
-                    $rootScope.$broadcast('paymentsInitComplete');
-                },function (error) {
-                    $log.debug("error retrieving payments");
-                });
-        },
-        count: function (query, callback) {
-            $http.post('/api/v1/payments/count',{})
-                .then(function (response) {
-                    callback(response.data);
-                },function (error) {
-                    $log.debug("error retrieving payments");
-                });
-        },
-        getPaymentById : function(paymentId,callback){
-            $http.get("/api/v1/payment/"+paymentId)
-                .then(function(response){
-                    callback(response.data)
-                },function(error){
-                    swal("oops", error, "error");
-                })
-        },
-        delete: function (paymentId, callback) {
-            $http.delete('/api/v1/payment/'+paymentId)
-                .then(function (response) {
-                    callback(response.data);
-                },function (error) {
-                    $log.debug("error retrieving payments");
-                });
-        },
-        save: function(paymentId,payment,callback) {
-            if (!paymentId) {
-                $http.post('/api/v1/payment/', payment).then(function (response) {
-                    if (angular.isFunction(callback)) {
+        };
+    }).factory('paymentManager', function ($rootScope, $http, $log) {
+        var payments = {};
+        return {
+            load: function (query,pageable, callback) {
+                $http.post('/api/v1/payments', query)
+                    .then(function (response) {
+                        payments = response.data.content;
+                        callback(payments);
+                        $rootScope.$broadcast('paymentsInitComplete');
+                    }, function (error) {
+                        $log.debug("error retrieving payments");
+                    });
+            },
+            count: function (query, callback) {
+                $http.post('/api/v1/payments/count', {})
+                    .then(function (response) {
                         callback(response.data);
-                    }
-                    $rootScope.$broadcast('UpdateHeader');
-                }, function (err, status) {
-                    sweetAlert("Error", err.data.message, "error");
-                });
-            }
-            else {
-                $http.put('/api/v1/payment/', payment).then(function (response) {
-                    if (angular.isFunction(callback)) {
+                    }, function (error) {
+                        $log.debug("error retrieving payments count");
+                    });
+            },
+            delete: function (paymentId, callback) {
+                $http.delete('/api/v1/payment/' + paymentId)
+                    .then(function (response) {
                         callback(response.data);
-                        $rootScope.modalInstance.close('success');
-                    }
-                    $rootScope.$broadcast('UpdateHeader');
-                }, function (err, status) {
-                    sweetAlert("Error", err.data.message, "error");
-                });
+                    }, function (error) {
+                        $log.debug("error deleting payment");
+                    });
+            },
+            save: function (payment, callback) {
+                if (!payment.id) {
+                    $http.post('/api/v1/payment/', payment).then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                        $rootScope.$broadcast('UpdateHeader');
+                    }, function (err, status) {
+                        sweetAlert("Error", err.data.message, "error");
+                    });
+                } else {
+                    $http.put('/api/v1/payment/', payment).then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                        $rootScope.$broadcast('UpdateHeader');
+                    }, function (err, status) {
+                        sweetAlert("Error", err.data.message, "error");
+                    });
+                }
+            },
+            getAllData: function () {
+                return payments;
+            },
+            getOneById: function (id) {
+                return _.first(_.select(expenses, function (value) {
+                    return value.id === id;
+                }));
             }
-        },
-        getAllData: function () {
-            return expenses;
-        },
-        getOneById: function (id) {
-            return _.first(_.select(expenses, function (value) {
-                return value.id === id;
-            }));
         }
-    };
-});
+    });

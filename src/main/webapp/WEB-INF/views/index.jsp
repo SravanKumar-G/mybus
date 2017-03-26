@@ -42,6 +42,8 @@
     <script src="js/modules/cashTransfersModule.js"></script>
     <script src="js/modules/vehicleExpensesModule.js"></script>
 
+    <script src="js/services/paginationService.js"></script>
+
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>

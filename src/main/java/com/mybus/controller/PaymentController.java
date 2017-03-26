@@ -30,9 +30,10 @@ public class PaymentController {
     private PaymentManager paymentManager;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "payments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Page<Payment> getPayments(HttpServletRequest request, final Pageable pageable) {
-        return paymentManager.findPayments(null, pageable);
+    @RequestMapping(value = "payments", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public Page<Payment> getPayments(HttpServletRequest request, @RequestBody(required = false) final JSONObject query,
+                                     final Pageable pageable) {
+        return paymentManager.findPayments(query, pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

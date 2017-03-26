@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class BookingPaymentManagerTest extends AbstractControllerIntegrationTest {
 	
-	private static final Logger LOGGER= LoggerFactory.getLogger(BookingPaymentManagerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BookingPaymentManagerTest.class);
 	
 	@Autowired
 	private PaymentResponseDAO paymentResponseDAO;
