@@ -1,4 +1,3 @@
-
 /**
  * Created by chsru on 3/22/2017.
  */
@@ -6,7 +5,7 @@
 /*global angular, _*/
 
 angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("VehicleExpensesController",function($rootScope, $scope, $filter,vehicleManager, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
+    .controller("VehicleExpensesController",function($rootScope, $scope, $filter,vehicleManager,paginationService, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
         $scope.payments = [];
         $scope.loading = false;
         $scope.query = {};
@@ -16,15 +15,12 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
         }
-
+        var pageable ;
         var loadTableData = function (tableParams) {
-            var sortingProps = tableParams.sorting();
-            var sortProps = ""
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
             paymentManager.load($scope.query,pageable, function(response){
                 if(angular.isArray(response.content)) {
                     $scope.vehicleExpenses = response.content;
@@ -66,9 +62,7 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
                 });
             });
         };
-
         $scope.init();
-
         $rootScope.$on('UpdateHeader',function (e,value) {
             $scope.init();
         });
@@ -182,7 +176,6 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
                 mode = data.mode;
             return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
         }
-
         $scope.toggleMin = function () {
             $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
             $scope.dateOptions.minDate = $scope.inlineOptions.minDate;

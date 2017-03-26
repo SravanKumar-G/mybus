@@ -2,25 +2,21 @@
 /*global angular, _*/
 
 angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
-    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
-        $scope.cashTransfers = [];
+    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
         $scope.loading = false;
-        $scope.query = {};
         $scope.user = userManager.getUser();
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
         };
-
-        var loadTableData = function (tableParams) {var sortingProps = tableParams.sorting();
-            var sortProps = ""
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
+        var pageable ;
+        var loadTableData = function (tableParams) {
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-            cashTransferManager.load($scope.query,pageable, function(response) {
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+            cashTransferManager.load(pageable, function(response) {
                 if (angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.brn = response.content;
@@ -28,7 +24,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                         $scope.branches = data;
                         angular.forEach($scope.brn, function (cashTransfer) {
                             angular.forEach($scope.branches, function (branchOffice) {
-                                // for each branch
                                 if (branchOffice.id == cashTransfer.fromOfficeId) {
                                     cashTransfer.attributes.fromOfficeId = branchOffice.name;
                                 }
@@ -36,7 +31,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                                     cashTransfer.attributes.toOfficeId = branchOffice.name;
                                 }
                             })
-
                         })
                     });
                     userManager.getUserNames(function (data) {
@@ -61,9 +55,9 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.init = function() {
-            cashTransferManager.count($scope.query, function(cashTransfersCount){
+            cashTransferManager.count(function(cashTransfersCount){
                 $scope.cashTransferTableParams = new NgTableParams({
-                    page: 1, // show first page
+                    page: 1,
                     size:10,
                     count:10,
                     sorting: {
@@ -234,8 +228,8 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     .factory('cashTransferManager', function ($rootScope, $http, $log) {
     var cashTransfer = {};
     return {
-        load: function (query,pageable, callback) {
-            $http({url:'/api/v1/cashTransfer/all?query='+query,method: "GET",params: pageable})
+        load: function (pageable, callback) {
+            $http({url:'/api/v1/cashTransfer/all',method: "GET",params: pageable})
                 .then(function (response) {
                     cashTransfer = response.data;
                     callback(cashTransfer);
@@ -244,7 +238,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     $log.debug("error retrieving cashTransfers");
                 });
         },
-        count: function (query, callback) {
+        count: function (callback) {
             $http.post('/api/v1/cashTransfer/count',{})
                 .then(function (response) {
                     callback(response.data);
@@ -281,7 +275,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
              },
         save: function(cashTransferId,cashTransfer,callback) {
             if (!cashTransfer.id) {
-                console.log(cashTransfer)
                 $http.post('/api/v1/cashTransfer/', cashTransferId)
                     .then(function (response) {
                     if (angular.isFunction(callback)) {
