@@ -2,23 +2,21 @@
 /*global angular, _*/
 
 angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
-.controller("AmenitiesController",function($rootScope, $scope, $uibModal, $filter, $log,NgTableParams, amenitiesManager){
+.controller("AmenitiesController",function($rootScope, $scope, $uibModal, $filter, $log,NgTableParams,paginationService, amenitiesManager){
 	$scope.headline = "Amenities";
 	$scope.amenities = [];
     $scope.loading = false;
-    $scope.query = "";
 	$scope.currentPageOfAmenities=[];
     $scope.amenitiesCount = 0;
 	$scope.amenity = {};
-	 var loadTableData = function (tableParams) {
-         var sortingProps = tableParams.sorting();
-         var sortProps = ""
-         for(var prop in sortingProps) {
-             sortProps += prop+"," +sortingProps[prop];
-         }
+	var pageable ;
+
+         var loadTableData = function (tableParams) {
+             paginationService.pagination(tableParams, function(response){
+                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+             });
          $scope.loading = true;
-         var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-         amenitiesManager.getAllAmenities($scope.query,pageable, function(response){
+         amenitiesManager.getAllAmenities(pageable, function(response){
 		 if(angular.isArray(response.content)){
              $scope.loading = false;
 			 $scope.amenities = response.content;
@@ -31,7 +29,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 	 };
 
 	 $scope.init = function(){
-	 	amenitiesManager.count($scope.query,function(amenitiesCount){
+	 	amenitiesManager.count(function(amenitiesCount){
              $scope.amenityTableParams = new NgTableParams(
                  {
                      page: 1,
@@ -62,32 +60,20 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 			$scope.amenities =data;
 		});
 	 };
-	
-	$scope.getAmenityById = function(){ 
-		amenitiesManager.getAmenityByID($scope.amenity.id,function(data){
-			$scope.amenity = data;
-		});
-	}
-	
+
 	$scope.deleteAmenityById = function(amenityID){ 
 		amenitiesManager.deleteAmenity(amenityID,function(data){
 			$scope.amenity = data;
 		});
-	}
+	};
 
 	$scope.handleClickAddAmenity = function (size) {
 		$rootScope.modalInstance = $uibModal.open({
 	        templateUrl: 'add-Amenity-modal.html',
 	        controller: 'AddAmenityModalController',
 	        size: size
-	    });
-		$rootScope.modalInstance.result.then(function (data) {
-	        $log.debug("results from modal: " + angular.toJson(data));
-	        //$scope.cityContentTableParams.reload();
-	    }, function () {
-	        $log.debug('Modal dismissed at: ' + new Date());
-	    });
-	};
+	    })
+	    };
 
 	$scope.handleClickUpdateAmenity = function(amenityID){
 		$rootScope.modalInstance = $uibModal.open({
@@ -170,15 +156,15 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
         getAmenities: function () {
             return amenities;
         },
-        getAllAmenities: function (query, pageable, callback) {
-            $http({url: '/api/v1/amenities?query=' + query, method: "GET", params: pageable})
+        getAllAmenities: function ( pageable, callback) {
+            $http({url: '/api/v1/amenities', method: "GET", params: pageable})
 				.then(function (response) {
 			callback(response.data);
         }, function(error){
             swal("oops", error, "error");
         });
 		},
-        count: function (query, callback) {
+        count: function ( callback) {
             $http.get('/api/v1/amenities/count',{})
                 .then(function (response) {
                     callback(response.data);
@@ -244,4 +230,4 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 			});
 		}
 	}
-});;
+});

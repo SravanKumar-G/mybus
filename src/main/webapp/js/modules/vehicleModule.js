@@ -2,7 +2,7 @@
 /*global angular,_*/
 
 angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
-    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
+    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log,paginationService, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
         $log.debug('vehicleController');
         $scope.vehicle = {};
         $scope.count = 0;
@@ -10,19 +10,14 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         $scope.vehiclesCount = 0;
         $scope.currentPageOfVehicles = [];
         $scope.id = $stateParams.id;
-
-
-
+        var pageable ;
 
         var loadTableData = function (tableParams) {
-            var sortingProps = tableParams.sorting();
-            var sortProps = ""
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-            vehicleManager.getVehicles($scope.query,pageable, function(response){
+            vehicleManager.getVehicles(pageable, function(response){
                 if(angular.isArray(response.content)){
                     $scope.loading = false;
                     $scope.vehicles = response.content;
@@ -35,7 +30,7 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.init = function(){
-            vehicleManager.count($scope.query,function(vehiclesCount){
+            vehicleManager.count(function(vehiclesCount){
                 $scope.vehicleContentTableParams = new NgTableParams(
                     {
                         page: 1,
@@ -101,8 +96,7 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             $scope.setVehicleIntoModal = function (vehicleId) {
                 vehicleManager.getVehicleById(vehicleId, function (data) {
                     $scope.vehicle = data;
-                    console.log("vehicle ID:" + vehicleId)
-                    console.log("vehicle data:" + $scope.vehicle)
+
                 });
             };
             $scope.setVehicleIntoModal(vehicleId);
@@ -144,8 +138,8 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
         var vehicles = {}
             , rawChildDataWithGeoMap = {};
         return {
-            getVehicles: function (query, pageable, callback) {
-                $http({url: '/api/v1/vehicles?query=' + query, method: "GET", params: pageable})
+            getVehicles: function ( pageable, callback) {
+                $http({url: '/api/v1/vehicles', method: "GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     }, function(error){
@@ -159,8 +153,8 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             getAllVehicles: function () {
                 return vehicles;
             },
-            count: function (query,callback) {
-                $http.get('/api/v1/vehicle/count')
+            count: function (callback) {
+                $http.get('/api/v1/vehicle/count',{})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
@@ -199,7 +193,6 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
                     });
             },
             deleteVehicle: function(id,callback) {
-                console.log("deleteVehicle() invoked");
                 swal({   title: "Are you sure?",   text: "You will not be able to recover this vehicle !",
                     type: "warning",
                     showCancelButton: true,
