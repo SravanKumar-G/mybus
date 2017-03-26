@@ -5,7 +5,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
         $scope.payments = [];
         $scope.loading = false;
-        $scope.query = {};
+        $scope.query = {"status":null};
         $scope.user = userManager.getUser();
         $scope.currentPageOfPayments=[];
         $scope.canAddPayment = function() {
@@ -22,6 +22,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             $scope.loading = true;
             var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
             paymentManager.load($scope.query,pageable, function(response){
+                console.log();
                 if(angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.payments = response.content;
@@ -102,7 +103,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
         $scope.today = function () {
             $scope.dt = new Date();
-            ;
         };
         $scope.user = userManager.getUser();
 
@@ -203,7 +203,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         var payments = {};
         return {
             load: function (query,pageable, callback) {
-                $http({url: '/api/v1/payments?query='+query, method: "POST", params: pageable})
+                $http.post('/api/v1/payments', query, pageable)
                     .then(function (response) {
                         payments = response.data;
                         callback(payments);
@@ -213,7 +213,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     });
             },
             count: function (query, callback) {
-                $http.post('/api/v1/payments/count', {})
+                $http.post('/api/v1/payments/count', query)
                     .then(function (response) {
                         callback(response.data);
                     }, function (error) {

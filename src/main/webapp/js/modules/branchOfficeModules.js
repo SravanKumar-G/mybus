@@ -38,8 +38,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                     $scope.officeTableParams = new NgTableParams(
                         {
                             page: 1,
-                            size: 1 ,
-                            count:1,
+                            size: 10,
                             sorting: {
                                 name: 'asc'
                             }
