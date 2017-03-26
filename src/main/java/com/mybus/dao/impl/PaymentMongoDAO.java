@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mybus.dao.PaymentDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.Payment;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
@@ -13,7 +14,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -48,49 +51,51 @@ public class PaymentMongoDAO {
         return  mongoTemplate.find(preparePaymentQuery(query, pageable), Payment.class);
     }
 
-    public Query preparePaymentQuery(JSONObject query, Pageable pageable) {
+    public Query preparePaymentQuery(JSONObject query, Pageable pageable)  {
         Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
         //filter the form expenses from the report
-        q.addCriteria(Criteria.where("formId").exists(false));
-        //filter the payments by office if the user is not admin
-        if(!sessionManager.getCurrentUser().isAdmin()) {
-            q.addCriteria(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
-        }
-        if(query != null) {
-            for(Object key:query.keySet()) {
-                String keyStr = key.toString();
-                if (keyStr.equals("description")) {
-                    q.addCriteria(Criteria.where("description").regex(query.get("description").toString()));
+        match.add(Criteria.where("formId").exists(false));
+        try{
+            //filter the payments by office if the user is not admin
+            if(!sessionManager.getCurrentUser().isAdmin()) {
+                match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+            }
+            if(query != null) {
+                Object start = query.get("startDate");
+                Object end = query.get("endDate");
+                Date s = null,e = null;
+                if(start != null) {
+                    s = ServiceConstants.df.parse(start.toString());
                 }
-                if (keyStr.equals("startDate")) {
-                    String startDate = query.get("startDate").toString();
-                    try {
-                        Date start = ServiceConstants.df.parse(startDate);
-
-                        q.addCriteria(Criteria.where("startDate").gte(start));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                if(end != null) {
+                    e = ServiceConstants.df.parse(end.toString());
                 }
-                if (keyStr.equals("endDate")) {
-                    String startDate = query.get("endDate").toString();
-                    try {
-                        Date start = ServiceConstants.df.parse(startDate);
-                        q.addCriteria(Criteria.where("endDate").lte(start));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                MongoQueryDAO.createTimeFrameQuery("date", s, e, match);
+                for(Object key:query.keySet()) {
+                    String keyStr = key.toString();
+                    if(keyStr.equalsIgnoreCase("startDate") || keyStr.equalsIgnoreCase("endDate")) {
+                        continue;
                     }
-                }else  {
-                    if(query.get(keyStr) == null || query.get(keyStr).toString().equals("null")) {
-                        q.addCriteria(where(keyStr).exists(false));
-                    }else {
-                        q.addCriteria(where(keyStr).is(query.get(keyStr).toString()));
+                    if (keyStr.equals("description")) {
+                        match.add(Criteria.where("description").regex(query.get("description").toString()));
+                    } else  {
+                        if(query.get(keyStr) == null || query.get(keyStr).toString().equals("null")) {
+                            match.add(where(keyStr).exists(false));
+                        }else {
+                            match.add(where(keyStr).is(query.get(keyStr).toString()));
+                        }
                     }
                 }
             }
-        }
-        if(pageable != null) {
-            q.with(pageable);
+            criteria.andOperator(match.toArray(new Criteria[match.size()]));
+            q.addCriteria(criteria);
+            if(pageable != null) {
+                q.with(pageable);
+            }
+        }catch (Exception e) {
+            throw new BadRequestException("Exception preparing payment query", e);
         }
         return q;
     }

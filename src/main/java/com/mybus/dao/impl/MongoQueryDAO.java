@@ -88,7 +88,8 @@ public class MongoQueryDAO {
         return getDocuments(BasicDBObject.class, collectionName, fields, queryInfo, pageable);
     }
 
-    private void createTimeFrameQuery(String key, Date start, Date end, List<Criteria> criteria) {
+    public static void createTimeFrameQuery(String key, Date start, Date end, List<Criteria> criteria) {
+
         if (start == null && end == null) {
             // No timeframe specified, so search over everything
             return;
