@@ -144,6 +144,7 @@ public class PaymentMongoDAO {
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
+        match.add(Criteria.where("formId").exists(false));
         match.add(where("vehicleId").exists(false));
         if(pending) {
             match.add(where("status").exists(false));
@@ -162,6 +163,7 @@ public class PaymentMongoDAO {
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
+        match.add(Criteria.where("formId").exists(false));
         match.add(where("vehicleId").exists(true));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
