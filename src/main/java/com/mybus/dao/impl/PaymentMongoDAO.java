@@ -7,6 +7,8 @@ import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -97,6 +99,72 @@ public class PaymentMongoDAO {
         }catch (Exception e) {
             throw new BadRequestException("Exception preparing payment query", e);
         }
+        return q;
+    }
+
+    public long getPaymentsCount(boolean pending) {
+        Query q = getPaymentsQuery(pending);
+        return mongoTemplate.count(q, Payment.class);
+    }
+
+    public long getVehicleExpensesCount() {
+        Query q = getVehicleExpensesQuery();
+        return mongoTemplate.count(q, Payment.class);
+    }
+    public Page<Payment> getVehicleExpenses(Pageable pageable) {
+        Query q = getVehicleExpensesQuery();
+        long count = mongoTemplate.count(q, Payment.class);
+        List<Payment> payments = mongoTemplate.find(q, Payment.class);
+        return new PageImpl<Payment>(payments, pageable, count);
+    }
+
+    public Page<Payment> findPendingPayments(Pageable pageable) {
+        Query q = getPaymentsQuery(true);
+        if(pageable != null) {
+            q.with(pageable);
+        }
+        long count = mongoTemplate.count(q, Payment.class);
+        List<Payment> payments = mongoTemplate.find(q, Payment.class);
+        return new PageImpl<Payment>(payments, pageable, count);
+    }
+    public Page<Payment> findNonPendingPayments(Pageable pageable) {
+        Query q = getPaymentsQuery(false);
+        if(pageable != null) {
+            q.with(pageable);
+        }
+        long count = mongoTemplate.count(q, Payment.class);
+        List<Payment> payments = mongoTemplate.find(q, Payment.class);
+        return new PageImpl<Payment>(payments, pageable, count);
+    }
+
+    private Query getPaymentsQuery(boolean pending) {
+        Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(!sessionManager.getCurrentUser().isAdmin()) {
+            match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+        }
+        match.add(where("vehicleId").exists(false));
+        if(pending) {
+            match.add(where("status").exists(false));
+        }else {
+            match.add(where("status").exists(true));
+        }
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        q.addCriteria(criteria);
+        return q;
+    }
+
+    private Query getVehicleExpensesQuery() {
+        Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(!sessionManager.getCurrentUser().isAdmin()) {
+            match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+        }
+        match.add(where("vehicleId").exists(true));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        q.addCriteria(criteria);
         return q;
     }
 }

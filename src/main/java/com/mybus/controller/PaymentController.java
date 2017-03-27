@@ -37,15 +37,27 @@ public class PaymentController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payments/pending", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Page<Payment> getPendingPayments(HttpServletRequest request, final Pageable pageable) {
+        return paymentMongoDAO.findPendingPayments(pageable);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payments/approved", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Page<Payment> getApprovedPayments(HttpServletRequest request, final Pageable pageable) {
+        return paymentMongoDAO.findNonPendingPayments(pageable);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payment/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Payment getPayment(HttpServletRequest request, @PathVariable final String id) {
         return paymentManager.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "payments/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-    public long getCount(HttpServletRequest request, @RequestBody final JSONObject query) {
-        return paymentMongoDAO.count(query);
+    @RequestMapping(value = "payments/count", method = RequestMethod.GET)
+    public long getCount(HttpServletRequest request,@RequestParam(value = "pending", required = true) boolean pendingPayments) {
+        return paymentMongoDAO.getPaymentsCount(pendingPayments);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
