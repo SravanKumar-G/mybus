@@ -21,10 +21,11 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
             paginationService.pagination(tableParams, function(response){
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-            paymentManager.load($scope.query,pageable, function(response){
+            paymentManager.getVehicleExpenses(pageable, function(response){
                 if(angular.isArray(response.content)) {
+                    console.log('got expenses');
                     $scope.vehicleExpenses = response.content;
-                    vehicleManager.getVehicles(pageable,function(data){
+                    vehicleManager.getVehicles({},function(data){
                         $scope.vehicles = data.content;
                         angular.forEach($scope.vehicleExpenses, function (payment) {
                             angular.forEach($scope.vehicles, function (vehicle) {
@@ -45,7 +46,7 @@ angular.module('myBus.vehicleExpensesModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.init = function() {
-            paymentManager.count($scope.query, function(paymentsCount){
+            paymentManager.countVehicleExpenses($scope.query, function(paymentsCount){
                 $scope.paymentTableParams = new NgTableParams({
                     page: 1, // show first page
                     size: 10,

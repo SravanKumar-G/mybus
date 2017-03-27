@@ -3,17 +3,18 @@
 
 angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
-        $scope.payments = [];
         $scope.loading = false;
-        $scope.query = {};
+        $scope.query = {"status":null};
         $scope.user = userManager.getUser();
-        $scope.currentPageOfPayments=[];
+        $scope.approvedPayments=[];
+        $scope.pendingPayments=[];
+        $scope.pendingTotal = 0;
+        $scope.approvedTotal = 0;
         $scope.canAddPayment = function() {
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
         }
-
-        var loadTableData = function (tableParams) {
+        var loadPendingPayments = function (tableParams) {
             var sortingProps = tableParams.sorting();
             var sortProps = ""
             for(var prop in sortingProps) {
@@ -21,23 +22,41 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
             }
             $scope.loading = true;
             var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-            paymentManager.load($scope.query,pageable, function(response){
+            paymentManager.pendingPayments(pageable, function(response){
                 if(angular.isArray(response.content)) {
                     $scope.loading = false;
-                    $scope.payments = response.content;
+                    $scope.pendingPayments = response.content;
                     tableParams.total(response.totalElements);
+                    $scope.pendingTotal = response.totalElements;
                     $scope.count = response.totalElements;
-                    tableParams.data = $scope.payments;
-                    $scope.currentPageOfPayments = $scope.payments;
+                    tableParams.data = $scope.pendingPayments;
                 }
             });
         };
 
+        var loadApprovedPayments = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
+            $scope.loading = true;
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            paymentManager.approvedPayments(pageable, function(response){
+                if(angular.isArray(response.content)) {
+                    $scope.loading = false;
+                    $scope.approvedPayments = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    $scope.approvedTotal = response.totalElements;
+                    tableParams.data = $scope.approvedPayments;
+                }
+            });
+        };
         $scope.init = function() {
-            paymentManager.count($scope.query, function(paymentsCount){
-                $scope.paymentTableParams = new NgTableParams({
+            paymentManager.count(true, function(paymentsCount){
+                $scope.pendingTableParams = new NgTableParams({
                     page: 1, // show first page
-                    size:10,
                     count:10,
                     sorting: {
                         fullName: 'asc'
@@ -46,7 +65,22 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     counts:[],
                     total:paymentsCount,
                     getData: function (params) {
-                        loadTableData(params);
+                        loadPendingPayments(params);
+                    }
+                });
+            });
+            paymentManager.count(false, function(count){
+                $scope.approvedTableParams = new NgTableParams({
+                    page: 1, // show first page
+                    count:15,
+                    sorting: {
+                        fullName: 'asc'
+                    },
+                }, {
+                    counts:[],
+                    total:count,
+                    getData: function (params) {
+                        loadApprovedPayments(params);
                     }
                 });
             });
@@ -74,7 +108,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 
         $scope.handleClickUpdatePayment = function(paymentId){
             $rootScope.modalInstance = $uibModal.open({
-                templateUrl : 'update-payment-modal.html',
+                templateUrl : 'add-payment-modal.html',
                 controller : 'EditPaymentController',
                 resolve : {
                     paymentId : function(){
@@ -102,7 +136,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
         $scope.today = function () {
             $scope.dt = new Date();
-            ;
         };
         $scope.user = userManager.getUser();
 
@@ -202,8 +235,8 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
     }).factory('paymentManager', function ($rootScope, $http, $log) {
         var payments = {};
         return {
-            load: function (query,pageable, callback) {
-                $http({url: '/api/v1/payments?query='+query, method: "POST", params: pageable})
+            pendingPayments: function (pageable, callback) {
+                $http({url:'/api/v1/payments/pending',method:"GET", params: pageable})
                     .then(function (response) {
                         payments = response.data;
                         callback(payments);
@@ -212,12 +245,40 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving payments");
                     });
             },
-            count: function (query, callback) {
-                $http.post('/api/v1/payments/count', {})
+            approvedPayments: function (pageable, callback) {
+                $http({url:'/api/v1/payments/approved',method:"GET", params: pageable})
+                    .then(function (response) {
+                        payments = response.data;
+                        callback(payments);
+                        $rootScope.$broadcast('paymentsInitComplete');
+                    }, function (error) {
+                        $log.debug("error retrieving payments");
+                    });
+            },
+            count: function (pendingPayments, callback) {
+                $http.get('/api/v1/payments/count?pending='+pendingPayments)
                     .then(function (response) {
                         callback(response.data);
                     }, function (error) {
                         $log.debug("error retrieving payments count");
+                    });
+            },
+            countVehicleExpenses: function (query, callback) {
+                $http.get('/api/v1/vehicleExpenses/count')
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        $log.debug("error retrieving payments count");
+                    });
+            },
+            getVehicleExpenses: function (pageable, callback) {
+                $http({url:'/api/v1/vehicleExpenses',method:"GET", params: pageable})
+                    .then(function (response) {
+                        payments = response.data;
+                        callback(payments);
+                        $rootScope.$broadcast('paymentsInitComplete');
+                    }, function (error) {
+                        $log.debug("error retrieving payments");
                     });
             },
             delete: function (paymentId, callback) {
