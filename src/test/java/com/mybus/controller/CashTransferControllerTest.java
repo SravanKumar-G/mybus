@@ -1,6 +1,9 @@
 package com.mybus.controller;
 
+import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.CashTransferDAO;
+import com.mybus.dao.PaymentDAO;
+import com.mybus.dao.impl.CashTransferMongoDAO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +17,19 @@ public class CashTransferControllerTest extends AbstractControllerIntegrationTes
     @Autowired
     private CashTransferDAO cashTransferDAO;
 
+    @Autowired
+    private CashTransferMongoDAO cashTransferMongoDAO;
+
+    @Autowired
+    private PaymentDAO paymentDAO;
+
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
     @Before
     @After
     public void cleanup() {
-
+        cashTransferDAO.deleteAll();
     }
 
     @Test

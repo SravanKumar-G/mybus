@@ -27,7 +27,7 @@ public class CashTransferManager {
      * @return
      */
     public CashTransfer updateCashTransfer(CashTransfer cashTransfer){
-        if(cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
+        if(cashTransfer.getStatus() != null && cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
             Payment expense = new Payment();
             expense.setBranchOfficeId(cashTransfer.getFromOfficeId());
             expense.setAmount(cashTransfer.getAmount());

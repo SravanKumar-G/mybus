@@ -273,9 +273,9 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                         });
                         })
              },
-        save: function(cashTransferId,cashTransfer,callback) {
+        save: function(cashTransfer,callback) {
             if (!cashTransfer.id) {
-                $http.post('/api/v1/cashTransfer/', cashTransferId)
+                $http.post('/api/v1/cashTransfer/', cashTransfer)
                     .then(function (response) {
                     if (angular.isFunction(callback)) {
                         callback(response.data);

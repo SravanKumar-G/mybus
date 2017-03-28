@@ -189,6 +189,7 @@
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="CashTransfers" class="nav navbar-nav col-md-12">Cash Transfers</my-menu>
                                 <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
                                 <my-menu label="VehicleExpenses" class="nav navbar-nav col-md-12"></my-menu>
 
