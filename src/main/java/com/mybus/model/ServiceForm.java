@@ -19,6 +19,7 @@ public class ServiceForm extends AbstractDocument  {
     private final ServiceStatus status = ServiceStatus.SUBMITTED;
     private String serviceReportId;
     private String serviceNumber;
+    private String serviceName;
     private String source;
     private String destination;
     private String busType;

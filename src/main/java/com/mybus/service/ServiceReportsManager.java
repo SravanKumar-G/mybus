@@ -116,6 +116,8 @@ public class ServiceReportsManager {
         ServiceForm serviceForm = new ServiceForm();
         serviceReport.setNetCashIncome(0);
         serviceForm.setServiceReportId(serviceReport.getId());
+        serviceForm.setServiceNumber(serviceReport.getServiceNumber());
+        serviceForm.setServiceName(serviceReport.getServiceName());
         Map<String, Double> officeCashBalances = new HashMap<>();
         Map<String,List<String>> seatBookings = new HashMap<>();
         Booking redbusBooking = new Booking();
