@@ -114,6 +114,12 @@ public class PaymentManager {
         });
     }
 
+    private void loadUserNames(Payment payment) {
+        Map<String, String> userNames = userManager.getUserNames(true);
+        payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+        payment.getAttributes().put("updatedBy", userNames.get(payment.getUpdatedBy()));
+
+    }
     public Page<Payment> findPendingPayments(Pageable pageable) {
         Page<Payment> page = paymentMongoDAO.findPendingPayments(pageable);
         loadUserNames(page.getContent());
@@ -131,6 +137,7 @@ public class PaymentManager {
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }
+        loadUserNames(payment);
         return payment;
     }
 }
