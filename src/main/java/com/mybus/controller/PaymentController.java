@@ -39,13 +39,13 @@ public class PaymentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/pending", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Page<Payment> getPendingPayments(HttpServletRequest request, final Pageable pageable) {
-        return paymentMongoDAO.findPendingPayments(pageable);
+        return paymentManager.findPendingPayments(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/approved", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Page<Payment> getApprovedPayments(HttpServletRequest request, final Pageable pageable) {
-        return paymentMongoDAO.findNonPendingPayments(pageable);
+        return paymentManager.findNonPendingPayments(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

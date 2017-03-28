@@ -43,8 +43,10 @@ public class CashTransferMongoDAO {
         Query q = new Query();
         //filter the payments by office if the user is not admin
         if(!sessionManager.getCurrentUser().isAdmin()) {
-            q.addCriteria(Criteria.where(CashTransfer.FROM_OFFICE_ID).is(sessionManager.getCurrentUser().getBranchOfficeId())
-                    .orOperator(Criteria.where(CashTransfer.TO_OFFICE_ID).is(sessionManager.getCurrentUser().getBranchOfficeId())));
+            Criteria criteria = new Criteria();
+            criteria.orOperator(Criteria.where(CashTransfer.TO_OFFICE_ID).is(sessionManager.getCurrentUser().getBranchOfficeId()),
+            Criteria.where(CashTransfer.FROM_OFFICE_ID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+            q.addCriteria(criteria);
         }
         if(query != null) {
             if (query.containsKey("description")) {

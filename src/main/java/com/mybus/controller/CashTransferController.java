@@ -59,7 +59,7 @@ public class CashTransferController extends MyBusBaseController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public CashTransfer update(HttpServletRequest request, @RequestBody final CashTransfer cashTransfer) {
         logger.debug("put cash transfer called");
-        return cashTransferManager.update(cashTransfer);
+        return cashTransferManager.updateCashTransfer(cashTransfer);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = ControllerUtils.JSON_UTF8)

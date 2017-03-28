@@ -56,7 +56,6 @@
             <table class="table table-bordered table-condensed table-hover" ng-table="approvedTableParams">
                 <tr ng-repeat="payment in approvedPayments">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
-                    <td data-title="'CreatedOn'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt| date}}</td>
                     <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                         <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
                         <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
@@ -64,8 +63,8 @@
                     <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount|number:2}}</span></td>
                     <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount|number:2}}</span></td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
+                    <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="payment.status != 'Auto'">{{payment.attributes.updatedBy}}</span></td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item">
-
                         <span ng-if="payment.status">
                            {{payment.status}}
                         </span>

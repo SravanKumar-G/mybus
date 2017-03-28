@@ -101,19 +101,43 @@ public class PaymentManager {
     public Page<Payment> findPayments(JSONObject query, Pageable pageable) {
         List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
         long count =  paymentMongoDAO.count(query);
-        Map<String, String> userNames = userManager.getUserNames(true);
-        payments.forEach(payment -> {
-            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
-        });
+        loadUserNames(payments);
         Page<Payment> page = new PageImpl<>(payments, pageable, count);
         return page;
     }
+
+    private void loadUserNames(List<Payment> payments) {
+        Map<String, String> userNames = userManager.getUserNames(true);
+        payments.forEach(payment -> {
+            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+            payment.getAttributes().put("updatedBy", userNames.get(payment.getUpdatedBy()));
+        });
+    }
+
+    private void loadUserNames(Payment payment) {
+        Map<String, String> userNames = userManager.getUserNames(true);
+        payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+        payment.getAttributes().put("updatedBy", userNames.get(payment.getUpdatedBy()));
+
+    }
+    public Page<Payment> findPendingPayments(Pageable pageable) {
+        Page<Payment> page = paymentMongoDAO.findPendingPayments(pageable);
+        loadUserNames(page.getContent());
+        return page;
+    }
+    public Page<Payment> findNonPendingPayments(Pageable pageable) {
+        Page<Payment> page = paymentMongoDAO.findNonPendingPayments(pageable);
+        loadUserNames(page.getContent());
+        return page;
+    }
+
 
     public Payment findOne(String id) {
         Payment payment = paymentDAO.findOne(id);
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }
+        loadUserNames(payment);
         return payment;
     }
 }
