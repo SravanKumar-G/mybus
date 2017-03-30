@@ -94,7 +94,7 @@
             <button type="button" class="btn btn-sm btn-danger" ng-click="haltService()" ng-if="!service.invalid && !service.status">
                 <span class="glyphicon"></span> Halted Service
             </button>
-            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()" ng-if="!service.invalid && !service.status">
+            <button type="button" class="btn btn-sm btn-success" ng-click="submit()" ng-if="!service.invalid && !service.status">
                 <span class="glyphicon"></span> Submit Report
             </button>
             <span ng-if="service.status" style="color:red"> Service report has been submitted on {{service.updatedAt|date}}</span>
