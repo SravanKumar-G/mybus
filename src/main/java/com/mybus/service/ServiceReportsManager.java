@@ -55,11 +55,11 @@ public class ServiceReportsManager {
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
-        Iterator<ServiceReportStatus> statusIterator = serviceReportStatusDAO
-                .findByReportDate(ServiceConstants.df.parse(date)).iterator();
-        if(statusIterator.hasNext()) {
+        ServiceReportStatus status = serviceReportStatusDAO
+                .findByReportDate(ServiceConstants.df.parse(date));
+        if(status != null) {
             response.put("downloaded", true);
-            response.put("downloadedOn", dtf.print(statusIterator.next().getCreatedAt()));
+            response.put("downloadedOn", dtf.print(status.getCreatedAt()));
         } else {
             response.put("downloaded", false);
         }
@@ -118,34 +118,38 @@ public class ServiceReportsManager {
         serviceForm.setServiceReportId(serviceReport.getId());
         serviceForm.setServiceNumber(serviceReport.getServiceNumber());
         serviceForm.setServiceName(serviceReport.getServiceName());
-        Map<String, Double> officeCashBalances = new HashMap<>();
-        Map<String,List<String>> seatBookings = new HashMap<>();
-        Booking redbusBooking = new Booking();
-        redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
-        Booking onlineBooking = new Booking();
-        onlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
-        double cashIncome = 0;
-        for(Booking booking: serviceReport.getBookings()) {
-            //Need to set journey date for service bookings
-            if(booking.getJourneyDate() == null) {
-                booking.setJourneyDate(serviceReport.getJourneyDate());
-                booking.setJDate(ServiceConstants.df.format(serviceReport.getJourneyDate()));
-                booking.setDestination(serviceReport.getDestination());
-                booking.setSource(serviceReport.getSource());
-                booking.setServiceName(serviceReport.getServiceName());
-                booking.setServiceNumber(serviceReport.getServiceNumber());
-            }
-            if(bookingTypeManager.isRedbusBooking(booking) ){
-                processBooking(seatBookings, redbusBooking, booking);
-            } else if(bookingTypeManager.isOnlineBooking(booking)){
-                processBooking(seatBookings, onlineBooking, booking);
-            } else {
-                //add dues based on agent
-                booking.setId(null);
-                booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
-                if(!booking.isDue()) {
-                    serviceReport.setNetCashIncome(serviceReport.getNetCashIncome()+ booking.getNetAmt());
+        ServiceReport savedReport = serviceReportDAO.findOne(serviceReport.getId());
+        if(savedReport.getStatus() != null) {
+            throw new BadRequestException("Oops, looks like the report has been already submitted");
+        }
+        if(serviceReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
+            Map<String, List<String>> seatBookings = new HashMap<>();
+            Booking redbusBooking = new Booking();
+            redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
+            Booking onlineBooking = new Booking();
+            onlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
+            double cashIncome = 0;
+            for (Booking booking : serviceReport.getBookings()) {
+                //Need to set journey date for service bookings
+                if (booking.getJourneyDate() == null) {
+                    booking.setJourneyDate(serviceReport.getJourneyDate());
+                    booking.setJDate(ServiceConstants.df.format(serviceReport.getJourneyDate()));
+                    booking.setDestination(serviceReport.getDestination());
+                    booking.setSource(serviceReport.getSource());
+                    booking.setServiceName(serviceReport.getServiceName());
+                    booking.setServiceNumber(serviceReport.getServiceNumber());
                 }
+                if (bookingTypeManager.isRedbusBooking(booking)) {
+                    processBooking(seatBookings, redbusBooking, booking);
+                } else if (bookingTypeManager.isOnlineBooking(booking)) {
+                    processBooking(seatBookings, onlineBooking, booking);
+                } else {
+                    //add dues based on agent
+                    booking.setId(null);
+                    booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+                    if (!booking.isDue()) {
+                        serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+                    }
                 /*
                 if(!booking.isDue()){
                     if(!booking.isHasValidAgent()) {
@@ -162,52 +166,58 @@ public class ServiceReportsManager {
                     }
                 }
                 */
-                booking.setServiceId(null);
-                serviceForm.getBookings().add(booking);
-                if(booking.getSeats() != null) {
-                    String[] seats = booking.getSeats().split(",");
-                    booking.setSeatsCount(seats.length);
-                    serviceForm.setSeatsCount(serviceForm.getSeatsCount() + seats.length);
+                    booking.setServiceId(null);
+                    serviceForm.getBookings().add(booking);
+                    if (booking.getSeats() != null) {
+                        String[] seats = booking.getSeats().split(",");
+                        booking.setSeatsCount(seats.length);
+                        serviceForm.setSeatsCount(serviceForm.getSeatsCount() + seats.length);
+                    }
+                    cashIncome += booking.getNetAmt();
                 }
-                cashIncome += booking.getNetAmt();
             }
-        }
 
-        if(redbusBooking.getSeatsCount() > 0){
-            redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
-            serviceForm.getBookings().add(redbusBooking);
-            serviceForm.setSeatsCount(serviceForm.getSeatsCount() + redbusBooking.getSeatsCount());
+            if (redbusBooking.getSeatsCount() > 0) {
+                redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
+                serviceForm.getBookings().add(redbusBooking);
+                serviceForm.setSeatsCount(serviceForm.getSeatsCount() + redbusBooking.getSeatsCount());
+            }
+            if (onlineBooking.getSeatsCount() > 0) {
+                onlineBooking.setNetAmt(roundUp(onlineBooking.getNetAmt()));
+                serviceForm.getBookings().add(onlineBooking);
+                serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onlineBooking.getSeatsCount());
+            }
+            for (Payment expense : serviceReport.getExpenses()) {
+                serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() - expense.getAmount());
+            }
+            serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
+            serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
+            serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
+            //branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
+            serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
+            serviceForm.setSource(serviceReport.getSource());
+            serviceForm.setDestination(serviceReport.getDestination());
+            serviceForm.setBusType(serviceReport.getBusType());
+            serviceForm.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
+            serviceForm.setJDate(serviceReport.getJourneyDate());
+            serviceForm.setConductorInfo(serviceReport.getConductorInfo());
+            serviceForm.setNotes(serviceReport.getNotes());
+            ServiceForm savedForm = serviceFormDAO.save(serviceForm);
+            paymentManager.createPayment(serviceForm, false);
+            serviceForm.getBookings().stream().forEach(booking -> {
+                booking.setFormId(savedForm.getId());
+            });
+            serviceReport.getExpenses().stream().forEach(expense -> {
+                expense.setFormId(savedForm.getId());
+            });
+            paymentDAO.save(serviceReport.getExpenses());
+            bookingDAO.save(serviceForm.getBookings());
+            serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         }
-        if(onlineBooking.getSeatsCount() > 0) {
-            onlineBooking.setNetAmt(roundUp(onlineBooking.getNetAmt()));
-            serviceForm.getBookings().add(onlineBooking);
-            serviceForm.setSeatsCount(serviceForm.getSeatsCount() + onlineBooking.getSeatsCount());
-        }
-        for(Payment expense : serviceReport.getExpenses()) {
-            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome()- expense.getAmount());
-        }
-        serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
-        serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
-        serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
-        //branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
-        serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
-        serviceForm.setSource(serviceReport.getSource());
-        serviceForm.setDestination(serviceReport.getDestination());
-        serviceForm.setBusType(serviceReport.getBusType());
-        serviceForm.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
-        serviceForm.setJDate(serviceReport.getJourneyDate());
-        serviceForm.setConductorInfo(serviceReport.getConductorInfo());
-        serviceForm.setNotes(serviceReport.getNotes());
-        ServiceForm savedForm =  serviceFormDAO.save(serviceForm);
-        paymentManager.createPayment(serviceForm, false);
-        serviceForm.getBookings().stream().forEach(booking -> {booking.setFormId(savedForm.getId());});
-        serviceReport.getExpenses().stream().forEach(expense -> {expense.setFormId(savedForm.getId());});
-        paymentDAO.save(serviceReport.getExpenses());
-        bookingDAO.save(serviceForm.getBookings());
-        serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         serviceReportDAO.save(serviceReport);
         return serviceForm;
     }
+
 
     private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking) {
         if(bookingTypeManager.isRedbusBooking(booking)) {
@@ -258,7 +268,7 @@ public class ServiceReportsManager {
             bookingDAO.deleteByServiceId(serviceReport.getId());
         });
         serviceReportStatusDAO.deleteByReportDate(date);
-        serviceReportStatusDAO.save(new ServiceReportStatus(date, ReportDownloadStatus.DOWNLOADING));
+        //serviceReportStatusDAO.save(new ServiceReportStatus(date, ReportDownloadStatus.DOWNLOADING));
     }
 
     public Iterable<ServiceReport> refreshReport(Date date) {

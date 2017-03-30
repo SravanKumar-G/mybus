@@ -18,7 +18,7 @@ import java.util.*;
 @ManagedResource
 @ContextConfiguration(classes = { CoreAppConfig.class })
 public class SystemProperties {
-	private static final String HOME_DIR_PROPS_FILENAME = ".gwc.properties";
+	private static final String HOME_DIR_PROPS_FILENAME = ".mybus.properties";
 	private Properties homeDirProperties;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SystemProperties.class);

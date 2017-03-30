@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceReportStatus extends AbstractDocument  {
-    @Indexed
+    @Indexed(unique = true)
     private Date reportDate;
     private ReportDownloadStatus status;
     public ServiceReportStatus(Date reportDate) {

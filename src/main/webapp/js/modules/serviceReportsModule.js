@@ -167,6 +167,11 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             });
 
         }
+
+        $scope.haltService = function() {
+            $scope.service.status = "HALT";
+            $scope.submitReport();
+        }
         $scope.launchAgents = function(){
             $location.url('/agents');
         }
