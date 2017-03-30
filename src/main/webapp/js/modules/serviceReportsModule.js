@@ -156,8 +156,11 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
             $scope.calculateNet();
         }
+        $scope.submit = function() {
+            $scope.service.status = "SUBMITTED";
+            $scope.submitReport();
+        }
         $scope.submitReport = function() {
-
             serviceReportsManager.submitReport($scope.service, function (response) {
                 //callback(response.data);
                 sweetAlert("Great", "The report successfully submitted", "success");
@@ -165,7 +168,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             },function (error) {
                 swal("Oops...", "Error submitting the report", "error");
             });
-
         }
 
         $scope.haltService = function() {
