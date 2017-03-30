@@ -129,6 +129,8 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             booking.setBookedBy(agent2.getName());
             serviceReport.getBookings().add(bookingDAO.save(booking));
         }
+        serviceReport = serviceReportDAO.save(serviceReport);
+        serviceReport.setStatus(ServiceStatus.SUBMITTED);
         serviceReportsManager.submitReport(serviceReport);
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());
         assertEquals(6, bookings.size());
@@ -195,6 +197,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
                 }
                 report.getBookings().add(bookingDAO.save(booking));
             }
+            report.setStatus(ServiceStatus.SUBMITTED);
             serviceReportsManager.submitReport(report);
         }
         office = branchOfficeDAO.findOne(office.getId());

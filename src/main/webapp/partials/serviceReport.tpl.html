@@ -85,17 +85,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <button type="button" class="btn btn-sm btn-primary" ng-click="addBooking()">
                 <span class="glyphicon glyphicon-plus"></span> Add Booking
             </button>
         </div>
-        <div class="col-sm-2">
-            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()" ng-show="!service.invalid">
+        <div class="col-sm-4">
+            <button type="button" class="btn btn-sm btn-danger" ng-click="haltService()" ng-if="!service.invalid && !service.status">
+                <span class="glyphicon"></span> Halted Service
+            </button>
+            <button type="button" class="btn btn-sm btn-success" ng-click="submitReport()" ng-if="!service.invalid && !service.status">
                 <span class="glyphicon"></span> Submit Report
             </button>
+            <span ng-if="service.status" style="color:red"> Service report has been submitted on {{service.updatedAt|date}}</span>
             <span ng-show="service.invalid" style="color:red;">Please assign branch offices to agents <a ng-click="launchAgents()">here</a></span>
         </div>
+
     </div>
 <br/>
 

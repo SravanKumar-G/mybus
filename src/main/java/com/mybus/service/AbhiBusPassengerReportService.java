@@ -62,7 +62,12 @@ public class AbhiBusPassengerReportService {
      */
     public ServiceReportStatus downloadReport(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
-        ServiceReportStatus serviceReportStatus = serviceReportStatusDAO.save
+        ServiceReportStatus serviceReportStatus = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
+        if(serviceReportStatus != null) {
+            logger.info("The reports are being downloaded for " + date);
+            return null;
+        }
+        serviceReportStatus = serviceReportStatusDAO.save
                 (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
         init();
         List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
