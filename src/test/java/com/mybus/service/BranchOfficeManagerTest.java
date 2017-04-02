@@ -14,10 +14,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by srinikandula on 12/13/16.
@@ -35,9 +37,6 @@ public class BranchOfficeManagerTest  extends AbstractControllerIntegrationTest 
 
     @Autowired
     private BranchOfficeManager branchOfficeManager;
-
-    @Autowired
-    private CityManager cityManager;
 
     @Autowired
     private UserManager userManager;
@@ -65,7 +64,7 @@ public class BranchOfficeManagerTest  extends AbstractControllerIntegrationTest 
         for(int i=0; i<10; i++) {
             int randomIndex = new Double(Math.random()*10).intValue();
             branchOfficeDAO.save(new BranchOffice("officename" +i, cities.get(randomIndex).getId(),
-                    users.get(randomIndex).getId(), true, "email@e.com", 123456633, "Address"));
+                    users.get(randomIndex).getId(), true, "email@e.com", 123456633, "Address", 0));
         }
         //Map<String, String> cityNames = cityManager.getCityNames(false);
         Map<String, String> userNames = userManager.getUserNames(false);

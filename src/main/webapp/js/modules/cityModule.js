@@ -4,29 +4,61 @@
 angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
   // ==================================================================================================================
-  // ====================================    CitiesController   ================================================
+  // ====================================    CitiesController   =======================================================
   // ==================================================================================================================
-    .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope) {
+
+
+    .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope,paginationService) {
         $log.debug('CitiesController loading');
         $scope.headline = "Cities";
-        $scope.allCities = [];
         $scope.currentPageOfCities = [];
+        $scope.loading =false;
+        $scope.cities = {};
+        $scope.count = 0;
+        var pageable ;
 
-        var loadTableData = function (tableParams, $defer) {
-            var data = cityManager.getAllCities();
-            if(angular.isArray(data)) {
-                var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                 $scope.allCities = orderedData;
-                tableParams.total(data.length);
-                if (angular.isDefined($defer)) {
-                    $defer.resolve(orderedData);
+        var loadTableData = function (tableParams) {
+            paginationService.pagination(tableParams, function(response){
+            pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+        });
+            $scope.loading = true;
+            cityManager.getCities(pageable, function(response){
+                $scope.invalidCount = 0;
+                if(angular.isArray(response.content)) {
+                    $scope.loading = false;
+                    $scope.cities = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.cities;
+                    $scope.currentPageOfCities =  $scope.cities;
                 }
-                $scope.currentPageOfCities = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-            }
+            });
         };
-        $scope.$on('updateCityCompleteEvent', function (e, value) {
-            cityManager.fetchAllCities();
-            //loadTableData($scope.cityContentTableParams);
+
+        $scope.init = function() {
+            cityManager.count(function(citiesCount){
+            $scope.cityContentTableParams = new NgTableParams({
+                page: 1,
+                size:10,
+                count:10,
+                sorting: {
+                    name: 'asc'
+                },
+            }, {
+                counts:[],
+                total: citiesCount,
+                getData: function (params) {
+                    loadTableData(params);
+                }
+
+                 });
+            });
+        };
+        $scope.init();
+
+
+        $scope.$on('CityCompleteEvent', function (e, value) {
+            $scope.init();
         });
 
         $scope.$on('cityAndBoardingPointsInitComplete', function (e, value) {
@@ -36,20 +68,6 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
         $scope.goToBoardingPointsList = function (id) {
             $location.url('/city/' + id);
         };
-
-        $scope.cityContentTableParams = new NgTableParams({
-            page: 1,
-            count:50,
-            sorting: {
-                name: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfCities.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
-        cityManager.fetchAllCities();
 
 //---------------------------------------------------------------------------------------------------------------------
     $scope.handleClickAddStateCity = function (size) {
@@ -70,6 +88,9 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             $log.debug('Modal dismissed at: ' + new Date());
         });
     };
+        $scope.handleClickDeleteStateCity = function(passId){
+            cityManager.deleteCity(passId);
+        };
     $scope.handleClickUpdateStateCity = function(cityId){
         $rootScope.modalInstance = $uibModal.open({
             templateUrl : 'update-city-state-modal.html',
@@ -145,24 +166,22 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
     }).factory('cityManager', function ($rootScope, $http, $log, $location) {
         var cities = {}
-            , rawChildDataWithGeoMap = {};
+            , rawChildDataWithGeoMap = {}, totalCount = 0;
         return {
-            fetchAllCities: function () {
-                $log.debug("fetching cities data ...");
-                $http.get('/api/v1/cities')
-                    .then(function (response) {
-                        cities = response.data;
-                        $rootScope.$broadcast('cityAndBoardingPointsInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving cities");
-                    });
-            },
-            getCities: function (callback) {
-                $http.get('/api/v1/cities')
+            getCities: function ( pageable, callback) {
+                $http({url:'/api/v1/cities',method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error retrieving cities");
+                        $log.debug("error retrieving agents");
+                    });
+            },
+            count: function (callback) {
+                $http.get('/api/v1/cities/count')
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        $log.debug("error retrieving route count");
                     });
             },
             getActiveCityNames:function(callback) {
@@ -173,11 +192,11 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving cities");
                     });
             },
-            getAllData: function () {
-                return cities;
-            },
             getAllCities: function () {
                 return cities;
+            },
+            getTotalCount : function() {
+                return totalCount;
             },
             getChildrenByParentId: function (parentId) {
                 if (!parentId) {
@@ -206,6 +225,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                     .then(function (response) {
                         callback(response.data);
                         swal("Great", "Your City has been successfully added", "success");
+                        $rootScope.$broadcast('CityCompleteEvent');
                     },function(err,status) {
                         sweetAlert("Error",err.data.message,"error");
                     });
@@ -230,6 +250,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                             //callback(response.data);
                             sweetAlert("Great", "Your City has been successfully deleted", "success");
                            $location.url("/cities");
+                            $rootScope.$broadcast('CityCompleteEvent');
                         },function (error) {
                             sweetAlert("Oops...", "Error finding City data!", "error" + angular.toJson(error));
                         });
@@ -239,7 +260,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                 $http.put('/api/v1/city/'+city.id,city).then(function (response) {
                     callback(response.data);
                     sweetAlert("Great","Your City has been successfully updated", "success");
-                    $rootScope.$broadcast('updateCityCompleteEvent');
+                    $rootScope.$broadcast('CityCompleteEvent');
                 },function (error) {
                     console.log(JSON.stringify(error));
                     sweetAlert("Oops..", "Error updating City data!", "error" + angular.toJson(error));
@@ -251,7 +272,7 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                     callback(response.data);
                     sweetAlert("Great","Your BoardingPoint has been successfully added", "success");
                 },function (err,status) {
-                    sweetAlert("Error",err.message,"error");
+                    sweetAlert("Error",err.data.message,"error");
                 });
             },
             updateBp: function(cityId,boardingPoint,callback) {

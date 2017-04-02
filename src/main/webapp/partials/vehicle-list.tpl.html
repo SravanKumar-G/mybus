@@ -5,8 +5,8 @@
 </div>
 <table class="table table-bordered table-condensed table-hover" ng-table="vehicleContentTableParams">
     <tr ng-repeat="vehicle in currentPageOfVehicles" ng-class="vehicle.active?'':'bg-danger'">
-        <td data-title="'Vehicle Type'"  sortable="'type'" class="clickable-item col-md-6">{{ vehicle.type }}</td>
-        <td data-title="'Registration #'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
+        <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-6">{{ vehicle.vehicleType }}</td>
+        <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
         <td data-title="'Description'" class="clickable-item col-md-4">{{ vehicle.description }}</td>
         <td data-title="'Active'" class="clickable-item col-md-4">{{ vehicle.active }}</td>
         <td>
@@ -46,11 +46,21 @@
         <form name="addVehicleForm" role="form" class="container-fluid">
             <div class="form-group">
                 <div class="row top-buffer-5">
+                    <!-- <label class="col-sm-2 control-label" for="addVehicle">RegNo#</label> -->
+                    <label class="col-xs-1 control-label" >Reg.No<span class="data-required">*</span></label>
+                    <div class="col-xs-7 col-xs-offset-1">
+                        <div class="form-group" ng-class="{ 'has-error': addVehicleForm.regNo.$invalid && addVehicleForm.regNo.$dirty }">
+                            <input type="text" placeholder ="RegNo" class="form-control" name="regNo" ng-model="vehicle.regNo"
+                                   placeholder="RegNo." ng-required="true">
+                        </div>
+                    </div>
+                </div>
+                <div class="row top-buffer-5">
                     <!-- <label class="col-sm-2 control-label" for="addVehicle">Type</label> -->
                     <div class="col-xs-7 col-xs-offset-2">
-                        <div class="form-group" ng-class="{ 'has-error': addVehicleForm.type.$invalid && addVehicleForm.type.$dirty}">
-                            <input type="text" placeholder ="Type" id="modalAddNeighInput" name="type" class="form-control"
-                                   ng-model="vehicle.type" placeholder="Type" required>
+                        <div class="form-group" ng-class="{ 'has-error': addVehicleForm.vehicleType.$invalid && addVehicleForm.vehicleType.$dirty}">
+                            <input type="text" placeholder ="Vehicle Type" id="modalAddNeighInput" name="type" class="form-control"
+                                   ng-model="vehicle.vehicleType" placeholder="Vehicle Type">
                         </div>
                     </div>
                 </div>
@@ -59,19 +69,11 @@
                     <div class="col-xs-7 col-xs-offset-2">
                         <div class="form-group" ng-class="{ 'has-error': addVehicleForm.description.$invalid && addVehicleForm.description.$dirty }">
                             <input type="text" placeholder ="Description" class="form-control" name="description" ng-model="vehicle.description"
-                                   placeholder="Description" required>
+                                   placeholder="Description">
                         </div>
                     </div>
                 </div>
-                <div class="row top-buffer-5">
-                    <!-- <label class="col-sm-2 control-label" for="addVehicle">RegNo#</label> -->
-                    <div class="col-xs-7 col-xs-offset-2">
-                        <div class="form-group" ng-class="{ 'has-error': addVehicleForm.regNo.$invalid && addVehicleForm.regNo.$dirty }">
-                            <input type="text" placeholder ="RegNo" class="form-control" name="regNo" ng-model="vehicle.regNo"
-                                   placeholder="RegNo." ng-required="true">
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="row top-buffer-5">
 					<div class="col-xs-7 col-xs-offset-2">
@@ -82,7 +84,7 @@
 					</div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" ng-click="ok(id)" ng-disabled="!isInputValid()">Add</button>
+                    <button class="btn btn-primary" ng-click="ok(id)">Add</button>
                     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
                 </div>
 
@@ -107,12 +109,21 @@
 		</div>
     </div>
     <div class="modal-body">
-        <div name="updatevehicleForm" role="form" class="container-fluid">
+        <form name="updateVehicleForm" role="form" class="container-fluid">
+
+            <div class="row top-buffer-5">
+                <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">RegNo#</label> -->
+                <label class="col-xs-1 control-label" >Reg.No<span class="data-required">*</span></label>
+                <div class="col-xs-7 col-xs-offset-1">
+                    <input type="text" class="form-control" ng-model="vehicle.regNo"
+                           placeholder="regNo" required>
+                </div>
+            </div>
 
             <div class="row top-buffer-5">
                 <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">Type</label> -->
                 <div class="col-xs-7 col-xs-offset-2">
-                    <input type="text" id="modalUpdateNeighInput" class="form-control" ng-model="vehicle.type"
+                    <input type="text" id="modalUpdateNeighInput" class="form-control" ng-model="vehicle.vehicleType"
                            placeholder="Type">
                 </div>
             </div>
@@ -123,13 +134,7 @@
                            placeholder="Description">
                 </div>
             </div>
-            <div class="row top-buffer-5">
-                <!-- <label class="col-sm-2 control-label" for="vehicleUpdate">RegNo#</label> -->
-                <div class="col-xs-7 col-xs-offset-2">
-                    <input type="text" class="form-control" ng-model="vehicle.regNo"
-                           placeholder="regNo">
-                </div>
-            </div>
+
             <div class="row top-buffer-5">
 				<div class="col-xs-7 col-xs-offset-2">
                 	<label class="col-sm-2 control-label checkbox" for="vehicleUpdate">Active</label>
@@ -138,11 +143,10 @@
                 	</div>
 				</div>
             </div>
-        </div>
+        </form>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok(vehicle.id)">Update</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
-        </form>
     </div>
 </script>

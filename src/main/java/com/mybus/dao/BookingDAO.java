@@ -4,6 +4,8 @@ import com.mybus.model.Booking;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 /**
  * Created by skandula on 5/7/16.
  */
@@ -11,4 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface BookingDAO extends PagingAndSortingRepository<Booking, String> {
     Iterable<Booking> findByServiceId(String serviceId);
     Iterable<Booking> findByFormId(String formId);
+    Iterable<Booking> findByDue(boolean due);
+    void deleteByServiceId(String serviceId);
+    void deleteByFormId(String formId);
+
 }

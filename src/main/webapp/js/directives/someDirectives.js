@@ -18,4 +18,14 @@ angular.module('myBus')
                 " data-ng-required='true' data-ng-disabled='"+attr.disabled+"' />";
         }
     };
-});
+}).directive('autoFocus', function($timeout) {
+        return {
+            restrict: 'AC',
+            link: function(_scope, _element) {
+                console.log('focusing...');
+                $timeout(function(){
+                    _element[0].focus();
+                }, 10);
+            }
+        };
+    });

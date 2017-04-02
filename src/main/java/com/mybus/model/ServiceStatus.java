@@ -5,5 +5,7 @@ package com.mybus.model;
  */
 public enum ServiceStatus {
     VERIFIED,
-    SUBMITTED
+    SUBMITTED,
+    HALT,
+    CANCELED
 }

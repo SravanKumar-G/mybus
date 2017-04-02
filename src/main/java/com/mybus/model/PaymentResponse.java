@@ -63,7 +63,7 @@ public class PaymentResponse extends AbstractDocument {
 	
 	@Setter
 	@Getter
-	private Payment payment;
+	private BookingPayment payment;
 	
 	@Setter
 	@Getter

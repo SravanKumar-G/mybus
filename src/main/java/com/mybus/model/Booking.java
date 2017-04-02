@@ -1,10 +1,11 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode(of={"id", "ticketNo"})
 public class Booking extends AbstractDocument{
+
     private String serviceId;
     private int index;
     private String formId;
@@ -27,16 +29,18 @@ public class Booking extends AbstractDocument{
     private String state;
     private String country;
     private String postalCode;
-    private PaymentType paymentType;
+    private BookingType paymentType;
     private double amount;
-    private Payment payment;
+    private BookingPayment payment;
     private String ticketNo;
-    private Date jouurneyDateTime;
+    private Date journeyDate;
+    private String jDate;
     private String seats;
     private int seatsCount;
     private String source;
     private String destination;
     private String bookedBy;
+    private String bookedDate;
     private double basicAmount;
     private double serviceTax;
     private double commission;
@@ -46,6 +50,9 @@ public class Booking extends AbstractDocument{
     private String orderId;
     private double netAmt;
     private boolean due;
+    private boolean hasValidAgent;
+    private String serviceName;
+    private String serviceNumber;
     public Booking() {
 
     }

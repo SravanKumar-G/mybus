@@ -1,12 +1,9 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -16,12 +13,13 @@ import java.util.Date;
 @ApiModel(value = "ServiceReportStatus")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ServiceReportStatus extends AbstractDocument  {
-    private String reportDate;
-    public ServiceReportStatus() {
-
-    }
-    public ServiceReportStatus(String reportDate) {
+    @Indexed(unique = true)
+    private Date reportDate;
+    private ReportDownloadStatus status;
+    public ServiceReportStatus(Date reportDate) {
         this.reportDate = reportDate;
     }
 }

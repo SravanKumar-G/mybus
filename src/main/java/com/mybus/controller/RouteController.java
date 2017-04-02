@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -22,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by skandula on 1/18/16.
  */
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="RouteController", description="RouteController management APIs")
 public class RouteController extends MyBusBaseController{
@@ -35,18 +37,22 @@ public class RouteController extends MyBusBaseController{
     @Autowired
     private RouteManager routeManager;
 
+    @RequestMapping(value = "routes/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get routes count", response = Long.class)
+    public long getCount(HttpServletRequest request) {
+        return routeDAO.count();
+    }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "routes", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value = "Get all the routes available", response = Route.class, responseContainer = "List")
-    public Iterable<Route> getAll(HttpServletRequest request) {
-        return routeDAO.findAll();
+    public Page<Route> getAll(HttpServletRequest request, Pageable pageable) {
+        return routeDAO.findAll(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "route", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value = "Create a Route")
     public Route create(HttpServletRequest request,
                            @ApiParam(value = "JSON for Route to be created") @RequestBody final Route route) {
@@ -55,7 +61,6 @@ public class RouteController extends MyBusBaseController{
     }
 
     @RequestMapping(value = "route/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get the Route JSON", response = Route.class)
     public Route get(HttpServletRequest request,
                         @ApiParam(value = "Id of the Route to be found") @PathVariable final String id) {
@@ -64,7 +69,6 @@ public class RouteController extends MyBusBaseController{
     }
 
     @RequestMapping(value = "route/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     @ApiOperation(value ="Update Route", response = Route.class)
     public boolean update(HttpServletRequest request,
                               @ApiParam(value = "Id of the Route to be found") @PathVariable final String id,
@@ -76,7 +80,6 @@ public class RouteController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "route/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
     @ApiOperation(value ="Delete a Route")
     public JSONObject delete(HttpServletRequest request,
                                  @ApiParam(value = "Id of the Route to be deleted") @PathVariable final String id) {

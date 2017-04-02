@@ -1,10 +1,9 @@
 package com.mybus.dao;
 
-import java.io.Serializable;
-
+import com.mybus.service.BookingSessionInfo;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.mybus.service.BookingSessionInfo;
+import java.io.Serializable;
 
 public interface BookingSessionInfoDAO extends PagingAndSortingRepository<BookingSessionInfo, Serializable> {
 

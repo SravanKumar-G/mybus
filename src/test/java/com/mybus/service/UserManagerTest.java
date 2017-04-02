@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
+import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.*;
 import com.mybus.test.util.UserTestService;
@@ -31,6 +32,9 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -67,6 +71,9 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
         User user = UserTestService.createNew();
         User duplicate = new User("fname", "lname", "unamenew", "pwd", "e@email.com", 1234567, "add1", "add2",
                 "city", "state", "USER", "plan2");
+        BranchOffice office = branchOfficeDAO.save(new BranchOffice());
+        user.setBranchOfficeId(office.getId());
+        duplicate.setBranchOfficeId(office.getId());
         userDAO.save(user);
         userManager.saveUser(duplicate);
         List<User> userList = IteratorUtils.toList(userDAO.findAll().iterator());

@@ -1,24 +1,20 @@
+<div class="container">
+
 <legend>{{ headline }}</legend>
-
-
-<br/>
-
-<!--<span us-spinner spinner-key="spinner-1" spinner-start-active="1"></span>-->
-
 <span class="small-text">Total: {{ userCount }}</span>
-<div class="toolbar-button-div pull-right">
+<div class="toolbar-button-div pull-right" ng-if="isAdmin()">
     <button type="button" class="btn btn-sm btn-primary" ng-click="addUser()"><span class="glyphicon glyphicon-plus"></span> Add User</button>
 </div>
 
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
     <tr ng-repeat="user in currentPageOfUsers" ng-if="!user.admin">
-        <td data-title="'Name'" class="col-sm-2" sortable="'fullName'">{{ user.lastName }}</td>
+        <td data-title="'Name'" class="col-sm-2" sortable="'fullName'">{{ user.fullName }}</td>
         <td data-title="'Username'" class="col-sm-2" sortable="'userName'">{{ user.userName }}</td>
         <td data-title="'Contact'" class="col-sm-2" sortable="'contact'">{{ user.contact }}</td>
-        <td data-title="'City'" class="col-sm-2">{{ user.attributes.cityName }}</td>
+        <td data-title="'Branch'" class="col-sm-2">{{ user.attributes.branchName }}</td>
         <td data-title="'Active'" class="col-sm-1" sortable="'active'">{{ user.active }}</td>
-        <td class="col-sm-1" ng-show="isAdmin()">
+        <td class="col-sm-1" ng-if="isAdmin()">
             <div class="row">
                 <div class="col-sm-6">
                         <md-icon type="button" class="btn" ng-click="editUser(user.id)">
@@ -34,3 +30,4 @@
         </td>
     </tr>
 </table>
+</div>

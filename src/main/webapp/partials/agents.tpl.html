@@ -1,23 +1,26 @@
 <legend>{{ headline }}</legend>
 
 <span ng-show="!loading">
-
-
-<div class="toolbar-button-div pull-right">
+<div class="toolbar-button-div pull-right" ng-if="isAdmin()">
     <button type="button" class="btn btn-sm btn-primary" ng-click="refreshAgents()">
     	<span class="glyphicon glyphicon-plus"></span> Refresh
     </button>
 </div>
-Total: {{count}}
-<br/>
-<br/>
-<table class="table table-bordered table-condensed table-hover" ng-table="agentTableParams">
+<div class="row">
+    <div class="col-sm-4">Search By Name: <input ng-model="query" ng-keyup="$event.keyCode == 13 ? searchFilter() : null" auto-focus> </div>
+    <div class="col-sm-2">Show Invalid :<input type="checkbox" ng-model="showInvalid" ng-change="init()"></div>
+    <div class="col-sm-1">Total: {{count}} </div>
+    <div class="col-sm-2">Invalid count :{{invalidCount}}</div>
+
+</div>
+
+<table class="table table-bordered table-striped table-condensed table-hover" ng-table="agentTableParams" hide-pagination="false">
     <tr ng-repeat="agent in currentPageOfAgents">
         <td data-title="'UserName'"  sortable="'username'" class="clickable-item col-sm-2" >{{ agent.username }}</td>
-        <td data-title="'FirstName'"  sortable="'firstname'" class="clickable-item col-sm-2" >{{ agent.firstname }}</td>
         <td data-title="'Mobile'"  sortable="'mobile'" class="clickable-item col-sm-2" >{{ agent.mobile }}</td>
         <td data-title="'Landline'"  sortable="'landline'" class="clickable-item col-sm-2" >{{ agent.landline }}</td>
-        <td data-title="'Branchname'"  sortable="'branchname'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
+        <td data-title="'CreatedOn'"  sortable="'createdAt'" class="clickable-item col-sm-2" >{{ agent.createdAt|date }}</td>
+        <td data-title="'Branchname'"  sortable="'agent.attributes.branchName'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
         <td class="col-sm-1">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="editAgent(agent.id)">
@@ -26,9 +29,10 @@ Total: {{count}}
         </td>
     </tr>
     <tr ng-if="!currentPageOfAgents || currentPageOfAgents.length === 0">
-        <td colspan="4">No Agent exist.  </td>
+        <td colspan="7">No Agent exist.  </td>
     </tr>
 </table>
+
 
 </span>
 
@@ -64,6 +68,7 @@ Total: {{count}}
                 <label class="col-sm-4 control-label" for="branchOffice">BranchOffice</label>
                 <div class="col-sm-4">
                     <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="agent.branchOfficeId" required></select>
+                    <a ng-click="launchAddBranchOffice()">Add New Branch</a>
                 </div>
             </div>
         </form>

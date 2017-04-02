@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
@@ -13,6 +14,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,9 @@ public class BranchOfficeManager {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private AgentDAO agentDAO;
+
 
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
@@ -50,13 +56,17 @@ public class BranchOfficeManager {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId is required");
         BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
         Preconditions.checkNotNull(branchOffice, "No BranchOffice found with id");
-        City city = cityManager.findOne(branchOffice.getCityId());
-        User user = userManager.findOne(branchOffice.getManagerId());
-        if(city != null) {
-            branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
+        if(branchOffice.getCityId() != null) {
+            City city = cityManager.findOne(branchOffice.getCityId());
+            if(city != null) {
+                branchOffice.getAttributes().put(BranchOffice.CITY_NAME, city.getName());
+            }
         }
-        if(user != null) {
-            branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+        if(branchOffice.getManagerId() != null) {
+            User user = userManager.findOne(branchOffice.getManagerId());
+            if(user != null) {
+                branchOffice.getAttributes().put(BranchOffice.MANAGER_NAME, user.getFullName());
+            }
         }
         return branchOffice;
     }
@@ -73,7 +83,7 @@ public class BranchOfficeManager {
         return branchOfficeDAO.save(branchOfficeCopy);
     }
 
-    public Iterable<BranchOffice> find(JSONObject query, final Pageable pageable) {
+    public Page<BranchOffice> find(JSONObject query, final Pageable pageable) {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
@@ -85,9 +95,13 @@ public class BranchOfficeManager {
             office.getAttributes().put(BranchOffice.CITY_NAME, cityNames.get(office.getCityId()));
             office.getAttributes().put(BranchOffice.MANAGER_NAME, userNames.get(office.getManagerId()));
         });
-        return branchOffices;
+        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices, pageable, count(query));
+        return page;
     }
 
+    public long count(JSONObject query) {
+        return mongoQueryDAO.count(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query);
+    }
     public void delete(String branchOfficeId) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
         BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
@@ -109,4 +123,5 @@ public class BranchOfficeManager {
         }
         return namesMap;
     }
+
 }

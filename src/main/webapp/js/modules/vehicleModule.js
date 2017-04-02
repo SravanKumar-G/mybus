@@ -1,50 +1,81 @@
 'use strict';
 /*global angular,_*/
 
-angular.module('myBus.vehicleModule', [])
-    .controller('VehicleController', function ($scope, $state,$http, $log, NgTableParams, $modal, $filter,$stateParams, vehicleManager, $location) {
+angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
+    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log,paginationService, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
         $log.debug('vehicleController');
+        $scope.vehicle = {};
+        $scope.count = 0;
+        $scope.loading = false;
+        $scope.vehiclesCount = 0;
         $scope.currentPageOfVehicles = [];
         $scope.id = $stateParams.id;
-        var loadTableData = function (tableParams, $defer) {
-            var data=vehicleManager.getVehicles(function(data) {
-                $scope.vehicles = data;
-                var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                tableParams.total(data.length);
-                if (angular.isDefined($defer)) {
-                    $defer.resolve(orderedData);
-                }
-                $scope.currentPageOfVehicles = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+        var pageable ;
+
+        var loadTableData = function (tableParams) {
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
+            $scope.loading = true;
+            vehicleManager.getVehicles(pageable, function(response){
+                if(angular.isArray(response.content)){
+                    $scope.loading = false;
+                    $scope.vehicles = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.vehicles;
+                    $scope.currentPageOfVehicles = $scope.vehicles;
+                }
+            })
         };
-        $scope.vehicleContentTableParams = new NgTableParams({
-            page: 1,
-            count: 25,
-            sorting: {
-                state: 'asc',
-                name: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfVehicles.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
+
+        $scope.init = function(){
+            vehicleManager.count(function(vehiclesCount){
+                $scope.vehicleContentTableParams = new NgTableParams(
+                    {
+                        page: 1,
+                        size: 10,
+                        count: 10,
+                        sorting: {
+                            regNo: 'asc'
+                        }
+                    },
+                    {
+                        counts:[],
+                        total: vehiclesCount,
+                        getData: function (params) {
+                            loadTableData(params);
+                        }
+                    }
+                )
+            })
+        };
+        $scope.init();
+
         $scope.$on('reloadVehicleInfo',function(e,value){
-            loadTableData($scope.vehicleContentTableParams)
+            $scope.init();
         });
-        $scope.addVehicleOnClick = function () {
-            $state.go('createvehicle');
+
+        $scope.addVehicleOnClick = function (){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl: 'add-vehicle-modal.html',
+                controller: 'editVehicleController',
+                resolve : {
+                    vehicleId : function(){
+                        return null;
+                    }
+                }
+            })
         };
+
         $scope.deleteVehicleOnClick = function(id) {
             vehicleManager.deleteVehicle(id,function(data) {
-                //$route.reload();
             })
-        }
+        };
         $scope.updateVehicleOnClick = function(id) {
-            var modalInstance = $modal.open({
+            $rootScope.modalInstance = $uibModal.open({
                 templateUrl: 'update-vehicle-modal.html',
-                controller: 'UpdateVehicleModalController',
+                controller: 'editVehicleController',
                 resolve : {
                     vehicleId : function(){
                         return id;
@@ -53,105 +84,82 @@ angular.module('myBus.vehicleModule', [])
             })
         }
     })
-    // ========================== Modal - addVehicle controller =================================
-    .controller('AddVehicleController', function ($scope, $modalInstance, $http,$log, vehicleManager) {
-        $scope.vehicle = {};
-        $scope.ok = function () {
-            vehicleManager.createVehicle($scope.vehicle, function(data){
-                $modalInstance.close(data);
 
-                //$route.reload();
-            });
+    .controller('editVehicleController', function ($scope,$rootScope, $http,$log, vehicleManager,vehicleId) {
+        $scope.vehicles= [];
+        $scope.vehicle = {
+            regNo:'',
+            description:'',
+            vehicleType:''
         };
+        if(vehicleId) {
+            $scope.setVehicleIntoModal = function (vehicleId) {
+                vehicleManager.getVehicleById(vehicleId, function (data) {
+                    $scope.vehicle = data;
+
+                });
+            };
+            $scope.setVehicleIntoModal(vehicleId);
+        }
+
+        $scope.ok = function () {
+            if(vehicleId){
+
+                if ($scope.updateVehicleForm.$invalid) {
+                    swal("Error!", "Please fix the errors in the form", "error");
+                    return;
+                }
+                vehicleManager.updateVehicle(vehicleId, $scope.vehicle, function (data) {
+                    $rootScope.modalInstance.close(data);
+                });
+            }
+            else{
+                if($scope.addVehicleForm.$dirty) {
+                    if ($scope.addVehicleForm.$invalid) {
+                        swal("Error!", "Please fix the errors in the form", "error");
+                        return;
+                    }
+                    else{
+                    vehicleManager.createVehicle($scope.vehicle, function(data){
+                    $scope.vehicle = data;
+                    $rootScope.modalInstance.close(data);
+                    });
+                    }
+                }
+            }
+        };
+
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-        $scope.isInputValid = function () {
-            return ($scope.vehicle.type || '') !== '' &&
-                ($scope.vehicle.description || '') !== '' &&
-                ($scope.vehicle.regNo || '') !== '';
+            $rootScope.modalInstance.dismiss('cancel');
         };
     })
-    // ========================== Modal - editVehicle controller =================================
-    .controller('EditVehicleController', function ($scope, $http,$log, vehicleManager) {
-        $scope.vehicle = {};
-        $scope.dateOptions = {
-            dateDisabled: 'disabled',
-            formatYear: 'yy',
-            maxDate: new Date(2020, 5, 22),
-            minDate: new Date(),
-            startingDay: 1
-        };
-        $scope.open1 = function() {
-            $scope.popup1.opened = true;
-        };
-        $scope.popup1 = {
-            opened: false
-        };
-        $scope.ok = function () {
-            vehicleManager.createVehicle($scope.vehicle, function(data){
-                $modalInstance.close(data);
 
-                //$route.reload();
-            });
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-        $scope.isInputValid = function () {
-            return ($scope.vehicle.type || '') !== '' &&
-                ($scope.vehicle.description || '') !== '' &&
-                ($scope.vehicle.regNo || '') !== '';
-        };
-    })
-    // ========================== Modal - updateVehicle controller =================================
-    .controller('UpdateVehicleModalController', function ($scope, $modalInstance, $http,$log,vehicleId, vehicleManager) {
-        $scope.vehicle = {};
-        $scope.setVehicleIntoModal = function(vehicleId){
-            vehicleManager.getVehicleById(vehicleId,function(data){
-                $scope.vehicle = data;
-                console.log("vehicle ID:"+ vehicleId)
-                console.log("vehicle data:"+ $scope.vehicle)
-            });
-        };
-        $scope.setVehicleIntoModal(vehicleId);
-        $scope.ok = function () {
-            vehicleManager.updateVehicle(vehicleId,$scope.vehicle,function(data){
-                $modalInstance.close(data);
-                //$route.reload();
-            })
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }).factory('vehicleManager', function ($rootScope, $http, $log) {
+    .factory('vehicleManager', function ($rootScope, $http, $log) {
         var vehicles = {}
             , rawChildDataWithGeoMap = {};
         return {
-            fetchAllVehicles: function () {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
-                    .then(function (response) {
-                        vehicles = response.data;
-                        $rootScope.$broadcast('vehicleInitComplete');
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
-                    });
-            },
-            getVehicles: function (callback) {
-                $log.debug("fetching vehicles data ...");
-                $http.get('/api/v1/vehicles')
+            getVehicles: function ( pageable, callback) {
+                $http({url: '/api/v1/vehicles', method: "GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                    },function (error) {
-                        $log.debug("error retrieving vehicles");
+                    }, function(error){
+                        swal("oops", error, "error");
                     });
             },
+
             getAllData: function () {
                 return vehicles;
             },
             getAllVehicles: function () {
                 return vehicles;
+            },
+            count: function (callback) {
+                $http.get('/api/v1/vehicle/count',{})
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error retrieving vehicles count");
+                    });
             },
             createVehicle: function (vehicle, callback) {
                 $http.post('/api/v1/vehicle', vehicle).then(function (response) {
@@ -179,13 +187,14 @@ angular.module('myBus.vehicleModule', [])
                         callback(response.data);
                         sweetAlert("Great","Your vehicle has been successfully updated", "success");
                         $log.debug(" vehicle data is updated ...");
+                        $rootScope.$broadcast('reloadVehicleInfo');
                     },function (err,status) {
                         sweetAlert("Error",err.message,"error");
                     });
             },
             deleteVehicle: function(id,callback) {
-                console.log("deleteVehicle() invoked");
-                swal({   title: "Are you sure?",   text: "You will not be able to recover this vehicle !",   type: "warning",
+                swal({   title: "Are you sure?",   text: "You will not be able to recover this vehicle !",
+                    type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
                     confirmButtonText: "Yes, delete it!",
@@ -194,6 +203,7 @@ angular.module('myBus.vehicleModule', [])
                         .then(function (response) {
                             callback(response.data);
                             sweetAlert("Great", "Your Vehicle has been successfully deleted", "success");
+                            $rootScope.$broadcast('reloadVehicleInfo');
                         },function (error) {
                             sweetAlert("Oops...", "Error finding vehicle data!", "error" + angular.toJson(error));
                         });

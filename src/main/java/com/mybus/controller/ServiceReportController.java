@@ -5,6 +5,7 @@ import com.mybus.dao.BookingDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.ServiceForm;
 import com.mybus.model.ServiceReport;
+import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 /**
  *
@@ -33,7 +35,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/downloadStatus", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get status of reports download", response = JSONObject.class)
 	public JSONObject getDownloadStatus(HttpServletRequest request,
-						@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+						@ApiParam(value = "Date of travel") @RequestParam final String travelDate) throws ParseException {
 		return serviceReportsManager.getDownloadStatus(travelDate);
 	}
 
@@ -53,9 +55,22 @@ public class ServiceReportController {
 	public Iterable<ServiceReport> loadReports(HttpServletRequest request,
 									  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
-			return serviceReportsManager.getReports(travelDate);
+			return serviceReportsManager.getReports(ServiceConstants.df.parse(travelDate));
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new BadRequestException("Error loading reports");
+		}
+	}
+
+	@RequestMapping(value = "serviceReport/refresh", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)
+	public Iterable<ServiceReport> refreshReports(HttpServletRequest request,
+											   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+		try{
+			return serviceReportsManager.refreshReport(ServiceConstants.df.parse(travelDate));
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new BadRequestException("Error refreshing reports", e);
 		}
 	}
 
@@ -84,9 +99,10 @@ public class ServiceReportController {
 	}
 
 	@RequestMapping(value = "serviceReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Post service report", response = JSONObject.class)
+	@ApiOperation(value ="Submit service report", response = JSONObject.class)
 	public void submitReport(HttpServletRequest request,
 				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
 		 serviceReportsManager.submitReport(serviceReport);
 	}
+
 }

@@ -26,6 +26,10 @@ We will be using mongodb for application database. Start the mongo deamon using 
 
 >git clone git@github.com:srinikandula/mybus.git
 
+#Download JS libraries
+The Javascript libraries need to downloaded using npm(You need to install npm if you don't have it already). From folder src/main/webapp run the below command.
+>npm install
+
 #Run the app
 You should have a folder created with name 'mybus'. Open a terminal window/command prompt and run the below command
 >mvn clean install tomcat7:run

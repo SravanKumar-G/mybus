@@ -91,10 +91,19 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
         }
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/routes"), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(3)));
     }
 
+    @Test
+    public void testGetCount() throws Exception {
+        for(int i = 0; i < 3; i++) {
+            createTestRoute();
+        }
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/routes/count"), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").value(3));
+    }
     @Test
     public void testCreateRoute() throws Exception {
         City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());

@@ -3,11 +3,14 @@ package com.mybus.service;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
-import com.mybus.model.*;
+import com.mybus.exception.BadRequestException;
+import com.mybus.model.Booking;
+import com.mybus.model.ReportDownloadStatus;
+import com.mybus.model.ServiceReport;
+import com.mybus.model.ServiceReportStatus;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,10 @@ public class AbhiBusPassengerReportService {
 
     @Autowired
     private BookingDAO bookingDAO;
+
+    @Autowired
+    private ServiceComboManager serviceComboManager;
+
     @Autowired
     public void init() {
         try {
@@ -47,9 +54,24 @@ public class AbhiBusPassengerReportService {
         }
     }
 
+    /**
+     * Module that downloads the passenger report creates service reports and bookings
+     * @param date
+     * @return
+     * @throws Exception
+     */
     public ServiceReportStatus downloadReport(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
+        ServiceReportStatus serviceReportStatus = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
+        if(serviceReportStatus != null) {
+            logger.info("The reports are being downloaded for " + date);
+            return null;
+        }
+        serviceReportStatus = serviceReportStatusDAO.save
+                (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
         init();
+        List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
+        Map<String, ServiceReport> serviceBookings = new HashMap<>();
         Collection<ServiceReport> serviceReports = new ArrayList<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -59,7 +81,7 @@ public class AbhiBusPassengerReportService {
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
-            serviceReport.setJDate(date);
+            serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceNumber(busService.get("ServiceId").toString());
             }
@@ -91,22 +113,26 @@ public class AbhiBusPassengerReportService {
                 }
                 serviceReport.setConductorInfo(conductorInfo);
             }
-            serviceReport = serviceReportDAO.save(serviceReport);
             Object[] passengerInfos = (Object[]) busService.get("PassengerInfo");
             Set<Booking> bookings = new HashSet<>();
             for (Object info: passengerInfos) {
                 Map passengerInfo = (HashMap) info;
                 Booking booking = new Booking();
                 try {
-                    booking.setServiceId(serviceReport.getId());
+                    //booking.setServiceId(serviceReport.getId());
+                    booking.setServiceName(serviceReport.getServiceName());
+                    booking.setServiceNumber(serviceReport.getServiceNumber());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
-                    //booking.setJouurneyDateTime(passengerInfo.get("JourneyDate"));
+                    booking.setJDate(passengerInfo.get("JourneyDate").toString());
+                    booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
                     //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString());
                     booking.setName(passengerInfo.get("PassengerName").toString());
                     booking.setSource(passengerInfo.get("Source").toString());
+                    booking.setDestination(passengerInfo.get("Destination").toString());
                     booking.setBookedBy(passengerInfo.get("BookedBy").toString());
+                    booking.setBookedDate(passengerInfo.get("BookedDate").toString());
                     booking.setBasicAmount(Double.valueOf(String.valueOf(passengerInfo.get("BasicAmt"))));
                     booking.setServiceTax(Double.parseDouble(String.valueOf(passengerInfo.get("ServiceTaxAmt"))));
                     booking.setCommission(Double.parseDouble(String.valueOf(passengerInfo.get("Commission"))));
@@ -115,18 +141,41 @@ public class AbhiBusPassengerReportService {
                     booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
-                    //bookings.add(booking);
-                    booking = bookingDAO.save(booking);
+                    serviceReport.getBookings().add(booking);
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    throw new BadRequestException("Failed downloading reports");
                 }
             }
-            //serviceReport.setBookings(bookings);
-            serviceReports.add(serviceReport);
+            if(serviceComboNumbers.contains(serviceReport.getServiceNumber())) {
+                serviceBookings.put(serviceReport.getServiceNumber(), serviceReport);
+            } else {
+                serviceReports.add(serviceReport);
+            }
         }
-        serviceReportDAO.save(serviceReports);
-        ServiceReportStatus serviceReportStatus = new ServiceReportStatus();
-        serviceReportStatus.setReportDate(date);
+        Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
+        for(Map.Entry<String, String[]> entry :serviceComboMappings.entrySet()) {
+            ServiceReport serviceReport = serviceBookings.get(entry.getKey());
+            if(serviceReport != null) {
+                for(String serviceNumber: entry.getValue()) {
+                    ServiceReport comboReport = serviceBookings.get(serviceNumber);
+                    if(comboReport != null) {
+                        serviceReport.setBusType(serviceReport.getBusType() + " " + comboReport.getBusType());
+                        serviceReport.getBookings().addAll(comboReport.getBookings());
+                    }
+                }
+                serviceReports.add(serviceReport);
+            }
+        }
+        for(ServiceReport serviceReport : serviceReports) {
+            Collection<Booking> bookings = serviceReport.getBookings();
+            serviceReport.setBookings(null);
+            final ServiceReport savedReport = serviceReportDAO.save(serviceReport);
+            bookings.stream().forEach(booking -> {
+                booking.setServiceId(savedReport.getId());
+            });
+            bookingDAO.save(bookings);
+        }
+        serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);
         return serviceReportStatusDAO.save(serviceReportStatus);
     }
     public static void main(String args[]) {

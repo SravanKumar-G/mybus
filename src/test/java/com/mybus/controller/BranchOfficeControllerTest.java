@@ -68,8 +68,8 @@ public class BranchOfficeControllerTest extends AbstractControllerIntegrationTes
             branchOfficeDAO.save(BranchOfficeTestService.createNew());
         }
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/branchOffices")), currentUser));
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(5)));
     }
 
     @Test
@@ -81,8 +81,8 @@ public class BranchOfficeControllerTest extends AbstractControllerIntegrationTes
         jsonObject.put("cityId", "1234");
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/branchOffices")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(5)));
     }
 
     @Test
@@ -99,8 +99,8 @@ public class BranchOfficeControllerTest extends AbstractControllerIntegrationTes
         jsonObject.put("managerId", "123");
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/branchOffices")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
+        actions.andExpect(jsonPath("$.content").isArray());
+        actions.andExpect(jsonPath("$.content", Matchers.hasSize(4)));
     }
 
     @Test

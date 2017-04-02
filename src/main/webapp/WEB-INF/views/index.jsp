@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en" ng-app="myBus">
 <head>
     <meta charset="UTF-8">
@@ -31,11 +32,17 @@
     <script src="js/modules/vehicleModule.js"></script>
     <script src="js/modules/branchOfficeModules.js"></script>
     <script src="js/modules/serviceReportsModule.js"></script>
-    <script src="js/modules/expensesModule.js"></script>
+    <script src="js/modules/paymentModule.js"></script>
     <script src="js/modules/routeModule.js"></script>
     <script src="js/modules/cancelModule.js"></script>
     <script src="js/modules/roleModule.js"></script>
     <script src="js/modules/agentModule.js"></script>
+    <script src="js/modules/dueReportModule.js"></script>
+    <script src="js/modules/serviceComboModule.js"></script>
+    <script src="js/modules/cashTransfersModule.js"></script>
+    <script src="js/modules/vehicleExpensesModule.js"></script>
+
+    <script src="js/services/paginationService.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -44,12 +51,13 @@
     <script src="js/directives/stateOptions.js"></script>
     <script src="js/directives/datePicker.js"></script>
     <script src="js/directives/myMenu.js"></script>
-    <script src="js/directives/inputNumber.js"></script>
+    <script src="js/directives/someDirectives.js"></script>
     <script src="js/filters/arrayNoneFilter.js"></script>
     <script src="js/filters/range.js"></script>
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
+
     <link rel="stylesheet" href="css/app.css">
 
 </head>
@@ -69,6 +77,9 @@
                 <div class="collapse navbar-collapse in" collapse="isCollapsed" style="height: auto;">
                     <div class="nav navbar-nav navbar-right navbar_background_clr">
                         <!-- ngIf: privlgeAndCheck.showInchargeAmounts -->
+                        <li class="dropdown header_li_border" ng-if="!isAdmin()">
+                           <a href="#!/payments"> Cash Balance: {{branchOffice.cashBalance|number:2}}</a>
+                        </li>
                         <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
                             <a href="#" class="dropdown-toggle panel_title_color" dropdown-toggle="" role="button" ng-click="getNotification()" aria-expanded="false" aria-haspopup="true">
                                 <i class="ace-icon fa fa-bell icon-animated-bell"></i>
@@ -94,16 +105,15 @@
                         <li class="header_li_border">
                             <a class="welcome panel_title_color ng-binding">
                                 <i class="fa fa-calendar bigger-110"></i>
-                                &nbsp;15/01/2017  &nbsp;
-                                <i class="fa fa-clock-o bigger-110"></i>
-                                17:23:32
+                                &nbsp;{{currentDate()}}  &nbsp;
+
                             </a>
                         </li>
                         <li class="dropdown header_li_border" dropdown="" on-toggle="toggled(open)">
                             <a href="#" class="dropdown-toggle welcome panel_title_color ng-binding" dropdown-toggle="" role="button" aria-expanded="false" aria-haspopup="true">
                                 Welcome &nbsp;
                                 <b href="" ui-sref-active="active" class="handCursor ng-binding">
-                                    Admin
+                                    {{userName()}}
                                 </b>
                                 <span class="caret navebar_caret"></span>
                             </a>
@@ -121,7 +131,7 @@
                             </ul>
                         </li>
                         <li class="header_li_border">
-                            <a href="#/logout" class="welcome panel_title_color ng-binding" ui-sref-active="active" ui-sref="logout">
+                            <a ng-click="logout()" class="welcome panel_title_color ng-binding" ui-sref-active="active" href="login?logout">
                                 <i class="fa fa-power-off panel_title_color"></i>
                                 Logout&nbsp; &nbsp;&nbsp;&nbsp;
                             </a>
@@ -138,7 +148,7 @@
         </nav>
         <div class="row">
             <div class="col-xs-2">
-                <div class="nav-side-menu">
+                <div id="sidebar-menu" class="nav-side-menu">
                     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
 
                     <div class="menu-list">
@@ -150,26 +160,23 @@
                                 </a>
                             </li>
 
-
-
                             <li data-toggle="collapse" data-target="#service" class="collapsed">
-                                <a href="#"><i class="fa fa-globe fa-lg"></i> Services</a>
+                                <a><i class="fa fa-globe fa-lg"></i> Services <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="service">
                                 <li>New Service 1</li>
-                                <li>New Service 2</li>
-                                <li>New Service 3</li>
                             </ul>
 
 
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
-                                <a href="#"><i class="fa fa-book fa-lg"></i> Master</a>
+                                <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
@@ -177,10 +184,15 @@
                                 <my-menu label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
-                                <a href="#"><i class="fa fa-book fa-lg"></i>Reports</a>
+                                <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="CashTransfers" class="nav navbar-nav col-md-12">Cash Transfers</my-menu>
+                                <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
+                                <my-menu label="VehicleExpenses" class="nav navbar-nav col-md-12"></my-menu>
+
                             </ul>
 
                             <li>
@@ -208,7 +220,7 @@
                 </div>
             </div>
         </div>
-
+<script src="js/directives/menu.js"></script>
 
 </body>
 </html>

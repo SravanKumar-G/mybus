@@ -1,0 +1,167 @@
+<div ng-show="!loading" class="container">
+    <legend ng-if="!user.admin">Cash Transfers for office : <b>{{user.attributes.branchName}}</b></legend>
+    <legend ng-if="user.admin">Cash Transfers</legend>
+
+    <div class="toolbar-button-div pull-right">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddCashTransfer()" ng-if="canAddCashTransfer()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+    </div>
+    Total: {{count}}
+    <table class="table table-bordered table-condensed table-hover" ng-table="cashTransferTableParams">
+        <tr ng-repeat="cashTransfer in currentPageOfCashTransfers">
+            <td data-title="'Date'" sortable="'date'">{{cashTransfer.date | date}}</td>
+            <td data-title="'From Branch'" sortable="'fromBranchId'" >{{cashTransfer.attributes.fromOfficeId}}</td>
+            <td data-title="'To Branch'" sortable="'toBranchId'" >{{cashTransfer.attributes.toOfficeId}}</td>
+            <td data-title="'Description'">
+                <a ng-if="cashTransfer.serviceFormId" href="#!/serviceform/{{cashTransfer.serviceFormId}}">{{cashTransfer.description}}</a>
+                <span ng-if="!cashTransfer.serviceFormId">{{cashTransfer.description}}</span>
+            </td>
+            <td data-title="'Amount'" sortable="'amount'">{{cashTransfer.amount}}</span></td>
+            <td data-title="'CreatedBy'">{{cashTransfer.attributes.createdBy}}</td>
+            <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+                <span ng-if="!cashTransfer.status">
+                    <a ng-click="approveOrRejectCashTransfer(cashTransfer,'Approve')">Approve</a>
+                    <a ng-click="approveOrRejectCashTransfer(cashTransfer)">Reject</a>
+                </span>
+                <span ng-if="cashTransfer.status">
+                   {{cashTransfer.status}}
+                </span>
+            </td>
+            <td style="width:10%">
+                <md-icon type="button" class="btn" ng-click="edit(cashTransfer.id)">
+                    <span class="glyphicon glyphicon-pencil" ng-if="cashTransfer.status == null" ng-click="handleClickUpdateCashTransfer(cashTransfer.id)" ></span></md-icon>
+                <md-icon type="button" class="btn" ng-click="delete(cashTransfer.id)" ng-if="cashTransfer.status == null" ng-click="delete(id)">
+                    <span class="glyphicon glyphicon-trash"></span></md-icon>
+
+            </td>
+
+        </tr>
+        <tr ng-if="!currentPageOfCashTransfers || currentPageOfCashTransfers.length === 0">
+            <td colspan="7">No entries exist.  Please add some.</td>
+        </tr>
+    </table>
+</div>
+
+
+<div ng-show="loading">
+    Please wait while the data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
+
+
+
+<!-- ----------------------------- Add Cash Transfer ----------------------------------------------- -->
+
+<script type="text/ng-template" id="add-cashTransfer-modal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Add</h3>
+        </div>
+    <div class="modal-body">
+    <!-- ---------------------------------------------------------------------------- -->
+        <form name="addNewExpenseForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="createdAt">Date</label>
+                    <div class="col-sm-6">
+                        <p class="input-group">
+                            <input type="text" id="createdAt" class="form-control" uib-datepicker-popup="{{format}}"
+                                   ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions"
+                                   ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="description" class="form-control" ng-model="cashTransfer.description" placeholder="Description">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="amount">Amount</label>
+                    <div class="col-sm-6">
+                        <input type="number" id="amount" class="form-control" ng-model="cashTransfer.amount" placeholder="Amount" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="fromOffice">From Branch</label>
+                    <div class="col-sm-6">
+                        <select id="fromOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.fromOfficeId" ng-if="user.admin"></select>
+                        <input ng-if="!user.admin" class="form-control" placeholder="{{ user.attributes.branchName }}"  readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label checkbox">To Branch</label>
+                    <div class="col-sm-6">
+                        <select id="toOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.toOfficeId" required></select>
+                    </div>
+                </div>
+            </div>
+         </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="add()">Save</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--------------------------------- Update Cash Transfer ------------------------------------------>
+<script type="text/ng-template" id="update-cashTransfer-modal.html">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Add</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="updateCashTransferForm" class="form-horizontal" role="form">
+            <div class="form-group">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="updatedAt">Date</label>
+                    <div class="col-sm-4">
+                        <p class="input-group">
+                            <input type="text" id="updatedAt" class="form-control" uib-datepicker-popup="{{format}}"
+                                   ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions"
+                                   ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="descriptionUpdate" class="form-control" ng-model="cashTransfer.description" placeholder="Description">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="amount">Amount</label>
+                    <div class="col-sm-6">
+                        <input type="number" id="amountUpdate" class="form-control" ng-model="cashTransfer.amount" placeholder="Amount" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="fromOffice">From Branch</label>
+                    <div class="col-sm-6">
+                        <select id="fromOfficeUpdate" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.fromOfficeId" ng-if="user.admin"></select>
+                        <input ng-if="!user.admin" class="form-control" value="{{ user.attributes.branchName }}" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label checkbox">To Branch</label>
+                    <div class="col-sm-6">
+                        <select id="toOfficeUpdate" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.toOfficeId" required></select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="add(cashTransfer.id)">Save</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

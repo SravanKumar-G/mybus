@@ -2,21 +2,20 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.AgentDAO;
-import com.mybus.dao.BookingDAO;
-import com.mybus.exception.BadRequestException;
+import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
-import com.mybus.model.ServiceForm;
-import com.mybus.model.ServiceReport;
-import com.mybus.model.Shipment;
 import com.mybus.service.ABAgentService;
 import com.mybus.service.AgentManager;
-import com.mybus.service.ServiceReportsManager;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -54,10 +53,37 @@ public class AgentController {
 		return response;
 	}
 
-	@RequestMapping(value = "agent/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "agent/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get Agents count", response = Long.class)
+	public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
+						 @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+						 final Pageable pageable) {
+		return agentManager.count(query,showInvalid);
+	}
+
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
+					value = "Results page you want to retrieve (0..N)"),
+			@ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
+					value = "Number of records per page."),
+			@ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+					value = "Sorting criteria in the format: property(,asc|desc). " +
+							"Default sort order is ascending. " +
+							"Multiple sort criteria are supported.")
+	})
+	@RequestMapping(value = "agents", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
-	public Iterable<Agent> getAllAgents(HttpServletRequest request) {
-		return agentManager.findAll();
+	public Page<Agent> getAgents(HttpServletRequest request,
+										@RequestParam(required = false, value = "query") String query,
+										@RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+										 final Pageable pageable) {
+		return agentManager.findAgents(query, showInvalid, pageable);
+	}
+
+	@RequestMapping(value = "agentNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
+	public Iterable<AgentNameDTO> getAgentNames(HttpServletRequest request) {
+		return agentManager.getAgentNames();
 	}
 
 	@RequestMapping(value = "agent/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

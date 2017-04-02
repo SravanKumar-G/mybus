@@ -3,37 +3,59 @@
 /*global angular, _*/
 
 angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
-    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager) {
+    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager, userManager) {
         $scope.headline = "Agents";
         $scope.count = 0;
         $scope.agents = {};
         $scope.loading =false;
         $scope.currentPageOfAgents = [];
+        $scope.agentsCount = 0;
+        $scope.agentTableParams = {};
+        $scope.showInvalid = false;
+        $scope.query = "";
         var loadTableData = function (tableParams) {
+            var sortingProps = tableParams.sorting(); //{'name':'asc'}  --- name,asc,   {'username':'desc'}  -- username,desc
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
             $scope.loading = true;
-            agentManager.loadAll(function(data){
-                if(angular.isArray(data)) {
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            agentManager.getAgents($scope.query,$scope.showInvalid,pageable, function(response){
+                $scope.invalidCount = 0;
+                if(angular.isArray(response.content)) {
                     $scope.loading = false;
-                    $scope.count = data.length;
-                    $scope.agents = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                    tableParams.total(data.length);
-                    $scope.currentPageOfAgents = $scope.agents.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-                    $scope.count = $scope.currentPageOfAgents.length;
+                    $scope.agents = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    tableParams.data = $scope.agents;
+                    $scope.currentPageOfAgents =  $scope.agents;
                 }
             });
         };
-        $scope.agentTableParams = new NgTableParams({
-            page: 1,
-            count: 5000,
-            sorting: {
-                fullName: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfAgents.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
+
+        $scope.init = function() {
+            $scope.agentTableParams = new NgTableParams({
+                page: 1, // show first page
+                size:10,
+                count:10,
+                sorting: {
+                    username: 'asc'
+                },
+            }, {
+                counts:[],
+                //total:809,
+                getData: function (params) {
+                    loadTableData(params);
+                }
+            });
+        };
+
+        $scope.init();
+        $scope.searchFilter = function(){
+            $scope.init();
+        }
+
         $scope.refreshAgents = function() {
             $scope.loading = true;
             agentManager.download(function(data) {
@@ -56,8 +78,11 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.$on('AgentUpdated', function (e, value) {
             loadTableData($scope.agentTableParams);
         });
+        $scope.isAdmin = function(){
+            return userManager.getUser().admin;
+        };
     })
-    .controller('EditAgentController', function($scope,$rootScope, $stateParams,agentId,agentManager, branchOfficeManager ) {
+    .controller('EditAgentController', function($scope,$rootScope, $location, $stateParams,agentId,agentManager, branchOfficeManager ) {
         $scope.headline = "Edit Agent";
         $scope.agent = {};
         $scope.offices = [];
@@ -78,20 +103,24 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
-
+        $scope.launchAddBranchOffice = function() {
+            $scope.cancel();
+            $location.url('/branchoffice/');
+        }
 
 
     }).factory('agentManager', function ($http, $log,$rootScope) {
         var agents = {};
         return {
-            loadAll: function (callback) {
-                $http.get('/api/v1/agent/all')
+            getAgents: function (query, showInvalid, pageable, callback) {
+                $http({url:'/api/v1/agents?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving agents");
                     });
             },
+
             download: function (callback) {
                 $http.get('/api/v1/agent/download')
                     .then(function (response) {
@@ -118,6 +147,16 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
                     .then(function (response) {
                         callback(response.data);
                         $rootScope.$broadcast('AgentLoadComplete');
+                    },function (error) {
+                        $log.debug("error retrieving agent info");
+                        sweetAlert("Error",error.data.message,"error");
+                    });
+            },
+            getNames: function(callback) {
+                $http.get('/api/v1/agentNames/')
+                    .then(function (response) {
+                        callback(response.data);
+                        $rootScope.$broadcast('AgentNamesLoadComplete');
                     },function (error) {
                         $log.debug("error retrieving agent info");
                         sweetAlert("Error",error.data.message,"error");

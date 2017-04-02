@@ -1,6 +1,6 @@
-<div ng-show="downloaded" >
+<div class="container" ng-show="downloaded" >
     <table class="table table-bordered table-condensed table-hover" >
-        <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date:{{service.jdate}}</td><td>{{service.busType}}</td></tr>
+        <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date: {{service.jdate | date}}</td><td>{{service.busType}}</td></tr>
         <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td></td></tr>
     </table>
     <table class="table table-bordered table-condensed table-hover">
@@ -17,6 +17,9 @@
                 <tr ng-repeat="booking in currentPageOfBookings">
                     <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2">{{ booking.bookedBy }}</td>
                     <td data-title="'Seats'"  sortable="'seatsCount'" class="clickable-item col-md-2">{{ booking.seatsCount }}</td>
+                    <td data-title="'Rate'"  class="clickable-item col-md-2" >
+                        {{booking.basicAmount + booking.serviceTax + booking.commission}}
+                    </td>
                     <td data-title="'NetAmt'"  sortable="'netAmt'" class="clickable-item col-md-2" >
                         {{booking.netAmt}}
                         <span style="color:red;" ng-show="booking.due">Due</span>

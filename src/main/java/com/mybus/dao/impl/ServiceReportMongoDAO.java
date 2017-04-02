@@ -1,18 +1,10 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.WriteResult;
-import com.mybus.model.Person;
 import com.mybus.model.ServiceReport;
-import com.mybus.model.Shipment;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**

@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.impl.CityMongoDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
@@ -13,6 +12,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -37,6 +38,13 @@ public class CityManager {
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
 
+    public Page<City> findAll(Pageable pageable) {
+        return  cityDAO.findAll(pageable);
+    }
+
+    public long count() {
+        return cityDAO.count();
+    }
     public City findOne(String cityId){
         return cityDAO.findOne(cityId);
     }
@@ -173,9 +181,7 @@ public class CityManager {
         }
         return cityNames;
     }
-    public Iterable<City> findAll(){
-        return cityDAO.findAll();
-    }
+
     public void deleteAll() {
         cityDAO.deleteAll();
     }

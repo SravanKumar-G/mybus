@@ -1,43 +1,22 @@
 package com.mybus.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.BusServiceDAO;
-import com.mybus.dao.CityDAO;
-import com.mybus.dao.LayoutDAO;
-import com.mybus.dao.PaymentDAO;
-import com.mybus.dao.PaymentResponseDAO;
-import com.mybus.model.BusJourney;
-import com.mybus.model.BusService;
-import com.mybus.model.City;
-import com.mybus.model.JourneyType;
-import com.mybus.model.Layout;
-import com.mybus.model.Payment;
-import com.mybus.model.PaymentResponse;
-import com.mybus.model.Trip;
+import com.mybus.dao.*;
+import com.mybus.model.*;
 import com.mybus.service.BookingSessionInfo;
 import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Ticket booking flow controller Using like 
  * get stations, get toStations, get available buses, get buslayout, block ticket,
@@ -46,7 +25,7 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class BusTicketBookingController {
+public class BusTicketBookingController extends MyBusBaseController{
 	
 	@Autowired
 	private CityDAO cityDAO;
@@ -58,7 +37,7 @@ public class BusTicketBookingController {
 	private LayoutDAO layoutDAO;
 	
 	@Autowired
-	private PaymentDAO paymentDAO; 
+	private BookingPaymentDAO bookingPaymentDAO;
 	
 	@Autowired
 	private BookingSessionManager bookingSessionManager;
@@ -197,9 +176,9 @@ public class BusTicketBookingController {
 	@RequestMapping(value = "getTicketPassengerInfo", method = RequestMethod.GET)
 	@ResponseBody
 	@ApiOperation(value = "booked ticket passenger info request")
-	public Payment getPassingerInfo(HttpServletRequest request) {
+	public BookingPayment getPassingerInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
 		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
-		return paymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
+		return bookingPaymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
     }
 }

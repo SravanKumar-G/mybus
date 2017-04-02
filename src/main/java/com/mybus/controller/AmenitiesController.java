@@ -1,26 +1,22 @@
 package com.mybus.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.Amenity;
+import com.mybus.service.AmenitiesManager;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Amenity;
-import com.mybus.service.AmenitiesManager;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -40,12 +36,19 @@ public class AmenitiesController {
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "amenities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "Get all the amenities available", response = Amenity.class, responseContainer = "List")
-	public Iterable<Amenity> getAmenities() {
+	@ApiOperation(value = "Get all the amenities available", response = Page.class, responseContainer = "List")
+	public Page<Amenity> getAmenities(final Pageable pageable) {
 		LOGGER.debug("Get all the amenityIds available");
-		return amenitiesManager.findAll();
+		return amenitiesManager.findAll(pageable);
 	}
 
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "amenities/count", method = RequestMethod.GET)
+	@ApiOperation(value = "Get amenities count")
+	public long count() {
+		LOGGER.debug("Get all the amenityIds available");
+		return amenitiesManager.count();
+	}
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "amenity", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add amenity")

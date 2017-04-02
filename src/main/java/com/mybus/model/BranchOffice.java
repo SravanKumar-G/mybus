@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**
@@ -33,9 +32,6 @@ public class BranchOffice extends AbstractDocument implements AttributesDocument
 
     @RequiresValue
     private String cityId;
-
-
-    @RequiresValue
     private String managerId;
 
     @RequiresValue
@@ -47,6 +43,8 @@ public class BranchOffice extends AbstractDocument implements AttributesDocument
 
     @RequiresValue
     private String address;
+
+    private double cashBalance = 0;
 
     @Override
     public boolean containsKey(String attributeName) {

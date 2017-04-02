@@ -11,15 +11,16 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/v1/")
 public class VehicleController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);
@@ -33,16 +34,14 @@ public class VehicleController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicles", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
-    @ApiOperation(value = "Get all the vehicles available", response = User.class, responseContainer = "List")
-    public Iterable<Vehicle> getVehicles(HttpServletRequest request) {
+    @ApiOperation(value = "Get all the vehicles available")
+    public Page<Vehicle> getVehicles(HttpServletRequest request, final Pageable pageable) {
         logger.info("geting all vehicles...");
-        Iterable<Vehicle> vs= vehicleDAO.findAll();
+        Page<Vehicle> vs= vehicleDAO.findAll(pageable);
         return  vs;
     }
-
+    
     @RequestMapping(value = "vehicle/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    @ResponseBody
     @ApiOperation(value ="Get the Vehicle JSON", response = Vehicle.class)
     public Vehicle getVehicle(HttpServletRequest request,
                               @ApiParam(value = "Id of the Vehicle to be found") @PathVariable final String id) {
@@ -52,7 +51,6 @@ public class VehicleController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @ApiOperation(value = "Create a new vehicle")
     public ResponseEntity createUser(HttpServletRequest request,
                                      @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
@@ -62,7 +60,6 @@ public class VehicleController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     @ApiOperation(value ="Update vehicle", response = User.class)
     public ResponseEntity updateVehicle(HttpServletRequest request,
                                         @ApiParam(value = "Id of the vehicle to be found") @PathVariable final String id,
@@ -81,5 +78,12 @@ public class VehicleController extends MyBusBaseController{
         JSONObject response = new JSONObject();
         response.put("deleted", vehicleManager.deleteVehicle(id));
         return response;
+    }
+    @RequestMapping(value = "vehicle/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get vehicle count", response = Long.class)
+    public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
+                         @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+                         final Pageable pageable) {
+        return vehicleDAO.count();
     }
 }

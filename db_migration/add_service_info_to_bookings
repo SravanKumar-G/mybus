@@ -1,0 +1,14 @@
+var services = db.serviceReport.find({}).toArray();
+for(i in services) {
+	var service = services[i];
+	if(service.attrs.formId) {
+		var bookings = db.booking.find({'formId':service.attrs.formId}).toArray();
+		for(b in bookings) {
+			var booking = bookings[b];
+			booking.serviceName = service.serviceName;
+			booking.serviceNumber = service.serviceNumber;
+			db.booking.save(booking);
+		}
+	}
+
+}

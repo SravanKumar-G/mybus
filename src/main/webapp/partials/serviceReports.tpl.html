@@ -10,7 +10,8 @@
             <p class="input-group">
                 <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
                        is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
-                       close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"/>
+                       close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()" ng-show="false"/>
+                {{dt.getFullYear()+"-"+monthNames[dt.getMonth()]+"-"+dt.getDate()}}
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -25,6 +26,10 @@
                     <span class="glyphicon glyphicon-plus"></span> Download Passenger Report
                 </button>
                 <p ng-show="downloaded">The report was downloaded on {{downloadedOn}}</p>
+
+                <button type="button" class="btn btn-sm btn-primary" ng-click="refreshReports()" ng-show="downloaded && isAdmin()">
+                    <span class="glyphicon glyphicon-plus"></span> Refresh Reports
+                </button>
             </div>
         </div>
     </div>
@@ -43,7 +48,7 @@
             <td data-title="'To'"  sortable="'destination'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.destination }}</td>
             <td data-title="'Vehicle'"  sortable="'vehicleRegNumber'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{ service.vehicleRegNumber }}</td>
             <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">
-                <span ng-show="{{ service.attributes.formId != null}}">Submitted</span>
+                {{service.status}}
             </td>
          </tr>
         <tr ng-if="!currentPageOfReports || currentPageOfReports.length === 0">

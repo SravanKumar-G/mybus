@@ -6,11 +6,9 @@ package com.mybus.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.joda.time.DateTime;
 
 import java.util.LinkedHashMap;
-
-import org.joda.time.DateTime;
-import org.json.simple.JSONObject;
 
 /**
  * @author  schanda on 02/13/16.

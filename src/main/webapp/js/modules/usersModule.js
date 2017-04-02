@@ -71,7 +71,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
     // ============================= Add ========================================
     //
-    .controller('UserAddController', function($scope,userManager,$window,$log, $location, roleManager, cityManager, cancelManager ) {
+    .controller('UserAddController', function($scope,userManager,$window,$log, $location, roleManager, cityManager, branchOfficeManager, cancelManager ) {
         $scope.headline = "Add New User";
         //$scope.isAdd = false;
         $scope.ConfirmPassword = "";
@@ -79,6 +79,10 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.planTypes = [];
         $scope.roles =[];
         $scope.cities = [];
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
         $scope.rolesInit = function(){
         	roleManager.getAllRoles(function(data){
         		$scope.roles = data;
@@ -123,7 +127,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             }
             $location.url('/users');
         };
-
+        $scope.launchAddBranchOffice = function() {
+            $location.url('/branchoffice/');
+        }
         $scope.cancelUser = function(theForm){
             cancelManager.cancel(theForm);
         }
@@ -135,7 +141,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager, branchOfficeManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.id;
         $scope.user={};
@@ -146,6 +152,10 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         		$scope.roles = data;
         	});
         }
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
         $scope.rolesInit();
         $scope.loadUserWithId = function(){
             cityManager.getActiveCityNames(function(data) {
@@ -178,8 +188,13 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         };
         $scope.cancelUser = function(theForm){
             cancelManager.cancel(theForm);
-        }
-
+        };
+        $scope.launchAddBranchOffice = function() {
+            $location.url('/branchoffice/');
+        };
+        $scope.launchRoleAdd = function(){
+            $location.url('/roles');
+        };
     }).factory('userManager', function ($http, $log,$rootScope) {
 
         var GRP_READ_ONLY = "Read-only"
@@ -200,7 +215,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         var users = {};
 
         return {
-
             validateUserInfo: function(user, confirmPassword) {
                 if(user.password !== confirmPassword) {
                     return false;
@@ -217,7 +231,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving users");
                     });
             },
-
             getUsers: function (callback) {
                 if(users) {
                     callback(users);
@@ -242,12 +255,9 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving user names");
                     });
             },
-
-
             getAllUsers: function () {
                 return users;
             },
-
             createUser: function(user,callback){
                 $http.post('/api/v1/user',user).then(function(response){
                     callback(response.data);
@@ -256,7 +266,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     sweetAlert("Error",err.message,"error");
                 });
             },
-
             getUserWithId:function(id,callback){
                 $http.get("/api/v1/userId/" + id).then(function(response){
                     callback(response.data);
@@ -270,7 +279,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     errorcallback(data);
                 });
             },
-
             deleteUser : function (id){
                 swal({
                     title: "Are you sure?",
@@ -384,26 +392,6 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     }
                 }
                 return isBusAdm;
-            },
-
-            canAddPOI: function () {
-                return this.isAuthor() || this.isPublisher() || this.isAdmin();
-            },
-
-            canEditPOI: function (businessId) {
-                return this.isPublisher() || this.isAdmin() || this.isBusinessAdmin(businessId);
-            },
-
-            canAddOrEditPOI: function (isAdd, businessId) {
-                return isAdd ? this.canAddPOI() : this.canEditPOI(businessId);
-            },
-
-            canViewAPIDocs: function () {
-                return this.isDeveloper() || this.isAdmin() || this.isPublisher() || this.isAuthor();
-            },
-
-            canViewBusinesses: function () {
-                return this.isReadOnly() || this.isAuthor() || this.isPublisher() || this.isAdmin() || this.isBusinessAdmin();
             }
         };
     });

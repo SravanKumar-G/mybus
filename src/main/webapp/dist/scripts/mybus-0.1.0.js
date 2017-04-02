@@ -47,7 +47,7 @@ myBus.config(['$routeProvider',
           controller: 'CitiesController'
         }).
         when('/expenses', {
-          templateUrl: 'partials/expenses-list.tpl.html',
+          templateUrl: 'partials/payments-list.tpl.html',
           controller: 'ExpensesController'
         }).
         when('/city/:id', {

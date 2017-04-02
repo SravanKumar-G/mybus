@@ -6,6 +6,8 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.Booking;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.User;
+import com.mybus.service.AbhiBusPassengerReportService;
+import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
 import junit.framework.TestCase;
 import org.hamcrest.Matchers;
@@ -53,10 +55,10 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
         currentUser = new User("test", "test", "test", "test", true, true);
         currentUser = userDAO.save(currentUser);
     }
-    private ServiceReport createTestData() {
+    private ServiceReport createTestData() throws Exception{
         ServiceReport report = new ServiceReport();
         report.setBusType("Sleeper");
-        report.setJDate("2016-02-03");
+        report.setJourneyDate(ServiceConstants.df.parse("2016-02-22"));
         report = serviceReportDAO.save(report);
         Set<Booking> bookingSet = new HashSet<>();
         for(int i=0;i<10;i++) {

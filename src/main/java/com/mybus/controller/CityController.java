@@ -9,19 +9,18 @@ import com.mybus.service.CityManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,10 +38,16 @@ public class CityController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
-    public Iterable<City> getCities(HttpServletRequest request) {
-        return cityDAO.findAll();
+    public Page<City> getCities(HttpServletRequest request, final Pageable pageable) {
+        return cityManager.findAll(pageable);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "cities/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get Count", response = City.class, responseContainer = "List")
+    public long getCount(HttpServletRequest request, final Pageable pageable) {
+        return cityManager.count();
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
