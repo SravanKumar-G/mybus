@@ -647,6 +647,28 @@ footer a:hover, footer a:focus{
         padding-bottom: 300px;
     }
 }
+@media (max-width: 768px){
+    #loginBox {
+        left:0;
+        width: 100%;
+    }
+    #loginForm {
+        width: inherit;
+    }
+    #loginForm:after {
+        left: 25px;
+        right: inherit;
+    }
+    #loginButton {
+        top:1px;
+    }
+    #loginContainer {
+        padding:0;
+    }
+    #loginContainer a span {
+        display:flex;
+    }
+}
 @media (max-width: 480px){
     .slider-item{
         background-image: none !important;
