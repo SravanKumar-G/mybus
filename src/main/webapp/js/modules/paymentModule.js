@@ -167,7 +167,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
 
         $scope.add = function () {
             if (paymentId) {
-                if ($scope.updatePaymentForm.$invalid) {
+                if ($scope.addNewExpenseForm.$invalid) {
                     swal("Error!", "Please fix the errors in the form", "error");
                     return;
                 }
