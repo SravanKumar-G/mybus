@@ -59,6 +59,13 @@ public class PaymentController {
     public long getCount(HttpServletRequest request,@RequestParam(value = "pending", required = true) boolean pendingPayments) {
         return paymentMongoDAO.getPaymentsCount(pendingPayments);
     }
+    
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payments/day", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Page<Payment> getPaymentsByDay(HttpServletRequest request, final Pageable pageable) {
+    	String date = request.getParameter("date");
+        return paymentMongoDAO.findPendingPaymentsByDate(date, pageable);
+    }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payment", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
