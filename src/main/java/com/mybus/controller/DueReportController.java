@@ -1,6 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.Booking;
 import com.mybus.model.BranchOfficeDue;
 import com.mybus.service.BookingManager;
 import com.mybus.service.DueReportManager;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -38,7 +40,7 @@ public class DueReportController extends MyBusBaseController{
     @ApiOperation(value = "Get all the due reports for branch offices", response = BranchOfficeDue.class, responseContainer = "List")
     public Iterable<BranchOfficeDue> getAllDueReports(HttpServletRequest request,
                                          final Pageable pageable) {
-        return dueReportManager.getBranchOfficeDueReports();
+        return dueReportManager.getBranchOfficesDueReports();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -50,6 +52,13 @@ public class DueReportController extends MyBusBaseController{
         return dueReportManager.findOfficeDuesGroupByDate(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/office/all/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get branch office due report", response = List.class )
+    public List<Booking> getBranchDueReport(HttpServletRequest request,
+                                              @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id) {
+        return dueReportManager.getBranchOfficeDues(id);
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/office/{id}/{date}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get branch office due report", response = BranchOfficeDue.class )

@@ -11,9 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.print.Book;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -146,7 +144,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         assertEquals(payments.get(0).getType(), PaymentType.INCOME);
         assertEquals(5000, payments.get(0).getAmount(), 0.0);
 
-        List<BranchOfficeDue> officeDues = dueReportManager.getBranchOfficeDueReports();
+        List<BranchOfficeDue> officeDues = dueReportManager.getBranchOfficesDueReports();
         assertEquals(2, officeDues.size());
         officeDues.stream().forEach(office -> {
             if(office.getName().equals("Office2")) {
@@ -160,7 +158,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
                 break;
             }
         }
-        officeDues = dueReportManager.getBranchOfficeDueReports();
+        officeDues = dueReportManager.getBranchOfficesDueReports();
         assertEquals(2, officeDues.size());
         officeDues.stream().forEach(office -> {
             if(office.getName().equals("Office2")) {

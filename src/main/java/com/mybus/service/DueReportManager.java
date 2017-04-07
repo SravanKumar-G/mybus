@@ -43,7 +43,7 @@ public class DueReportManager {
      * Get the due report for all the branch offices, will be used by admin
      * @return
      */
-    public List<BranchOfficeDue> getBranchOfficeDueReports() {
+    public List<BranchOfficeDue> getBranchOfficesDueReports() {
         List<BranchOffice> offices = IteratorUtils.toList(branchOfficeDAO.findAll().iterator());
         List<BranchOfficeDue> responses = new ArrayList<>();
         offices.stream().forEach(office -> {
@@ -79,6 +79,18 @@ public class DueReportManager {
         return officeDue;
     }
 
+    public List<Booking> getBranchOfficeDues(BranchOffice office) {
+        logger.info("Preparing due report");
+        BranchOfficeDue officeDue = new BranchOfficeDue();
+        officeDue.setName(office.getName());
+        officeDue.setBranchOfficeId(office.getId());
+        officeDue.setCashBalance(office.getCashBalance());
+        officeDue.setManagerName(office.getAttributes().get(BranchOffice.MANAGER_NAME));
+        List<String> namesList = agentMongoDAO.findAgentNamesByOfficeId(office.getId());
+        List<Booking> bookings = bookingMongoDAO.findDueBookings(namesList, null);
+        return bookings;
+    }
+
     /**
      * Find branch office due report by it's id, include the bookings as well
      * @param branchOfficeId
@@ -89,6 +101,10 @@ public class DueReportManager {
         return getBranchOfficeDueReport(office, true, null);
     }
 
+    public List<Booking> getBranchOfficeDues(String branchOfficeId) {
+        BranchOffice office = branchOfficeManager.findOne(branchOfficeId);
+        return getBranchOfficeDues(office);
+    }
     /**
      * Find office dues group by Journey date
      * @param branchOfficeId
