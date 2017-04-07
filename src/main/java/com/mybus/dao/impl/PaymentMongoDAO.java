@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -138,6 +139,16 @@ public class PaymentMongoDAO {
         return new PageImpl<Payment>(payments, pageable, count);
     }
 
+    public Page<Payment> findPendingPaymentsByDate(String date, Pageable pageable) {
+        Query q = getPaymentsByDateQuery(date);
+        if(pageable != null) {
+            q.with(pageable);
+        }
+        long count = mongoTemplate.count(q, Payment.class);
+        List<Payment> payments = mongoTemplate.find(q, Payment.class);
+        return new PageImpl<Payment>(payments, pageable, count);
+    }
+    
     private Query getPaymentsQuery(boolean pending) {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
@@ -166,6 +177,29 @@ public class PaymentMongoDAO {
         }
         match.add(Criteria.where("formId").exists(false));
         match.add(where("vehicleId").exists(true));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        q.addCriteria(criteria);
+        return q;
+    }
+    
+    private Query getPaymentsByDateQuery(String date) {
+        Query q = new Query();
+        Date startDate = null, endDate = null;
+        try{
+        	SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
+        	String startTime = date + " 00:00"; 
+        	String endTime = date + " 24:00";
+        	startDate = simpleDateFormat.parse(startTime);  
+        	endDate = simpleDateFormat.parse(endTime);
+        }catch(Exception e){
+        	throw new BadRequestException("Exception preparing payment query", e);
+        }
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(!sessionManager.getCurrentUser().isAdmin()) {
+            match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+        }
+        match.add(Criteria.where("date").gt(startDate).lte(endDate));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return q;
