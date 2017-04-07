@@ -80,12 +80,14 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.roles =[];
         $scope.cities = [];
         $scope.offices = [];
+        var pageable;
+
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
         $scope.rolesInit = function(){
-        	roleManager.getAllRoles(function(data){
-        		$scope.roles = data;
+        	roleManager.getAllRoles(pageable,function(data){
+        		$scope.roles = data.content;
         	});
             cityManager.getActiveCityNames(function(data){
                 $scope.cities = data;
@@ -147,9 +149,11 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.user={};
         $scope.roles =[];
         $scope.cities =[];
-            $scope.rolesInit = function(){
-        	roleManager.getAllRoles(function(data){
-        		$scope.roles = data;
+        var pageable;
+
+      $scope.rolesInit = function(){
+        	roleManager.getAllRoles(pageable,function(data){
+        		$scope.roles = data.content;
         	});
         }
         $scope.offices = [];
@@ -160,7 +164,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.loadUserWithId = function(){
             cityManager.getActiveCityNames(function(data) {
                 $scope.cities = data;
-                console.log("city names..." + JSON.stringify($scope.cities));
+                //console.log("city names..." + JSON.stringify($scope.cities));
                 userManager.getUserWithId($scope.id, function (data) {
                     $scope.user = data;
                     $scope.confirmPassword = $scope.user.password;

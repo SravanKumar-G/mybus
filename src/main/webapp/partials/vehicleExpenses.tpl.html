@@ -1,6 +1,6 @@
 <div ng-show="!loading" class="container">
-    <legend ng-if="!user.admin">Payment for office : <b>{{user.attributes.branchName}}</b></legend>
-    <legend ng-if="user.admin">Payments</legend>
+    <legend ng-if="!user.admin">Vehicle Expences for office : <b>{{user.attributes.branchName}}</b></legend>
+    <legend ng-if="user.admin">Vehicle Expences</legend>
 
     <div class="toolbar-button-div pull-right">
         <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddPayment()" ng-if="canAddPayment()"><span class="glyphicon glyphicon-plus"></span> Add</button>

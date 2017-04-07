@@ -11,7 +11,6 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
     //
     .controller('BranchOfficesController', function($scope,$state, $http, $log, $filter,paginationService, NgTableParams, $location, branchOfficeManager) {
         $scope.headline = "Branch Offices";
-        $scope.count = 0;
         $scope.loading = false;
         $scope.currentPageOfOffices = [];
         var pageable ;
@@ -25,9 +24,9 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                     if(angular.isArray(response.content)){
                         $scope.loading = false;
                         $scope.branchOffice = response.content;
+                        tableParams.data = $scope.branchOffice;
                         tableParams.total(response.totalElements);
                         $scope.count = response.totalElements;
-                        tableParams.data = $scope.branchOffice;
                         $scope.currentPageOfOffices = $scope.branchOffice;
                     }
                 })
@@ -35,23 +34,21 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
 
             $scope.init = function(){
                 branchOfficeManager.count(function(branchOfficeCount){
-                    $scope.officeTableParams = new NgTableParams(
-                        {
+                    $scope.officeTableParams = new NgTableParams({
                             page: 1,
-                            size: 10,
+                            count:10,
                             sorting: {
                                 name: 'asc'
                             }
                         },
                         {
                             counts:[],
-                            total: branchOfficeCount,
+                            total:branchOfficeCount,
                             getData: function (params) {
                                 loadTableData(params);
                             }
-                        }
-                    )
-                })
+                        });
+                });
             };
             $scope.init();
 
@@ -65,8 +62,9 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
         $scope.delete = function(office){
             branchOfficeManager.deleteOffice(office.id);
         }
-        $scope.$on('DeleteOfficeCompleted',function(e,value){
-            $scope.loadAll();
+
+        $scope.$on('check',function(e,value){
+            $scope.init();
         });
 
     })
@@ -157,7 +155,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                         if(angular.isFunction(callback)){
                             callback(response.data);
                         }
-                        $rootScope.$broadcast('BranchOfficeUpdated');
+                        $rootScope.$broadcast('check');
                     },function (err,status) {
                         sweetAlert("Error",err.message,"error");
                     });
@@ -166,7 +164,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                         if(angular.isFunction(callback)){
                             callback(response.data);
                         }
-                            $rootScope.$broadcast('BranchOfficeCreated');
+                            $rootScope.$broadcast('check');
                     },function (err,status) {
                         sweetAlert("Error",err.message,"error");
                     });
@@ -185,7 +183,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                 $http.get('/api/v1/branchOffice/'+officeId)
                     .then(function (response) {
                         callback(response.data);
-                        $rootScope.$broadcast('BranchOfficeLoadComplete');
+                        $rootScope.$broadcast('check');
                     },function (error) {
                         $log.debug("error retrieving branchOffice");
                     });
@@ -200,7 +198,7 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                     confirmButtonText: "Yes, delete it!",
                     confirmButtonColor: "#ec6c62"},function(){
                     $http.delete('api/v1/branchOffice/'+id).then(function(response){
-                        $rootScope.$broadcast('DeleteOfficeCompleted');
+                        $rootScope.$broadcast('check');
                         swal("Deleted!", "Office was successfully deleted!", "success");
                     },function () {
                         swal("Oops", "We couldn't connect to the server!", "error");

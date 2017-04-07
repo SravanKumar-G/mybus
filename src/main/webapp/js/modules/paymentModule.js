@@ -285,8 +285,10 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 $http.delete('/api/v1/payment/' + paymentId)
                     .then(function (response) {
                         callback(response.data);
+                        swal("Great", "Saved Deleted", "success");
                     }, function (error) {
                         $log.debug("error deleting payment");
+                        sweetAlert("Error",err.message,"error");
                     });
             },
             getPaymentById: function (id,callback) {
