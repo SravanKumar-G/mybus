@@ -71,7 +71,7 @@ public class DueReportManagerTest extends AbstractControllerIntegrationTest {
             }
             booking = bookingDAO.save(booking);
         }
-        List<BranchOfficeDue> dues = dueReportManager.getBranchOfficeDueReports();
+        List<BranchOfficeDue> dues = dueReportManager.getBranchOfficesDueReports();
         assertEquals(5, dues.size());
         dues.stream().forEach(due -> {
             assertTrue(due.getBookings() == null);

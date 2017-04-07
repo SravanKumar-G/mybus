@@ -12,3 +12,17 @@ for(i in services) {
 	}
 
 }
+
+
+
+//find office dues by journey date
+db.booking.aggregate([{$group:{_id:"$jDate",total:{$sum:"$netAmt"}}}])
+
+db.orders.aggregate([
+                     { $match: { status: "A" } },
+                     { $group: { _id: "$cust_id", total: { $sum: "$amount" } } },
+                     { $sort: { total: -1 } }
+                   ])
+
+
+db.branchOffice.updateMany({},{$set:{'cashBalance':0}})

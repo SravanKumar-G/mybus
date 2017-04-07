@@ -62,8 +62,9 @@ public class PaymentController {
     
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/day", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Page<Payment> getPaymentsByDay(HttpServletRequest request, final Pageable pageable) {
-    	String date = request.getParameter("date");
+    public Page<Payment> getPaymentsByDay(HttpServletRequest request,
+                                          @RequestParam(value = "date", required = true)
+                                          @ApiParam(value = "Date in yyyy/mm/dd format") String date, final Pageable pageable) {
         return paymentMongoDAO.findPendingPaymentsByDate(date, pageable);
     }
 
