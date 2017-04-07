@@ -34,6 +34,13 @@ public class UserController extends MyBusBaseController{
         User account = (User)userDAO.findOneByUserName(request.getUserPrincipal().getName());
         return account;
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "user/count", method = RequestMethod.GET)
+    public long getUserCount(HttpServletRequest request) {
+        return userDAO.count();
+    }
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/groups", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public List<String> getUserGroups(HttpServletRequest request) {
