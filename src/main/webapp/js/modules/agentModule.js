@@ -3,7 +3,7 @@
 /*global angular, _*/
 
 angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
-    .controller('AgentController', function($scope,$rootScope, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager, userManager) {
+    .controller('AgentController', function($scope,$rootScope,paginationService, $state, $http,$uibModal, $log, $filter, NgTableParams, $location, agentManager, userManager) {
         $scope.headline = "Agents";
         $scope.count = 0;
         $scope.agents = {};
@@ -13,14 +13,14 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         $scope.agentTableParams = {};
         $scope.showInvalid = false;
         $scope.query = "";
+        var pageable;
+
         var loadTableData = function (tableParams) {
-            var sortingProps = tableParams.sorting(); //{'name':'asc'}  --- name,asc,   {'username':'desc'}  -- username,desc
-            var sortProps = ""
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            // var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
             agentManager.getAgents($scope.query,$scope.showInvalid,pageable, function(response){
                 $scope.invalidCount = 0;
                 if(angular.isArray(response.content)) {
@@ -35,20 +35,22 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         };
 
         $scope.init = function() {
-            $scope.agentTableParams = new NgTableParams({
-                page: 1, // show first page
-                size:10,
-                count:10,
-                sorting: {
-                    username: 'asc'
-                },
-            }, {
-                counts:[],
-                //total:809,
-                getData: function (params) {
-                    loadTableData(params);
-                }
-            });
+            agentManager.count(function(agentsCount) {
+                $scope.agentTableParams = new NgTableParams({
+                    page: 1, // show first page
+                    size: 10,
+                    count: 10,
+                    sorting: {
+                        username: 'asc'
+                    },
+                }, {
+                    counts: [],
+                    total: agentsCount,
+                    getData: function (params) {
+                        loadTableData(params);
+                    }
+                });
+            })
         };
 
         $scope.init();
@@ -110,60 +112,65 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
 
 
     }).factory('agentManager', function ($http, $log,$rootScope) {
-        var agents = {};
-        return {
-            getAgents: function (query, showInvalid, pageable, callback) {
-                $http({url:'/api/v1/agents?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
-                    .then(function (response) {
-                        callback(response.data);
-                    },function (error) {
-                        $log.debug("error retrieving agents");
-                    });
-            },
+    var agents = {};
+    return {
+        getAgents: function (query, showInvalid, pageable, callback) {
+            $http({url:'/api/v1/agents?query='+query+"&showInvalid="+showInvalid,method: "GET",params: pageable})
+                .then(function (response) {
+                    callback(response.data);
+                },function (error) {
+                    $log.debug("error retrieving agents");
+                });
+        },
+        count: function (callback) {
+            $http.get('/api/v1/agent/count')
+                .then(function (response) {
+                    callback(response.data);
+                }, function (error) {
+                    $log.debug("error retrieving route count");
+                });
+        },
 
-            download: function (callback) {
-                $http.get('/api/v1/agent/download')
-                    .then(function (response) {
+        download: function (callback) {
+            $http.get('/api/v1/agent/download')
+                .then(function (response) {
+                    callback(response.data);
+                },function (error) {
+                    $log.debug("error downloading agents");
+                    sweetAlert("Error",error.data.message,"error");
+                });
+        },
+        save: function(agent, callback) {
+            if(agent.id) {
+                $http.put('/api/v1/agent/',agent).then(function(response){
+                    if(angular.isFunction(callback)){
                         callback(response.data);
-                    },function (error) {
-                        $log.debug("error downloading agents");
-                        sweetAlert("Error",error.data.message,"error");
-                    });
-            },
-            save: function(agent, callback) {
-                if(agent.id) {
-                    $http.put('/api/v1/agent/',agent).then(function(response){
-                        if(angular.isFunction(callback)){
-                            callback(response.data);
-                        }
-                        $rootScope.$broadcast('AgentUpdated');
-                    },function (err,status) {
-                        sweetAlert("Error",err.data.message,"error");
-                    });
-                }
-            },
-            load: function(agentId,callback) {
-                $http.get('/api/v1/agent/'+agentId)
-                    .then(function (response) {
-                        callback(response.data);
-                        $rootScope.$broadcast('AgentLoadComplete');
-                    },function (error) {
-                        $log.debug("error retrieving agent info");
-                        sweetAlert("Error",error.data.message,"error");
-                    });
-            },
-            getNames: function(callback) {
-                $http.get('/api/v1/agentNames/')
-                    .then(function (response) {
-                        callback(response.data);
-                        $rootScope.$broadcast('AgentNamesLoadComplete');
-                    },function (error) {
-                        $log.debug("error retrieving agent info");
-                        sweetAlert("Error",error.data.message,"error");
-                    });
+                    }
+                    $rootScope.$broadcast('AgentUpdated');
+                },function (err,status) {
+                    sweetAlert("Error",err.data.message,"error");
+                });
             }
+        },
+        load: function(agentId,callback) {
+            $http.get('/api/v1/agent/'+agentId)
+                .then(function (response) {
+                    callback(response.data);
+                    $rootScope.$broadcast('AgentLoadComplete');
+                },function (error) {
+                    $log.debug("error retrieving agent info");
+                    sweetAlert("Error",error.data.message,"error");
+                });
+        },
+        getNames: function(callback) {
+            $http.get('/api/v1/agentNames/')
+                .then(function (response) {
+                    callback(response.data);
+                    $rootScope.$broadcast('AgentNamesLoadComplete');
+                },function (error) {
+                    $log.debug("error retrieving agent info");
+                    sweetAlert("Error",error.data.message,"error");
+                });
         }
-    });
-
-
-
+    }
+});

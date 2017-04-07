@@ -47,7 +47,7 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
         };
         $scope.init();
 
-		$scope.$on('roleInitComplete', function (e, value) {
+		$scope.$on('roleInit', function (e, value) {
 			$scope.init();
 		});
 
@@ -55,9 +55,6 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 			roleManager.deleteRole(roleID,function(data){})
 		};
 
-		$scope.$on('roleInit',function(e,value){
-			roleManager.fechAllRoles()
-		});
 
 		$scope.handleClickAddNewRole = function (size) {
 			$rootScope.modalInstance = $uibModal.open({
@@ -86,7 +83,6 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 				}
 			});
 		};
-		roleManager.fechAllRoles();
 	})
 	.controller("AddOrUpdateNewRoleController",function($scope, $rootScope, $log, $uibModal, roleManager, neighborhoodId){
 
@@ -168,7 +164,7 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 						$scope.updateAllManagingRoles[roleName].menus.push(menuName);
 					}
 				}else {
-					$scope.updateAllManagingRoles[roleName].name=roleName
+					$scope.updateAllManagingRoles[roleName].name=roleName;
 					$scope.updateAllManagingRoles[roleName].menus=[];
 					$scope.updateAllManagingRoles[roleName].menus.push(roleName);
 				}
@@ -194,23 +190,12 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 	}).factory('roleManager', function ($rootScope, $http,$filter,$log) {
 	var roles=[];
 	return {
-		fechAllRoles : function(){
-			$http.get('/api/v1/roles')
-				.then(function (response) {
-					roles = response.data;
-					$rootScope.$broadcast("roleInitComplete");
-				},function(err) {
-					sweetAlert("Error",err.message,"error");
-				});
-		},
-		getRoles : function(){
-			return roles;
-		},
+
 		getAllRoles : function(pageable, callback){
 			$http({url:'/api/v1/roles',method: "GET",params: pageable})
 				.then(function (response) {
-					callback(response.data);
-				},function(err,status) {
+                    callback(response.data);
+				},function(err) {
 					sweetAlert("Error",err.message,"error");
 				});
 		},
@@ -285,6 +270,7 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 		getRoleNames : function (callback) {
 			$http.get('/api/v1/role/names')
 				.then(function (response) {
+					console.log(response);
 					callback(response.data);
 				},function(err) {
 					sweetAlert("Error",err.message,"error");
