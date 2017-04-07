@@ -186,7 +186,7 @@ public class PaymentMongoDAO {
         Query q = new Query();
         Date startDate = null, endDate = null;
         try{
-        	SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy.MM.dd hh:mm");
+        	SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
         	String startTime = date + " 00:00"; 
         	String endTime = date + " 24:00";
         	startDate = simpleDateFormat.parse(startTime);  
