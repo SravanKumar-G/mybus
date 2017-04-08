@@ -73,7 +73,7 @@
                 </div> --> <!-- end ngIf: general_operater -->
                 <a class="navbar-brand" href="index.html" title="HOME"><i class="fa fa-bus"></i> Sri Krishna <span>travels</span></a>
             </div>
-            <div>
+            
                 <div class="collapse navbar-collapse in" collapse="isCollapsed" style="height: auto;">
                     <div class="nav navbar-nav navbar-right navbar_background_clr">
                         <!-- ngIf: privlgeAndCheck.showInchargeAmounts -->
@@ -143,17 +143,20 @@
                     </div>
                 </div>
                 <!-- /.navbar-collapse -->
-            </div>
+            
             <!-- /.container-fluid -->
         </nav>
-        <div class="row">
-            <div class="col-xs-2">
-                <div id="sidebar-menu" class="nav-side-menu">
-                    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+        <div id="wrapper">
+
+        <!-- Sidebar -->
+      
+        <div  id="sidebar-wrapper" class="nav-side-menu" >
+                    
 
                     <div class="menu-list">
 
-                        <ul id="menu-content" class="menu-content collapse out">
+                        <ul id="menu-content" class="menu-content ">
                             <li>
                                 <a href="#">
                                     <i class="fa fa-home fa-lg"></i> Home
@@ -209,17 +212,36 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-9">
-                <breadscrumb class="ng-scope">
+        <!-- /#sidebar-wrapper -->
+
+                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle" style="position: relative;top: 65px;z-index: 2;"><i class="fa fa-bars fa-2x toggle-btn"></i> </a>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <breadscrumb class="ng-scope">
                     <div class="breadcrumbs printhide" ng-click="breadscrumb_print_fn()">
                    <div class="view-container">
                     <div class="view-frame">
                         <ui-view>Select from Menu</ui-view>
                     </div>
                 </div>
+            </div>  
+                    </div>
+                </div>
             </div>
         </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
 <script src="js/directives/menu.js"></script>
 
 </body>
