@@ -41,7 +41,7 @@
     <script src="js/modules/serviceComboModule.js"></script>
     <script src="js/modules/cashTransfersModule.js"></script>
     <script src="js/modules/vehicleExpensesModule.js"></script>
-
+    <script src="js/modules/expensesIncomesReportsModule.js"></script>
     <script src="js/services/paginationService.js"></script>
 
 
@@ -195,7 +195,7 @@
                                 <my-menu label="CashTransfers" class="nav navbar-nav col-md-12">Cash Transfers</my-menu>
                                 <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
                                 <my-menu label="VehicleExpenses" class="nav navbar-nav col-md-12"></my-menu>
-
+                                <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
 
                             <li>

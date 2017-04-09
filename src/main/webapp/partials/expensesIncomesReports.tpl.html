@@ -1,0 +1,61 @@
+<legend ng-if="!user.admin">Expenses and Incomes for office : <b>{{user.attributes.branchName}}</b></legend>
+<legend ng-if="user.admin">Expenses and Incomes</legend>
+<div ng-controller="expensesIncomesReportsCtrl">
+    <div class="row" ng-show="!loading">
+        <div class="col-sm-1"/>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-default" ng-click="previousPaymentDay()"><i class="glyphicon glyphicon-chevron-left"></i></button>
+        </div>
+
+        <div class="col-sm-3">
+            <p class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
+                       is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                       close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()" ng-show="false"/>
+                {{dt.getFullYear()+"-"+monthNames[dt.getMonth()]+"-"+dt.getDate()}}
+                <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-default" ng-click="nextPaymentDay()"><i class="glyphicon glyphicon-chevron-right"></i></button>
+        </div>
+
+    </div>
+    <div class="row" ng-show="loading">
+        loading reports data for {{date}}...
+    </div>
+    <table class="table table-bordered table-condensed table-hover">
+        <tr><td>Total:{{count}}</td> <td>Total Expenses:{{totalExpense | number:2}}</td> <td>Total Income:{{totalIncome | number:2}}</td><td>Balance:{{totalIncome - totalExpense | number:2}}</td></tr>
+    </table>
+
+<!---------------------------------------- view ------------------------------------------------------------>
+
+<div ng-show="!loading">
+    <table class="table table-bordered table-condensed table-hover" ng-table="paymentTableParams">
+        <tr ng-repeat="payment in currentPageOfPayments">
+            <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
+            <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
+                <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
+                <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
+            </td>
+            <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
+            <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+            <td data-title="'CreatedUser'" class="clickable-item" ng-if="user.admin">{{payment.attributes.createdBy}}</td>
+            <td data-title="'CreatedBranch'" class="clickable-item" ng-if="user.admin">{{payment.attributes.branchOfficeId}}</td>
+            <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+                <span ng-if="payment.status">
+                   {{payment.status}}
+                </span>
+            </td>
+        </tr>
+        <tr ng-if="!currentPageOfPayments || currentPageOfPayments.length === 0">
+            <td colspan="7">No Payments <exist class=""></exist></td>
+        </tr>
+    </table>
+</div>
+
+<div ng-show="loading">
+    Please wait while the payments data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
