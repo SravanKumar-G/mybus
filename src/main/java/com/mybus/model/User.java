@@ -54,6 +54,10 @@ public class User extends AbstractDocument implements AttributesDocument{
     private String planType;
     private String branchOfficeId;
 
+    private double amountToBePaid;
+    private double amountToBeCollected;
+
+
     public User(JSONObject json){
         if(json.containsKey("id")) {
             this.setId(json.get("id").toString());

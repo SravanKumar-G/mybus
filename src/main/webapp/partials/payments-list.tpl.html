@@ -20,8 +20,8 @@
             <table class="table table-bordered table-condensed table-hover" ng-table="pendingTableParams">
                 <tr ng-repeat="payment in pendingPayments">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
-                    <td data-title="'CreatedOn'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt| date}}</td>
-                    <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
+                    <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt| date}}</td>
+                    <td data-title="'Description'" sortable="'description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                         <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
                         <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
                     </td>
@@ -56,7 +56,7 @@
             <table class="table table-bordered table-condensed table-hover" ng-table="approvedTableParams">
                 <tr ng-repeat="payment in approvedPayments">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
-                    <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
+                    <td data-title="'Description'" sortable="'description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                         <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
                         <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
                     </td>
