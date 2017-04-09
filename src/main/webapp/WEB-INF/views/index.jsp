@@ -147,7 +147,7 @@
             <!-- /.container-fluid -->
         </nav>
 
-        <div id="wrapper">
+        <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
       
