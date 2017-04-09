@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOfficeDue;
@@ -78,4 +79,17 @@ public class DueReportController extends MyBusBaseController{
         return bookingManager.payBookingDue(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/officeDuesByService", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<BasicDBObject> getOfficeDuesByService(HttpServletRequest request, final Pageable pageable) {
+        return dueReportManager.getOfficeDuesByService();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/dueBookingByService/{serviceNumber}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<Booking> getDueBookingByService(HttpServletRequest request, final Pageable pageable,@PathVariable final String serviceNumber) {
+        return dueReportManager.getDueBookingsByService(serviceNumber);
+    }
 }

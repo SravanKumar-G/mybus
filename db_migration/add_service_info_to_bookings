@@ -16,7 +16,8 @@ for(i in services) {
 
 
 //find office dues by journey date
-db.booking.aggregate([{$group:{_id:"$jDate",total:{$sum:"$netAmt"}}}])
+db.booking.aggregate([{ $match: { 'due': true } },{$group:{_id:"$jDate",total:{$sum:"$netAmt"}}}])
+db.booking.aggregate([{ $match: { 'due': true } },{$group:{_id:"$serviceNumber",total:{$sum:"$netAmt"}}}])
 
 db.orders.aggregate([
                      { $match: { status: "A" } },
