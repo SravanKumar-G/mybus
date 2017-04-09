@@ -20,7 +20,8 @@ var myBus = angular.module('myBus', [
   'myBus.dueReportModule',
   'myBus.serviceComboModule',
   'myBus.vehicleExpensesModule',
-  'myBus.paginationService'
+  'myBus.paginationService',
+  'myBus.expensesIncomesReportsModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -52,6 +53,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/duereport',
                 templateUrl: 'partials/duereport.tpl.html',
                 controller: 'DueReportController'
+            })
+            .state('expensesincomesreports',{
+                url:'/expensesincomesreports',
+                templateUrl: 'partials/expensesIncomesReports.tpl.html',
+                controller: 'expensesIncomesReportsCtrl'
             })
             .state('officeduereport/:id', {
                 level:1,
