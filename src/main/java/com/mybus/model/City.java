@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @ApiModel(value = City.COLLECTION_NAME)
 @NoArgsConstructor
 @Document
+@Getter
+@Setter
 public class City extends AbstractDocument{
     public static final String COLLECTION_NAME = "city";
     public static final String KEY_NAME = "name";
@@ -32,46 +34,31 @@ public class City extends AbstractDocument{
     public static final String KEY_BOARDING_POINTS = "bp";
     public static final String KEY_IS_HUB = "hub";
 
-
-    @Getter
-    @Setter
     @Field(KEY_SHORT_CODE)
     @ApiModelProperty(dataType = "int")
     private String shortCode;
 
-    @Getter
-    @Setter
     @Field(KEY_LANG_CODE)
     @ApiModelProperty
     private String langCode;
 
 
-    @Getter
-    @Setter
     @Field(KEY_NAME)
     @ApiModelProperty
     private String name;
 
-    @Getter
-    @Setter
     @Field(KEY_STATE)
     @ApiModelProperty
     private String state;
 
-    @Getter
-    @Setter
     @Field(KEY_ACTIVE)
     @ApiModelProperty
     private boolean active = true;
 
-    @Getter
-    @Setter
     @Field(KEY_IS_HUB)
     @ApiModelProperty
     private boolean hub = true;
 
-    @Getter
-    @Setter
     @Field(KEY_BOARDING_POINTS)
     @ApiModelProperty
     private List<BoardingPoint> boardingPoints = new ArrayList<>();

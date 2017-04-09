@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOfficeDue;
@@ -73,9 +74,21 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/payBookingDue/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
     public boolean recordDuePayment(HttpServletRequest request,
-                                              @ApiParam(value = "Id of the booking") @PathVariable final String id,
-                                              final Pageable pageable) {
+                                              @ApiParam(value = "Id of the booking") @PathVariable final String id) {
         return bookingManager.payBookingDue(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/officeDuesByService", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<BasicDBObject> getOfficeDuesByService(HttpServletRequest request) {
+        return dueReportManager.getOfficeDuesByService();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/dueBookingByService/{serviceNumber}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<Booking> getDueBookingByService(HttpServletRequest request, @PathVariable final String serviceNumber) {
+        return dueReportManager.getDueBookingsByService(serviceNumber);
+    }
 }

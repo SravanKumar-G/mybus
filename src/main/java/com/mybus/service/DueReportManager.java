@@ -1,15 +1,16 @@
 package com.mybus.service;
 
+import com.mongodb.BasicDBObject;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.BranchOfficeDue;
+import com.mybus.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class DueReportManager {
 
     @Autowired
     private BookingMongoDAO bookingMongoDAO;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     /**
      * Get the due report for all the branch offices, will be used by admin
@@ -147,4 +151,22 @@ public class DueReportManager {
         return getBranchOfficeDueReport(office, true, jDate);
     }
 
+    public List<BasicDBObject> getOfficeDuesByService() {
+        User currentUser = sessionManager.getCurrentUser();
+        if(currentUser != null && !currentUser.isAdmin()) {
+            return bookingMongoDAO.getBookingDueTotalsByService(currentUser.getBranchOfficeId());
+        } else {
+            return bookingMongoDAO.getBookingDueTotalsByService(null);
+        }
+    }
+
+
+    public List<Booking> getDueBookingsByService(String serviceNumber) {
+        User currentUser = sessionManager.getCurrentUser();
+        if(currentUser != null && !currentUser.isAdmin()) {
+            return bookingMongoDAO.getDueBookingByServiceNumber(currentUser.getBranchOfficeId(), serviceNumber);
+        } else {
+            return bookingMongoDAO.getDueBookingByServiceNumber(null, serviceNumber);
+        }
+    }
 }
