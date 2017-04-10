@@ -1,21 +1,50 @@
 
-<div class="container" ng-show="!loading">
+<div class="container" ng-show="!loading" >
     <legend>{{ headline }}</legend>
     <div class="row">
         <div class="col-sm-2"> Branch: <b>{{officeDue.name}}</b></div>
         <div class="col-sm-4"> Manager: <b>{{officeDue.managerName}}</b>  {{currentUser}}</div>
     </div>
-    <table class="table table-bordered table-condensed table-hover" ng-table="duesTableParams">
-        <tr ng-repeat="due in currentPageOfDues">
-            <td data-title="'Date'"  sortable="'date'" class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)"><a ng-click="showDueReportByDate(due.date)">{{ due.date }}</a></td>
-            <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)" >{{due.totalDue| number:2}} </td>
-        </tr>
 
-        <tr ng-if="!currentPageOfDues || currentPageOfDues.length === 0">
-            <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
-        </tr>
-    </table>
+    <div class="bpdp-tab" ng-init="tab=1">
+
+        <ul>
+            <li class="tab"  ng-class="{active:tab==1}">
+                <a href ng-click="tab = 1">Due Report By Date</a>
+            </li>
+            <li class="tab" ng-class="{active:tab==2}">
+                <a href ng-click="tab = 2">Due Report By Service</a>
+            </li>
+        </ul>
+        <div class="tab-content" ng-show="tab==1">
+            Due Report
+            <table class="table table-bordered table-condensed table-hover" ng-table="officeDuesTableParams">
+                <tr ng-repeat="due in currentPageOfOfficeDues">
+                    <td data-title="'Date'"  sortable="'date'" class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)"><a ng-click="showDueReportByDate(due.date)">{{ due.date }}</a></td>
+                    <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)" >{{due.totalDue| number:2}} </td>
+                </tr>
+
+                <tr ng-if="!currentPageOfOfficeDues || currentPageOfOfficeDues.length === 0">
+                    <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-content" ng-show="tab==2">
+            Due Report
+            <table class="table table-bordered table-condensed table-hover" ng-table="serviceDuesTableParams">
+                <tr ng-repeat="due in currentPageOfServiceDues">
+                    <td data-title="'Service Id'"  sortable="'Id'" class="clickable-item col-md-1" ng-click="showDueReportByService(due._id)" ><a ng-click="showDueReportByService(due._id)">{{ due._id }}</a></td>
+                    <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1"  >{{ due.totalDue | number:2}} </td>
+                </tr>
+
+                <tr ng-if="!currentPageOfServiceDues || currentPageOfServiceDues.length === 0">
+                    <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
+
 
 <div ng-show="loading">
     Please wait while the report data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
