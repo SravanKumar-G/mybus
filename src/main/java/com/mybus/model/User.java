@@ -25,6 +25,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     public static final String EMAIL = "email";
     public static final String CONTACT = "contact";
     public static final String USER_NAME = "userName";
+    public static final String BRANCH_USER = "branchUser";
 
     @Field(USER_NAME)
     @RequiresValue
@@ -53,6 +54,10 @@ public class User extends AbstractDocument implements AttributesDocument{
     private String role;
     private String planType;
     private String branchOfficeId;
+
+    private double amountToBePaid;
+    private double amountToBeCollected;
+
 
     public User(JSONObject json){
         if(json.containsKey("id")) {
@@ -168,5 +173,10 @@ public class User extends AbstractDocument implements AttributesDocument{
     }
     public String getFullName(){
         return this.firstName + ", "+ this.lastName;
+    }
+
+    public boolean isBranchUser() {
+       // if(getRole().equals(BranchU )
+        return false;
     }
 }

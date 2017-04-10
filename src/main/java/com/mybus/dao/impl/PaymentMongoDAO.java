@@ -200,6 +200,8 @@ public class PaymentMongoDAO {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
         match.add(Criteria.where("date").gt(startDate).lte(endDate));
+        //add the service forms as well
+
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return q;

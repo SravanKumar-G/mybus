@@ -158,7 +158,8 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 closeOnConfirm: true }, function() {
                 dueReportManager.payBooking(bookingId, function(data) {
                     $rootScope.$broadcast('UpdateHeader');
-                    $location.url('/officeduereport/'+officeId);
+                    //$location.url('/officeduereport/'+officeId);
+                    loadTableData($scope.duesTableParams);
                 },function (error) {
                     sweetAlert("Oops...", "Error submitting the report", "error");
                 });

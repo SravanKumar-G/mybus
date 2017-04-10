@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,8 @@ public class PaymentManager {
         logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
         if(payment.getStatus() != null && (payment.getStatus().equals(Payment.STATUS_APPROVED) ||
                 payment.getStatus().equals(Payment.STATUS_AUTO))){
+            User currentUser = sessionManager.getCurrentUser();
+            currentUser.isBranchUser();
             if(payment.getType().equals(PaymentType.EXPENSE)){
                 branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), (0-payment.getAmount()));
             } else if(payment.getType().equals(PaymentType.INCOME)){
@@ -82,12 +85,14 @@ public class PaymentManager {
         payment.setAmount(serviceForm.getNetCashIncome());
         if(deleteForm){
             payment.setType(PaymentType.EXPENSE);
+            payment.setDescription("Service form refresh");
+
         } else {
             payment.setType(PaymentType.INCOME);
+            payment.setDescription("Service form");
         }
         payment.setStatus(Payment.STATUS_AUTO);
-        payment.setDescription("Service form refresh");
-        payment.setDate(serviceForm.getJDate());
+        payment.setDate(new Date());
         return updatePayment(payment);
     }
 
