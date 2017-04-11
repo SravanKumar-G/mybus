@@ -98,12 +98,7 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             var dt = $scope.dt;
             dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
             $scope.dt.setTime(dt.getTime());
-            if($scope.dt >= $scope.tomorrow){
-                swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else{
-                $scope.init();
-            }
+            $scope.init();
         }
         $scope.previousPaymentDay = function() {
             var dt = $scope.dt;

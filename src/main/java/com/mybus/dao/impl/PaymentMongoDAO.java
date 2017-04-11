@@ -201,12 +201,12 @@ public class PaymentMongoDAO {
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
-        match.add(Criteria.where("date").gte(startDate).lt(endDate));
-        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        //match.add(Criteria.where("date").gte(startDate).lt(endDate));
         //add the service forms as well
         //get current office employees
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
         //criteria.orOperator(Criteria.where("createdBy").in());
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return q;
     }

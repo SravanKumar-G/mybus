@@ -67,10 +67,12 @@ public class PaymentManager {
      */
     public Payment createPayment(Booking booking) {
         Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+        User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
-        payment.setBranchOfficeId(agent.getBranchOfficeId());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(booking.getNetAmt());
         payment.setDate(booking.getJourneyDate());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.getAttributes().put("BookingId", booking.getId());
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
         payment.setType(PaymentType.INCOME);
@@ -92,7 +94,6 @@ public class PaymentManager {
             payment.setDescription("Service form");
         }
         payment.setStatus(Payment.STATUS_AUTO);
-        payment.setDate(serviceForm.getJDate());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         return updatePayment(payment);
     }
