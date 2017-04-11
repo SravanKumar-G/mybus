@@ -146,4 +146,13 @@ public class PaymentManager {
         loadUserNames(payment);
         return payment;
     }
+
+    public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
+        Page<Payment> payments = paymentMongoDAO.findPaymentsByDate(date, pageable);
+        Map<String,String> userNames = userManager.getUserNames(true);
+        for(Payment payment:payments.getContent()) {
+            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+        }
+        return payments;
+    }
 }
