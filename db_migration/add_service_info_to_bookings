@@ -27,3 +27,16 @@ db.orders.aggregate([
 
 
 db.branchOffice.updateMany({},{$set:{'cashBalance':0}})
+
+
+//update branchid on payments
+var users = db.user.find({}).toArray();
+for(i in users) {
+	var user = users[i];
+	var payments = db.payment.find({'createdBy':user._id.str}).toArray();
+	for(p in payments) {
+		var payment = payments[p];
+		payment.branchOfficeId = user.branchOfficeId;
+		db.payment.save(payment);
+	}
+}

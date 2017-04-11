@@ -1,7 +1,7 @@
 <div class="container" ng-show="downloaded" >
     <table class="table table-bordered table-condensed table-hover" >
         <tr><td>From: {{service.source}}</td> <td>To:{{service.destination}}</td> <td>Journey Date: {{service.jdate | date}}</td><td>{{service.busType}}</td></tr>
-        <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td></td></tr>
+        <tr><td>Conductor: {{service.conductorInfo}}</td> <td>Vehicle:{{service.vehicleRegNumber}}</td> <td>ID: {{service.id}}</td><td>Submitted By: {{service.attributes.createdBy}}</td></tr>
     </table>
     <table class="table table-bordered table-condensed table-hover">
         <tr><td>Net Income - Redbus</td><td>{{service.netRedbusIncome}}</td>
