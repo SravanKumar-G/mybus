@@ -139,7 +139,7 @@ public class PaymentMongoDAO {
         return new PageImpl<Payment>(payments, pageable, count);
     }
 
-    public Page<Payment> findPendingPaymentsByDate(String date, Pageable pageable) {
+    public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
         Query q = getPaymentsByDateQuery(date);
         if(pageable != null) {
             q.with(pageable);
@@ -195,14 +195,18 @@ public class PaymentMongoDAO {
         	throw new BadRequestException("Exception preparing payment query", e);
         }
         List<Criteria> match = new ArrayList<>();
+        List<Criteria> matchOr = new ArrayList<>();
+
         Criteria criteria = new Criteria();
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
-        match.add(Criteria.where("date").gt(startDate).lte(endDate));
-        //add the service forms as well
-
+        match.add(Criteria.where("date").gte(startDate).lt(endDate));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        //add the service forms as well
+        //get current office employees
+        match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
+        //criteria.orOperator(Criteria.where("createdBy").in());
         q.addCriteria(criteria);
         return q;
     }

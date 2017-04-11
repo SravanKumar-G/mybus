@@ -53,6 +53,9 @@ public class ServiceReportsManager {
     @Autowired
     private PaymentManager paymentManager;
 
+    @Autowired
+    private UserManager userManager;
+
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
         ServiceReportStatus status = serviceReportStatusDAO
@@ -249,6 +252,7 @@ public class ServiceReportsManager {
         report.setNetIncome(roundUp(report.getNetIncome()));
         report.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
+        report.getAttributes().put("createdBy", userManager.getUser(report.getCreatedBy()).getFullName());
         return report;
     }
 

@@ -153,16 +153,6 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                             })
                         })
                     });
-                    userManager.getUserNames(function (data) {
-                        $scope.users = data;
-                        angular.forEach($scope.payments, function (cashTransfer) {
-                            angular.forEach($scope.users, function (user) {
-                                if (user.id == cashTransfer.createdBy) {
-                                    cashTransfer.attributes.createdBy = user.fullName;
-                                }
-                            })
-                        })
-                    });
                 }
                 tableParams.total(response.totalElements);
                 $scope.count = response.totalElements;
@@ -174,20 +164,17 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
         $scope.init = function() {
             $scope.totalExpense = 0;
             $scope.totalIncome = 0;
-            paymentManager.count(true,function(paymentsCount){
-                $scope.paymentTableParams = new NgTableParams({
-                    page: 1,
-                    count:999999,
-                    sorting: {
-                        status: 'asc'
-                    },
-                }, {
-                    counts:[],
-                    total:paymentsCount,
-                    getData: function (params) {
-                        loadTableData(params);
-                    }
-                });
+            $scope.paymentTableParams = new NgTableParams({
+                page: 1,
+                count:999999,
+                sorting: {
+                    status: 'asc'
+                },
+            }, {
+                counts:[],
+                getData: function (params) {
+                    loadTableData(params);
+                }
             });
         };
         $scope.init();
