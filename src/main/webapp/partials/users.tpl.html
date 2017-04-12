@@ -8,7 +8,7 @@
 
 
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="userContentTableParams">
-    <tr ng-repeat="user in currentPageOfUsers" ng-if="!user.admin">
+    <tr ng-repeat="user in currentPageOfUsers">
         <td data-title="'Name'" class="col-sm-2" sortable="'fullName'">{{ user.fullName }}</td>
         <td data-title="'Username'" class="col-sm-2" sortable="'userName'">{{ user.userName }}</td>
         <td data-title="'Contact'" class="col-sm-2" sortable="'contact'">{{ user.contact }}</td>
