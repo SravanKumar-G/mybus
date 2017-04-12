@@ -91,7 +91,7 @@ public class PaymentManager {
 
         } else {
             payment.setType(PaymentType.INCOME);
-            payment.setDescription("Service form");
+            payment.setDescription("Service form: "+ serviceForm.getServiceName());
         }
         payment.setStatus(Payment.STATUS_AUTO);
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());

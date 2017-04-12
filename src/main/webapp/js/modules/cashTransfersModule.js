@@ -16,42 +16,31 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             paginationService.pagination(tableParams, function(response){
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-            cashTransferManager.load(pageable, function(response) {
-                if (angular.isArray(response.content)) {
+            cashTransferManager.load(pageable).then(function(response) {
+                let cashTrasnsfers = response[0].data.content;
+                let userNames = response[2].data;
+                if (angular.isArray(cashTrasnsfers)) {
                     $scope.loading = false;
-                    $scope.brn = response.content;
-                    branchOfficeManager.loadNames(function (data) {
-                        $scope.branches = data;
-                        angular.forEach($scope.brn, function (cashTransfer) {
-                            angular.forEach($scope.branches, function (branchOffice) {
-                                if (branchOffice.id == cashTransfer.fromOfficeId) {
-                                    cashTransfer.attributes.fromOfficeId = branchOffice.name;
-                                }
-                                if (branchOffice.id == cashTransfer.toOfficeId) {
-                                    cashTransfer.attributes.toOfficeId = branchOffice.name;
-                                }
-                            })
-                        })
-                    });
-                    userManager.getUserNames(function (data) {
-                        $scope.users = data;
-                        angular.forEach($scope.brn, function (cashTransfer) {
-                            angular.forEach($scope.users, function (user) {
-                                if (user.id == cashTransfer.createdBy) {
-                                    cashTransfer.attributes.createdBy = user.fullName;
-                                }
-                            })
-
+                    $scope.cashTransfers = cashTrasnsfers;
+                    $scope.branches = response[1].data;
+                    angular.forEach($scope.cashTransfers, function (cashTransfer) {
+                        angular.forEach($scope.branches, function (branchOffice) {
+                            if (branchOffice.id == cashTransfer.fromOfficeId) {
+                                cashTransfer.attributes.fromOfficeId = branchOffice.name;
+                            }
+                            if (branchOffice.id == cashTransfer.toOfficeId) {
+                                cashTransfer.attributes.toOfficeId = branchOffice.name;
+                            }
+                            cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
                         })
                     });
                     $scope.loading = false;
-                    $scope.cashTransfers = response.content;
-                    tableParams.total(response.totalElements);
-                    $scope.count = response.totalElements;
+                    tableParams.total(response[0].data.totalElements);
+                    $scope.count = response[0].data.totalElements;
                     tableParams.data = $scope.cashTransfers;
                     $scope.currentPageOfCashTransfers = $scope.cashTransfers;
                 }
-            })
+            });
         };
 
         $scope.init = function() {
@@ -225,10 +214,26 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
         return '';
     }
 })
-    .factory('cashTransferManager', function ($rootScope, $http, $log) {
+    .factory('cashTransferManager', function ($rootScope, $q, $http, $log) {
     var cashTransfer = {};
     return {
-        load: function (pageable, callback) {
+        load: function (pageable) {
+            var deferred = $q.defer();
+            $q.all([ $http({url:'/api/v1/cashTransfer/all',method: "GET",params: pageable}),
+                $http.get('/api/v1/branchOffice/names'),
+                $http.get('/api/v1/userNamesMap')]).then(
+            function(results) {
+                deferred.resolve(results)
+            },
+            function(errors) {
+                deferred.reject(errors);
+            },
+            function(updates) {
+                deferred.update(updates);
+            });
+            return deferred.promise;
+
+            /*
             $http({url:'/api/v1/cashTransfer/all',method: "GET",params: pageable})
                 .then(function (response) {
                     cashTransfer = response.data;
@@ -237,6 +242,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                 },function (error) {
                     $log.debug("error retrieving cashTransfers");
                 });
+                */
         },
         count: function (callback) {
             $http.post('/api/v1/cashTransfer/count',{})
