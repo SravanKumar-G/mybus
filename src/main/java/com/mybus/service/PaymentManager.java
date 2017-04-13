@@ -95,6 +95,7 @@ public class PaymentManager {
             payment.setDescription("Service form: "+ serviceForm.getServiceName());
         }
         payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDate(new Date());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         return updatePayment(payment);
     }

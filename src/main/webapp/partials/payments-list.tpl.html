@@ -57,8 +57,8 @@
                 <tr ng-repeat="payment in approvedPayments">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
                     <td data-title="'Description'" sortable="'description'" class="clickable-item" ng-click="goToExpense(expense.id)">
-                        <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}  e {{payment.serviceFormId}}</a>
-                        <span ng-if="!payment.serviceFormId">{{payment.description}} e {{payment.serviceFormId}}</span>
+                        <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
+                        <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
                     </td>
                     <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount|number:2}}</span></td>
                     <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount|number:2}}</span></td>
