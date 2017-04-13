@@ -73,7 +73,7 @@ public class PaymentManager {
         payment.setAmount(booking.getNetAmt());
         payment.setDate(booking.getJourneyDate());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
-        payment.getAttributes().put("BookingId", booking.getId());
+        payment.setBookingId(booking.getId());
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
@@ -85,6 +85,7 @@ public class PaymentManager {
         Payment payment = new Payment();
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(serviceForm.getNetCashIncome());
+        payment.setServiceFormId(serviceForm.getId());
         if(deleteForm){
             payment.setType(PaymentType.EXPENSE);
             payment.setDescription("Service form refresh");
