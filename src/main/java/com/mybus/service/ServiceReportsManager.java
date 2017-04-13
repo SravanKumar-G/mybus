@@ -284,4 +284,8 @@ public class ServiceReportsManager {
         }
         return serviceReportDAO.findByJourneyDate(date);
     }
+
+    public Booking getBooking(String bookingId) {
+        return bookingDAO.findOne(bookingId);
+    }
 }

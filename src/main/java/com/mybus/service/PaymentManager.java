@@ -67,11 +67,13 @@ public class PaymentManager {
      */
     public Payment createPayment(Booking booking) {
         Agent agent = agentDAO.findByUsername(booking.getBookedBy());
+        User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
-        payment.setBranchOfficeId(agent.getBranchOfficeId());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(booking.getNetAmt());
         payment.setDate(booking.getJourneyDate());
-        payment.getAttributes().put("BookingId", booking.getId());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
+        payment.setBookingId(booking.getId());
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
@@ -83,16 +85,17 @@ public class PaymentManager {
         Payment payment = new Payment();
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(serviceForm.getNetCashIncome());
+        payment.setServiceFormId(serviceForm.getId());
         if(deleteForm){
             payment.setType(PaymentType.EXPENSE);
             payment.setDescription("Service form refresh");
 
         } else {
             payment.setType(PaymentType.INCOME);
-            payment.setDescription("Service form");
+            payment.setDescription("Service form: "+ serviceForm.getServiceName());
         }
         payment.setStatus(Payment.STATUS_AUTO);
-        payment.setDate(serviceForm.getJDate());
+        payment.setDate(new Date());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         return updatePayment(payment);
     }
@@ -145,5 +148,14 @@ public class PaymentManager {
         }
         loadUserNames(payment);
         return payment;
+    }
+
+    public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
+        Page<Payment> payments = paymentMongoDAO.findPaymentsByDate(date, pageable);
+        Map<String,String> userNames = userManager.getUserNames(true);
+        for(Payment payment:payments.getContent()) {
+            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
+        }
+        return payments;
     }
 }

@@ -25,7 +25,6 @@ import java.util.*;
  */
 @Service
 public class AbhiBusPassengerReportService {
-    private static final String ABHI_BUS_URL = "http://api.abhibus.com/abhibusoperators/srikrishna/server.php?SecurityKey=SRI*FDEU!@@%ANHSIRK";
     public static XmlRpcClient xmlRpcClient;
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
 
@@ -45,7 +44,7 @@ public class AbhiBusPassengerReportService {
     public void init() {
         try {
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(ABHI_BUS_URL));
+            config.setServerURL(new URL(ServiceConstants.ABHI_BUS_URL));
             xmlRpcClient = new XmlRpcClient();
             xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
             xmlRpcClient.setConfig(config);

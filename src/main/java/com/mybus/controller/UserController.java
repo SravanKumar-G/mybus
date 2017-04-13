@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
@@ -57,11 +58,16 @@ public class UserController extends MyBusBaseController{
     @RequestMapping(value = "userNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get user names ", response = User.class, responseContainer = "List")
     public List<User> getUserNames(HttpServletRequest request,
-                                               @RequestParam(value ="activeOnly", required = false) boolean includeInactive)
-    {
+                                               @RequestParam(value ="activeOnly", required = false) boolean includeInactive) {
         return userManager.getUserNamesAsUserList(includeInactive);
     }
 
+    @RequestMapping(value = "userNamesMap", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get user names ", response = User.class, responseContainer = "List")
+    public Map<String,String> getUserNamesMap(HttpServletRequest request,
+                                   @RequestParam(value ="activeOnly", required = false) boolean includeInactive) {
+        return userManager.getUserNames(includeInactive);
+    }
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a user")
