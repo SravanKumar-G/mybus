@@ -8,5 +8,6 @@ import java.text.SimpleDateFormat;
 public class ServiceConstants {
 
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    public static final String ABHI_BUS_URL = "http://api.abhibus.com/abhibusoperators/srikrishna/server.php?SecurityKey=SRI*FDEU!@@%ANHSIRK";
 
 }
