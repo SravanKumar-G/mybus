@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap'])
-    .controller('expensesIncomesReportsCtrl', function ($scope,NgTableParams, $filter, $location ,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
+    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$uibModal, $filter, $location ,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
         $scope.payments = [];
         $scope.totalExpense = 0;
         $scope.totalIncome = 0;
@@ -173,6 +173,28 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             });
         };
         $scope.init();
+
+        $scope.serviceReportsPopUp = function (formId) {
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'serviceReportPopUp-form-modal.html',
+                controller:'serviceReportsPopUpController',
+                resolve : {
+                    formId : function(){
+                        return formId;
+                    }
+                }
+            })
+        }
+    })
+    .controller("serviceReportsPopUpController", function($scope,$rootScope, serviceReportsManager , formId){
+        $scope.service = {};
+        serviceReportsManager.getForm(formId,function (data) {
+            $scope.service = data;
+        })
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
     })
     .factory('paymentsReportsManager', function ($http, $log) {
         return {
