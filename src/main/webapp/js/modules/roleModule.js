@@ -4,7 +4,7 @@
 "use strict";
 
 angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
-	.controller("RoleController",function($scope, $rootScope, $log, NgTableParams, $location, $uibModal, $state, $filter,paginationService, roleManager){
+	.controller("RoleController",function($scope, $rootScope, $log, NgTableParams, $location, $uibModal, $state, $filter,paginationService,userManager, roleManager){
 
 		$scope.headline="User Roles";
 		$scope.currentPageOfRoles={};
@@ -120,14 +120,13 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 		$scope.updateAllManagingRoles = [];
 		$scope.isEditable = false;
 		$scope.getPermissions = function(){
-			roleManager.getAllRoles(function(data){
-				$scope.roles=data;
-				$scope.menus = [];
+			roleManager.getAllRoles({},function(response){
+				$scope.roles=response.content;
 
+				$scope.menus = [];
 				angular.forEach($scope.roles,function(role){
 					$scope.updateAllManagingRoles[role.name]={'id':role.id,'name':role.name,'menus':role.menus};
 				});
-
 				angular.forEach($state.get(),function(eachState){
 					if(eachState.level === 1) {
 						$scope.menus.push({'name':eachState.name});
@@ -141,7 +140,6 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 						if(!role.menus) {
 							role.menus=[];
 						}
-
 						if(role.menus.indexOf(menu.name)!=-1){
 							menu.permissions.push({'id':role.id,'roleName':role.name, 'allowed':true});
 						}else {
