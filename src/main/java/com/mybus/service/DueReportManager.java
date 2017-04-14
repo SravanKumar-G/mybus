@@ -169,4 +169,12 @@ public class DueReportManager {
             return bookingMongoDAO.getDueBookingByServiceNumber(null, serviceNumber);
         }
     }
+
+    public List<Booking> getDueBookingsByAgent(String agentId) {
+        return null;
+    }
+
+    public List<BasicDBObject> getOfficeDuesByAgent() {
+        return null;
+    }
 }

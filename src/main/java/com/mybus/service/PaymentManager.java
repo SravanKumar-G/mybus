@@ -78,6 +78,7 @@ public class PaymentManager {
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDuePaidOn(new Date());
         return updatePayment(payment);
     }
 

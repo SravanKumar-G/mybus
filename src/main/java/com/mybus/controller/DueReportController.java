@@ -91,4 +91,18 @@ public class DueReportController extends MyBusBaseController{
     public List<Booking> getDueBookingByService(HttpServletRequest request, @PathVariable final String serviceNumber) {
         return dueReportManager.getDueBookingsByService(serviceNumber);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/officeDuesByAgent", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<BasicDBObject> getOfficeDuesByAgents(HttpServletRequest request) {
+        return dueReportManager.getOfficeDuesByAgent();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/officeDuesByAgent/{agentId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    public List<Booking> getDueBookingByAgent(HttpServletRequest request, @PathVariable final String agentId) {
+        return dueReportManager.getDueBookingsByAgent(agentId);
+    }
 }
