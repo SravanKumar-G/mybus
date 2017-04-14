@@ -7,7 +7,7 @@
 // ====================================    Routes  Controller    =============================================== //
 // ============================================================================================================= //
 
-    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,paginationService,NgTableParams,$location,cityManager) {
+    .controller('RoutesController', function ($scope,$rootScope, $http,$uibModal, $log, routesManager,$filter,paginationService,NgTableParams,$location) {
         $log.debug('RoutesController loading');
         $scope.headline = "Routes";
         var pageable;
@@ -17,35 +17,28 @@
             paginationService.pagination(tableParams, function(response){
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-                routesManager.getRoutes(pageable, function(data){
-                    if (angular.isArray(data.content)) {
-                        $scope.allRoutes = data.content;
-                        cityManager.getActiveCityNames(function (info) {
-                            $scope.cities = info;
-                            angular.forEach($scope.allRoutes, function (route) {
-                                // for each route
-                                angular.forEach($scope.cities, function (city) {
-                                    // for each city
-                                    if (city.id == route.fromCityId) {
-                                        route.attributes.fromCity = city.name;
-                                    }
-                                    if (city.id == route.toCityId) {
-                                        route.attributes.toCity = city.name;
-                                    }
-                                });
-
-                            });
+            routesManager.load(pageable).then(function(response){
+                let routes = response[0].data.content;
+                if (angular.isArray(routes)) {
+                    $scope.allRoutes = routes;
+                    $scope.cities = response[1].data;
+                    angular.forEach($scope.allRoutes, function (route) {
+                        angular.forEach($scope.cities, function (city) {
+                            if (city.id == route.fromCityId) {
+                                route.attributes.fromCity = city.name;
+                            }
+                            if (city.id == route.toCityId) {
+                                route.attributes.toCity = city.name;
+                            }
                         });
-                    }
-
+                    });
                     $scope.loading = false;
-                    $scope.routes = data.content;
-                    tableParams.total(data.totalElements);
-                    $scope.count = data.totalElements;
-                    tableParams.data = $scope.routes;
-                    $scope.currentPageOfRoutes =  $scope.routes;
+                    tableParams.total(response[0].data.totalElements);
+                    $scope.count = response[0].data.totalElements;
+                    tableParams.data = $scope.allRoutes;
+                    $scope.currentPageOfRoutes =  $scope.allRoutes;
+                }
             })
-
         };
 
         $scope.init = function(){
@@ -169,8 +162,8 @@
         $scope.routesFromManager = [];
         var pageable;
         $scope.onMouseLeave = function (Name) {
-            routesManager.getRoutes(pageable, function (data) {
-                $scope.routesFromManager = data;
+            routesManager.load(pageable).then(function (response) {
+                $scope.routesFromManager = response[0].data.content;
             });
             angular.forEach($scope.routesFromManager, function (route) {
                 if (route.name == Name) {
@@ -214,20 +207,34 @@
     // ====================================    Routes  Manager (Service)   ========================================= //
     // ============================================================================================================= //
 
-    .factory('routesManager', function ($rootScope, $http, $log,cityManager) {
+    .factory('routesManager', function ($rootScope,$q, $http, $log) {
 
         var routes = {};
 
         return{
-            getRoutes: function (pageable, callback) {
+            /*getRoutes: function (pageable, callback) {
                 $http({url:'/api/v1/routes',method: "GET",params: pageable})
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
                         $log.debug("error retrieving Routes");
                     });
+            },*/
+            load: function (pageable) {
+                var deferred = $q.defer();
+                $q.all([$http({url: '/api/v1/routes', method: "GET", params: pageable}),
+                    $http.get('/api/v1/activeCityNames')]).then(
+                    function (results) {
+                        deferred.resolve(results)
+                    },
+                    function (errors) {
+                        deferred.reject(errors);
+                    },
+                    function (updates) {
+                        deferred.update(updates);
+                    });
+                return deferred.promise;
             },
-
             getActiveRouteNames: function() {
                 return $http({
                     method:'GET',
