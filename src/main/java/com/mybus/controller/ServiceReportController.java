@@ -87,20 +87,16 @@ public class ServiceReportController {
 		}
 	}
 
-	@RequestMapping(value = "serviceReport/booking/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Load one service report", response = JSONObject.class)
+	@RequestMapping(value = "serviceReport/booking/{bookingId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Find Booking by ID", response = JSONObject.class)
 	public Booking getServiceReportBooking(HttpServletRequest request,
-										  @ApiParam(value = "id")@PathVariable final String bookingId) {
-		try{
+										  @ApiParam(value = "bookingId")@PathVariable final String bookingId) {
 			Booking booking = serviceReportsManager.getBooking(bookingId);
 			return booking;
-		}catch (Exception e) {
-			throw new BadRequestException("Error loading report");
-		}
 	}
 
 	@RequestMapping(value = "serviceForm/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Load one service report", response = JSONObject.class)
+	@ApiOperation(value ="Load one service form", response = JSONObject.class)
 	public ServiceForm getServiceForm(HttpServletRequest request,
 										  @ApiParam(value = "id")@PathVariable final String id) {
 		try{
