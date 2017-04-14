@@ -94,7 +94,14 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(jsonPath("$.netRedbusIncome").value(0));
         actions.andExpect(jsonPath("$.netOnlineIncome").value(0));
         actions.andExpect(jsonPath("$.netCashIncome").value(55));
-
-
+    }
+    @Test
+    public void testGetBooking() throws Exception {
+        Booking booking = new Booking();
+        booking.setBookedBy("BookedByTest");
+        booking = bookingDAO.save(booking);
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/booking/"+booking.getId()), currentUser));
+        actions.andExpect(jsonPath("$").exists());
+        actions.andExpect(jsonPath("$.bookedBy").value("BookedByTest"));
     }
 }
