@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
-    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, paymentManager, userManager){
+    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams,serviceReportsManager, paymentManager, userManager){
         $scope.loading = false;
         $scope.query = {"status":null};
         $scope.user = userManager.getUser();
@@ -122,6 +122,17 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 $scope.init();
             });
         };
+        $scope.popUp = function (formId) {
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'service-form-modal.html',
+                controller:'popUpController',
+                resolve : {
+                    formId : function(){
+                        return formId;
+                    }
+                }
+            })
+        }
         $scope.approveOrRejectPayment = function(payment, status){
             if(status == "Approve"){
                 payment.status ="Approved";
@@ -133,7 +144,20 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Payment is updated", "success");
             });
         }
-    }).controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
+    })
+    .controller("popUpController", function($scope,$rootScope, serviceReportsManager , formId){
+        $scope.service = {};
+            serviceReportsManager.getForm(formId,function (data) {
+                $scope.service = data;
+                console.log(data);
+            })
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+        })
+
+    .controller("EditPaymentController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
