@@ -35,16 +35,18 @@
 <div ng-show="!loading">
     <table class="table table-bordered table-condensed table-hover" ng-table="paymentTableParams">
         <tr ng-repeat="payment in currentPageOfPayments">
-            <td data-title="'Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
+            <td data-title="'CreatedOn'" sortable="'createdAt'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt | date}}</td>
+            <td data-title="'Journey Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
             <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                 <a ng-if="payment.serviceFormId" href="#!/serviceform/{{payment.serviceFormId}}">{{payment.description}}</a>
-                <span ng-if="!payment.serviceFormId">{{payment.description}}</span>
+                <a ng-if="payment.bookingId" href="#!/booking/details/{id}">{{payment.description}}</a>
+                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
             </td>
             <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
             <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
-            <td data-title="'CreatedUser'" class="clickable-item" ng-if="user.admin">{{payment.attributes.createdBy}}</td>
+            <td data-title="'CreatedUser'" class="clickable-item">{{payment.attributes.createdBy}}</td>
             <td data-title="'CreatedBranch'" class="clickable-item" ng-if="user.admin">{{payment.attributes.branchOfficeId}}</td>
-            <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+            <td data-title="'Status'" sortable="'status'" class="clickable-item">
                 <span ng-if="payment.status">
                    {{payment.status}}
                 </span>

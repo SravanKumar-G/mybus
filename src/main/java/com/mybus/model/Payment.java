@@ -41,6 +41,7 @@ public class Payment extends AbstractDocument {
     private String serviceFormId;
     private String vehicleId;
     private String bookingId;
+    private Date duePaidOn;
     public Payment() {
         //this.status = STATUS_PENDING;
     }

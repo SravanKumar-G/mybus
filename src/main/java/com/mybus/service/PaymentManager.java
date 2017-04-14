@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * Created by srinikandula on 12/12/16.
  */
+
 @Service
 public class PaymentManager {
     private static final Logger logger = LoggerFactory.getLogger(PaymentManager.class);
@@ -77,6 +78,7 @@ public class PaymentManager {
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDuePaidOn(new Date());
         return updatePayment(payment);
     }
 
@@ -95,7 +97,7 @@ public class PaymentManager {
             payment.setDescription("Service form: "+ serviceForm.getServiceName());
         }
         payment.setStatus(Payment.STATUS_AUTO);
-        payment.setDate(new Date());
+        payment.setDate(serviceForm.getJDate());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         return updatePayment(payment);
     }

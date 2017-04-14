@@ -169,4 +169,17 @@ public class DueReportManager {
             return bookingMongoDAO.getDueBookingByServiceNumber(null, serviceNumber);
         }
     }
+
+    public List<Booking> getDueBookingsByAgent(String agentName) {
+        return bookingMongoDAO.findAgentDues(agentName);
+    }
+
+    public List<BasicDBObject> getBookingDuesGroupByAgent() {
+        User currentUser = sessionManager.getCurrentUser();
+        if(currentUser != null && !currentUser.isAdmin()) {
+            return bookingMongoDAO.getDueBookingByAgents(currentUser.getBranchOfficeId());
+        } else {
+            return bookingMongoDAO.getDueBookingByAgents(null);
+        }
+    }
 }

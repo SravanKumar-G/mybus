@@ -13,9 +13,9 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
         $scope.today = function() {
-            var date = new Date();
-            date.setDate(date.getDate()-1);
-            $scope.dt = date;
+            //var date =
+            //date.setDate(date.getDate()-1);
+            $scope.dt = new Date();
             $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
             $scope.parseDate();
         };

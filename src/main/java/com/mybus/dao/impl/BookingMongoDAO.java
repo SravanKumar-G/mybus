@@ -57,6 +57,16 @@ public class BookingMongoDAO {
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }
+    public List<Booking> findAgentDues(String agentName) {
+        final Query query = new Query();
+        //query.fields().include("name");
+        query.addCriteria(where("bookedBy").is(agentName));
+        query.addCriteria(where("due").is(true));
+        query.addCriteria(where("formId").exists(true));
+        query.addCriteria(where("serviceId").exists(false));
+        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        return bookings;
+    }
     public boolean markBookingPaid(String bookingId) {
         Update updateOp = new Update();
         updateOp.set("due", false);
@@ -97,6 +107,28 @@ public class BookingMongoDAO {
         return result;
     }
 
+
+    public List<BasicDBObject> getDueBookingByAgents(String branchOfficeId){
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(branchOfficeId != null) {
+            List<String> agentNames = agentMongoDAO.findAgentNamesByOfficeId(branchOfficeId);
+            if (agentNames != null && !agentNames.isEmpty()) {
+                match.add(where("bookedBy").in(agentNames));
+            }
+        }
+        match.add(where("due").is(true));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group("bookedBy").sum("netAmt").as("totalDue"),
+                sort(Sort.Direction.DESC, "totalDue"));
+
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
+        List<BasicDBObject> result = groupResults.getMappedResults();
+        return result;
+    }
     public List<Booking> getDueBookingByServiceNumber(String branchOfficeId, String serviceNumber){
         final Query query = new Query();
         if(branchOfficeId != null) {
