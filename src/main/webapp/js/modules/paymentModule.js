@@ -117,6 +117,17 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
+        $scope.BookingDuePopUpPayments = function(bookingId){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'booking-popup-modal.html',
+                controller : 'popUpBookingControllerPayments',
+                resolve : {
+                    bookingId : function(){
+                        return bookingId;
+                    }
+                }
+            });
+        };
         $scope.delete = function(paymentId) {
             paymentManager.delete(paymentId, function(data){
                 $scope.init();
@@ -149,7 +160,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         $scope.service = {};
             serviceReportsManager.getForm(formId,function (data) {
                 $scope.service = data;
-                console.log(data);
             })
 
         $scope.cancel = function () {
@@ -256,7 +266,18 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 }
             }
         };
-    }).factory('paymentManager', function ($rootScope, $http, $log) {
+    })
+    .controller("popUpBookingControllerPayments", function($scope,$rootScope, serviceReportsManager , bookingId){
+        $scope.booking = {};
+        serviceReportsManager.getBooking(bookingId,function (data) {
+            $scope.booking = data;
+        })
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+    })
+    .factory('paymentManager', function ($rootScope, $http, $log) {
         var payments = {};
         return {
             pendingPayments: function (pageable, callback) {

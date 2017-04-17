@@ -129,6 +129,7 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 if (angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.payments = response.content;
+                    console.log(response.content);
                     branchOfficeManager.loadNames(function (data) {
                         $scope.branches = data;
                         angular.forEach($scope.payments, function (payment) {
@@ -185,6 +186,28 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 }
             })
         }
+
+        $scope.BookingDuePopUpExpenses = function(bookingId){
+            $rootScope.modalInstance = $uibModal.open({
+                templateUrl : 'booking-popup-modal.html',
+                controller : 'popUpBookingControllerExpenses',
+                resolve : {
+                    bookingId : function(){
+                        return bookingId;
+                    }
+                }
+            });
+        };
+    })
+    .controller("popUpBookingControllerExpenses", function($scope,$rootScope, serviceReportsManager , bookingId){
+        $scope.booking = {};
+        serviceReportsManager.getBooking(bookingId,function (data) {
+            $scope.booking = data;
+        })
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
     })
     .controller("serviceReportsPopUpController", function($scope,$rootScope, serviceReportsManager , formId){
         $scope.service = {};

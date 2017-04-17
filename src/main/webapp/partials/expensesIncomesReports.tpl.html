@@ -39,8 +39,7 @@
             <td data-title="'Journey Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
             <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                 <a ng-if="payment.serviceFormId" ng-click="serviceReportsPopUp(payment.serviceFormId)">{{payment.description}}</a>
-                <a ng-if="payment.bookingId"  href="#!/booking/details/{id}">{{payment.description}}</a>
-                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
+                <a ng-if="payment.bookingId" ng-click="BookingDuePopUpExpenses(payment.bookingId)">{{payment.description}}</a>                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
             </td>
             <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
             <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
@@ -63,39 +62,75 @@
 </div>
 </div>
 
-<script type="text/ng-template" id="serviceReportPopUp-form-modal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">{{service.serviceName}}</h3>
-    </div><br/>
-    <form class="form-horizontal">
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created By: </label>
-            <div class="col-sm-6">{{service.createdBy}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created At:</label>
-            <div class="col-sm-6">{{service.createdAt}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Conductor Info:</label>
-            <div class="col-sm-6">{{service.conductorInfo}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Journey Date:</label>
-            <div class="col-sm-6">{{service.jdate}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Redbus:</label>
-            <div class="col-sm-6">{{service.netRedbusIncome | number:2}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Online:</label>
-            <div class="col-sm-6">{{service.netOnlineIncome | number:2}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Cash:</label>
-            <div class="col-sm-6">{{service.netCashIncome | number:2}}</div>
-        </div>
-        <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Total Income:</label>
-            <div class="col-sm-6">{{service.netIncome | number:2}}</div>
-        </div>
-    </form>
-    <div class="modal-footer">
-        <a class="btn btn-success" ng-click="cancel()" href="#!/serviceform/{{service.id}}">All Details</a>
-        <button class="btn btn-warning" ng-click="cancel()">Ok</button>
-    </div>
 
-</script>
+<!------- model popup for booking for due ------>
+
+            <script type="text/ng-template" id="booking-popup-modal.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{booking.serviceName}}</h3>
+                </div><br/>
+                <form class="form-horizontal col-xs-offset-1">
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Booked By: </label>
+                        <div class="col-sm-6">{{booking.bookedBy}}</div>
+                    </div>
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Booked Date: </label>
+                        <div class="col-sm-6">{{booking.bookedDate}}</div>
+                    </div>
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Passenger :</label>
+                        <div class="col-sm-6">{{booking.name}}</div>
+                    </div>
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Service No :</label>
+                        <div class="col-sm-6">{{booking.serviceNumber}}</div>
+                    </div>
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Journey Date:</label>
+                        <div class="col-sm-6">{{booking.jdate}}</div>
+                    </div>
+                    <div class="form-group"><label class="col-sm-3 col-sm-offset-1">Cleared Amount:</label>
+                        <div class="col-sm-6">{{booking.netAmt | number:2}} ({{booking.paymentType}})</div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-warning" ng-click="cancel()">Ok</button>
+                </div>
+
+            </script>
+
+
+<!------- model popup for service ------>
+
+        <script type="text/ng-template" id="serviceReportPopUp-form-modal.html">
+            <div class="modal-header">
+                <h3 class="modal-title">{{service.serviceName}}</h3>
+            </div><br/>
+            <form class="form-horizontal">
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created By: </label>
+                    <div class="col-sm-6">{{service.createdBy}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created At:</label>
+                    <div class="col-sm-6">{{service.createdAt}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Conductor Info:</label>
+                    <div class="col-sm-6">{{service.conductorInfo}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Journey Date:</label>
+                    <div class="col-sm-6">{{service.jdate}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Redbus:</label>
+                    <div class="col-sm-6">{{service.netRedbusIncome | number:2}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Online:</label>
+                    <div class="col-sm-6">{{service.netOnlineIncome | number:2}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Cash:</label>
+                    <div class="col-sm-6">{{service.netCashIncome | number:2}}</div>
+                </div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Total Income:</label>
+                    <div class="col-sm-6">{{service.netIncome | number:2}}</div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <a class="btn btn-success" ng-click="cancel()" href="#!/serviceform/{{service.id}}">All Details</a>
+                <button class="btn btn-warning" ng-click="cancel()">Ok</button>
+            </div>
+
+        </script>
