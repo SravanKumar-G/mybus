@@ -77,6 +77,17 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 }
             });
         };
+        var loadTableDataByAgent = function (tableParams) {
+            $scope.loading = true;
+            dueReportManager.getReportByAgents(pageable,function (data) {
+                $scope.loading = false;
+                if(angular.isArray(data)) {
+                    $scope.agentsDues = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                    tableParams.total($scope.agentsDues.length);
+                    $scope.currentPageOfAllAgentDues = $scope.agentsDues.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                }
+            });
+        };
 
         $scope.officeDuesTableParams = new NgTableParams({
             page: 1,
@@ -102,7 +113,18 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 loadTableDataByService(params);
             }
         });
-
+        $scope.agentDuesTableParams = new NgTableParams({
+            page: 1,
+            count:99999,
+            sorting: {
+                Id: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfDues.length,
+            getData: function (params) {
+                loadTableDataByAgent(params);
+            }
+        });
 
         $rootScope.$on("ReloadOfficeDueReport", function(){
             loadTableDataByDate($scope.officeDuesTableParams);
@@ -113,6 +135,9 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         }
         $scope.showDueReportByService = function(serviceNumber) {
             $location.url('officeduereportbyservice/'+serviceNumber);
+        }
+        $scope.showDueReportByAgent = function(agentName) {
+            $location.url('officeduereportbyagent/'+agentName);
         }
     })
     .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
@@ -160,6 +185,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     $rootScope.$broadcast('UpdateHeader');
                     //$location.url('/officeduereport/'+officeId);
                     loadTableData($scope.duesTableParams);
+
                 },function (error) {
                     sweetAlert("Oops...", "Error submitting the report", "error");
                 });
@@ -221,7 +247,57 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
 
     })
 
+    .controller('OfficeDueByAgentController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
+        $scope.headline = "Office Due Report By Agent";
+        $scope.agentName = $stateParams.agentName;
+        $scope.loading = false;
+        $scope.agentDue = {};
+        $scope.currentPageOfDuesByAgent = [];
+        var loadTableData = function (tableParams) {
+            $scope.loading = true;
+            dueReportManager.getDueReportByAgent($scope.agentName,function (data) {
+                $scope.loading = false;
+                $scope.agentDue = data;
+                if($scope.agentDue) {
+                    $scope.agentDue = tableParams.sorting() ? $filter('orderBy')($scope.agentDue, tableParams.orderBy()) : $scope.agentDue;
+                    tableParams.total($scope.agentDue.length);
+                    $scope.currentPageOfDuesByAgent = $scope.agentDue.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                }
+            });
+        }
+        $scope.duesTableParams = new NgTableParams({
+            page: 1,
+            count:99999,
+            sorting: {
+                name: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfDuesByAgent.length,
+            getData: function (params) {
+                loadTableData(params);
+            }
+        });
+        $rootScope.$on("ReloadOfficeDueReport", function(){
+            loadTableData($scope.duesTableParams);
+        });
+        $scope.payBooking = function(bookingId, officeId, agentName) {
+            swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, pay now!",
+                closeOnConfirm: true }, function() {
+                dueReportManager.payBooking(bookingId, function(data) {
+                    $rootScope.$broadcast('UpdateHeader');
+                    $location.url('officeduereportbyagent/'+agentName);
 
+                },function (error) {
+                    sweetAlert("Oops...", "Error submitting the report", "error");
+                });
+            });
+        }
+
+
+    })
 
 
     .factory('dueReportManager', function ($http, $rootScope, $log) {
@@ -255,6 +331,15 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         sweetAlert("Error",err.data.message,"error");
                     });
             },
+            getReportByAgents:function(pageable,callback) {
+                $http.get('/api/v1/dueReport/officeDuesByAgent')
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error loading due report");
+                        sweetAlert("Error",err.data.message,"error");
+                    });
+            },
             getBranchReportByDate:function(id,date,callback) {
                 $http.get('/api/v1/dueReport/office/'+id+'/'+date)
                     .then(function (response) {
@@ -269,6 +354,15 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
+                        $log.debug("error loading due report");
+                        sweetAlert("Error",err.data.message,"error");
+                    });
+            },
+            getDueReportByAgent:function(agentName,callback) {
+                $http.get('/api/v1/dueReport/officeDuesByAgent/'+agentName)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (err) {
                         $log.debug("error loading due report");
                         sweetAlert("Error",err.data.message,"error");
                     });

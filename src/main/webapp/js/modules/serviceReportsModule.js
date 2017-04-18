@@ -309,12 +309,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
             $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
+            $scope.init();
         }
         $scope.previousDay = function() {
             var dt = $scope.dt;
             dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
             $scope.dt = dt;// new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             $scope.checkStatus();
+            $scope.init();
         }
         var loadTableData = function (tableParams, $defer) {
            serviceReportsManager.loadReports($scope.date, function(data){
@@ -324,8 +326,18 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     $defer.resolve($scope.allReports);
                 }
                 $scope.currentPageOfReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-            });
+               if( $scope.submitted == 0) {
+                   angular.forEach($scope.currentPageOfReports, function (service) {
+                       if (service.status == "SUBMITTED") {
+                           $scope.submitted = $scope.submitted + 1;
+                       }
+                   });
+               }
+           })
         };
+
+    $scope.init = function() {
+        $scope.submitted = 0;
         $scope.serviceReportTableParams = new NgTableParams({
             page: 1,
             count:250,
@@ -338,14 +350,17 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 loadTableData(params);
             }
         });
-        $scope.goToServiceReport = function(service) {
-            if(service.attributes.formId) {
-                $location.url('serviceform/' + service.attributes.formId);
-            } else {
-                $location.url('servicereport/' + service.id);
-            }
+    };
+    $scope.init();
+    $scope.goToServiceReport = function(service) {
+        if(service.attributes.formId) {
+            $location.url('serviceform/' + service.attributes.formId);
+        } else {
+            $location.url('servicereport/' + service.id);
         }
-    }).factory('serviceReportsManager', function ($http, $log, $rootScope) {
+    }
+})
+    .factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};
         return {
             getServiceReportStatus:function(date, callback) {
@@ -386,6 +401,15 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading service reports");
+                    });
+            },
+            getBooking:function(id,callback) {
+                console.log('loading the booking ');
+                $http.get('api/v1/serviceReport/booking/'+id)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error loading booking form");
                     });
             },
             getForm:function(id,callback) {

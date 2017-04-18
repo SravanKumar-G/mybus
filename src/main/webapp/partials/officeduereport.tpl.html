@@ -15,9 +15,12 @@
             <li class="tab" ng-class="{active:tab==2}">
                 <a href ng-click="tab = 2">Due Report By Service</a>
             </li>
+            <li class="tab" ng-class="{active:tab==3}">
+                <a href ng-click="tab = 3">Due Report By Agents</a>
+            </li>
         </ul>
         <div class="tab-content" ng-show="tab==1">
-            Due Report
+            <b>Due Report</b>
             <table class="table table-bordered table-condensed table-hover" ng-table="officeDuesTableParams">
                 <tr ng-repeat="due in currentPageOfOfficeDues">
                     <td data-title="'Date'"  sortable="'date'" class="clickable-item col-md-1" ng-click="showDueReportByDate(due.date)"><a ng-click="showDueReportByDate(due.date)">{{ due.date }}</a></td>
@@ -30,7 +33,7 @@
             </table>
         </div>
         <div class="tab-content" ng-show="tab==2">
-            Due Report
+            <b> Due Report By Service</b>
             <table class="table table-bordered table-condensed table-hover" ng-table="serviceDuesTableParams">
                 <tr ng-repeat="due in currentPageOfServiceDues">
                     <td data-title="'Service Id'"  sortable="'Id'" class="clickable-item col-md-1" ng-click="showDueReportByService(due._id)" ><a ng-click="showDueReportByService(due._id)">{{ due._id }}</a></td>
@@ -42,9 +45,27 @@
                 </tr>
             </table>
         </div>
-    </div>
-</div>
 
+            <div class="tab-content" ng-show="tab==3">
+                <table>
+                <tr>
+                    <td><b class="col-md-4">Due Report By Agent</b></td>
+                    <td class="col-md-4" align="right"><input class="form-control col-md-4"  ng-model="searchText" type="search" placeholder="Search text"></td>
+                </tr>
+                </table>
+                    <table class="table table-bordered table-condensed table-hover" ng-table="agentDuesTableParams">
+                <tr ng-repeat="due in currentPageOfAllAgentDues | filter:searchText">
+                    <td data-title="'Agent'"  sortable="'Id'" class="clickable-item col-md-1" ng-click="showDueReportByAgent(due._id)" ><a ng-click="showDueReportByAgent(due._id)">{{ due._id }}</a></td>
+                    <td data-title="'Total Due'" sortable="'totalDue'"  class="clickable-item col-md-1"  >{{ due.totalDue | number:2}} </td>
+                </tr>
+
+                <tr ng-if="!currentPageOfAllAgentDues || currentPageOfAllAgentDues.length === 0">
+                    <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
+                </tr>
+            </table>
+            </div>
+</div>
+</div>
 
 <div ng-show="loading">
     Please wait while the report data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
