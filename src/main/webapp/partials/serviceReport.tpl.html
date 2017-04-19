@@ -64,7 +64,7 @@
             <h4>Expenses</h4>
             <table class="table table-bordered table-condensed table-hover">
                 <tr ng-repeat="expense in service.expenses">
-                    <td><input type="text" placeholder="expense name" ng-model="expense.name"></td>
+                    <td><input type="text" placeholder="expense name" ng-model="expense.description"></td>
                     <td><input type="number" placeholder="amount" ng-model="expense.amount" ng-change="calculateNet()">
                         <span class="glyphicon glyphicon-remove-sign" ng-show="expense.index" ng-click="deleteExpense(expense)"></span>
                     </td>

@@ -40,7 +40,19 @@ public class PaymentMongoDAO {
     private SessionManager sessionManager;
 
     public Payment save(Payment payment){
+        if(payment.getDescription() == null || payment.getDescription().trim().length() == 0) {
+            throw new BadRequestException("Description is required");
+        }
         return paymentDAO.save(payment);
+    }
+
+    public void save(List<Payment> payments){
+        for(Payment payment: payments) {
+            if(payment.getDescription() == null || payment.getDescription().trim().length() == 0) {
+                throw new BadRequestException("Description is required");
+            }
+            paymentDAO.save(payment);
+        }
     }
 
     public Payment update(Payment payment){
