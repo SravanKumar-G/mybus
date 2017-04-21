@@ -48,10 +48,7 @@ public class PaymentMongoDAO {
 
     public void save(List<Payment> payments){
         for(Payment payment: payments) {
-            if(payment.getDescription() == null || payment.getDescription().trim().length() == 0) {
-                throw new BadRequestException("Description is required");
-            }
-            paymentDAO.save(payment);
+           save(payment);
         }
     }
 

@@ -62,8 +62,10 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         Payment payment1 = new Payment();
         payment1.setBranchOfficeId(branchOffice1.getId());
         payment1.setType(PaymentType.INCOME);
+        payment1.setDescription("Testing");
         payment1.setAmount(1000);
         Payment payment2 = new Payment();
+        payment2.setDescription("Testing");
         payment2.setType(PaymentType.EXPENSE);
         payment2.setBranchOfficeId(branchOffice2.getId());
         payment2.setAmount(2000);
