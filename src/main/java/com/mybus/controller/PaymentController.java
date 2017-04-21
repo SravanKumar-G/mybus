@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.PaymentMongoDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.Payment;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +74,7 @@ public class PaymentController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public Payment create(HttpServletRequest request, @RequestBody final Payment paymnet) {
         logger.debug("post payment called");
+
         return paymentMongoDAO.save(paymnet);
     }
 

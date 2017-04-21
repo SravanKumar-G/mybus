@@ -58,7 +58,7 @@ public class PaymentManager {
                 branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), payment.getAmount());
             }
         }
-        return paymentDAO.save(payment);
+        return paymentMongoDAO.save(payment);
     }
 
     /**

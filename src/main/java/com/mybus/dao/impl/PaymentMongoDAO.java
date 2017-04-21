@@ -40,7 +40,19 @@ public class PaymentMongoDAO {
     private SessionManager sessionManager;
 
     public Payment save(Payment payment){
+        if(payment.getDescription() == null || payment.getDescription().trim().length() == 0) {
+            throw new BadRequestException("Description is required");
+        }
         return paymentDAO.save(payment);
+    }
+
+    public void save(List<Payment> payments){
+        for(Payment payment: payments) {
+            if(payment.getDescription() == null || payment.getDescription().trim().length() == 0) {
+                throw new BadRequestException("Description is required");
+            }
+            paymentDAO.save(payment);
+        }
     }
 
     public Payment update(Payment payment){
@@ -205,6 +217,8 @@ public class PaymentMongoDAO {
         //add the service forms as well
         //get current office employees
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
+        //skip form expenses
+        match.add(Criteria.where("index").exists(false));
         //criteria.orOperator(Criteria.where("createdBy").in());
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
