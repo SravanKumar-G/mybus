@@ -217,6 +217,8 @@ public class PaymentMongoDAO {
         //add the service forms as well
         //get current office employees
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
+        //skip form expenses
+        match.add(Criteria.where("index").exists(false));
         //criteria.orOperator(Criteria.where("createdBy").in());
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
