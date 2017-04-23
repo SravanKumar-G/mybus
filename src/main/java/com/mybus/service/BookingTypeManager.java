@@ -47,18 +47,21 @@ public class BookingTypeManager {
     }
 
     public boolean hasValidAgent(Booking booking) {
+        return getBookingAgent(booking) != null;
+    }
+    public Agent getBookingAgent(Booking booking) {
         if(booking.getBookedBy() == null) {
-            return false;
+            return null;
         }
         Agent agent = agentDAO.findByUsername(booking.getBookedBy());
         if(agent != null) {
-           if(agent.getBranchOfficeId() != null) {
+            if(agent.getBranchOfficeId() != null) {
                 BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
                 if(branchOffice != null) {
-                    return true;
+                    return agent;
                 }
             }
         }
-        return false;
+        return null;
     }
 }

@@ -25,6 +25,7 @@ public class Agent extends AbstractDocument {
     private String email;
     private String mobile;
     private String landline;
+    private int commission;
     private String address;
     @Indexed
     private String branchOfficeId;

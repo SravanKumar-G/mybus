@@ -94,12 +94,14 @@ public class ServiceReportsManager {
                 report.setNetOnlineIncome(report.getNetOnlineIncome() + booking.getNetAmt());
                 booking.setPaymentType(BookingType.ONLINE);
             } else {
+                Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
+                booking.setHasValidAgent(bookingAgent != null);
+                report.setInvalid(bookingAgent == null);
+
+                adjustAgentBookingCommission(booking, bookingAgent);
                 report.setNetCashIncome(report.getNetCashIncome() + booking.getNetAmt());
                 booking.setPaymentType(BookingType.CASH);
-                booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
-                if(!booking.isHasValidAgent() && !report.isInvalid()) {
-                    report.setInvalid(true);
-                }
+
             }
         }
         //round up the digits
@@ -110,6 +112,16 @@ public class ServiceReportsManager {
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }
+
+    private void adjustAgentBookingCommission(Booking booking, Agent bookingAgent) {
+        if(bookingAgent != null) {
+            if(bookingAgent.getCommission() > 0) {
+                double netShare = (double)(100 - bookingAgent.getCommission()) / 100;
+                booking.setNetAmt(booking.getNetAmt() * netShare);
+            }
+        }
+    }
+
     private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
     }
@@ -149,8 +161,10 @@ public class ServiceReportsManager {
                 } else {
                     //add dues based on agent
                     booking.setId(null);
-                    booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
                     if (!booking.isDue()) {
+                        Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
+                        booking.setHasValidAgent(bookingAgent != null);
+                        adjustAgentBookingCommission(booking, bookingAgent);
                         serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
                     }
                 /*
