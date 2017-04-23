@@ -1,9 +1,15 @@
 package com.mybus.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
+
 import jdk.nashorn.internal.ir.annotations.Ignore;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +40,8 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
     public void testMethod() {
 
     }
-    /*
-    @Test
+    
+    /*@Test
     @Ignore
     public void testDownloadReport() throws Exception {
         String dt = "2017-01-01";  // Start date
@@ -55,9 +61,21 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
     }
 
     @Test
+    @Ignore
     public void testDownloadSingleReport() throws Exception {
         abhiBusPassengerReportService.downloadReport("2017-02-20");
     }
-*/
+    */
+   /* @Test
+    public void getServicesByDate() throws Exception {
+        abhiBusPassengerReportService.getServicesByDate("2017-04-15");
+    }
+    */
+    
+    @Test
+    public void testDownloadReportByNumberAndDate() throws Exception {
+        abhiBusPassengerReportService.getServiceDetailsByNumberAndDate("SKT-44B", "2017-04-19");
+    }
+
 
 }

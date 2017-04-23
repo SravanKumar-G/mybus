@@ -64,7 +64,6 @@ public class AbhiBusPassengerReportService {
         Vector params = new Vector();
         params.add(inputParam);
         HashMap busLists = (HashMap) xmlRpcClient.execute("index.serviceslist", params);
-        logger.info("Bus Leng"+busLists.size());
         Object busList[] = null;
         Iterator it = busLists.entrySet().iterator();
         while (it.hasNext()) {
@@ -107,18 +106,17 @@ public class AbhiBusPassengerReportService {
     
     
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceNum, String date) throws Exception{
-        logger.info("downloading service details for date:" + date);
+        logger.info("downloading service details for date and service numnbers:" + date);
         init();
         List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
         Map<String, ServiceReport> serviceBookings = new HashMap<>();
         List<ServiceReport> serviceReports = new ArrayList<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
-        inputParam.put("serviceids", serviceNum.trim());
+        inputParam.put("serviceids", serviceNum);
         Vector params = new Vector();
         params.add(inputParam);
-        Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
-        
+        Object busList[] = (Object[]) xmlRpcClient.execute("index.passengerreport", params);
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
@@ -191,9 +189,8 @@ public class AbhiBusPassengerReportService {
                 serviceBookings.put(serviceReport.getServiceNumber(), serviceReport);
             } else {
                 serviceReports.add(serviceReport);
-            }            
-        }      
-        
+            }   
+        } 
        return serviceReports;
     }
 
