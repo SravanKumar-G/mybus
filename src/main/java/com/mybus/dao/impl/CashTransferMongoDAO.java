@@ -29,17 +29,7 @@ public class CashTransferMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public long count(JSONObject query) {
-        return  mongoTemplate.count(preparePaymentQuery(query, null), CashTransfer.class);
-    }
-
-    public Page<CashTransfer> find(JSONObject query, Pageable pageable) {
-        List<CashTransfer> cashTransfers = mongoTemplate.find(preparePaymentQuery(query, pageable), CashTransfer.class);
-        Page<CashTransfer> page = new PageImpl<CashTransfer>(cashTransfers, pageable, count(query));
-        return  page;
-    }
-
-    public Query preparePaymentQuery(JSONObject query, Pageable pageable) {
+    private Query preparePaymentQuery(JSONObject query, Pageable pageable, boolean pending) {
         Query q = new Query();
         //filter the payments by office if the user is not admin
         if(!sessionManager.getCurrentUser().isAdmin()) {
@@ -53,7 +43,7 @@ public class CashTransferMongoDAO {
                 q.addCriteria(Criteria.where("description").regex(query.get("description").toString()));
             }
             if (query.containsKey("startDate")) {
-                String startDate = query.get("date").toString();
+                String startDate = query.get("endDate").toString();
                 try {
                     Date start = ServiceConstants.df.parse(startDate);
                     q.addCriteria(Criteria.where("date").gte(start));
@@ -62,7 +52,7 @@ public class CashTransferMongoDAO {
                 }
             }
             if (query.containsKey("endDate")) {
-                String startDate = query.get("date").toString();
+                String startDate = query.get("endDate").toString();
                 try {
                     Date start = ServiceConstants.df.parse(startDate);
                     q.addCriteria(Criteria.where("date").lte(start));
@@ -70,10 +60,44 @@ public class CashTransferMongoDAO {
                     e.printStackTrace();
                 }
             }
+            /*for(Object key:query.keySet()){
+                String keyStr = key.toString();
+                if(!keyStr.equals("description") && !keyStr.equals("startDate") && !keyStr.equals("endDate")) {
+                    q.addCriteria(Criteria.where(keyStr).is(query.get(keyStr).toString()));
+                }
+            }*/
+        }
+        if(pending) {
+            q.addCriteria(Criteria.where("status").exists(false));
+        } else {
+            q.addCriteria(Criteria.where("status").exists(true));
         }
         if(pageable != null) {
             q.with(pageable);
         }
         return q;
+    }
+
+    public Page<CashTransfer> findPending(JSONObject query, Pageable pageable) {
+        Query q = preparePaymentQuery(query, pageable, false);
+        List<CashTransfer> cashTransfers = mongoTemplate.find(q, CashTransfer.class);
+        Page<CashTransfer> page = new PageImpl<CashTransfer>(cashTransfers, pageable, findPendingCount(query));
+        return  page;
+    }
+
+    public long findPendingCount(JSONObject query) {
+        Query q = preparePaymentQuery(query, null, false);
+        return mongoTemplate.count(q, CashTransfer.class);
+    }
+    public Page<CashTransfer> findNonPending(JSONObject query, Pageable pageable) {
+        Query q = preparePaymentQuery(query, pageable, true);
+        List<CashTransfer> cashTransfers = mongoTemplate.find(q, CashTransfer.class);
+        Page<CashTransfer> page = new PageImpl<CashTransfer>(cashTransfers, pageable, findNonPendingCount(query));
+        return  page;
+    }
+
+    public long findNonPendingCount(JSONObject query) {
+        Query q = preparePaymentQuery(query, null, true);
+        return mongoTemplate.count(q, CashTransfer.class);
     }
 }

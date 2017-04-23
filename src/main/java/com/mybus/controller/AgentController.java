@@ -94,12 +94,12 @@ public class AgentController {
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
-	@RequestMapping(value = "agent", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
+	@RequestMapping(value = "agent/update", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Save agent")
 	public Agent update(HttpServletRequest request,
 						   @ApiParam(value = "JSON for Agent to be updated") @RequestBody final Agent agent) {
-		logger.debug("update shipment called");
+		logger.debug("update agent called");
 		return agentManager.save(agent);
 	}
 

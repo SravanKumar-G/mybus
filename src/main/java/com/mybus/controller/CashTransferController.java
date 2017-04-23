@@ -33,17 +33,29 @@ public class CashTransferController extends MyBusBaseController {
     @Autowired
     private CashTransferManager cashTransferManager;
 
+
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @RequestMapping(value = "pending/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cash transfers available", response = CashTransfer.class, responseContainer = "List")
-    public Page<CashTransfer> get(HttpServletRequest request, final Pageable pageable) {
-        return cashTransferMongoDAO.find(null, pageable);
+    public Page<CashTransfer> getPending(HttpServletRequest request, final Pageable pageable) {
+        return cashTransferMongoDAO.findPending(null, pageable);
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "pending/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public long getPendingCount(HttpServletRequest request, @RequestBody final JSONObject query) {
+        return cashTransferMongoDAO.findPendingCount(query);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-    public long getCount(HttpServletRequest request, @RequestBody final JSONObject query) {
-        return cashTransferMongoDAO.count(query);
+    @RequestMapping(value = "nonpending/all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get all the cash transfers available", response = CashTransfer.class, responseContainer = "List")
+    public Page<CashTransfer> getNonPending(HttpServletRequest request, final Pageable pageable) {
+        return cashTransferMongoDAO.findNonPending(null, pageable);
+    }
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "nonpending/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public long getNonPendingCount(HttpServletRequest request, @RequestBody final JSONObject query) {
+        return cashTransferMongoDAO.findNonPendingCount(query);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

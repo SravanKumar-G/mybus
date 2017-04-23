@@ -142,7 +142,7 @@ angular.module('myBus.agentModule', ['ngTable', 'ui.bootstrap'])
         },
         save: function(agent, callback) {
             if(agent.id) {
-                $http.put('/api/v1/agent/',agent).then(function(response){
+                $http.put('/api/v1/agent/update',agent).then(function(response){
                     if(angular.isFunction(callback)){
                         callback(response.data);
                     }

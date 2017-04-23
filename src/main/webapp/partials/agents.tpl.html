@@ -21,6 +21,7 @@
         <td data-title="'Landline'"  sortable="'landline'" class="clickable-item col-sm-2" >{{ agent.landline }}</td>
         <td data-title="'CreatedOn'"  sortable="'createdAt'" class="clickable-item col-sm-2" >{{ agent.createdAt|date }}</td>
         <td data-title="'Branchname'"  sortable="'agent.attributes.branchName'" class="clickable-item col-sm-2" >{{ agent.attributes.branchName }}</td>
+        <td data-title="'Commission'"  sortable="'agent.commission'" class="clickable-item col-sm-2" >{{ agent.commission }}</td>
         <td class="col-sm-1">
             <md-button>
                 <md-icon type="button" class="btn" ng-click="editAgent(agent.id)">
@@ -69,6 +70,12 @@
                 <div class="col-sm-4">
                     <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="agent.branchOfficeId" required></select>
                     <a ng-click="launchAddBranchOffice()">Add New Branch</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="commission">Commission</label>
+                <div class="col-sm-4">
+                    <input type="number" id="commission" ng-model="agent.commission">
                 </div>
             </div>
         </form>
