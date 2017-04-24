@@ -4,6 +4,10 @@
 angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
         $scope.loading = false;
+        $scope.approvedCashTransfers=[];
+        $scope.pendingCashTransfers=[];
+        $scope.pendingTotal = 0;
+        $scope.approvedTotal = 0;
         $scope.user = userManager.getUser();
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {
@@ -11,19 +15,19 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             return user.admin || user.branchOfficeId;
         };
         var pageable ;
-        var loadTableData = function (tableParams) {
+        var loadPendingCashTransfers = function (tableParams) {
             $scope.loading = true;
             paginationService.pagination(tableParams, function(response){
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-            cashTransferManager.load(pageable).then(function(response) {
-                let cashTrasnsfers = response[0].data.content;
+            cashTransferManager.pendingCashTransfers(pageable).then(function(response) {
+                let pendingCashTransfers = response[0].data.content;
                 let userNames = response[2].data;
-                if (angular.isArray(cashTrasnsfers)) {
+                if (angular.isArray(pendingCashTransfers)) {
                     $scope.loading = false;
-                    $scope.cashTransfers = cashTrasnsfers;
+                    $scope.pendingCashTransfers = pendingCashTransfers;
                     $scope.branches = response[1].data;
-                    angular.forEach($scope.cashTransfers, function (cashTransfer) {
+                    angular.forEach($scope.pendingCashTransfers, function (cashTransfer) {
                         angular.forEach($scope.branches, function (branchOffice) {
                             if (branchOffice.id == cashTransfer.fromOfficeId) {
                                 cashTransfer.attributes.fromOfficeId = branchOffice.name;
@@ -36,16 +40,47 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     });
                     $scope.loading = false;
                     tableParams.total(response[0].data.totalElements);
-                    $scope.count = response[0].data.totalElements;
-                    tableParams.data = $scope.cashTransfers;
-                    $scope.currentPageOfCashTransfers = $scope.cashTransfers;
+                    $scope.pendingCashTransfersCount = response[0].data.totalElements;
+                    tableParams.data = $scope.pendingCashTransfers;
+                    $scope.currentPageOfPendingCashTransfers = $scope.pendingCashTransfers;
+                }
+            });
+        };
+        var loadApprovedCashTransfers = function (tableParams) {
+            $scope.loading = true;
+            paginationService.pagination(tableParams, function(response){
+                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
+            });
+            cashTransferManager.approvedCashTransfers(pageable).then(function(response) {
+                let approvedCashTransfers = response[0].data.content;
+                let userNames = response[2].data;
+                if (angular.isArray(approvedCashTransfers)) {
+                    $scope.loading = false;
+                    $scope.approvedCashTransfers = approvedCashTransfers;
+                    $scope.branches = response[1].data;
+                    angular.forEach($scope.approvedCashTransfers, function (cashTransfer) {
+                        angular.forEach($scope.branches, function (branchOffice) {
+                            if (branchOffice.id == cashTransfer.fromOfficeId) {
+                                cashTransfer.attributes.fromOfficeId = branchOffice.name;
+                            }
+                            if (branchOffice.id == cashTransfer.toOfficeId) {
+                                cashTransfer.attributes.toOfficeId = branchOffice.name;
+                            }
+                            cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
+                        })
+                    });
+                    $scope.loading = false;
+                    tableParams.total(response[0].data.totalElements);
+                    $scope.approvedCashTransfersCount = response[0].data.totalElements;
+                    tableParams.data = $scope.approvedCashTransfers;
+                    $scope.currentPageOfApprovedCashTransfers = $scope.approvedCashTransfers;
                 }
             });
         };
 
         $scope.init = function() {
-            cashTransferManager.count(function(cashTransfersCount){
-                $scope.cashTransferTableParams = new NgTableParams({
+            cashTransferManager.pendingCount(function(pendingCashTransfersCount){
+                $scope.pendingCashTransferTableParams = new NgTableParams({
                     page: 1,
                     size:10,
                     count:10,
@@ -54,9 +89,25 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     },
                 }, {
                     counts:[],
-                    total:cashTransfersCount,
+                    total:pendingCashTransfersCount,
                     getData: function (params) {
-                        loadTableData(params);
+                        loadPendingCashTransfers(params);
+                    }
+                });
+            });
+            cashTransferManager.approvedCount(function(approvedCashTransfersCount){
+                $scope.approvedCashTransfersTableParams = new NgTableParams({
+                    page: 1,
+                    size:10,
+                    count:10,
+                    sorting: {
+                        date: 'asc'
+                    },
+                }, {
+                    counts:[],
+                    total:approvedCashTransfersCount,
+                    getData: function (params) {
+                        loadApprovedCashTransfers(params);
                     }
                 });
             });
@@ -217,7 +268,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     .factory('cashTransferManager', function ($rootScope, $q, $http, $log) {
     var cashTransfer = {};
     return {
-        load: function (pageable) {
+        /*load: function (pageable) {
             var deferred = $q.defer();
             $q.all([ $http({url:'/api/v1/cashTransfer/all',method: "GET",params: pageable}),
                 $http.get('/api/v1/branchOffice/names'),
@@ -242,10 +293,50 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                 },function (error) {
                     $log.debug("error retrieving cashTransfers");
                 });
-                */
+
+        },*/
+        pendingCashTransfers: function (pageable) {
+            var deferred = $q.defer();
+            $q.all([$http({url:'/api/v1/cashTransfer/pending/all',method:"GET", params: pageable}),
+            $http.get('/api/v1/branchOffice/names'),
+                $http.get('/api/v1/userNamesMap')]).then(
+                function(results) {
+                    deferred.resolve(results)
+                },
+                function(errors) {
+                    deferred.reject(errors);
+                },
+                function(updates) {
+                    deferred.update(updates);
+                });
+            return deferred.promise;
         },
-        count: function (callback) {
-            $http.post('/api/v1/cashTransfer/count',{})
+        approvedCashTransfers: function (pageable) {
+            var deferred = $q.defer();
+            $q.all([$http({url:'/api/v1/cashTransfer/nonpending/all',method:"GET", params: pageable}),
+                $http.get('/api/v1/branchOffice/names'),
+                $http.get('/api/v1/userNamesMap')]).then(
+                function(results) {
+                    deferred.resolve(results)
+                },
+                function(errors) {
+                    deferred.reject(errors);
+                },
+                function(updates) {
+                    deferred.update(updates);
+                });
+            return deferred.promise;
+        },
+        pendingCount: function (callback) {
+            $http.get('/api/v1/cashTransfer/pending/count')
+                .then(function (response) {
+                    callback(response.data);
+                }, function (error) {
+                    $log.debug("error retrieving payments count");
+                });
+        },
+        approvedCount: function (callback) {
+            $http.post('/api/v1/cashTransfer/nonpending/count',{})
                 .then(function (response) {
                     callback(response.data);
                 },function (error) {
