@@ -50,6 +50,29 @@ public class ServiceReportController {
 			throw new BadRequestException("Error downloading reports");
 		}
 	}
+	
+	@RequestMapping(value = "serviceReport/services", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get service list for a given date", response = JSONObject.class)
+	public JSONObject getServicesByDate(HttpServletRequest request,
+										@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+		try{
+			return serviceReportsManager.getServicesByDate(travelDate);
+		}catch (Exception e) {
+			throw new BadRequestException("Error downloading services");
+		}
+	}
+	
+	@RequestMapping(value = "serviceReport/service_details", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get service details a given service number and date", response = JSONObject.class)
+	public JSONObject getServiceDetailsByNumberAndDate(HttpServletRequest request,
+										@ApiParam(value = "Date of travel") @RequestParam final String travelDate, 
+										@ApiParam(value = "Service Number") @RequestParam final String serviceNum) {
+		try{
+			return serviceReportsManager.getServiceDetailsByNumberAndDate(serviceNum, travelDate);
+		}catch (Exception e) {
+			throw new BadRequestException("Error downloading service details");
+		}
+	}
 
 	@RequestMapping(value = "serviceReport/load", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)

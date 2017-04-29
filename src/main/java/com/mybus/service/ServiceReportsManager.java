@@ -4,6 +4,7 @@ import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -73,6 +74,24 @@ public class ServiceReportsManager {
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("downloadedOn", dtf.print(status.getCreatedAt()));
+        return response;
+    }
+    
+    public JSONObject getServicesByDate(String date) throws Exception {
+    	List<ServiceReport> serviceReports = reportService.getServicesByDate(date);
+        JSONObject response = new JSONObject();
+        response.put("downloaded", true);
+        response.put("data", serviceReports);
+        //response.put("downloadedOn", dtf.print(status.getCreatedAt()));
+        return response;
+    }
+    
+    public JSONObject getServiceDetailsByNumberAndDate(String serviceNumber, String date) throws Exception {
+    	List<ServiceReport> serviceReports = reportService.getServiceDetailsByNumberAndDate(serviceNumber, date);
+        JSONObject response = new JSONObject();
+        response.put("downloaded", true);
+        response.put("data", serviceReports);
+        //response.put("downloadedOn", dtf.print(status.getCreatedAt()));
         return response;
     }
 

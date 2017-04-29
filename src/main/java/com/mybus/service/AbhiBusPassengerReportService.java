@@ -55,6 +55,150 @@ public class AbhiBusPassengerReportService {
         }
     }
 
+
+    public List<ServiceReport> getServicesByDate(String date) throws Exception{
+        logger.info("downloading reports for date:" + date);
+        init();
+        Map<String, ServiceReport> serviceBookings = new HashMap<>();
+        List<ServiceReport> serviceReports = new ArrayList<>();
+        HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
+        inputParam.put("jdate", date);
+        Vector params = new Vector();
+        params.add(inputParam);
+        HashMap busLists = (HashMap) xmlRpcClient.execute("index.serviceslist", params);
+        logger.info("Bus Leng"+busLists.size());
+        Object busList[] = null;
+        Iterator it = busLists.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            busList = (Object[]) pair.getValue();
+            logger.info("services size:"+busList.length);
+        }
+        for (Object busServ: busList) {
+        	Map busService = (HashMap) busServ;
+            ServiceReport serviceReport = new ServiceReport();
+            serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
+            if(busService.containsKey("ServiceId")){
+                serviceReport.setServiceNumber(busService.get("ServiceId").toString());
+            }
+            if(busService.containsKey("ServiceName")){
+                serviceReport.setServiceName(busService.get("ServiceName").toString());
+            }
+            if(busService.containsKey("ServiceNumber")){
+                serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
+            }
+            if(busService.containsKey("BusType")){
+                serviceReport.setBusType(busService.get("BusType").toString());
+            }
+            if(busService.containsKey("Service_Source")){
+                serviceReport.setSource(busService.get("Service_Source").toString());
+            }
+            if(busService.containsKey("Service_Destination")){
+                serviceReport.setDestination(busService.get("Service_Destination").toString());
+            }
+            if(busService.containsKey("Vehicle_No")){
+                serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+            }           
+            
+           serviceReports.add(serviceReport); 
+        }
+        
+       return serviceReports;
+    }
+    
+    
+    
+    public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceNum, String date) throws Exception{
+        logger.info("downloading service details for date:" + date);
+        init();
+        List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
+        Map<String, ServiceReport> serviceBookings = new HashMap<>();
+        List<ServiceReport> serviceReports = new ArrayList<>();
+        HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
+        inputParam.put("jdate", date);
+        inputParam.put("serviceids", serviceNum.trim());
+        Vector params = new Vector();
+        params.add(inputParam);
+        Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
+        
+        for (Object busServ: busList) {
+            Map busService = (HashMap) busServ;
+            ServiceReport serviceReport = new ServiceReport();
+            serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
+            if(busService.containsKey("ServiceId")){
+                serviceReport.setServiceNumber(busService.get("ServiceId").toString());
+            }
+            if(busService.containsKey("ServiceName")){
+                serviceReport.setServiceName(busService.get("ServiceName").toString());
+            }
+            if(busService.containsKey("ServiceNumber")){
+                serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
+            }
+            if(busService.containsKey("BusType")){
+                serviceReport.setBusType(busService.get("BusType").toString());
+            }
+            if(busService.containsKey("Service_Source")){
+                serviceReport.setSource(busService.get("Service_Source").toString());
+            }
+            if(busService.containsKey("Service_Destination")){
+                serviceReport.setDestination(busService.get("Service_Destination").toString());
+            }
+            if(busService.containsKey("Vehicle_No")){
+                serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+            }
+
+            if(busService.containsKey("Conductor_Name") && busService.get("Conductor_Name") != null){
+                String conductorInfo = busService.get("Conductor_Name").toString();
+                if(busService.containsKey("Conductor_Phone")
+                        && busService.get("Conductor_Phone") != null
+                        && busService.get("Conductor_Phone").toString().trim().length() > 0) {
+                    conductorInfo += (" " + Long.parseLong(busService.get("Conductor_Phone").toString()));
+                }
+                serviceReport.setConductorInfo(conductorInfo);
+            }
+            Object[] passengerInfos = (Object[]) busService.get("PassengerInfo");
+            Set<Booking> bookings = new HashSet<>();
+            for (Object info: passengerInfos) {
+                Map passengerInfo = (HashMap) info;
+                Booking booking = new Booking();
+                try {
+                    //booking.setServiceId(serviceReport.getId());
+                    booking.setServiceName(serviceReport.getServiceName());
+                    booking.setServiceNumber(serviceReport.getServiceNumber());
+                    booking.setTicketNo(passengerInfo.get("TicketNo").toString());
+                    booking.setJDate(passengerInfo.get("JourneyDate").toString());
+                    booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
+                    //passenger.put("StartTime", passengerInfo.get("StartTime"));
+                    booking.setPhoneNo(passengerInfo.get("Mobile").toString());
+                    booking.setSeats(passengerInfo.get("Seats").toString());
+                    booking.setName(passengerInfo.get("PassengerName").toString());
+                    booking.setSource(passengerInfo.get("Source").toString());
+                    booking.setDestination(passengerInfo.get("Destination").toString());
+                    booking.setBookedBy(passengerInfo.get("BookedBy").toString());
+                    booking.setBookedDate(passengerInfo.get("BookedDate").toString());
+                    booking.setBasicAmount(Double.valueOf(String.valueOf(passengerInfo.get("BasicAmt"))));
+                    booking.setServiceTax(Double.parseDouble(String.valueOf(passengerInfo.get("ServiceTaxAmt"))));
+                    booking.setCommission(Double.parseDouble(String.valueOf(passengerInfo.get("Commission"))));
+                    booking.setBoardingPoint(passengerInfo.get("BoardingPoint").toString());
+                    booking.setLandmark(passengerInfo.get("Landmark").toString());
+                    booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
+                    booking.setOrderId(passengerInfo.get("OrderId").toString());
+                    booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
+                    serviceReport.getBookings().add(booking);
+                }catch (Exception e) {
+                    throw new BadRequestException("Failed downloading reports");
+                }
+            }
+            if(serviceComboNumbers.contains(serviceReport.getServiceNumber())) {
+                serviceBookings.put(serviceReport.getServiceNumber(), serviceReport);
+            } else {
+                serviceReports.add(serviceReport);
+            }            
+        }      
+        
+       return serviceReports;
+    }
+
     /**
      * Module that downloads the passenger report creates service reports and bookings
      * @param date
