@@ -42,6 +42,7 @@
     <script src="js/modules/cashTransfersModule.js"></script>
     <script src="js/modules/vehicleExpensesModule.js"></script>
     <script src="js/modules/expensesIncomesReportsModule.js"></script>
+    <script src="js/modules/officeExpensesModule.js"></script>
     <script src="js/services/paginationService.js"></script>
 
 

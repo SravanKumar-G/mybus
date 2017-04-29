@@ -1,7 +1,7 @@
 "use strict";
 /*global angular, _*/
 
-angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
+angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
     .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, officeExpensesManager, userManager){
         $scope.loading = false;
         $scope.query = {"status":null};

@@ -67,17 +67,11 @@ public class CashTransferMongoDAO {
                     e.printStackTrace();
                 }
             }
-            /*for(Object key:query.keySet()){
-                String keyStr = key.toString();
-                if(!keyStr.equals("description") && !keyStr.equals("startDate") && !keyStr.equals("endDate")) {
-                    q.addCriteria(Criteria.where(keyStr).is(query.get(keyStr).toString()));
-                }
-            }*/
         }
         if(pending) {
-            q.addCriteria(Criteria.where("status").exists(false));
-        } else {
             q.addCriteria(Criteria.where("status").exists(true));
+        } else {
+            q.addCriteria(Criteria.where("status").exists(false));
         }
         if(pageable != null) {
             q.with(pageable);
