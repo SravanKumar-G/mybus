@@ -78,7 +78,7 @@ public class ServiceReportsManager {
     }
     
     public JSONObject getServicesByDate(String date) throws Exception {
-    	List<ServiceReport> serviceReports = reportService.getServicesByDate(date);
+    	List<ServiceReport> serviceReports = reportService.getActiveServicesByDate(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("data", serviceReports);

@@ -19,7 +19,7 @@ var myBus = angular.module('myBus', [
   'myBus.agentModule',
   'myBus.dueReportModule',
   'myBus.serviceComboModule',
-  'myBus.vehicleExpensesModule',
+  'myBus.officeExpensesModule',
   'myBus.paginationService',
   'myBus.expensesIncomesReportsModule'
 ]);
@@ -155,11 +155,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
             })
-            .state('vehicleexpenses', {
+            .state('officeexpenses', {
                 level:1,
-                url:'/vehicleexpenses',
-                templateUrl: 'partials/vehicleExpenses.tpl.html',
-                controller: 'VehicleExpensesController'
+                url:'/officeexpenses',
+                templateUrl: 'partials/officeExpenses.tpl.html',
+                controller: 'OfficeExpensesController'
             })
             .state('createvehicle', {
                 level:2,
