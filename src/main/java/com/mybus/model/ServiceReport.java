@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.*;
@@ -16,7 +18,7 @@ import java.util.*;
 @ApiModel(value = "ServiceReport")
 @Getter
 @Setter
-
+@CompoundIndex(name = "sr_jdate_srvnum", def = "{'serviceNumber' : 1, 'journeyDate' : 1}", unique = true)
 public class ServiceReport extends AbstractDocument  {
     public static final String STATUS_HALF = "Halt";
     public static final String STATUS_SUBMIT = "Submitted";
@@ -24,12 +26,14 @@ public class ServiceReport extends AbstractDocument  {
     public static final String SUBMITTED_ID = "formId";
     public static final String JOURNEY_DATE = "journeyDate";
     private String serviceName;
+    @Indexed
     private String serviceNumber;
     private String source;
     private String destination;
     private String busType;
     private String vehicleRegNumber;
     @Field(JOURNEY_DATE)
+    @Indexed
     private Date journeyDate;
     private Set<VehicleStaff> staff;
     private Collection<Booking> bookings;

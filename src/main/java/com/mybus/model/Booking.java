@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 
@@ -32,6 +33,7 @@ public class Booking extends AbstractDocument{
     private BookingType paymentType;
     private double amount;
     private BookingPayment payment;
+    @Indexed(unique = true)
     private String ticketNo;
     private Date journeyDate;
     private String jDate;
