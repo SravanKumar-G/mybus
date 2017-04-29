@@ -47,7 +47,7 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
         while(c.before(today)){
             System.out.println("*****************  Downloading the report for " + c.getTime());
             c.setTime(sdf.parse(dt));
-            abhiBusPassengerReportService.downloadReport(dt);
+            abhiBusPassengerReportService.downloadReports(dt);
             c.add(Calendar.DATE, 1);  // number of days to add
             dt = sdf.format(c.getTime());
         }
@@ -56,7 +56,7 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
 
     @Test
     public void testDownloadSingleReport() throws Exception {
-        abhiBusPassengerReportService.downloadReport("2017-02-20");
+        abhiBusPassengerReportService.downloadReports("2017-02-20");
     }
 */
 

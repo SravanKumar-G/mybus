@@ -29,6 +29,13 @@ public class CashTransferMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     *
+     * @param query
+     * @param pageable
+     * @param pending - true=pending orders, false=non-pending orders
+     * @return
+     */
     private Query preparePaymentQuery(JSONObject query, Pageable pageable, boolean pending) {
         Query q = new Query();
         //filter the payments by office if the user is not admin
