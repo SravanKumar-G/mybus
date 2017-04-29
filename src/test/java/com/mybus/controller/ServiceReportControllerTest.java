@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,6 +84,7 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
 
     }
     @Test
+    @Ignore
     public void testGetServiceReport() throws Exception {
         ServiceReport report = createTestData();
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/"+ report.getId()),

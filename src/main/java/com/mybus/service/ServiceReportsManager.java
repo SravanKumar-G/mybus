@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.mybus.dao.*;
-import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -70,7 +69,7 @@ public class ServiceReportsManager {
     }
 
     public JSONObject downloadReport(String date) throws Exception {
-        ServiceReportStatus status = reportService.downloadReport(date);
+        ServiceReportStatus status = reportService.downloadReports(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("downloadedOn", dtf.print(status.getCreatedAt()));
@@ -86,41 +85,16 @@ public class ServiceReportsManager {
     public ServiceReport getReport(String id) {
         ServiceReport report = serviceReportDAO.findOne(id);
         Iterable<Booking> bookings = bookingDAO.findByServiceId(report.getId());
-        for(Booking booking:bookings) {
-            if(bookingTypeManager.isRedbusBooking(booking)){
-                report.setNetRedbusIncome(report.getNetRedbusIncome() + booking.getNetAmt());
-                booking.setPaymentType(BookingType.REDBUS);
-            } else if(bookingTypeManager.isOnlineBooking(booking)) {
-                report.setNetOnlineIncome(report.getNetOnlineIncome() + booking.getNetAmt());
-                booking.setPaymentType(BookingType.ONLINE);
-            } else {
-                Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
-                booking.setHasValidAgent(bookingAgent != null);
-                report.setInvalid(bookingAgent == null);
-
-                adjustAgentBookingCommission(booking, bookingAgent);
-                report.setNetCashIncome(report.getNetCashIncome() + booking.getNetAmt());
-                booking.setPaymentType(BookingType.CASH);
-
-            }
-        }
         //round up the digits
-        report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
+       /* report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
-        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
+        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));*/
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }
 
-    private void adjustAgentBookingCommission(Booking booking, Agent bookingAgent) {
-        if(bookingAgent != null) {
-            if(bookingAgent.getCommission() > 0) {
-                double netShare = (double)(100 - bookingAgent.getCommission()) / 100;
-                booking.setNetAmt(booking.getNetAmt() * netShare);
-            }
-        }
-    }
+
 
     private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
@@ -164,7 +138,7 @@ public class ServiceReportsManager {
                     if (!booking.isDue()) {
                         Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
                         booking.setHasValidAgent(bookingAgent != null);
-                        adjustAgentBookingCommission(booking, bookingAgent);
+                        //adjustAgentBookingCommission(booking, bookingAgent);
                         serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
                     }
                 /*
@@ -292,7 +266,7 @@ public class ServiceReportsManager {
     public Iterable<ServiceReport> refreshReport(Date date) {
         clearServiceReports(date);
         try {
-            reportService.downloadReport(ServiceConstants.df.format(date));
+            reportService.downloadReports(ServiceConstants.df.format(date));
         } catch (Exception e) {
             throw new BadRequestException("Failed to download reports", e);
         }
