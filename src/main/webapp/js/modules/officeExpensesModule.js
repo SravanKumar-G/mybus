@@ -4,14 +4,17 @@
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
     .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, officeExpensesManager, userManager){
         $scope.loading = false;
+        $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
         $scope.user = userManager.getUser();
         $scope.approvedExpenses=[];
         $scope.pendingExpenses=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
-        $scope.canAddPayment = function() {
-            var user = userManager.getUser();
+        var user = userManager.getUser();
+        $scope.currentUser = user.fullName;
+
+        $scope.canAddExpense = function() {
             return user.admin || user.branchOfficeId;
         }
         var loadPendingExpenses = function (tableParams) {
@@ -90,12 +93,12 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.searchFilter = function(){
             $scope.init();
         }
-        $scope.handleClickAddPayment = function() {
+        $scope.handleClickAddExpense = function() {
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl : 'add-expense-modal.html',
-                controller : 'EditPaymentController',
+                controller : 'EditExpenseController',
                 resolve : {
-                    paymentId : function(){
+                    expenseId : function(){
                         return null;
                     }
                 }
@@ -106,68 +109,46 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             $scope.init();
         });
 
-        $scope.handleClickUpdatePayment = function(paymentId){
+        $scope.handleClickUpdateExpense = function(expenseId){
             $rootScope.modalInstance = $uibModal.open({
-                templateUrl : 'add-payment-modal.html',
+                templateUrl : 'add-expense-modal.html',
                 controller : 'EditExpenseController',
                 resolve : {
-                    paymentId : function(){
-                        return paymentId;
+                    expenseId : function(){
+                        return expenseId;
                     }
                 }
             });
         };
-        $scope.delete = function(paymentId) {
-            paymentManager.delete(paymentId, function(data){
+        $scope.delete = function(expenseId) {
+            officeExpensesManager.delete(expenseId, function(data){
                 $scope.init();
             });
         };
-        $scope.popUp = function (formId) {
-            $rootScope.modalInstance = $uibModal.open({
-                templateUrl : 'service-form-modal.html',
-                controller:'popUpController',
-                resolve : {
-                    formId : function(){
-                        return formId;
-                    }
-                }
-            })
-        }
-        $scope.approveOrRejectPayment = function(payment, status){
-            if(status == "Approve"){
-                payment.status ="Approved";
+
+        $scope.approveOrRejectExpense = function(expense, status){
+            if(status == "Reject"){
+                expense.status ="Rejected";
             } else {
-                payment.status ="Rejected";
+                expense.status ="Approved";
             }
-            paymentManager.save(payment, function(data){
+            officeExpensesManager.save(expense, function(data){
                 $rootScope.$broadcast('UpdateHeader');
-                swal("Great", "Payment is updated", "success");
+                swal("Great", "Expense is updated", "success");
             });
         }
     })
-    .controller("popUpController", function($scope,$rootScope, serviceReportsManager , formId){
-        $scope.service = {};
-        serviceReportsManager.getForm(formId,function (data) {
-            $scope.service = data;
-        })
 
-        $scope.cancel = function () {
-            $rootScope.modalInstance.dismiss('cancel');
-        };
-    })
-
-    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams, paymentManager, userManager, branchOfficeManager,paymentId) {
+    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager, branchOfficeManager,expenseId) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
         $scope.user = userManager.getUser();
 
-        $scope.payment = {'type': 'EXPENSE', 'branchOfficeId': $scope.user.branchOfficeId};
+        $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
         $scope.today();
-        $scope.date = null;
-        $scope.format = 'dd-MMMM-yyyy';
 
-        $scope.offices = [];
+
         branchOfficeManager.loadNames(function (data) {
             $scope.offices = data;
         });
@@ -175,35 +156,34 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
-        $scope.showType = function () {
-            console.log($scope.payment);
-        };
 
-        if (paymentId) {
-            $scope.setPaymentIntoModal = function (paymentId) {
-                paymentManager.getPaymentById(paymentId, function (data) {
-                    $scope.payment = data;
+
+        if (expenseId) {
+            $scope.setExpenseIntoModal = function (expenseId) {
+                officeExpensesManager.getExpenseById(expenseId, function (data) {
+                    $scope.expense = data;
                 });
             };
-            $scope.setPaymentIntoModal(paymentId);
+            $scope.setExpenseIntoModal(expenseId);
         }
 
         $scope.add = function () {
-            if (paymentId) {
+            if (expenseId) {
                 if ($scope.addNewExpenseForm.$invalid) {
                     swal("Error!", "Please fix the errors in the form", "error");
                     return;
                 }
-                paymentManager.save(paymentId, $scope.payment, function (data) {
+                officeExpensesManager.save($scope.expense, function (data) {
                     swal("Great", "Saved successfully", "success");
                 });
             }
-
-            $scope.payment.date = $scope.dt;
-            paymentManager.save($scope.payment, function (data) {
-                swal("Great", "Saved successfully", "success");
-                $location.url('/payments');
-            });
+            else {
+                $scope.expense.date = $scope.dt;
+                officeExpensesManager.save($scope.expense, function (data) {
+                    swal("Great", "Saved successfully", "success");
+                    $location.url('/officeexpenses');
+                });
+            }
         }
 
 
@@ -261,18 +241,16 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 $http({url:'/api/v1/officeExpenses/pending',method:"GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                        $rootScope.$broadcast('paymentsInitComplete');
                     }, function (error) {
-                        $log.debug("error retrieving payments");
+                        $log.debug("error retrieving expenses");
                     });
             },
             approvedOfficeExpenses: function (pageable, callback) {
                 $http({url:'/api/v1/officeExpenses/approved',method:"GET", params: pageable})
                     .then(function (response) {
                         callback(response.data);
-                        $rootScope.$broadcast('paymentsInitComplete');
                     }, function (error) {
-                        $log.debug("error retrieving payments");
+                        $log.debug("error retrieving expenses");
                     });
             },
             count: function (pending, callback) {
@@ -280,21 +258,32 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     .then(function (response) {
                         callback(response.data);
                     }, function (error) {
-                        $log.debug("error retrieving payments count");
+                        $log.debug("error retrieving expenses count");
                     });
             },
-            delete: function (paymentId, callback) {
-                $http.delete('/api/v1/officeExpense/' + paymentId)
-                    .then(function (response) {
-                        callback(response.data);
-                        swal("Great", "Saved Deleted", "success");
-                    }, function (error) {
-                        $log.debug("error deleting payment");
-                        sweetAlert("Error",err.message,"error");
-                    });
+            delete: function (expenseId, callback) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Are you sure you want to delete this expense?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    confirmButtonText: "Yes, delete it!",
+                    confirmButtonColor: "#ec6c62"},function(){
+
+                    $http.delete('/api/v1/officeExpense/' + expenseId)
+                        .then(function (response) {
+                            callback(response.data);
+                            swal("Great", "Saved Deleted", "success");
+                        }, function (error) {
+                            $log.debug("error deleting expense");
+                            sweetAlert("Error",err.message,"error");
+                        });
+                })
+
             },
             getExpenseById: function (id,callback) {
-                $log.debug("fetching payment data ...");
+                $log.debug("fetching expense data ...");
                 $http.get('/api/v1/officeExpense/'+id)
                     .then(function (response) {
                         callback(response.data);
