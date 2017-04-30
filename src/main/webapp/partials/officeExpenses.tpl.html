@@ -60,7 +60,7 @@
                 <tr ng-repeat="expense in approvedExpenses">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                     <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
-                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.createdBy}}</td>
+                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item">

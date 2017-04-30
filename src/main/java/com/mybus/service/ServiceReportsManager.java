@@ -78,7 +78,7 @@ public class ServiceReportsManager {
     }
     
     public JSONObject getServicesByDate(String date) throws Exception {
-    	List<ServiceReport> serviceReports = reportService.getActiveServicesByDate(date);
+        List<Map<String, String>> serviceReports = reportService.getActiveServicesByDate(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("data", serviceReports);
@@ -86,7 +86,7 @@ public class ServiceReportsManager {
         return response;
     }
     
-    public JSONObject getServiceDetailsByNumberAndDate(String serviceNumber, String date) throws Exception {
+    public JSONObject downloadServiceDetailsByNumberAndDate(String serviceNumber, String date) throws Exception {
     	List<ServiceReport> serviceReports = reportService.getServiceDetailsByNumberAndDate(serviceNumber, date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
@@ -105,10 +105,10 @@ public class ServiceReportsManager {
         ServiceReport report = serviceReportDAO.findOne(id);
         Iterable<Booking> bookings = bookingDAO.findByServiceId(report.getId());
         //round up the digits
-       /* report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
+        report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
-        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));*/
+        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
         return report;
     }
