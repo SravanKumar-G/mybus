@@ -6,11 +6,14 @@
 
 angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootstrap'])
 
-    //
-    // ============================= List All ===================================
-    //
-    .controller('ServiceReportsController', function($scope) {
+//
+// ============================= List All ===================================
+//
+
+
+    .controller('ServiceReportsController', function($scope,$rootScope,$stateParams,$location) {
         $scope.headline = "Service Reports";
+        $rootScope.urlDate = $stateParams.date;
 
     })
     .controller('ServiceFormController', function($scope,$state, $http, $log, $stateParams,$filter, NgTableParams, $location, serviceReportsManager) {
@@ -113,8 +116,8 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             netCashIncome-=expenseTotal;
             $scope.service.netCashIncome = netCashIncome.toFixed(2);
             $scope.service.netIncome = (parseFloat($scope.service.netCashIncome) +
-                                        parseFloat($scope.service.netRedbusIncome) +
-                                        parseFloat($scope.service.netOnlineIncome)).toFixed(2);
+            parseFloat($scope.service.netRedbusIncome) +
+            parseFloat($scope.service.netOnlineIncome)).toFixed(2);
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.due) {
@@ -148,7 +151,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.service.expenses.push({'type':"EXPENSE",'index':$scope.service.expenses.length+1});
         }
         $scope.deleteExpense = function(expense){
-            console.log('deleting expense..' + expense.index);
             $scope.service.expenses.splice(expense.index-1,1);
             //reshiffle the index
             for(var index=0;index<$scope.service.expenses.length; index++) {
@@ -177,21 +179,38 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.launchAgents = function(){
             $location.url('/agents');
         }
-    }).controller('DatepickerPopupCtrl', function ($scope,NgTableParams, $filter,serviceReportsManager, $location ,userManager) {
+    })
+    .controller('DatepickerPopupCtrl', function ($scope,$stateParams,NgTableParams,$rootScope, $filter,serviceReportsManager, $location ,userManager) {
+        $scope.headline = "Service Reports";
+        $scope.urlDate = $stateParams.date;
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
+        $scope.serviceReportByDate = function(date){
+            var dateObj = date;
+            var month = dateObj.getMonth() + 1;
+            var day = dateObj.getDate();
+            var year = dateObj.getFullYear();
+            var newdate = year + "-" + month + "-" + day;
+            $location.url('serviceReports/' + newdate);
+        }
+
         $scope.today = function() {
             var date = new Date();
             date.setDate(date.getDate() -1);
             $scope.dt = date;
             $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
             $scope.parseDate();
+            $scope.serviceReportByDate($scope.dt);
         };
 
-
-
-        $scope.today();
+        if(!$scope.urlDate) {
+            $scope.today();
+        } else {
+            $scope.dt = new Date($scope.urlDate);
+            $scope.todayDate = new Date();
+            $scope.tomorrow = new Date($scope.todayDate.getTime() + (24 * 60 * 60 * 1000));
+        }
         $scope.date = null;
         $scope.downloadedOn = null;
         $scope.downloaded = false;
@@ -214,8 +233,13 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             showWeeks: true
         };
         $scope.dateChanged = function() {
-            console.log("date changed to "+ $scope.dt);
-            $scope.checkStatus();
+            if ($scope.dt >= $scope.tomorrow) {
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else {
+                $scope.serviceReportByDate($scope.dt);
+                $scope.checkStatus();
+            }
         }
         $scope.dateOptions = {
             formatYear: 'yy',
@@ -304,62 +328,73 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         ];
 
         $scope.nextDay = function() {
-            console.log('next day..');
             var dt = $scope.dt;
             dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
             $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
-            $scope.checkStatus();
-            $scope.init();
+            if($scope.dt >= $scope.tomorrow){
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else{
+                $scope.serviceReportByDate($scope.dt);
+                $scope.checkStatus();
+                $scope.init();
+            }
         }
         $scope.previousDay = function() {
             var dt = $scope.dt;
             dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
             $scope.dt = dt;// new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
-            $scope.checkStatus();
-            $scope.init();
+            if($scope.dt >= $scope.tomorrow){
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else{
+                $scope.serviceReportByDate($scope.dt);
+                $scope.checkStatus();
+                $scope.init();
+            }
         }
         var loadTableData = function (tableParams, $defer) {
-           serviceReportsManager.loadReports($scope.date, function(data){
+            serviceReportsManager.loadReports($scope.date, function(data){
                 $scope.allReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
                 tableParams.total($scope.allReports.length);
                 if (angular.isDefined($defer)) {
                     $defer.resolve($scope.allReports);
                 }
                 $scope.currentPageOfReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-               if( $scope.submitted == 0) {
-                   angular.forEach($scope.currentPageOfReports, function (service) {
-                       if (service.status == "SUBMITTED") {
-                           $scope.submitted = $scope.submitted + 1;
-                       }
-                   });
-               }
-           })
+                if( $scope.submitted == 0) {
+                    angular.forEach($scope.currentPageOfReports, function (service) {
+                        if (service.status == "SUBMITTED") {
+                            $scope.submitted = $scope.submitted + 1;
+                        }
+                    });
+                }
+            })
         };
 
-    $scope.init = function() {
-        $scope.submitted = 0;
-        $scope.serviceReportTableParams = new NgTableParams({
-            page: 1,
-            count:250,
-            sorting: {
-                source: 'asc'
+        $scope.init = function() {
+            $scope.submitted = 0;
+            $scope.serviceReportTableParams = new NgTableParams({
+                page: 1,
+                count:250,
+                sorting: {
+                    source: 'asc'
+                }
+            }, {
+                total: $scope.currentPageOfReports.length,
+                getData: function (params) {
+                    loadTableData(params);
+                }
+            });
+        };
+        $scope.init();
+        $scope.goToServiceReport = function(service) {
+            if(service.attributes.formId) {
+                $location.url('serviceform/' + service.attributes.formId);
+            } else {
+                $location.url('servicereport/' + service.id);
             }
-        }, {
-            total: $scope.currentPageOfReports.length,
-            getData: function (params) {
-                loadTableData(params);
-            }
-        });
-    };
-    $scope.init();
-    $scope.goToServiceReport = function(service) {
-        if(service.attributes.formId) {
-            $location.url('serviceform/' + service.attributes.formId);
-        } else {
-            $location.url('servicereport/' + service.id);
         }
-    }
-})
+    })
     .factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};
         return {
@@ -404,7 +439,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     });
             },
             getBooking:function(id,callback) {
-                console.log('loading the booking ');
                 $http.get('api/v1/serviceReport/booking/'+id)
                     .then(function (response) {
                         callback(response.data);
@@ -413,7 +447,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     });
             },
             getForm:function(id,callback) {
-                console.log('loading the form');
                 $http.get('/api/v1/serviceForm/'+id)
                     .then(function (response) {
                         callback(response.data);
@@ -433,6 +466,5 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
         }
     });
-
 
 

@@ -106,14 +106,14 @@
                 <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created By: </label>
                     <div class="col-sm-6">{{service.createdBy}}</div>
                 </div>
-                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created At:</label>
-                    <div class="col-sm-6">{{service.createdAt}}</div>
+                <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Created On:</label>
+                    <div class="col-sm-6">{{service.createdAt | date}}</div>
                 </div>
                 <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Conductor Info:</label>
                     <div class="col-sm-6">{{service.conductorInfo}}</div>
                 </div>
                 <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Journey Date:</label>
-                    <div class="col-sm-6">{{service.jdate}}</div>
+                    <div class="col-sm-6">{{service.jdate  | date}}</div>
                 </div>
                 <div class="form-group"><label class="col-sm-4 col-sm-offset-1">Net Income - Redbus:</label>
                     <div class="col-sm-6">{{service.netRedbusIncome | number:2}}</div>
