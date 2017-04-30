@@ -8,6 +8,7 @@ import com.mybus.model.*;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,16 @@ public class AbhiBusPassengerReportService {
         }
     }
 
-
-    public List<ServiceReport> getActiveServicesByDate(String date) throws Exception{
+    /**
+     * Find active services for a given date
+     * @param date
+     * @return
+     * @throws Exception
+     */
+    public List<Map<String, String>> getActiveServicesByDate(String date) throws Exception{
         logger.info("downloading reports for date:" + date);
         init();
-        List<ServiceReport> serviceReports = new ArrayList<>();
+        Map<String, Map<String, String>> serviceReportsMap = new HashMap<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         Vector params = new Vector();
@@ -71,41 +77,52 @@ public class AbhiBusPassengerReportService {
             Map.Entry pair = (Map.Entry)it.next();
             busList = (Object[]) pair.getValue();
             logger.info("services size:"+busList.length);
+            for (Object busServ: busList) {
+                Map busService = (HashMap) busServ;
+                Map<String, String> serviceInfo = new JSONObject();
+                if(busService.containsKey("ServiceId")){
+                    serviceInfo.put("serviceId", busService.get("ServiceId").toString());
+                }
+                if(busService.containsKey("ServiceName")){
+                    serviceInfo.put("serviceName", busService.get("ServiceName").toString());
+                }
+                if(busService.containsKey("ServiceNumber")){
+                    serviceInfo.put("serviceNumber", busService.get("ServiceNumber").toString());
+                }
+                if(busService.containsKey("BusType")){
+                    serviceInfo.put("busType", busService.get("BusType").toString());
+                }
+                if(busService.containsKey("Service_Source")){
+                    serviceInfo.put("source", busService.get("Service_Source").toString());
+                }
+                if(busService.containsKey("Service_Destination")){
+                    serviceInfo.put("destination", busService.get("Service_Destination").toString());
+                }
+                if(busService.containsKey("Vehicle_No")){
+                    serviceInfo.put("vehicleRegNumber", busService.get("Vehicle_No").toString());
+                }
+                serviceReportsMap.put(serviceInfo.get("serviceNumber"), serviceInfo);
+            }
         }
-        for (Object busServ: busList) {
-        	Map busService = (HashMap) busServ;
-            ServiceReport serviceReport = new ServiceReport();
-            serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
-            if(busService.containsKey("ServiceId")){
-                serviceReport.setServiceNumber(busService.get("ServiceId").toString());
+        List<Map<String, String>> serviceReports = new ArrayList<>();
+        Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
+        for(Map.Entry<String, String[]> serviceCombo: serviceComboMappings.entrySet()){
+            Map<String, String> serviceReportInfo = serviceReportsMap.remove(serviceCombo.getKey());
+            if(serviceReportInfo != null){
+                for(String comboNumber: serviceCombo.getValue()){
+                    String currentServiceIds = serviceReportInfo.get("serviceId");
+                    Map<String, String> comboService = serviceReportsMap.remove(comboNumber);
+                    if(comboService != null) {
+                        serviceReportInfo.put("serviceId", currentServiceIds + "," + comboService.get("serviceId"));
+                    }
+                }
+                serviceReports.add(serviceReportInfo);
             }
-            if(busService.containsKey("ServiceName")){
-                serviceReport.setServiceName(busService.get("ServiceName").toString());
-            }
-            if(busService.containsKey("ServiceNumber")){
-                serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
-            }
-            if(busService.containsKey("BusType")){
-                serviceReport.setBusType(busService.get("BusType").toString());
-            }
-            if(busService.containsKey("Service_Source")){
-                serviceReport.setSource(busService.get("Service_Source").toString());
-            }
-            if(busService.containsKey("Service_Destination")){
-                serviceReport.setDestination(busService.get("Service_Destination").toString());
-            }
-            if(busService.containsKey("Vehicle_No")){
-                serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
-            }           
-            
-           serviceReports.add(serviceReport); 
         }
-        
-       return serviceReports;
+        serviceReports.addAll(serviceReportsMap.values());
+        return serviceReports;
     }
-    
-    
-    
+
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceNum, String date) throws Exception{
         logger.info("downloading service details for date:" + date);
         init();

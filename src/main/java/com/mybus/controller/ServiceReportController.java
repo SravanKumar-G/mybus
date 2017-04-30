@@ -51,8 +51,8 @@ public class ServiceReportController {
 		}
 	}
 	
-	@RequestMapping(value = "serviceReport/services", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Get service list for a given date", response = JSONObject.class)
+	@RequestMapping(value = "services/active", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get active service list for a given date", response = JSONObject.class)
 	public JSONObject getServicesByDate(HttpServletRequest request,
 										@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
@@ -62,13 +62,13 @@ public class ServiceReportController {
 		}
 	}
 	
-	@RequestMapping(value = "serviceReport/service_details", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Get service details a given service number and date", response = JSONObject.class)
+	@RequestMapping(value = "serviceReport/downloadServices", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Download service details a given service number and date", response = JSONObject.class)
 	public JSONObject getServiceDetailsByNumberAndDate(HttpServletRequest request,
 										@ApiParam(value = "Date of travel") @RequestParam final String travelDate, 
 										@ApiParam(value = "Service Number") @RequestParam final String serviceNum) {
 		try{
-			return serviceReportsManager.getServiceDetailsByNumberAndDate(serviceNum, travelDate);
+			return serviceReportsManager.downloadServiceDetailsByNumberAndDate(serviceNum, travelDate);
 		}catch (Exception e) {
 			throw new BadRequestException("Error downloading service details");
 		}
