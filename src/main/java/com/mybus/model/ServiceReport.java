@@ -25,6 +25,9 @@ public class ServiceReport extends AbstractDocument  {
     public static final String COLLECTION_NAME = "serviceReport";
     public static final String SUBMITTED_ID = "formId";
     public static final String JOURNEY_DATE = "journeyDate";
+    /**
+     * serviceId from Abhibus
+     */
     private String serviceId;
     private String serviceName;
     @Indexed

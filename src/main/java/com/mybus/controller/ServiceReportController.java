@@ -30,9 +30,6 @@ public class ServiceReportController {
 	@Autowired
 	private ServiceReportsManager serviceReportsManager;
 
-	@Autowired
-	private BookingDAO bookingDAO;
-
 	@RequestMapping(value = "serviceReport/downloadStatus", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get status of reports download", response = JSONObject.class)
 	public JSONObject getDownloadStatus(HttpServletRequest request,

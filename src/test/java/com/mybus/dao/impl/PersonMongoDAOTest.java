@@ -3,13 +3,10 @@ package com.mybus.dao.impl;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.PersonDAO;
 import com.mybus.model.Person;
-import junit.framework.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by skandula on 1/6/16.

@@ -1,13 +1,19 @@
 package com.mybus.service;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
+import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.model.Booking;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by srinikandula on 2/20/17.
@@ -23,22 +29,25 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
     @Autowired
     private ServiceReportStatusDAO serviceReportStatusDAO;
 
+    @Autowired
+    private BookingDAO bookingDAO;
     @Before
     @After
     public void cleanup() {
         serviceReportDAO.deleteAll();
         serviceReportStatusDAO.deleteAll();
+        bookingDAO.deleteAll();
     }
 
     @Test
     public void testMethod() {
 
     }
+
     /*
     @Test
-    @Ignore
     public void testDownloadReport() throws Exception {
-        String dt = "2017-01-01";  // Start date
+        String dt = "2017-04-29";  // Start date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
@@ -53,11 +62,12 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
         }
 
     }
+    */
 
-    @Test
+   /* @Test
     public void testDownloadSingleReport() throws Exception {
         abhiBusPassengerReportService.downloadReports("2017-02-20");
-    }
-*/
+    }*/
+
 
 }

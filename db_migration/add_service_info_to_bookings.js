@@ -40,3 +40,28 @@ for(i in users) {
 		db.payment.save(payment);
 	}
 }
+
+
+/**
+ * Clear service reports for a day
+ */
+
+"journeyDate" : ISODate("2017-04-26T04:00:00Z")
+serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
+//delete ServiceForm
+payment.setServiceFormId(serviceForm.getId());
+ var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-04-29T04:00:00Z")}).toArray();
+ for(i in serviceReports) {
+    var serviceReport = serviceReports[i];
+    var bookings = db.booking.find({'serviceId':serviceReport._id.str}).toArray();
+    for(b in bookings) {
+    	var booking = bookings[b];
+    	db.booking.remove({'ticketNo':booking.ticketNo});
+	}
+    print("serviceReport  "+ serviceReport._id.str +" bookings:" +bookings.length);
+    db.booking.remove({'serviceId':serviceReport._id.str});
+    db.serviceForm.remove({'serviceReportId':serviceReport._id.str});
+    db.payment.remove({'serviceFormId': serviceReport.attrs.formId});
+    db.serviceReport.remove({"_id": ObjectId(serviceReport._id.str)});
+ }
+ db.serviceReportStatus.remove({'reportDate': ISODate("2017-04-29T04:00:00Z")})

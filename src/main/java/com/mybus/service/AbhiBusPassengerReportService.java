@@ -126,19 +126,14 @@ public class AbhiBusPassengerReportService {
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceNum, String date) throws Exception{
         logger.info("downloading service details for date:" + date);
         init();
-        List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
-        Map<String, ServiceReport> serviceBookings = new HashMap<>();
-        List<ServiceReport> serviceReports = new ArrayList<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         inputParam.put("serviceids", serviceNum.trim());
         Vector params = new Vector();
         params.add(inputParam);
         Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
-        Map<String, ServiceReport> serviceComboBookings = new HashMap<>();
-        processDownloadedReports(date, serviceComboNumbers, serviceComboBookings, serviceReports, busList);
-        processServiceCombos(serviceComboBookings, serviceReports);
-
+        Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
+        List<ServiceReport> serviceReports = mergeServiceCombos(serviceReportsMap);
        return serviceReports;
     }
 
@@ -160,16 +155,14 @@ public class AbhiBusPassengerReportService {
             serviceReportStatus = serviceReportStatusDAO.save
                     (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
             init();
-            List<String> serviceComboNumbers = serviceComboManager.getServiceComboNumbers();
             Map<String, ServiceReport> serviceComboBookings = new HashMap<>();
-            Collection<ServiceReport> serviceReports = new ArrayList<>();
             HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
             inputParam.put("jdate", date);
             Vector params = new Vector();
             params.add(inputParam);
             Object busList[] = (Object[]) xmlRpcClient.execute("index.passengerreport", params);
-            processDownloadedReports(date, serviceComboNumbers, serviceComboBookings, serviceReports, busList);
-            processServiceCombos(serviceComboBookings, serviceReports);
+            Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
+            mergeServiceCombos(serviceReportsMap);
             serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);
         }catch (Exception e) {
             serviceReportStatusDAO.delete(serviceReportStatus);
@@ -179,10 +172,16 @@ public class AbhiBusPassengerReportService {
         return serviceReportStatusDAO.save(serviceReportStatus);
     }
 
-    private void processDownloadedReports(String date, List<String> serviceComboNumbers,
-                                          Map<String, ServiceReport> serviceComboBookings,
-                                          Collection<ServiceReport> serviceReports,
-                                          Object[] busList) throws ParseException {
+    /**
+     * Create a Map<ServiceNumber, ServiceReport> from the downloaded response
+     * @param date
+     * @param busList
+     * @return
+     * @throws ParseException
+     */
+    private  Map<String, ServiceReport> createServiceReports(String date,
+                                      Object[] busList) throws ParseException {
+        Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
@@ -254,7 +253,7 @@ public class AbhiBusPassengerReportService {
                     booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
-                    processBookingForPayment(serviceReport, booking);
+                    calculateServiceReportIncome(serviceReport, booking);
                     if(savedReport != null) {
                         //DO NOT SAVE THE BOOKING IF THIS IS BOOKING FOR ALREADY DOWNLOADED REPORT
                         // AND BOOKING WITH TICKET NUMBER already exists
@@ -268,32 +267,46 @@ public class AbhiBusPassengerReportService {
                     throw new BadRequestException("Failed downloading reports");
                 }
             }
-            if(serviceComboNumbers.contains(serviceReport.getServiceNumber())) {
-                serviceComboBookings.put(serviceReport.getServiceNumber(), serviceReport);
-            } else {
-                serviceReports.add(serviceReport);
-            }
+            serviceReportsMap.put(serviceReport.getServiceNumber(), serviceReport);
         }
+        return serviceReportsMap;
     }
+
     private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
     }
-    private void processServiceCombos(Map<String, ServiceReport> serviceBookings, Collection<ServiceReport> serviceReports) {
-        //get the combo mappings and merge them
+
+    /**
+     * Merge the service reports based on combo mappings degfined
+     * @param serviceReportMap
+     * @return
+     */
+    private List<ServiceReport> mergeServiceCombos(Map<String, ServiceReport> serviceReportMap) {
+        List<ServiceReport> serviceReports = new ArrayList<>();
         Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
-        for(Map.Entry<String, String[]> entry :serviceComboMappings.entrySet()) {
-            ServiceReport serviceReport = serviceBookings.get(entry.getKey());
+
+        //get the combo mappings and merge them
+        for(Map.Entry<String, String[]> comboEntry :serviceComboMappings.entrySet()) {
+            ServiceReport serviceReport = serviceReportMap.remove(comboEntry.getKey());
             if(serviceReport != null) {
-                for(String serviceNumber: entry.getValue()) {
-                    ServiceReport comboReport = serviceBookings.get(serviceNumber);
+                for(String comboNumber: comboEntry.getValue()) {
+                    ServiceReport comboReport = serviceReportMap.remove(comboNumber);
                     if(comboReport != null) {
                         serviceReport.setBusType(serviceReport.getBusType() + " " + comboReport.getBusType());
                         serviceReport.getBookings().addAll(comboReport.getBookings());
+                        serviceReport.setNetRedbusIncome(roundUp(serviceReport.getNetRedbusIncome() + comboReport.getNetRedbusIncome()));
+                        serviceReport.setNetOnlineIncome(roundUp(serviceReport.getNetOnlineIncome() + comboReport.getNetOnlineIncome()));
+                        serviceReport.setNetCashIncome(roundUp(serviceReport.getNetCashIncome()+ comboReport.getNetCashIncome()));
+                        serviceReport.setNetIncome(roundUp(serviceReport.getNetCashIncome() +
+                                serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
                     }
                 }
                 serviceReports.add(serviceReport);
             }
         }
+        //add remaining reports to the collection
+        serviceReports.addAll(serviceReportMap.values());
+        //for every service report set the serviceId in the booking.
         for(ServiceReport serviceReport : serviceReports) {
             Collection<Booking> bookings = serviceReport.getBookings();
             serviceReport.setBookings(null);
@@ -308,9 +321,10 @@ public class AbhiBusPassengerReportService {
             });
             bookingDAO.save(bookings);
         }
+        return serviceReports;
     }
 
-    private void processBookingForPayment(ServiceReport serviceReport, Booking booking) {
+    private void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
         if(bookingTypeManager.isRedbusBooking(booking)){
             serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
             booking.setPaymentType(BookingType.REDBUS);
@@ -326,6 +340,13 @@ public class AbhiBusPassengerReportService {
             booking.setPaymentType(BookingType.CASH);
         }
     }
+
+    /**
+     * Adjust the net income of booking based on agent commission
+     * @param booking
+     * @param bookingAgent
+     */
+
     private void adjustAgentBookingCommission(Booking booking, Agent bookingAgent) {
         if(bookingAgent != null) {
             if(bookingAgent.getCommission() > 0) {
