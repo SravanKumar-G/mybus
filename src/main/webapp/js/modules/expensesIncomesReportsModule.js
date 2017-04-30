@@ -2,15 +2,24 @@
 /*global angular, _*/
 
 angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap'])
-    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$uibModal, $filter, $location ,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
+    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location ,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
         $scope.payments = [];
         $scope.totalExpense = 0;
         $scope.totalIncome = 0;
         $scope.loading = false;
         $scope.user = userManager.getUser();
         $scope.currentPageOfPayments=[];
+        $rootScope.urlDate = $stateParams.date;
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+        }
+        $scope.reportsByDate = function(date){
+            var dateObj = date;
+            var month = dateObj.getMonth() + 1;
+            var day = dateObj.getDate();
+            var year = dateObj.getFullYear();
+            var newdate = year + "-" + month + "-" + day;
+            $location.url('expensesincomesreports/' + newdate);
         }
         $scope.today = function() {
             //var date =
@@ -18,9 +27,16 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             $scope.dt = new Date();
             $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
             $scope.parseDate();
+            $scope.reportsByDate($scope.dt)
         };
+        if(!$scope.urlDate) {
+            $scope.today();
+        } else {
+            $scope.dt = new Date($scope.urlDate);
+            $scope.todayDate = new Date();
+            $scope.tomorrow = new Date($scope.todayDate.getTime() + (24 * 60 * 60 * 1000));
+        }
 
-        $scope.today();
         $scope.date = null;
         $scope.downloadedOn = null;
         $scope.downloaded = false;
@@ -47,6 +63,7 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 swal("Oops...", "U've checked for future, Check Later", "error");
             }
             else{
+                $scope.reportsByDate($scope.dt)
                 $scope.init();
             }
         }
@@ -95,19 +112,26 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
         ];
 
         $scope.nextPaymentDay = function() {
-            var dt = $scope.dt;
-            dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
-            $scope.dt.setTime(dt.getTime());
-            $scope.init();
+                var dt = $scope.dt;
+                dt.setTime(dt.getTime() + 24 * 60 * 60 * 1000);
+                $scope.dt.setTime(dt.getTime());
+            if ($scope.dt >= $scope.tomorrow) {
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else {
+                $scope.reportsByDate($scope.dt)
+                $scope.init();
+            }
         }
         $scope.previousPaymentDay = function() {
             var dt = $scope.dt;
             dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
             $scope.dt = dt;
-            if($scope.dt >= $scope.tomorrow){
+            if ($scope.dt >= $scope.tomorrow) {
                 swal("Oops...", "U've checked for future, Check Later", "error");
             }
-            else{
+            else {
+                $scope.reportsByDate($scope.dt)
                 $scope.init();
             }
         }
@@ -129,7 +153,6 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 if (angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.payments = response.content;
-                    console.log(response.content);
                     branchOfficeManager.loadNames(function (data) {
                         $scope.branches = data;
                         angular.forEach($scope.payments, function (payment) {
