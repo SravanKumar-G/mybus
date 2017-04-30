@@ -1,0 +1,142 @@
+
+<div class="container" ng-show="!loading" >
+    <legend>{{ headline }}</legend>
+    <div class="row">
+        <div class="col-sm-2"> Manager: <b>{{officeDue.managerName}}</b>  {{currentUser}}</div>
+    </div>
+    <br>
+
+    <div class="bpdp-tab" ng-init="tab=1">
+
+        <ul>
+            <li class="tab"  ng-class="{active:tab==1}">
+                <a href ng-click="tab = 1">Pending</a>
+            </li>
+            <li class="tab" ng-class="{active:tab==2}">
+                <a href ng-click="tab = 2">Approved/Rejected</a>
+            </li>
+            <li class="tab" ng-class="{active:tab==3}">
+                <a href ng-click="tab = 3">Search</a>
+            </li>
+        </ul>
+        <div class="tab-content" ng-show="tab==1">
+            <div class="toolbar-button-div pull-right">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddExpense()" ng-if="canAddExpense()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+            </div>
+            Total :{{pendingTotal}}
+            <table class="table table-bordered table-condensed table-hover" ng-table="pendingTableParams">
+                <tr ng-repeat="expense in pendingExpenses">
+                    <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
+                    <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item" >{{expense.createdAt| date}}</td>
+                    <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
+                    <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
+                    <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
+                        <span ng-if="!expense.status">
+                            <a ng-click="approveOrRejectExpense(expense,'Approve')">Approve</a>
+                            <a ng-click="approveOrRejectExpense(expense,'Reject')">Reject</a>
+                        </span>
+                        <span ng-if="expense.status">
+                           {{expense.status}}
+                        </span>
+                    </td>
+                    <td style="width:10%">
+                        <md-icon type="button" class="btn" ng-click="handleClickUpdateExpense(expense.id)">
+                            <span class="glyphicon glyphicon-pencil" ng-if="expense.status == null"></span></md-icon>
+                        <md-icon type="button" class="btn" ng-click="delete(expense.id)" ng-if="expense.status == null">
+                            <span class="glyphicon glyphicon-trash"></span></md-icon>
+
+                    </td>
+
+                </tr>
+                <tr ng-if="!pendingExpenses || pendingExpenses.length === 0">
+                    <td colspan="7">No entries exist.  Please add some.</td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-content" ng-show="tab==2">
+            Total :{{approvedTotal}}
+            <table class="table table-bordered table-condensed table-hover" ng-table="approvedTableParams">
+                <tr ng-repeat="expense in approvedExpenses">
+                    <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
+                    <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.createdBy}}</td>
+                    <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
+                    <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
+                    <td data-title="'Status'" sortable="'status'" class="clickable-item">
+                        <span ng-if="expense.status">
+                           {{expense.status}}
+                        </span>
+                    </td>
+                </tr>
+
+                <tr ng-if="!approvedExpenses || approvedExpenses.length === 0">
+                    <td colspan="8">No Expenses found for office. </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="tab-content" ng-show="tab==3">
+            <table>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div ng-show="loading">
+    Please wait while the report data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
+
+<!-------- Add Model pop up --------->
+<script type="text/ng-template" id="add-expense-modal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add</h3>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="addNewExpenseForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="expenseDate">Date</label>
+                    <div class="col-sm-6">
+                        <p class="input-group">
+                            <input type="text" id="expenseDate" class="form-control" uib-datepicker-popup="{{format}}"
+                                   ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions"
+                                   ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                            <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="description" class="form-control" ng-model="expense.description" placeholder="Description">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="expenseAmount">Amount</label>
+                    <div class="col-sm-6">
+                        <input type="number" id="expenseAmount" class="form-control" ng-model="expense.amount" placeholder="Amount" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="branchOffice">Branch</label>
+                    <div class="col-sm-6">
+                        <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="expense.branchOfficeId" ng-if="user.admin"></select>
+                        <input ng-if="!user.admin" class="form-control" value="{{ user.attributes.branchName }}" readonly>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="add()">Save</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
