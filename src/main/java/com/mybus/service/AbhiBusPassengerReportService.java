@@ -300,8 +300,8 @@ public class AbhiBusPassengerReportService {
                         serviceReport.setNetIncome(roundUp(serviceReport.getNetCashIncome() +
                                 serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
                     }
+                    serviceReports.add(serviceReport);
                 }
-                serviceReports.add(serviceReport);
             }
         }
         //add remaining reports to the collection
