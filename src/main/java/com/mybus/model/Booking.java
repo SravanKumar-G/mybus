@@ -39,8 +39,10 @@ public class Booking extends AbstractDocument{
     private String jDate;
     private String seats;
     private int seatsCount;
+    @Indexed
     private String source;
     private String destination;
+    @Indexed
     private String bookedBy;
     private String bookedDate;
     private double basicAmount;

@@ -13,8 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -78,6 +78,49 @@ public class DueReportManagerTest extends AbstractControllerIntegrationTest {
         });
         BranchOfficeDue officeDue = dueReportManager.getBranchOfficeDueReport(dues.get(0).getBranchOfficeId());
         assertTrue(!officeDue.getBookings().isEmpty());
+    }
+
+    @Test
+    public void testGetReturnTicketDues() {
+        List<BranchOffice> offices = new ArrayList<>();
+        List<Agent> agents = new ArrayList<>();
+
+        for(int i=0; i<5; i++) {
+            BranchOffice office = new BranchOffice();
+            office.setName("office" +i);
+            offices.add(branchOfficeDAO.save(office));
+        }
+        for(int i=0; i<5; i++) {
+            Agent agent = new Agent();
+            agent.setName("Agent"+i);
+            agent.setUsername("AgentName"+i);
+            agent.setBranchOfficeId(offices.get(i).getId());
+            agents.add(agentDAO.save(agent));
+        }
+        Calendar calendar = Calendar.getInstance();
+        for(int i=0; i<10; i++) {
+            Booking booking = new Booking();
+            booking.setName("bookingName"+i);
+            booking.setFormId("form"+i);
+            booking.setJourneyDate(calendar.getTime());
+            booking.setSource(offices.get(i%5).getName());
+            booking.setBookedBy(agents.get(i%3).getUsername());
+            booking.setNetAmt(200);
+            booking.setDue(true);
+            booking.getAttributes().put("branchOffice",offices.get(i%3).getName());
+            booking = bookingDAO.save(booking);
+            if(i%3 == 0) {
+                calendar.add(Calendar.DATE, 1);
+            }
+        }
+        List<Booking> dueBookings = dueReportManager.getReturnTicketDues(null);
+        assertEquals(7, dueBookings.size());
+        Map<Long,List<Booking>> mappedByDate = new HashMap<>();
+        Map<String,List<Booking>> mappedByAgentName = new HashMap<>();
+        dueReportManager.groupReturnTicketDues(dueBookings, mappedByDate, mappedByAgentName);
+        assertEquals(3, mappedByDate.keySet().size());
+         dueReportManager.groupReturnTicketDuesByAgentName(dueBookings);
+        assertEquals(3, mappedByAgentName.keySet().size());
     }
 
 }

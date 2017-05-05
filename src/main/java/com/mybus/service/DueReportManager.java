@@ -1,13 +1,11 @@
 package com.mybus.service;
 
 import com.mongodb.BasicDBObject;
+import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
-import com.mybus.model.Booking;
-import com.mybus.model.BranchOffice;
-import com.mybus.model.BranchOfficeDue;
-import com.mybus.model.User;
+import com.mybus.model.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.IteratorUtils;
@@ -16,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by skandula on 2/13/16.
@@ -39,6 +34,9 @@ public class DueReportManager {
 
     @Autowired
     private BookingMongoDAO bookingMongoDAO;
+
+    @Autowired
+    private BookingDAO bookingDAO;
 
     @Autowired
     private SessionManager sessionManager;
@@ -181,5 +179,52 @@ public class DueReportManager {
         } else {
             return bookingMongoDAO.getDueBookingByAgents(null);
         }
+    }
+
+    /**
+     * Find bookings that doesn't have source same the agent's branch office city.
+     * @param branchOfficeId -- if branchOfficeId is specified it returns bookingDues only for that
+     * @return
+     */
+    public List<Booking> getReturnTicketDues(String branchOfficeId) {
+        List<Agent> agents = agentMongoDAO.findAgents(null, false);
+        List<Booking> bookings = new ArrayList<>();
+        agents.stream().forEach(agent -> {
+            //if branchoffice doesn't match skip the agent
+            if(branchOfficeId != null){
+                if(agent.getBranchOfficeId().equals(branchOfficeId)) {
+                    bookings.addAll(bookingMongoDAO.findReturnTicketDuesForAgent(agent));
+                }
+            } else {
+                bookings.addAll(bookingMongoDAO.findReturnTicketDuesForAgent(agent));
+            }
+        });
+        return bookings;
+    }
+
+    public void groupReturnTicketDues(List<Booking> bookings, Map<Long, List<Booking>> byDate, Map<String, List<Booking>> byAgentName){
+
+        bookings.stream().forEach(booking -> {
+            Long bookingDate = Long.valueOf(booking.getJourneyDate().getTime());
+            if(byDate.get(bookingDate) == null){
+                byDate.put(bookingDate, new ArrayList<Booking>());
+            }
+            byDate.get(bookingDate).add(booking);
+            if(byAgentName.get(booking.getBookedBy()) == null){
+                byAgentName.put(booking.getBookedBy(), new ArrayList<Booking>());
+            }
+            byAgentName.get(booking.getBookedBy()).add(booking);
+        });
+
+    }
+    public Map<String, List<Booking>> groupReturnTicketDuesByAgentName(List<Booking> bookings){
+        Map<String, List<Booking>> result = new HashMap<>();
+        bookings.parallelStream().forEach(booking -> {
+            if(result.get(booking.getBookedBy()) == null){
+                result.put(booking.getBookedBy(), new ArrayList<Booking>());
+            }
+            result.get(booking.getBookedBy()).add(booking);
+        });
+        return result;
     }
 }

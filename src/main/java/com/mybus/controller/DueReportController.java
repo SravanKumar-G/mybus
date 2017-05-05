@@ -9,6 +9,7 @@ import com.mybus.service.DueReportManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -34,7 +38,6 @@ public class DueReportController extends MyBusBaseController{
 
     @Autowired
     private BookingManager bookingManager;
-
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReports", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
@@ -104,5 +107,27 @@ public class DueReportController extends MyBusBaseController{
     @ApiOperation(value = "Find Agent dues", response = BranchOfficeDue.class )
     public List<Booking> getDueBookingByAgent(HttpServletRequest request, @PathVariable final String agentName) {
         return dueReportManager.getDueBookingsByAgent(agentName);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/returnTickets", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Find return ticket Agent dues", response = BranchOfficeDue.class )
+    public JSONObject getReturnTicketDues(HttpServletRequest request,
+                                          @RequestParam(name = "branchOfficeId", required = false) String branchOfficeId) {
+        JSONObject response = new JSONObject();
+        long start = System.currentTimeMillis();
+        List<Booking> dueBookings = dueReportManager.getReturnTicketDues(branchOfficeId);
+        long end = System.currentTimeMillis();
+        logger.info("found dues in " + (end - start));
+        response.put("allDues", dueBookings);
+        Map<Long, List<Booking>> byDate = new HashMap<>();
+        Map<String, List<Booking>> byAgentName = new HashMap<>();
+        start = System.currentTimeMillis();
+        dueReportManager.groupReturnTicketDues(dueBookings, byDate, byAgentName);
+        end = System.currentTimeMillis();
+        logger.info("mapping done in " + (end - start));
+        response.put("allDuesMappedByDate", byDate);
+        response.put("allDuesMappedByAgent", byAgentName);
+        return response;
     }
 }

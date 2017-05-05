@@ -3,8 +3,13 @@ package com.mybus.dao.impl;
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 
+import com.mybus.dao.AgentDAO;
+import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.model.Agent;
 import com.mybus.model.Booking;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
+import org.scribe.utils.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,6 +43,12 @@ public class BookingMongoDAO {
     @Autowired
     private AgentMongoDAO agentMongoDAO;
 
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
+    @Autowired
+    private AgentDAO agentDAO;
+
     /**
      * Find due bookings by agent names and Journey Date
      * @param agentNames
@@ -48,22 +59,47 @@ public class BookingMongoDAO {
         final Query query = new Query();
         //query.fields().include("name");
         query.addCriteria(where("bookedBy").in(agentNames));
-        query.addCriteria(where("due").is(true));
         if(JDate != null) {
             query.addCriteria(where("jDate").is(JDate));
         }
-        query.addCriteria(where("formId").exists(true));
-        query.addCriteria(where("serviceId").exists(false));
+        addIsBookingDueConditions(query);
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }
+
+    /**
+     * For a given agent name find the branchOffice and find the due bookings whose source of the journey doesn't match
+     * branchoffice city name.
+     * @param agent
+     * @return
+     */
+    public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
+        Preconditions.checkNotNull(agent, "Agent not found");
+        BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+        Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
+        final Query query = new Query();
+        query.addCriteria(where("bookedBy").is(agent.getUsername()));
+        addIsBookingDueConditions(query);
+        query.addCriteria(where("source").ne(branchOffice.getName()));
+        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        return bookings;
+    }
+
+    /**
+     * Add the query conditions to check if the booking is due
+     * @param query
+     */
+    private void addIsBookingDueConditions(Query query) {
+        query.addCriteria(where("due").is(true));
+        query.addCriteria(where("formId").exists(true));
+        query.addCriteria(where("serviceId").exists(false));
+    }
+
     public List<Booking> findAgentDues(String agentName) {
         final Query query = new Query();
         //query.fields().include("name");
         query.addCriteria(where("bookedBy").is(agentName));
-        query.addCriteria(where("due").is(true));
-        query.addCriteria(where("formId").exists(true));
-        query.addCriteria(where("serviceId").exists(false));
+        addIsBookingDueConditions(query);
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }
@@ -137,10 +173,8 @@ public class BookingMongoDAO {
                 query.addCriteria(where("bookedBy").in(agentNames));
             }
         }
-        query.addCriteria(where("due").is(true));
+        addIsBookingDueConditions(query);
         query.addCriteria(where("serviceNumber").is(serviceNumber));
-        query.addCriteria(where("formId").exists(true));
-        query.addCriteria(where("serviceId").exists(false));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }

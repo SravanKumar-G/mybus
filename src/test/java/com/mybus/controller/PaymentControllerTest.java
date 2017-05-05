@@ -74,11 +74,13 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
         branchOffice2 = branchOfficeDAO.save(branchOffice2);
 
         payment1 = new Payment();
+        payment1.setDescription("Desc");
         payment1.setBranchOfficeId(branchOffice1.getId());
         payment1.setType(PaymentType.INCOME);
         payment1.setAmount(1000);
 
         payment2 = new Payment();
+        payment2.setDescription("Desc");
         payment2.setType(PaymentType.EXPENSE);
         payment2.setBranchOfficeId(branchOffice2.getId());
         payment2.setAmount(2000);

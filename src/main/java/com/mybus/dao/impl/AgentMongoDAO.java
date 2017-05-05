@@ -28,7 +28,9 @@ public class AgentMongoDAO {
     public List<String> findAgentNamesByOfficeId(String officeId) {
         final Query query = new Query();
         //query.fields().include("username");
-        query.addCriteria(where("branchOfficeId").is(officeId));
+        if(officeId != null) {
+            query.addCriteria(where("branchOfficeId").is(officeId));
+        }
         List<Agent> agents = mongoTemplate.find(query, Agent.class);
         List<String> namesList = agents.stream()
                 .map(Agent::getUsername)
@@ -36,8 +38,8 @@ public class AgentMongoDAO {
         return namesList;
     }
 
-    public Iterable<Agent> findAgents(String key, boolean showInvalid) {
-        Iterable<Agent> agents = null;
+    public List<Agent> findAgents(String key, boolean showInvalid) {
+        List<Agent> agents = null;
         Query query = new Query();
         if(key != null) {
             query.addCriteria(Criteria.where("username").regex(key));
@@ -45,6 +47,8 @@ public class AgentMongoDAO {
         if(showInvalid){
             query.addCriteria(Criteria.where("branchOfficeId").exists(false));
         }
+        query.fields().include("username");
+        query.fields().include("branchOfficeId");
         agents = mongoTemplate.find(query, Agent.class);
         return agents;
     }

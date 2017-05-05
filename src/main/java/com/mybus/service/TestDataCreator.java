@@ -39,6 +39,8 @@ public class TestDataCreator {
                 user.setLastName("Lname");
                 user.setPassword("123");
                 user.setUserName("bill");
+                user.setEmail("bill@email.com");
+                user.setBranchOfficeId("23432");
                 user.setRole("ADMIN");
                 userDAO.save(user);
             } else {
