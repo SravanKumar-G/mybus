@@ -161,17 +161,24 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.submit = function() {
             $scope.service.status = "SUBMITTED";
             $scope.submitReport();
+
         }
         $scope.submitReport = function() {
             serviceReportsManager.submitReport($scope.service, function (response) {
                 //callback(response.data);
                 sweetAlert("Great", "The report successfully submitted", "success");
-                $location.url('serviceReports');
+                $scope.goToServiceForm($scope.service);
             },function (error) {
                 swal("Oops...", "Error submitting the report", "error");
             });
         }
-
+        $scope.goToServiceForm = function(service) {
+            if(service.attributes.formId) {
+                $location.url('serviceform/' + service.attributes.formId);
+            } else {
+                $location.url('servicereport/' + service.id);
+            }
+        }
         $scope.haltService = function() {
             $scope.service.status = "HALT";
             $scope.submitReport();
@@ -387,6 +394,9 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             });
         };
         $scope.init();
+        $scope.$on('ReportDownloaded',function(e,value){
+            $scope.init();
+        });
         $scope.goToServiceReport = function(service) {
             if(service.attributes.formId) {
                 $location.url('serviceform/' + service.attributes.formId);
@@ -410,6 +420,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $http.get('/api/v1/serviceReport/download?travelDate='+date)
                     .then(function (response) {
                         callback(response.data);
+                        $rootScope.$broadcast('ReportDownloaded');
                     },function (error) {
                         $log.debug("error retrieving service reports");
                     });
