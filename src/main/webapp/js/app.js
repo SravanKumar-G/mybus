@@ -21,7 +21,8 @@ var myBus = angular.module('myBus', [
   'myBus.serviceComboModule',
   'myBus.officeExpensesModule',
   'myBus.paginationService',
-  'myBus.expensesIncomesReportsModule'
+  'myBus.expensesIncomesReportsModule',
+  'myBus.returnTicketsModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -87,6 +88,21 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/officeduereportbyagent/:agentName',
                 templateUrl: 'partials/officeDueReportByAgent.tpl.html',
                 controller: 'OfficeDueByAgentController'
+            })
+            .state('returnTicketsByDate/:date',{
+                url:'/returnTicketsByDate/:date',
+                templateUrl: 'partials/returnTicketsByDate.tpl.html',
+                controller: 'returnTicketsByDateController'
+            })
+            .state('returnTicketsByAgent/:agent',{
+                url:'/returnTicketsByAgent/:agent',
+                templateUrl: 'partials/returnTicketsByAgent.tpl.html',
+                controller: 'returnTicketsByAgentController'
+            })
+            .state('returntickets',{
+                url:'/returntickets',
+                templateUrl: 'partials/returnTickets.tpl.html',
+                controller: 'returnTicketsController'
             })
             .state('servicereport/:id', {
                 level:2,
