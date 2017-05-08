@@ -69,14 +69,6 @@
                        {{cashTransfer.status}}
                     </span>
                     </td>
-                    <td style="width:10%">
-                        <md-icon type="button" class="btn" ng-click="edit(cashTransfer.id)">
-                            <span class="glyphicon glyphicon-pencil" ng-if="cashTransfer.status == null" ng-click="handleClickUpdateCashTransfer(cashTransfer.id)" ></span></md-icon>
-                        <md-icon type="button" class="btn" ng-click="delete(cashTransfer.id)" ng-if="cashTransfer.status == null" ng-click="delete(id)">
-                            <span class="glyphicon glyphicon-trash"></span></md-icon>
-
-                    </td>
-
                 </tr>
                 <tr ng-if="!currentPageOfApprovedCashTransfers || currentPageOfApprovedCashTransfers.length === 0">
                     <td colspan="7">No entries exist.  Please add some.</td>
@@ -138,6 +130,20 @@
                     </div>
                 </div>
                 <div class="form-group">
+                <div class="col-sm-6">
+                    <p class="input-group ">
+                        <input type="radio" ng-model="type" value="123" ng-click= "checkType(true)" > Transfer To Branch
+                        <input type="radio" ng-model="type" value="456" ng-click= "checkType(false)" > Transfer To User
+                    </p>
+                </div>
+                </div>
+                <div class="form-group" ng-if="type == 456">
+                    <label class="col-sm-3 control-label" for="fromOffice">To User</label>
+                    <div class="col-sm-6">
+                        <select id="toUser" ng-options="use.id as use.fullName for use in users" class="form-control" ng-model="cashTransfer.toUserId"  required></select>
+                    </div>
+                </div>
+                <div class="form-group" ng-if="type == 123">
                     <label class="col-sm-3 control-label checkbox">To Branch</label>
                     <div class="col-sm-6">
                         <select id="toOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.toOfficeId" required></select>
@@ -197,9 +203,23 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="col-sm-6">
+                        <p class="input-group ">
+                            <input type="radio" ng-model="type" value="123" ng-click= "checkType(true)" > Transfer To Branch
+                            <input type="radio" ng-model="type" value="456" ng-click= "checkType(false)" > Transfer To User
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group" ng-if="type == 456">
+                    <label class="col-sm-3 control-label" for="fromOffice">To User</label>
+                    <div class="col-sm-6">
+                        <select id="toUser" ng-options="use.id as use.fullName for use in users" class="form-control" ng-model="cashTransfer.toUserId"  required></select>
+                    </div>
+                </div>
+                <div class="form-group" ng-if="type == 123">
                     <label class="col-sm-3 control-label checkbox">To Branch</label>
                     <div class="col-sm-6">
-                        <select id="toOfficeUpdate" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.toOfficeId" required></select>
+                        <select id="toOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cashTransfer.toOfficeId" required></select>
                     </div>
                 </div>
             </div>

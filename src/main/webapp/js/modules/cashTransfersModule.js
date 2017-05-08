@@ -183,6 +183,10 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     branchOfficeManager.loadNames(function(data) {
         $scope.offices = data;
     });
+    $scope.users = [];
+    userManager.getUserNames(function(data){
+        $scope.users = data;
+    })
 
     $scope.cancel = function () {
         $rootScope.modalInstance.dismiss('cancel');
@@ -201,8 +205,10 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
     }
 
     $scope.add = function(){
+
         if(cashTransferId){
-            cashTransferManager.save(cashTransferId, $scope.cashTransfer, function (data) {
+            $scope.cashTransfer.id = cashTransferId;
+            cashTransferManager.save( $scope.cashTransfer, function (data) {
                 swal("Great", "Saved successfully", "success");
             });
         }
@@ -328,7 +334,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             return deferred.promise;
         },
         pendingCount: function (callback) {
-            $http.get('/api/v1/cashTransfer/pending/count')
+            $http.post('/api/v1/cashTransfer/pending/count',{})
                 .then(function (response) {
                     callback(response.data);
                 }, function (error) {
