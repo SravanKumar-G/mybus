@@ -44,6 +44,7 @@
     <script src="js/modules/expensesIncomesReportsModule.js"></script>
     <script src="js/modules/officeExpensesModule.js"></script>
     <script src="js/services/paginationService.js"></script>
+    <script src="js/modules/returnTicketsModule.js"></script>
 
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
@@ -197,6 +198,7 @@
                                 <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
                                 <my-menu label="OfficeExpenses" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
 
                             <li>
