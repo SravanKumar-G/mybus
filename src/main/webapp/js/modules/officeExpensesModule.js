@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, officeExpensesManager, userManager){
+    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, officeExpensesManager, userManager, branchOfficeManager){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
@@ -13,6 +13,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.approvedTotal = 0;
         var user = userManager.getUser();
         $scope.currentUser = user.fullName;
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
 
         $scope.canAddExpense = function() {
             return user.admin || user.branchOfficeId;
@@ -56,6 +59,25 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
+        var loadsearchExpenses = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
+            $scope.loading = true;
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            officeExpensesManager.searchExpenses(pageable, function(response){
+                if(angular.isArray(response.content)) {
+                    $scope.loading = false;
+                    $scope.searchExpenses = response.content;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    $scope.searchTotal = response.totalElements;
+                    tableParams.data = $scope.searchExpenses;
+                }
+            });
+        };
         $scope.init = function() {
             officeExpensesManager.count(true, function(expensesCount){
                 $scope.pendingTableParams = new NgTableParams({
@@ -87,8 +109,25 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     }
                 });
             });
-        };
 
+        };
+        $scope.searchInti = function (){
+            officeExpensesManager.count(false, function(count){
+                $scope.searchTableParams = new NgTableParams({
+                    page: 1, // show first page
+                    count:15,
+                    sorting: {
+                        fullName: 'asc'
+                    },
+                }, {
+                    counts:[],
+                    total:count,
+                    getData: function (params) {
+                        loadsearchExpenses(params);
+                    }
+                });
+            });
+        }
         $scope.init();
         $scope.searchFilter = function(){
             $scope.init();
@@ -137,12 +176,119 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Expense is updated", "success");
             });
         }
+
+
+        /* date picker functions */
+        $scope.check = true;
+        $scope.tomorrow;
+        $scope.OfficeSelect = null;
+        $scope.today = function() {
+            $scope.dt = new Date();
+            $scope.dt2 = new Date();
+            $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
+        };
+
+        $scope.today();
+        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
+        $scope.altInputFormats = ['M!/d!/yyyy'];
+
+        $scope.clear = function() {
+            $scope.dt = null;
+            $scope.dt2 = null;
+        };
+
+        $scope.inlineOptions = {
+            customClass: getDayClass,
+            minDate: new Date(),
+            showWeeks: true
+        };
+        $scope.dateChanged = function() {
+            if($scope.dt >= $scope.tomorrow || $scope.dt2 >= $scope.tomorrow){
+                swal("Oops...", "U've checked for future, Check Later", "error");
+                $scope.check = false;
+            }
+            else{
+                $scope.init();
+            }
+        }
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            minDate: new Date(),
+            startingDay: 1
+        };
+
+        $scope.toggleMin = function() {
+            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+        };
+        $scope.toggleMin();
+        $scope.open1 = function() {
+            $scope.popup1.opened = true;
+        };
+        $scope.setDate = function(year, month, day) {
+            console.log(check);
+            $scope.dt = new Date(year, month, day);
+            $scope.dt2 = new Date(year, month, day);
+        };
+        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        $scope.popup1= {
+            opened: false
+        };
+
+        function getDayClass(data) {
+            var date = data.date,
+                mode = data.mode;
+            if (mode === 'day') {
+                var dayToCheck = new Date(date).setHours(0,0,0,0);
+                for (var i = 0; i < $scope.events.length; i++) {
+                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+                    if (dayToCheck === currentDay) {
+                        return $scope.events[i].status;
+                    }
+                }
+            }
+            return '';
+        }
+
+        /*Date picker 2 */
+        $scope.open2 = function() {
+            $scope.popup2.opened = true;
+        };
+
+        $scope.popup2 = {
+            opened: false
+        };
+
+
+        $scope.search = function(){
+            console.log($scope.dt);
+            console.log($scope.dt2);
+            console.log($scope.OfficeSelect);
+            $scope.searchInti();
+
+        }
+
+
     })
 
     .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager, branchOfficeManager,expenseId) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
+
+        $scope.checkType = function(check){
+            if (check == true ){
+                $scope.type = true;
+            }
+            else{
+                $scope.type = false;
+            }
+
+        }
         $scope.user = userManager.getUser();
 
         $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
@@ -253,6 +399,15 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving expenses");
                     });
             },
+            searchExpenses: function(pageable, callback){
+                $http({url:'/api/v1/officeExpenses/approved',method:"GET", params: pageable})
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        $log.debug("error retrieving expenses");
+                    });
+            },
+
             count: function (pending, callback) {
                 $http.get('/api/v1/officeExpenses/count?pending='+pending)
                     .then(function (response) {
