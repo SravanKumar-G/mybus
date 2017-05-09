@@ -259,20 +259,15 @@ public class AbhiBusPassengerReportService {
                     booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
-                    calculateServiceReportIncome(serviceReport, booking);
                     if(savedReport != null) {
-                    	logger.info("found serviceReport");
-                        //DO NOT SAVE THE BOOKING IF THIS IS BOOKING FOR ALREADY DOWNLOADED REPORT
-                        // AND BOOKING WITH TICKET NUMBER already exists
-                    	
-                    	logger.info("ticket no :"+ booking.getTicketNo());
-                    	logger.info("ticket no :"+ bookingDAO.findByTicketNo(booking.getTicketNo()));
                         if(bookingDAO.findByTicketNo(booking.getTicketNo().trim()) == null) {
-                        	logger.info("found booking");
+                        	logger.info("found new booking");
+                            calculateServiceReportIncome(serviceReport, booking);
                             serviceReport.getBookings().add(booking);
                         }
                     }else {
                     	logger.info("not found serviceReport");
+                        calculateServiceReportIncome(serviceReport, booking);
                         serviceReport.getBookings().add(booking);
                     }
                 }catch (Exception e) {
@@ -286,6 +281,9 @@ public class AbhiBusPassengerReportService {
 
     private ServiceReport getByJourneyDateAndServiceNumber(String serviceNumber, Date journeyDate) {
         ServiceCombo serviceCombo = serviceComboMongoDAO.findServiceCombo(serviceNumber);
+        if(serviceCombo == null) {
+            return null;
+        }
         return serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
                 serviceCombo.getServiceNumber());
     }

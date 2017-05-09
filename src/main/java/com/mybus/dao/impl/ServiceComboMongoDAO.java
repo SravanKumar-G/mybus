@@ -18,8 +18,9 @@ public class ServiceComboMongoDAO {
     private MongoTemplate mongoTemplate;
 
     public ServiceCombo findServiceCombo(String serviceNumber) {
-        Query q = new Query();
-        q.addCriteria(Criteria.where("serviceNumber").is(serviceNumber).orOperator(Criteria.where("comboNumbers").is(serviceNumber)));
-        return mongoTemplate.findOne(q, ServiceCombo.class);
+        Criteria criteria = new Criteria();
+        criteria.orOperator(Criteria.where("serviceNumber").is(serviceNumber), Criteria.where("comboNumbers").is(serviceNumber));
+        Query query = new Query(criteria);
+        return mongoTemplate.findOne(query, ServiceCombo.class);
     }
 }
