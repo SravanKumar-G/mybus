@@ -1,10 +1,13 @@
 package com.mybus.service;
 
 import com.mybus.dao.BookingDAO;
+import com.mybus.dao.ServiceComboDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
@@ -29,6 +32,9 @@ public class AbhiBusPassengerReportService {
 
     @Autowired
     private ServiceReportDAO serviceReportDAO;
+    
+    @Autowired    
+    private ServiceComboMongoDAO serviceComboMongoDAO;
 
     @Autowired
     private ServiceReportStatusDAO serviceReportStatusDAO;
@@ -218,8 +224,8 @@ public class AbhiBusPassengerReportService {
                 }
                 serviceReport.setConductorInfo(conductorInfo);
             }
-            ServiceReport savedReport = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
-                    serviceReport.getServiceNumber());
+            ServiceReport savedReport = getByJourneyDateAndServiceNumber(serviceReport.getServiceNumber(), journeyDate);
+            
             if(savedReport != null) {
                 if(savedReport.getStatus() != null) {
                     throw new BadRequestException("The report have been already submitted and can not redownloaded");
@@ -255,12 +261,18 @@ public class AbhiBusPassengerReportService {
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
                     calculateServiceReportIncome(serviceReport, booking);
                     if(savedReport != null) {
+                    	logger.info("found serviceReport");
                         //DO NOT SAVE THE BOOKING IF THIS IS BOOKING FOR ALREADY DOWNLOADED REPORT
                         // AND BOOKING WITH TICKET NUMBER already exists
-                        if(bookingDAO.findByTicketNo(booking.getTicketNo()) != null) {
+                    	
+                    	logger.info("ticket no :"+ booking.getTicketNo());
+                    	logger.info("ticket no :"+ bookingDAO.findByTicketNo(booking.getTicketNo()));
+                        if(bookingDAO.findByTicketNo(booking.getTicketNo().trim()) == null) {
+                        	logger.info("found booking");
                             serviceReport.getBookings().add(booking);
                         }
                     }else {
+                    	logger.info("not found serviceReport");
                         serviceReport.getBookings().add(booking);
                     }
                 }catch (Exception e) {
@@ -272,7 +284,13 @@ public class AbhiBusPassengerReportService {
         return serviceReportsMap;
     }
 
-    private double roundUp(double value) {
+    private ServiceReport getByJourneyDateAndServiceNumber(String serviceNumber, Date journeyDate) {
+        ServiceCombo serviceCombo = serviceComboMongoDAO.findServiceCombo(serviceNumber);
+        return serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
+                serviceCombo.getServiceNumber());
+    }
+
+	private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
     }
 

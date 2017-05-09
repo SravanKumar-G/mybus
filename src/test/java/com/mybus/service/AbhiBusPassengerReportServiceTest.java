@@ -5,7 +5,10 @@ import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
 import com.mybus.model.Booking;
+
 import jdk.nashorn.internal.ir.annotations.Ignore;
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +34,7 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
 
     @Autowired
     private BookingDAO bookingDAO;
+    
     @Before
     @After
     public void cleanup() {
@@ -43,6 +47,9 @@ public class AbhiBusPassengerReportServiceTest extends AbstractControllerIntegra
     public void testMethod() {
 
     }
+    
+    
+
 
     /*
     @Test
