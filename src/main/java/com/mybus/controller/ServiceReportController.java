@@ -67,6 +67,7 @@ public class ServiceReportController {
 		try{
 			return serviceReportsManager.downloadServiceDetailsByNumberAndDate(serviceNum, travelDate);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new BadRequestException("Error downloading service details");
 		}
 	}
