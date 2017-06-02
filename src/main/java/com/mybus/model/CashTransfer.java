@@ -23,6 +23,8 @@ public class CashTransfer extends AbstractDocument {
     public static final String STATUS_REJECTED = "Rejected";
     public static final String FROM_OFFICE_ID = "fromOfficeId";
     public static final String TO_OFFICE_ID = "toOfficeId";
+    public static final String FROM_USER_ID = "fromUserId";
+    public static final String TO_USER_ID = "toUserId";
 
     private Date date;
     private int index;
@@ -30,5 +32,7 @@ public class CashTransfer extends AbstractDocument {
     private double amount;
     private String fromOfficeId;
     private String toOfficeId;
+    private String fromUserId;
+    private String toUserId;
     private String status;
 }

@@ -4,73 +4,46 @@
 angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
     .controller("returnTicketsController",function($rootScope, $scope, $filter,$stateParams,returnTicketsManager, $location, $log,$uibModal, NgTableParams){
         $scope.headline = "Return Tickets Details";
-        $scope.currentPageOfTickets = [];
-        $scope.loading = false;
+        $scope.loading = true;
         $scope.returnTickets = {};
-        var loadTableDataReturnTicketsByDate = function (tableParams) {
-            $scope.loading = true;
-            returnTicketsManager.returnTickets(function (data) {
-                $scope.loading = false;
-                $scope.returnTickets = data;
-                $scope.currentPageOfReturnTickets = data.allDuesMappedByDate;
-            });
-        };
-        var loadTableDataReturnTicketsByAgent = function (tableParams) {
-            $scope.downloaded = true;
-            returnTicketsManager.returnTickets(function (data) {
-                $scope.downloaded = false;
-                $scope.currentPageOfAgentReturnTickets = data.allDuesMappedByAgent;
-            });
-        };
-        var loadTableDataAllReturnTickets = function (tableParams) {
-            $scope.returned = true;
-            returnTicketsManager.returnTickets(function (data) {
-                $scope.returned = false;
-                $scope.returnTickets = data.allDues;
-                if(angular.isArray($scope.returnTickets)) {
-                    $scope.allReturnTickets = tableParams.sorting() ? $filter('orderBy')($scope.returnTickets, tableParams.orderBy()) : $scope.returnTickets;
-                    tableParams.total($scope.allReturnTickets.length);
-                    $scope.currentPageOfAllReturnTickets = $scope.allReturnTickets.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-                }
-            });
+        returnTicketsManager.loadReturnTickets(function(data){
+            $scope.loading = false;
+            $scope.returnTickets = data;
+        });
+
+        $scope.size = function(obj) {
+            var size = 0, key;
+            for (key in obj) {
+                if (obj.hasOwnProperty(key)) size++;
+            }
+            return size;
         };
 
-        $scope.returnTicketsByDateTableParams = new NgTableParams({
-            page: 1,
-            count:99999,
-            sorting: {
-                name: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfTickets.length,
-            getData: function (params) {
-                loadTableDataReturnTicketsByDate(params);
-            }
+        $scope.$on('ReturnTicketsLoaded', function (e, value) {
+            $scope.returnTicketsByDateTableParams = new NgTableParams({
+                page: 1,
+                count:$scope.size($scope.returnTickets.allDuesMappedByDate),
+                sorting: {
+                    name: 'asc'
+                }
+            });
+            $scope.returnTicketsByAgentTableParams = new NgTableParams({
+                page: 1,
+                count:$scope.size($scope.returnTickets.allDuesMappedByAgent),
+                sorting: {
+                    Id: 'asc'
+                }
+            });
+            $scope.allReturnTicketsTableParams = new NgTableParams({
+                page: 1,
+                count:$scope.size($scope.returnTickets.allDues),
+                sorting: {
+                    Id: 'asc'
+                }
+            });
+
         });
-        $scope.returnTicketsByAgentTableParams = new NgTableParams({
-            page: 1,
-            count:99999,
-            sorting: {
-                Id: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfTickets.length,
-            getData: function (params) {
-                loadTableDataReturnTicketsByAgent(params);
-            }
-        });
-        $scope.allReturnTicketsTableParams = new NgTableParams({
-            page: 1,
-            count:999999999,
-            sorting: {
-                Id: 'asc'
-            }
-        }, {
-            total: $scope.currentPageOfTickets.length,
-            getData: function (params) {
-                loadTableDataAllReturnTickets(params);
-            }
-        });
+
 
         $scope.showReturnTicketsByDate = function(date) {
             $location.url('returnTicketsByDate/'+date);
@@ -78,7 +51,7 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
         $scope.showReturnTicketsByAgent = function(agent) {
             $location.url('returnTicketsByAgent/'+agent);
         }
-
+        $scope.payBooking = returnTicketsManager.payBooking;
     })
     .controller('returnTicketsByDateController', function($scope, $rootScope, $stateParams,returnTicketsManager, NgTableParams) {
         $scope.headline = "Return Tickets by Date";
@@ -105,6 +78,7 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
                 loadTableData(params);
             }
         });
+        $scope.payBooking = returnTicketsManager.payBooking;
     })
 
     .controller('returnTicketsByAgentController', function($scope,returnTicketsManager, $rootScope, $stateParams,NgTableParams) {
@@ -131,23 +105,28 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
                 loadTableData(params);
             }
         });
+        $scope.payBooking = returnTicketsManager.payBooking;
     })
 
-    .factory('returnTicketsManager', function ($rootScope, $http, $log) {
+    .factory('returnTicketsManager', function ($rootScope, $http, $log, dueReportManager) {
         var returnTickets ;
         var returnTicketsByDate ;
         var returnTicketsByAgent ;
     return {
-        returnTickets: function (callback) {
+        loadReturnTickets: function (callback) {
             $http.get('/api/v1/dueReport/returnTickets')
                 .then(function (response) {
-                    callback(response.data);
                      returnTickets = response.data;
                      returnTicketsByDate = returnTickets.allDuesMappedByDate;
                      returnTicketsByAgent = returnTickets.allDuesMappedByAgent;
+                     $rootScope.$broadcast('ReturnTicketsLoaded');
+                     callback(response.data);
                 }, function (error) {
                     $log.debug("error retrieving the details");
                 });
+        },
+        getAllReturnTickets: function(callback){
+          callback(returnTickets);
         },
         getDateData : function(callback){
             callback(returnTicketsByDate);
@@ -155,6 +134,21 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
 
         getAgentsData: function (callback) {
             callback(returnTicketsByAgent);
+        },
+        payBooking : function(bookingId, callback) {
+            swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, pay now!",
+                closeOnConfirm: true }, function() {
+                dueReportManager.payBooking(bookingId, function(data) {
+                    $rootScope.$broadcast('UpdateHeader');
+                    callback();
+                },function (error) {
+                    sweetAlert("Oops...", "Error submitting the report", "error");
+                });
+            });
         }
+
     }
 });

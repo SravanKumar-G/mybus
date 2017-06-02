@@ -48,7 +48,7 @@ public class AbhiBusPassengerReportService {
     @Autowired
     private BookingTypeManager bookingTypeManager;
 
-    @Autowired
+
     public void init() {
         try {
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();

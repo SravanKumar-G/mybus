@@ -2,13 +2,14 @@
     <legend>{{ headline }}</legend><br/>
 
     <table class="table table-bordered table-condensed table-hover" ng-table="byAgentTableParams">
-        <tr ng-repeat="returnTickets in currentPageOfTickets">
-            <td data-title="'BookedBy'" class="clickable-item col-md-1">{{ returnTickets.bookedBy }}</td>
-            <td data-title="'Passenger'" class="clickable-item col-md-1">{{ returnTickets.name }}</td>
-            <td data-title="'Route'" class="clickable-item col-md-1">{{ returnTickets.serviceName }}</td>
-            <td data-title="'Service'" class="clickable-item col-md-1">{{ returnTickets.serviceNumber }}</td>
-            <td data-title="'JourneyDate'" class="clickable-item col-md-1">{{ returnTickets.jdate }}</td>
-            <td data-title="'BookedOn'" class="clickable-item col-md-1" >{{ returnTickets.bookedDate }}</td>
+        <tr ng-repeat="returnTicket in currentPageOfTickets">
+            <td data-title="'BookedBy'" class="clickable-item col-md-1">{{ returnTicket.bookedBy }}</td>
+            <td data-title="'Passenger'" class="clickable-item col-md-1">{{ returnTicket.name }}</td>
+            <td data-title="'Route'" class="clickable-item col-md-1">{{ returnTicket.serviceName }}</td>
+            <td data-title="'Service'" class="clickable-item col-md-1">{{ returnTicket.serviceNumber }}</td>
+            <td data-title="'JourneyDate'" class="clickable-item col-md-1">{{ returnTicket.jdate }}</td>
+            <td data-title="'BookedOn'" class="clickable-item col-md-1" >{{ returnTicket.bookedDate }}</td>
+            <td data-title="'Pay'"  class="clickable-item col-md-1"><a ng-click="payBooking(returnTicket.id,null,returnTicket.serviceNumber)">Pay Now</a></td>
         </tr>
 
         <tr ng-if="!currentPageOfTickets || currentPageOfTickets.length === 0">

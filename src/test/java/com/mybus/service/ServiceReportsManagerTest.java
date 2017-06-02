@@ -132,13 +132,9 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         serviceReportsManager.submitReport(serviceReport);
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());
         assertEquals(6, bookings.size());
-        List<BranchOffice> offices = IteratorUtils.toList(branchOfficeDAO.findAll().iterator());
-        assertEquals(2, offices.size());
-        offices.stream().forEach(office -> {
-            if(office.getName().equals("Office2")) {
-                assertEquals(5000, office.getCashBalance(), 0.0);
-            }
-        });
+        user = userDAO.findOne(user.getId());
+        assertEquals(5000, user.getAmountToBePaid(), 0.0);
+
         List<Payment> payments = IteratorUtils.toList(paymentDAO.findAll().iterator());
         assertEquals(1, payments.size());
         assertEquals(payments.get(0).getType(), PaymentType.INCOME);
@@ -160,10 +156,13 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         officeDues = dueReportManager.getBranchOfficesDueReports();
         assertEquals(2, officeDues.size());
+        final User currentUser = userDAO.findOne(user.getId());
+
         officeDues.stream().forEach(office -> {
             if(office.getName().equals("Office2")) {
                 assertEquals(0, office.getTotalDue(),0.0);
-                assertEquals(7500, office.getCashBalance(),0.0);
+                assertEquals(0, office.getCashBalance(),0.0);
+                assertEquals(7500, currentUser.getAmountToBePaid(), 0.0);
             }
         });
         payments = IteratorUtils.toList(paymentDAO.findAll().iterator());
@@ -178,6 +177,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         BranchOffice office = new BranchOffice();
         office = branchOfficeDAO.save(office);
         user.setBranchOfficeId(office.getId());
+        user = userDAO.save(user);
         sessionManager.setCurrentUser(user);
         Calendar calendar = Calendar.getInstance();
         for(int i=0; i<3; i++) {
@@ -198,11 +198,11 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             report.setStatus(ServiceStatus.SUBMITTED);
             serviceReportsManager.submitReport(report);
         }
-        office = branchOfficeDAO.findOne(office.getId());
-        assertEquals(1200, office.getCashBalance(), 0.0);
+        user = userDAO.findOne(user.getId());
+        assertEquals(1200, user.getAmountToBePaid(), 0.0);
         serviceReportsManager.clearServiceReports(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())));
-        office = branchOfficeDAO.findOne(office.getId());
-        assertEquals(800, office.getCashBalance(), 0.0);
+        user = userDAO.findOne(user.getId());
+        assertEquals(800, user.getAmountToBePaid(), 0.0);
         List<ServiceReport> reports = IteratorUtils.toList(serviceReportDAO.findAll().iterator());
         assertEquals(2, reports.size());
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());

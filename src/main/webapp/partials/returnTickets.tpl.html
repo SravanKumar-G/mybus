@@ -15,27 +15,26 @@
             </li>
         </ul>
         <div class="tab-content" ng-show="tab==1">
-            <div class="toolbar-button-div pull-right">
-                <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddExpense()" ng-if="canAddExpense()"><span class="glyphicon glyphicon-plus"></span> Add</button>
-            </div>
             <table class="table table-bordered table-condensed table-hover" ng-table="returnTicketsByDateTableParams">
-                <tr ng-repeat="(key,value) in currentPageOfReturnTickets">
+                <tr ng-repeat="(key,value) in returnTickets.allDuesMappedByDate">
                     <td data-title="'Date'" class="clickable-item col-md-1" ng-click="showReturnTicketsByDate(key)"><a>{{ key | date }}</a></td>
+                    <td data-title="'Number of tickets'" class="clickable-item col-md-1" ng-click="showReturnTicketsByDate(key)"><a>{{ value.length }}</a></td>
                 </tr>
-                <tr ng-if="!currentPageOfReturnTickets || currentPageOfReturnTickets.length === 0">
-                    <td colspan="7">No entries exist.  Please add some.</td>
+                <tr ng-if="!returnTickets.allDuesMappedByDate">
+                    <td colspan="7">No entries exist.</td>
                 </tr>
             </table>
         </div>
         <div class="tab-content" ng-show="tab==2">
             <div ng-show="!downloaded">
             <table class="table table-bordered table-condensed table-hover" ng-table="returnTicketsByAgentTableParams">
-                <tr ng-repeat="(key,value) in currentPageOfAgentReturnTickets">
+                <tr ng-repeat="(key,value) in returnTickets.allDuesMappedByAgent">
                     <td data-title="'Agent'" class="clickable-item col-md-1" ng-click="showReturnTicketsByAgent(key)" ><a>{{ key }}</a></td>
+                    <td data-title="'Number of tickets'" class="clickable-item col-md-1" ng-click="showReturnTicketsByAgent(key)"><a>{{ value.length }}</a></td>
                 </tr>
 
-                <tr ng-if="!currentPageOfAgentReturnTickets || currentPageOfAgentReturnTickets.length === 0">
-                    <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
+                <tr ng-if="!returnTickets.allDuesMappedByAgent">
+                    <td colspan="8">No dues found. </td>
                 </tr>
             </table>
             </div>
@@ -48,16 +47,18 @@
         <div class="tab-content" ng-show="tab==3">
             <div ng-show="!returned">
             <table class="table table-bordered table-condensed table-hover" ng-table="allReturnTicketsTableParams">
-                <tr ng-repeat="returnTickets in currentPageOfAllReturnTickets">
-                    <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-1">{{ returnTickets.bookedBy }}</td>
-                    <td data-title="'Passenger'"  sortable="'name'" class="clickable-item col-md-1">{{ returnTickets.name }}</td>
-                    <td data-title="'Route'"  sortable="'serviceName'" class="clickable-item col-md-1">{{ returnTickets.serviceName }}</td>
-                    <td data-title="'Service'"  sortable="'serviceNumber'" class="clickable-item col-md-1">{{ returnTickets.serviceNumber }}</td>
-                    <td data-title="'JourneyDate'"  sortable="'jdate'" class="clickable-item col-md-1">{{ returnTickets.jdate }}</td>
-                    <td data-title="'BookedOn'"  sortable="'bookedDate'" class="clickable-item col-md-1" >{{ returnTickets.bookedDate }}</td>
+                <tr ng-repeat="returnTicket in returnTickets.allDues">
+                    <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-1">{{ returnTicket.bookedBy }}</td>
+                    <td data-title="'Passenger'"  sortable="'name'" class="clickable-item col-md-1">{{ returnTicket.name }}</td>
+                    <td data-title="'Route'"  sortable="'serviceName'" class="clickable-item col-md-1">{{ returnTicket.serviceName }}</td>
+                    <td data-title="'Service'"  sortable="'serviceNumber'" class="clickable-item col-md-1">{{ returnTicket.serviceNumber }}</td>
+                    <td data-title="'JourneyDate'"  sortable="'jdate'" class="clickable-item col-md-1">{{ returnTicket.jdate }}</td>
+                    <td data-title="'BookedOn'"  sortable="'bookedDate'" class="clickable-item col-md-1" >{{ returnTicket.bookedDate }}</td>
+                    <td data-title="'Pay'"  class="clickable-item col-md-1"><a ng-click="payBooking(returnTicket.id,null,returnTicket.serviceNumber)">Pay Now</a></td>
+
                 </tr>
 
-                <tr ng-if="!currentPageOfAllReturnTickets || currentPageOfAllReturnTickets.length === 0">
+                <tr ng-if="!returnTickets.allDues || returnTickets.allDues === 0">
                     <td colspan="8">No dues found for branch {{officeDue.name}}. </td>
                 </tr>
             </table>

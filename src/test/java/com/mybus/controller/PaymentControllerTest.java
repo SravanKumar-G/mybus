@@ -41,7 +41,7 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
     @Autowired
     private CityDAO cityDAO;
 
-    private User currentUser;
+    private User currentUser = null;
 
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
@@ -133,20 +133,21 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
     public void testUpdatePayment() throws Exception {
         createTestData();
         payment1.setStatus(Payment.STATUS_APPROVED);
+        payment1.setCreatedBy(currentUser.getId());
         ResultActions actions = mockMvc.perform(asUser(put("/api/v1/payment")
                 .content(getObjectMapper().writeValueAsBytes(payment1)).contentType(MediaType.APPLICATION_JSON),
                 currentUser));
         actions.andExpect(status().isOk());
-        branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());
-        assertEquals(1000, branchOffice1.getCashBalance(), 0.0);
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(1000, currentUser.getAmountToBePaid(), 0.0);
 
         payment2.setStatus(Payment.STATUS_APPROVED);
+        payment2.setCreatedBy(currentUser.getId());
         actions = mockMvc.perform(asUser(put("/api/v1/payment")
                         .content(getObjectMapper().writeValueAsBytes(payment2)).contentType(MediaType.APPLICATION_JSON),
                 currentUser));
         actions.andExpect(status().isOk());
-        branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
-        assertEquals(3000, branchOffice2.getCashBalance(), 0.0);
-
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(-1000, currentUser.getAmountToBePaid(), 0.0);
     }
 }

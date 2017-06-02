@@ -1,6 +1,8 @@
 package com.mybus.service;
 
 import com.mybus.dao.CashTransferDAO;
+import com.mybus.dao.PaymentDAO;
+import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.model.CashTransfer;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentType;
@@ -19,7 +21,11 @@ public class CashTransferManager {
     private CashTransferDAO cashTransferDAO;
 
     @Autowired
-    private PaymentManager paymentManager;
+    private UserMongoDAO userMongoDAO;
+
+    @Autowired
+    private PaymentDAO paymentDAO;
+
 
     /**
      *
@@ -35,7 +41,7 @@ public class CashTransferManager {
             expense.setStatus(Payment.STATUS_AUTO);
             expense.setDescription(Payment.CASH_TRANSFER);
             expense.setDate(new Date());
-            paymentManager.updatePayment(expense);
+            paymentDAO.save(expense);
 
             Payment income = new Payment();
             income.setBranchOfficeId(cashTransfer.getToOfficeId());
@@ -44,7 +50,9 @@ public class CashTransferManager {
             income.setStatus(Payment.STATUS_AUTO);
             income.setDescription(Payment.CASH_TRANSFER);
             income.setDate(new Date());
-            paymentManager.updatePayment(income);
+            paymentDAO.save(income);
+            userMongoDAO.updateCashBalance(cashTransfer.getFromUserId(), (0-cashTransfer.getAmount()));
+            userMongoDAO.updateCashBalance(cashTransfer.getToUserId(), cashTransfer.getAmount());
         }
         return cashTransferDAO.save(cashTransfer);
     }

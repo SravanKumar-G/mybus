@@ -4,6 +4,7 @@ import com.mybus.dao.AgentDAO;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
+import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import org.apache.commons.collections.IteratorUtils;
@@ -46,16 +47,21 @@ public class PaymentManager {
     @Autowired
     private PaymentMongoDAO paymentMongoDAO;
 
+    @Autowired
+    private UserMongoDAO userMongoDAO;
+
     public Payment updatePayment(Payment payment) {
         logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
         if(payment.getStatus() != null && (payment.getStatus().equals(Payment.STATUS_APPROVED) ||
                 payment.getStatus().equals(Payment.STATUS_AUTO))){
             User currentUser = sessionManager.getCurrentUser();
-            currentUser.isBranchUser();
+            if(!payment.getStatus().equals(Payment.STATUS_AUTO)){
+                currentUser = userManager.findOne(payment.getCreatedBy());
+            }
             if(payment.getType().equals(PaymentType.EXPENSE)){
-                branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), (0-payment.getAmount()));
+                userMongoDAO.updateCashBalance(currentUser.getId(), (0-payment.getAmount()));
             } else if(payment.getType().equals(PaymentType.INCOME)){
-                branchOfficeMongoDAO.updateCashBalance(payment.getBranchOfficeId(), payment.getAmount());
+                userMongoDAO.updateCashBalance(currentUser.getId(), payment.getAmount());
             }
         }
         return paymentMongoDAO.save(payment);

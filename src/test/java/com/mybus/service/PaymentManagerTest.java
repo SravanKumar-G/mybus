@@ -63,27 +63,31 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         payment1.setBranchOfficeId(branchOffice1.getId());
         payment1.setType(PaymentType.INCOME);
         payment1.setDescription("Testing");
-        payment1.setAmount(1000);
+        payment1.setAmount(5000);
         Payment payment2 = new Payment();
         payment2.setDescription("Testing");
         payment2.setType(PaymentType.EXPENSE);
         payment2.setBranchOfficeId(branchOffice2.getId());
         payment2.setAmount(2000);
+        currentUser = userDAO.save(currentUser);
+        payment1.setCreatedBy(currentUser.getId());
+        payment2.setCreatedBy(currentUser.getId());
 
-        paymentManager.updatePayment(payment1);
-        paymentManager.updatePayment(payment2);
-        branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());
-        branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
-        assertEquals(0, branchOffice1.getCashBalance(), 0.0);
-        assertEquals(5000, branchOffice2.getCashBalance(), 0.0);
-        payment1.setStatus(Payment.STATUS_APPROVED);
-        payment2.setStatus(Payment.STATUS_APPROVED);
+        sessionManager.setCurrentUser(currentUser);
         payment1 = paymentManager.updatePayment(payment1);
         payment2 = paymentManager.updatePayment(payment2);
-        branchOffice1 = branchOfficeDAO.findOne(branchOffice1.getId());
-        branchOffice2 = branchOfficeDAO.findOne(branchOffice2.getId());
-        assertEquals(1000, branchOffice1.getCashBalance(), 0.0);
-        assertEquals(3000, branchOffice2.getCashBalance(), 0.0);
+        currentUser.setAmountToBePaid(1000);
+        currentUser = userDAO.save(currentUser);
+        assertEquals(1000, currentUser.getAmountToBePaid(), 0.0);
+        payment1.setStatus(Payment.STATUS_APPROVED);
+        payment2.setStatus(Payment.STATUS_APPROVED);
+        payment1.setCreatedBy(currentUser.getId());
+        payment2.setCreatedBy(currentUser.getId());
+        paymentManager.updatePayment(payment1);
+        paymentManager.updatePayment(payment2);
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(4000, currentUser.getAmountToBePaid(), 0.0);
+
     }
 
     /**

@@ -35,8 +35,16 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
             } else {
                 return null;
             }
-
         }
+        $scope.amountToBePaid = function() {
+            var user = userManager.getUser();
+            return user? user.amountToBePaid: "";
+        }
+        $scope.amountToBeCollected = function() {
+            var user = userManager.getUser();
+            return user? user.amountToBeCollected: "";
+        }
+
         $scope.isAdmin = function() {
             var user = userManager.getUser();
             if(user != null) {
@@ -46,15 +54,15 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
             }
         }
         $scope.updateHeader = function(){
+
             if($scope.user && $scope.user.branchOfficeId) {
-                branchOfficeManager.load($scope.user.branchOfficeId, function(data){
+                /*branchOfficeManager.load($scope.user.branchOfficeId, function(data){
                     $scope.branchOffice = data;
-                });
+                });*/
+                console.log('updating header');
+                userManager.getCurrentUser(null, true);
             }
         };
-        $scope.$watch('user', function(){
-            $scope.updateHeader();
-        });
         $scope.$on('UpdateHeader', function(){
             $scope.updateHeader();
         });
