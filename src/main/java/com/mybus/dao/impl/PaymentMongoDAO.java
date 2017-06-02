@@ -162,7 +162,7 @@ public class PaymentMongoDAO {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
-        if(!sessionManager.getCurrentUser().isAdmin()) {
+        if(sessionManager != null && sessionManager.getCurrentUser() != null && !sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
         match.add(Criteria.where("formId").exists(false));

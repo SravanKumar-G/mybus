@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 import java.net.URL;
 import java.util.*;
 
+import static com.mybus.service.ServiceConstants.ABHI_BUS_URL;
+
 
 /**
  * Created by srinikandula on 2/18/17.
  */
 @Service
 public class ABAgentService {
-    private static final String ABHI_BUS_URL = "http://api.abhibus.com/abhibusoperators/srikrishna/server.php?SecurityKey=SRI*FDEU!@@%ANHSIRK";
     public static XmlRpcClient xmlRpcClient;
     private static final Logger logger = LoggerFactory.getLogger(ABAgentService.class);
 

@@ -175,7 +175,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $rootScope.$on("ReloadOfficeDueReport", function(){
             loadTableData($scope.duesTableParams);
         });
-        $scope.payBooking = function(bookingId, officeId) {
+        $scope.payBooking = function(bookingId) {
             swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
