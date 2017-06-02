@@ -191,7 +191,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.headline = "Service Reports";
         $scope.urlDate = $stateParams.date;
         $scope.parseDate = function(){
-            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
+            $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
         $scope.serviceReportByDate = function(date){
             var dateObj = date;
