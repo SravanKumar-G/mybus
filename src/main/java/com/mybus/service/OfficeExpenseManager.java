@@ -43,9 +43,9 @@ public class OfficeExpenseManager {
     public OfficeExpense updateOfficeExpense(OfficeExpense officeExpense) {
         logger.debug("updating balance for office:" + officeExpense.getBranchOfficeId());
         if(officeExpense.getStatus() != null && (officeExpense.getStatus().equals(Payment.STATUS_APPROVED))){
-            User currentUser = sessionManager.getCurrentUser();
-            currentUser.setAmountToBePaid(currentUser.getAmountToBePaid()-officeExpense.getAmount());
-            sessionManager.setCurrentUser(userManager.saveUser(currentUser));
+            User thatUser = userManager.findOne(officeExpense.getCreatedBy());
+            thatUser.setAmountToBePaid(thatUser.getAmountToBePaid()-officeExpense.getAmount());
+            userManager.saveUser(thatUser);
         }
         return officeExpenseDAO.save(officeExpense);
     }
