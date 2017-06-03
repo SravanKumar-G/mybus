@@ -38,6 +38,9 @@ public class AgentManager {
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
 
+    @Autowired
+    private BookingManager bookingManager;
+
     public Agent getAgent(String agentId) {
         Agent agent = agentDAO.findOne(agentId);
         if(agent.getBranchOfficeId() != null) {
@@ -49,7 +52,17 @@ public class AgentManager {
         return agent;
     }
 
+    /**
+     * Save an agent. This should check if there is any bookings that are invalid, if found make them valid and then
+     * check if the service for the bookings need to be validated.
+     *
+     * @param agent
+     * @return
+     */
     public Agent save(Agent agent) {
+        if(agent.getBranchOfficeId() != null) {
+            bookingManager.validateAgentBookings(agent.getUsername());
+        }
         return agentDAO.save(agent);
     }
 
