@@ -3,16 +3,24 @@ package com.mybus.service;
 import com.mongodb.BasicDBObject;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
+import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.PaymentType;
+import com.mybus.model.ServiceReport;
+import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by skandula on 2/13/16.
@@ -30,6 +38,9 @@ public class BookingManager {
     @Autowired
     private PaymentManager paymentManager;
 
+    @Autowired
+    private ServiceReportDAO serviceReportDAO;
+
     public boolean payBookingDue(String bookingId) {
         logger.debug("paying for booking :"+ bookingId);
         Booking booking = bookingDAO.findOne(bookingId);
@@ -44,6 +55,27 @@ public class BookingManager {
         }
         paymentManager.createPayment(booking);
         return bookingMongoDAO.markBookingPaid(bookingId);
+    }
+
+    public void validateAgentBookings(String agentName) {
+        Iterable<Booking> bookings = bookingDAO.findByBookedByAndHasValidAgent(agentName, false);
+        Set<String> serviceNumbers = new HashSet<>();
+        for(Booking booking: bookings) {
+            serviceNumbers.add(booking.getServiceId());
+            booking.setHasValidAgent(true);
+            bookingDAO.save(booking);
+        }
+        for(String serviceId: serviceNumbers) {
+            List<Booking> invalidBookings = IteratorUtils.toList(
+                    bookingDAO.findByIdAndHasValidAgent(serviceId, false).iterator());
+            if(invalidBookings.size() == 0) {
+                ServiceReport serviceReport = serviceReportDAO.findOne(serviceId);
+                if(serviceReport.isInvalid()) {
+                    serviceReport.setInvalid(false);
+                    serviceReportDAO.save(serviceReport);
+                }
+            }
+        }
     }
 
 
