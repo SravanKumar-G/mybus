@@ -2,6 +2,7 @@ package com.mybus.service;
 
 import com.mybus.dao.OfficeExpenseDAO;
 import com.mybus.dao.impl.OfficeExpenseMongoDAO;
+import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
@@ -34,6 +35,9 @@ public class OfficeExpenseManager {
     private OfficeExpenseMongoDAO officeExpenseMongoDAO;
 
     @Autowired
+    private UserMongoDAO userMongoDAO;
+
+    @Autowired
     private UserManager userManager;
 
     public OfficeExpense save(OfficeExpense officeExpense) {
@@ -43,13 +47,10 @@ public class OfficeExpenseManager {
     public OfficeExpense updateOfficeExpense(OfficeExpense officeExpense) {
         logger.debug("updating balance for office:" + officeExpense.getBranchOfficeId());
         if(officeExpense.getStatus() != null && (officeExpense.getStatus().equals(Payment.STATUS_APPROVED))){
-            User thatUser = userManager.findOne(officeExpense.getCreatedBy());
-            thatUser.setAmountToBePaid(thatUser.getAmountToBePaid()-officeExpense.getAmount());
-            userManager.saveUser(thatUser);
+            userMongoDAO.updateCashBalance(officeExpense.getCreatedBy(), (0-officeExpense.getAmount()));
         }
         return officeExpenseDAO.save(officeExpense);
     }
-
 
     public void delete(String id) {
         OfficeExpense officeExpense = officeExpenseDAO.findOne(id);
@@ -58,7 +59,6 @@ public class OfficeExpenseManager {
         }
         officeExpenseDAO.delete(officeExpense);
     }
-
 
     private void loadUserNames(List<OfficeExpense> officeExpenses) {
         Map<String, String> userNames = userManager.getUserNames(true);
@@ -85,7 +85,6 @@ public class OfficeExpenseManager {
         loadUserNames(page.getContent());
         return page;
     }
-
 
     public OfficeExpense findOne(String id) {
         OfficeExpense payment = officeExpenseDAO.findOne(id);
