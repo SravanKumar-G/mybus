@@ -54,17 +54,21 @@ public class PaymentManager {
         logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
         if(payment.getStatus() != null && (payment.getStatus().equals(Payment.STATUS_APPROVED) ||
                 payment.getStatus().equals(Payment.STATUS_AUTO))){
-            User currentUser = sessionManager.getCurrentUser();
-            if(!payment.getStatus().equals(Payment.STATUS_AUTO)){
-                currentUser = userManager.findOne(payment.getCreatedBy());
-            }
-            if(payment.getType().equals(PaymentType.EXPENSE)){
-                userMongoDAO.updateCashBalance(currentUser.getId(), (0-payment.getAmount()));
-            } else if(payment.getType().equals(PaymentType.INCOME)){
-                userMongoDAO.updateCashBalance(currentUser.getId(), payment.getAmount());
-            }
+            updateUserBalance(payment);
         }
         return paymentMongoDAO.save(payment);
+    }
+
+    private void updateUserBalance(Payment payment) {
+        User currentUser = sessionManager.getCurrentUser();
+        if(!payment.getStatus().equals(Payment.STATUS_AUTO)){
+            currentUser = userManager.findOne(payment.getCreatedBy());
+        }
+        if(payment.getType().equals(PaymentType.EXPENSE)){
+            userMongoDAO.updateCashBalance(currentUser.getId(), (0-payment.getAmount()));
+        } else if(payment.getType().equals(PaymentType.INCOME)){
+            userMongoDAO.updateCashBalance(currentUser.getId(), payment.getAmount());
+        }
     }
 
     /**
