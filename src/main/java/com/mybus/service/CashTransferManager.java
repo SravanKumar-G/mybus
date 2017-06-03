@@ -2,10 +2,12 @@ package com.mybus.service;
 
 import com.mybus.dao.CashTransferDAO;
 import com.mybus.dao.PaymentDAO;
+import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.model.CashTransfer;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentType;
+import com.mybus.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,8 @@ public class CashTransferManager {
     @Autowired
     private PaymentDAO paymentDAO;
 
+    @Autowired
+    private UserDAO userDAO;
 
     /**
      *
@@ -35,7 +39,7 @@ public class CashTransferManager {
     public CashTransfer updateCashTransfer(CashTransfer cashTransfer){
         if(cashTransfer.getStatus() != null && cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
             Payment expense = new Payment();
-            expense.setBranchOfficeId(cashTransfer.getFromOfficeId());
+            expense.setBranchOfficeId(userDAO.findOne(cashTransfer.getFromUserId()).getBranchOfficeId());
             expense.setAmount(cashTransfer.getAmount());
             expense.setType(PaymentType.EXPENSE);
             expense.setStatus(Payment.STATUS_AUTO);
@@ -44,7 +48,7 @@ public class CashTransferManager {
             paymentDAO.save(expense);
 
             Payment income = new Payment();
-            income.setBranchOfficeId(cashTransfer.getToOfficeId());
+            income.setBranchOfficeId(userDAO.findOne(cashTransfer.getToUserId()).getBranchOfficeId());
             income.setAmount(cashTransfer.getAmount());
             income.setType(PaymentType.INCOME);
             income.setStatus(Payment.STATUS_AUTO);
