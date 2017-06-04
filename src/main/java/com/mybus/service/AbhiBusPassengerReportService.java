@@ -228,7 +228,8 @@ public class AbhiBusPassengerReportService {
             
             if(savedReport != null) {
                 if(savedReport.getStatus() != null) {
-                    throw new BadRequestException("The report have been already submitted and can not redownloaded");
+                    continue;
+                    //throw new BadRequestException("The report have been already submitted and can not redownloaded");
                 }
                 serviceReport = savedReport;
             }
