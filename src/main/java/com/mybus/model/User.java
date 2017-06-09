@@ -26,6 +26,8 @@ public class User extends AbstractDocument implements AttributesDocument{
     public static final String CONTACT = "contact";
     public static final String USER_NAME = "userName";
     public static final String BRANCH_USER = "branchUser";
+    public static final String AMOUNT_TO_BE_PAID = "amountToBePaid";
+
 
     @Field(USER_NAME)
     @RequiresValue
@@ -55,6 +57,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     private String planType;
     private String branchOfficeId;
 
+    @Field(AMOUNT_TO_BE_PAID)
     private double amountToBePaid;
     private double amountToBeCollected;
 

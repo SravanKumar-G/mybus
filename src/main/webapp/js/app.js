@@ -38,6 +38,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/amenities.tpl.html',
                 controller: 'AmenitiesController'
             })
+            .state('cashbalances',{
+                url:'/cashbalances',
+                templateUrl: 'partials/cashBalances.tpl.html',
+                controller: 'CashBalancesController'
+            })
             .state('cashtransfers',{
                 url:'/cashtransfers',
                 templateUrl: 'partials/cashTransfers.tpl.html',

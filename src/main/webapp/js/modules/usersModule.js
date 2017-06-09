@@ -199,6 +199,42 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
         $scope.launchRoleAdd = function(){
             $location.url('/roles');
         };
+    }).controller('CashBalancesController', function ($scope,$stateParams, $location, $filter,$http, $log,userManager,NgTableParams) {
+        $scope.headline = "User Cash balances";
+        //$scope.users = [];
+        $scope.userCount = 0;
+
+        $scope.currentPageOfUsers = [];
+        var loadTableData = function (tableParams, $defer) {
+            userManager.getUserCashbalances(function (data) {
+                if(angular.isArray(data)) {
+                    $scope.users = data;
+                    $scope.userCount = data.length;
+                    var orderedData = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                    $scope.allUsers = orderedData;
+                    tableParams.total(data.length);
+                    if (angular.isDefined($defer)) {
+                        $defer.resolve(orderedData);
+                    }
+                    $scope.currentPageOfUsers = orderedData.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                }
+            },function(error){
+
+            });
+        };
+        $scope.cashBalanceTableParams = new NgTableParams({
+            page: 1,
+            count: 100,
+            sorting: {
+                fullName: 'asc'
+            }
+        }, {
+            total: $scope.currentPageOfUsers.length,
+            getData: function (params) {
+                loadTableData(params);
+            }
+        });
+
     }).factory('userManager', function ($http, $log,$rootScope) {
 
         var GRP_READ_ONLY = "Read-only"
@@ -257,6 +293,14 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                         $rootScope.$broadcast('FetchingUserNamesComplete');
                     },function (error) {
                         $log.debug("error retrieving user names");
+                    });
+            },
+            getUserCashbalances: function (callback) {
+                $http.get('/api/v1/user/cashBalances')
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error retrieving user balances");
                     });
             },
             getAllUsers: function () {

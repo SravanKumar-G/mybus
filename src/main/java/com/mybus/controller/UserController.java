@@ -97,6 +97,12 @@ public class UserController extends MyBusBaseController{
         return userManager.getUser(id);
     }
 
+    @RequestMapping(value = "user/cashBalances", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get user with Id", response = User.class)
+    public List<User> getCashBalances(HttpServletRequest request) {
+        logger.debug("get cash balances called");
+        return userManager.getUserCashBalances();
+    }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value ="Delete a user")
