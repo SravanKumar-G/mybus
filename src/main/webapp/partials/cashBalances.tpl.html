@@ -6,7 +6,7 @@
     <table class="table table-bordered table-condensed table-hover table-striped" ng-table="cashBalanceTableParams">
         <tr ng-repeat="user in currentPageOfUsers">
             <td data-title="'Name'" class="col-sm-2" sortable="'fullName'">{{ user.fullName }}</td>
-            <td data-title="'CashBalance'" class="col-sm-1" sortable="'active'">{{ user.amountToBePaid | number : 2}}</td>
+            <td data-title="'CashBalance'" sortable="'amountToBePaid'" class="col-sm-1" sortable="'active'">{{ user.amountToBePaid | number : 2}}</td>
         </tr>
     </table>
 </div>
