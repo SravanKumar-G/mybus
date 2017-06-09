@@ -11,7 +11,7 @@
                     <a ng-if="cashTransfer.serviceFormId" href="#!/serviceform/{{cashTransfer.serviceFormId}}">{{cashTransfer.description}}</a>
                     <span ng-if="!cashTransfer.serviceFormId">{{cashTransfer.description}}</span>
                 </td>
-                <td data-title="'Amount'" sortable="'amount'">{{cashTransfer.amount}}</span></td>
+                <td data-title="'Amount'" sortable="'amount'">{{cashTransfer.amount| number : 2}}</span></td>
                 <td data-title="'CreatedBy'">{{cashTransfer.attributes.createdBy}}</td>
                 <td data-title="'Status'" sortable="'status'" class="clickable-item" >
                    <span ng-if="!cashTransfer.status && userId !==  cashTransfer.fromUserId">
