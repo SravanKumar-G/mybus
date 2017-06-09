@@ -1,9 +1,22 @@
 <div ng-show="!loading" class="container">
     <legend>Cash Transfers</legend>
 
-    <div class="bpdp-tab">
-        <table class="table table-bordered table-condensed table-hover" ng-table="cashBalanceTableParams">
-            <tr ng-repeat="user in currentPageOfUsers">
+    <div class="bpdp-tab" ng-init="tab=1">
+            <ul>
+                <li class="tab"  ng-class="{active:tab==1}">
+                    <a href ng-click="tab = 1">Pending</a>
+                </li>
+                <li class="tab" ng-class="{active:tab==2}">
+                    <a href ng-click="tab = 2">Approved/Rejected</a>
+                </li>
+            </ul>
+        <div class="tab-content" ng-show="tab==1">
+            <div class="toolbar-button-div pull-right">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddCashTransfer()" ng-if="canAddCashTransfer()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+            </div>
+        Total: {{pendingCashTransfersCount}}
+        <table class="table table-bordered table-condensed table-hover" ng-table="pendingCashTransferTableParams">
+            <tr ng-repeat="cashTransfer in currentPageOfPendingCashTransfers">
                 <td data-title="'Date'" sortable="'date'">{{cashTransfer.date | date}}</td>
                 <td data-title="'From User'" sortable="'fromBranchId'" >{{cashTransfer.attributes.fromUser}}</td>
                 <td data-title="'To User/Branch'" sortable="'toBranchId'" >{{cashTransfer.attributes.toUser}}</td>
@@ -11,7 +24,7 @@
                     <a ng-if="cashTransfer.serviceFormId" href="#!/serviceform/{{cashTransfer.serviceFormId}}">{{cashTransfer.description}}</a>
                     <span ng-if="!cashTransfer.serviceFormId">{{cashTransfer.description}}</span>
                 </td>
-                <td data-title="'Amount'" sortable="'amount'">{{cashTransfer.amount| number : 2}}</span></td>
+                <td data-title="'Amount'" sortable="'amount'">{{cashTransfer.amount}}</span></td>
                 <td data-title="'CreatedBy'">{{cashTransfer.attributes.createdBy}}</td>
                 <td data-title="'Status'" sortable="'status'" class="clickable-item" >
                    <span ng-if="!cashTransfer.status && userId !==  cashTransfer.fromUserId">
