@@ -189,7 +189,7 @@ public class DueReportManager {
     public List<Booking> getReturnTicketDues(String branchOfficeId) {
         List<Agent> agents = agentMongoDAO.findAgents(null, false);
         List<Booking> bookings = new ArrayList<>();
-        agents.stream().forEach(agent -> {
+        agents.parallelStream().forEach(agent -> {
             //if branchoffice doesn't match skip the agent
             if(branchOfficeId != null){
                 if(agent.getBranchOfficeId().equals(branchOfficeId)) {

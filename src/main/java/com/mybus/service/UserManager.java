@@ -135,6 +135,14 @@ public class UserManager {
         }*/
         return users;
     }
+
+    public List<User> getUserCashBalances() {
+        String fields[] = {User.FIRST_NAME, User.LAST_NAME, User.AMOUNT_TO_BE_PAID,};
+        JSONObject query = new JSONObject();
+        List<User> users = IteratorUtils.toList(mongoQueryDAO
+                .getDocuments(User.class, User.COLLECTION_NAME, fields, query, null).iterator());
+        return users;
+    }
 /*
     private void validateAgent(User user){
         if (user.getUserType().equals(UserType.AGENT)) {

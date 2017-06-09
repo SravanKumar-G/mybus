@@ -9,6 +9,9 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
         returnTicketsManager.loadReturnTickets(function(data){
             $scope.loading = false;
             $scope.returnTickets = data;
+        },function(error){
+            swal("Error!","Error loading return tickets","error");
+            $scope.loading = false;
         });
 
         $scope.size = function(obj) {
@@ -113,7 +116,7 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
         var returnTicketsByDate ;
         var returnTicketsByAgent ;
     return {
-        loadReturnTickets: function (callback) {
+        loadReturnTickets: function (callback, errorcallback) {
             $http.get('/api/v1/dueReport/returnTickets')
                 .then(function (response) {
                      returnTickets = response.data;
@@ -123,6 +126,7 @@ angular.module('myBus.returnTicketsModule', ['ngTable', 'ui.bootstrap'])
                      callback(response.data);
                 }, function (error) {
                     $log.debug("error retrieving the details");
+                    errorcallback(error);
                 });
         },
         getAllReturnTickets: function(callback){

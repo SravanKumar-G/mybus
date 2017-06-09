@@ -199,6 +199,7 @@
                                 <my-menu label="OfficeExpenses" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="CashBalances" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
 
                             <li>
