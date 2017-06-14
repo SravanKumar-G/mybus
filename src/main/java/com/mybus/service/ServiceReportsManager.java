@@ -110,6 +110,7 @@ public class ServiceReportsManager {
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
         report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
         report.setBookings(IteratorUtils.toList(bookings.iterator()));
+        report.getAttributes().put("updatedBy", userManager.getUser(report.getUpdatedBy()).getFullName());
         return report;
     }
 

@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 
 import com.mybus.dao.AgentDAO;
+import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
@@ -11,6 +12,9 @@ import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
 import org.scribe.utils.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -19,17 +23,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -48,6 +48,9 @@ public class BookingMongoDAO {
 
     @Autowired
     private AgentDAO agentDAO;
+
+    @Autowired
+    private BookingDAO bookingDAO;
 
     /**
      * Find due bookings by agent names and Journey Date
@@ -143,7 +146,38 @@ public class BookingMongoDAO {
         return result;
     }
 
+    public Page<BasicDBObject> getBookingCountsByPhone(Pageable pageable){
+        /**
+         * db.booking.aggregate(
+         [
+         {
+         $group:
+         {
+         _id: { phoneNo:  "$phoneNo"},
+         count: { $sum: 1 }
+         }
+         },{
+         $sort:{count:1}
+         }
+         ]
+         )
+         */
 
+        long total = getTotalDistinctPhoneNumbers();
+        Aggregation agg = newAggregation(
+                group("phoneNo").count().as("totalBookings"),
+                sort(Sort.Direction.DESC, "totalBookings"),
+                skip((long)pageable.getPageNumber() * pageable.getPageSize()),
+                limit(pageable.getPageSize()));
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
+        List<BasicDBObject> result = groupResults.getMappedResults();
+        return new PageImpl<>(result, pageable, total);
+    }
+
+    public long getTotalDistinctPhoneNumbers() {
+        return mongoTemplate.getCollection("booking").distinct("phoneNo").size();
+    }
     public List<BasicDBObject> getDueBookingByAgents(String branchOfficeId){
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
@@ -165,6 +199,7 @@ public class BookingMongoDAO {
         List<BasicDBObject> result = groupResults.getMappedResults();
         return result;
     }
+
     public List<Booking> getDueBookingByServiceNumber(String branchOfficeId, String serviceNumber){
         final Query query = new Query();
         if(branchOfficeId != null) {

@@ -79,4 +79,7 @@ public class BookingManager {
     }
 
 
+    public List<Booking> getBookingsByPhone(String phoneNumber) {
+        return bookingDAO.findByPhoneNo(phoneNumber);
+    }
 }

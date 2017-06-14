@@ -22,7 +22,8 @@ var myBus = angular.module('myBus', [
   'myBus.officeExpensesModule',
   'myBus.paginationService',
   'myBus.expensesIncomesReportsModule',
-  'myBus.returnTicketsModule'
+  'myBus.returnTicketsModule',
+  'myBus.bookingModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -42,6 +43,17 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/cashbalances',
                 templateUrl: 'partials/cashBalances.tpl.html',
                 controller: 'CashBalancesController'
+            })
+            .state('bookinganalytics',{
+                url:'/bookinganalytics',
+                templateUrl: 'partials/bookingtotalsbyphone.tpl.html',
+                controller: 'BookingAnalyticsController'
+            })
+            .state('bookingsbyphone',{
+                url:'/bookingsbyphone',
+                templateUrl: 'partials/bookingsbyphone.tpl.html',
+                controller: 'BookingsByPhoneController',
+                params:{phoneNumber: null, totalBookings:0}
             })
             .state('cashtransfers',{
                 url:'/cashtransfers',

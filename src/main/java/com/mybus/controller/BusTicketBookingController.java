@@ -1,9 +1,12 @@
 package com.mybus.controller;
 
+import com.mongodb.BasicDBObject;
 import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.*;
+import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.model.*;
+import com.mybus.service.BookingManager;
 import com.mybus.service.BookingSessionInfo;
 import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
@@ -11,6 +14,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +52,12 @@ public class BusTicketBookingController extends MyBusBaseController{
 
 	@Autowired
 	PaymentResponseDAO paymentResponseDAO;
+
+	@Autowired
+	private BookingMongoDAO bookingMongoDAO;
+
+	@Autowired
+	private BookingManager bookingManager;
 	
 	@RequiresAuthorizedUser(value=false)
     @ResponseStatus(value = HttpStatus.OK)
@@ -174,11 +185,33 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@RequiresAuthorizedUser(value=false)
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "getTicketPassengerInfo", method = RequestMethod.GET)
-	@ResponseBody
 	@ApiOperation(value = "booked ticket passenger info request")
 	public BookingPayment getPassingerInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
 		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
 		return bookingPaymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
     }
+
+
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getBookingCounts", method = RequestMethod.GET)
+	@ApiOperation(value = "booked ticket passenger info request")
+    public Page<BasicDBObject> getBookingCounts(HttpServletRequest request, Pageable pageable) {
+		return bookingMongoDAO.getBookingCountsByPhone(pageable);
+	}
+
+
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getUniquePhoneNumbers", method = RequestMethod.GET)
+	@ApiOperation(value = "getUniquePhoneNumbers")
+	public long getUniquePhoneNumbers(HttpServletRequest request) {
+		return bookingMongoDAO.getTotalDistinctPhoneNumbers();
+	}
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "getBookingsByPhone/{phoneNumber}", method = RequestMethod.GET)
+	@ApiOperation(value = "booked ticket passenger info request")
+
+	public List<Booking> getBookingsByPhone(HttpServletRequest request, @PathVariable final String phoneNumber) {
+		return bookingManager.getBookingsByPhone(phoneNumber);
+	}
 }
