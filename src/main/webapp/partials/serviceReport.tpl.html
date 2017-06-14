@@ -97,7 +97,7 @@
             <button type="button" class="btn btn-sm btn-success" ng-click="submit()" ng-if="!service.invalid && !service.status">
                 <span class="glyphicon"></span> Submit Report
             </button>
-            <span ng-if="service.status" style="color:red"> Service report has been submitted on {{service.updatedAt|date}}</span>
+            <span ng-if="service.status" style="color:red"> Service report has been submitted on {{service.updatedAt|date}} by {{service.attributes.updatedBy}}</span>
             <span ng-show="service.invalid" style="color:red;">Please assign branch offices to agents <a ng-click="launchAgents()">here</a></span>
         </div>
 

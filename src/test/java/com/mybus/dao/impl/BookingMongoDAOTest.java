@@ -13,6 +13,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -131,5 +134,35 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
         }
         List<BasicDBObject> dues = bookingMongoDAO.getBookingDueTotalsByService(branchOffice1.getId());
         assertEquals(3, dues.size());
+    }
+
+    @Test
+    public void testFindTotalBookings() {
+        for(int i=0; i<30; i++) {
+            Booking booking = new Booking();
+            booking.setName("bookingName"+i);
+            booking.setServiceNumber("ServiceNumber" + (i % 3));
+            booking.setNetAmt(200);
+            if(i%3 == 0){
+                booking.setPhoneNo("12345");
+            } else if(i%3 == 1){
+                booking.setPhoneNo("123456");
+            }else {
+                booking.setPhoneNo("123457");
+            }
+            booking.setDue(true);
+            booking.setBookedBy("agent"+i);
+            bookingDAO.save(booking);
+        }
+        Pageable pageable = new PageRequest(0,2);
+
+        Page<BasicDBObject> bookingsPage = bookingMongoDAO.getBookingCountsByPhone(pageable);
+        assertEquals(3, bookingsPage.getTotalElements());
+        Object count = bookingsPage.getContent().stream()
+                .filter(booking -> booking.get("_id").equals("123457")).findFirst().get().get("totalBookings");
+        assertEquals("10", count.toString());
+        count = bookingsPage.getContent().stream().filter(booking -> booking.get("_id").equals("123456"))
+                .findFirst().get().get("totalBookings");
+        assertEquals("10", count.toString());
     }
 }

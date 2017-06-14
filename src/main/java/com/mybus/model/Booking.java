@@ -24,6 +24,7 @@ public class Booking extends AbstractDocument{
     private String formId;
     private String emailID;
     private String name;
+    @Indexed
     private String phoneNo;
     private String address;
     private String city;

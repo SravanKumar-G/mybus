@@ -45,7 +45,7 @@
     <script src="js/modules/officeExpensesModule.js"></script>
     <script src="js/services/paginationService.js"></script>
     <script src="js/modules/returnTicketsModule.js"></script>
-
+    <script src="js/modules/bookingModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -165,11 +165,11 @@
                                 </a>
                             </li>
 
-                            <li data-toggle="collapse" data-target="#service" class="collapsed">
-                                <a><i class="fa fa-globe fa-lg"></i> Services <span class="arrow"></a>
+                            <li data-toggle="collapse" data-target="#analytics" class="collapsed">
+                                <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></a>
                             </li>
-                            <ul class="sub-menu collapse" id="service">
-                                <li>New Service 1</li>
+                            <ul class="sub-menu collapse" id="analytics">
+                                <my-menu url="bookingAnalytics" label="BookingAnalytics" class="nav navbar-nav  col-md-12"></my-menu>
                             </ul>
 
 
