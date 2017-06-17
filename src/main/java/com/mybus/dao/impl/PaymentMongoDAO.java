@@ -208,7 +208,7 @@ public class PaymentMongoDAO {
 
         Criteria criteria = new Criteria();
         if(!sessionManager.getCurrentUser().isAdmin()) {
-            match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
+            match.add(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()));
         }
         //match.add(Criteria.where("date").gte(startDate).lt(endDate));
         //add the service forms as well
