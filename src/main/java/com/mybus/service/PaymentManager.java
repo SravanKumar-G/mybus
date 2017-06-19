@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
+import com.mybus.dao.CashTransferDAO;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
@@ -14,13 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -49,6 +48,10 @@ public class PaymentManager {
 
     @Autowired
     private UserMongoDAO userMongoDAO;
+
+    @Autowired
+    private CashTransferDAO cashTransferDAO;
+
 
     public Payment updatePayment(Payment payment) {
         logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());

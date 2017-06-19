@@ -207,15 +207,14 @@ public class PaymentMongoDAO {
         List<Criteria> matchOr = new ArrayList<>();
 
         Criteria criteria = new Criteria();
-        if(!sessionManager.getCurrentUser().isAdmin()) {
-            match.add(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()));
-        }
+        match.add(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()));
         //match.add(Criteria.where("date").gte(startDate).lt(endDate));
         //add the service forms as well
         //get current office employees
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
         //skip form expenses
         match.add(Criteria.where("formId").exists(false));
+        match.add(Criteria.where("status").ne(Payment.STATUS_PENDING));
         //criteria.orOperator(Criteria.where("createdBy").in());
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
