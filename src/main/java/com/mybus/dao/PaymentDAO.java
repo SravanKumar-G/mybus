@@ -12,5 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentDAO extends PagingAndSortingRepository<Payment, String> {
     Iterable<Payment> findByType(PaymentType type);
+    Payment findByCashTransferRef(String cashTransferId);
     Iterable<Payment> findByFormId(String serviceId);
 }

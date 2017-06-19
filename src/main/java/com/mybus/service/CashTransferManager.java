@@ -38,15 +38,6 @@ public class CashTransferManager {
      */
     public CashTransfer updateCashTransfer(CashTransfer cashTransfer){
         if(cashTransfer.getStatus() != null && cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
-            Payment expense = new Payment();
-            expense.setBranchOfficeId(userDAO.findOne(cashTransfer.getFromUserId()).getBranchOfficeId());
-            expense.setAmount(cashTransfer.getAmount());
-            expense.setType(PaymentType.EXPENSE);
-            expense.setStatus(Payment.STATUS_AUTO);
-            expense.setDescription(Payment.CASH_TRANSFER);
-            expense.setDate(new Date());
-            paymentDAO.save(expense);
-
             Payment income = new Payment();
             income.setBranchOfficeId(userDAO.findOne(cashTransfer.getToUserId()).getBranchOfficeId());
             income.setAmount(cashTransfer.getAmount());
@@ -55,6 +46,9 @@ public class CashTransferManager {
             income.setDescription(Payment.CASH_TRANSFER);
             income.setDate(new Date());
             paymentDAO.save(income);
+            Payment expense = paymentDAO.findByCashTransferRef(cashTransfer.getId());
+            expense.setStatus(Payment.STATUS_AUTO);
+            paymentDAO.save(expense);
             userMongoDAO.updateCashBalance(cashTransfer.getFromUserId(), (0-cashTransfer.getAmount()));
             userMongoDAO.updateCashBalance(cashTransfer.getToUserId(), cashTransfer.getAmount());
         }
@@ -66,7 +60,16 @@ public class CashTransferManager {
     }
 
     public CashTransfer save(CashTransfer cashTransfer){
-        return cashTransferDAO.save(cashTransfer);
+        cashTransfer = cashTransferDAO.save(cashTransfer);
+        Payment expense = new Payment();
+        expense.setAmount(cashTransfer.getAmount());
+        expense.setType(PaymentType.EXPENSE);
+        expense.setStatus(Payment.STATUS_PENDING);
+        expense.setCashTransferRef(cashTransfer.getId());
+        expense.setDescription(Payment.CASH_TRANSFER+ " sent to "+ userDAO.findOne(cashTransfer.getToUserId()).getFullName());
+        expense.setDate(new Date());
+        paymentDAO.save(expense);
+        return cashTransfer;
     }
     public CashTransfer update(CashTransfer cashTransfer){
         return cashTransferDAO.save(cashTransfer);
