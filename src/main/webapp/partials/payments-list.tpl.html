@@ -30,7 +30,7 @@
                     <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin && user.id!=payment.createdBy">
                         <span ng-if="!payment.status">
-                            <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve  {{user.id}}  {{payment}} </a>
+                            <a ng-click="approveOrRejectPayment(payment,'Approve')">Approve </a>
                             <a ng-click="approveOrRejectPayment(payment)">Reject</a>
                         </span>
                         <span ng-if="payment.status">
