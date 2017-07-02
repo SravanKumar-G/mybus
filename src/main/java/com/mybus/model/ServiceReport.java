@@ -20,7 +20,7 @@ import java.util.*;
 @Setter
 @CompoundIndex(name = "sr_jdate_srvnum", def = "{'serviceNumber' : 1, 'journeyDate' : 1}", unique = true)
 public class ServiceReport extends AbstractDocument  {
-    public static final String STATUS_HALF = "Halt";
+    public static final String STATUS_HALT = "Halt";
     public static final String STATUS_SUBMIT = "Submitted";
     public static final String COLLECTION_NAME = "serviceReport";
     public static final String SUBMITTED_ID = "formId";

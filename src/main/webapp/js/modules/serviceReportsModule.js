@@ -477,6 +477,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         $log.debug("error loading service reports");
                     });
             },
+            pendingReports:function(callback) {
+                $http.get('serviceReport/pending')
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error loading pending service reports");
+                    });
+            },
             getReport:function(id,callback) {
                 $http.get('/api/v1/serviceReport/'+id)
                     .then(function (response) {
