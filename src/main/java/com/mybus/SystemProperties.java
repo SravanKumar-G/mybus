@@ -90,6 +90,15 @@ public class SystemProperties {
 		return getProperty(property.getPropertyName());
 	}
 
+	public String getStringProperty(String propertyName, String defaultValue) {
+		String value = getProperty(propertyName);
+		if(value == null) {
+			return defaultValue;
+		} else{
+			return value;
+		}
+	}
+
 	public static enum SysProps {
 
 		FACTUAL_API_KEY("factual.api.key"), 
@@ -109,65 +118,65 @@ public class SystemProperties {
 		}
 	}
 	
-	 public int getIntegerProperty(final String propertyName) {
-	        return Integer.valueOf(getProperty(propertyName));
-	    }
+	public int getIntegerProperty(final String propertyName) {
+		return Integer.valueOf(getProperty(propertyName));
+	}
 
-	    public int getIntegerProperty(final String propertyName, final int defaultValue) {
-	        try {
-	            return Integer.valueOf(getProperty(propertyName));
-	        } catch (Exception ex) {
-	            return defaultValue;
-	        }
-	    }
+	public int getIntegerProperty(final String propertyName, final int defaultValue) {
+		try {
+			return Integer.valueOf(getProperty(propertyName));
+		} catch (Exception ex) {
+			return defaultValue;
+		}
+	}
 
-	    public int getIntegerProperty(final SysProps property) {
-	        return getIntegerProperty(property.getPropertyName());
-	    }
+	public int getIntegerProperty(final SysProps property) {
+		return getIntegerProperty(property.getPropertyName());
+	}
 
-	    public int getIntegerProperty(final SysProps property, final int defaultValue) {
-	        return getIntegerProperty(property.getPropertyName(), defaultValue);
-	    }
+	public int getIntegerProperty(final SysProps property, final int defaultValue) {
+		return getIntegerProperty(property.getPropertyName(), defaultValue);
+	}
 
-	    public boolean getBooleanProperty(final SysProps property, final boolean defaultValue) {
-	        String propertyValue = getProperty(property.getPropertyName());
-	        return getBooleanValue(propertyValue, defaultValue);
-	    }
+	public boolean getBooleanProperty(final SysProps property, final boolean defaultValue) {
+		String propertyValue = getProperty(property.getPropertyName());
+		return getBooleanValue(propertyValue, defaultValue);
+	}
 
-	    public boolean getBooleanProperty(final SysProps property) {
-	        return getBooleanProperty(property, false);
-	    }
+	public boolean getBooleanProperty(final SysProps property) {
+		return getBooleanProperty(property, false);
+	}
 
-	    private boolean getBooleanValue(final String propertyValue, final boolean defaultValue) {
-	        try {
-	            return Boolean.valueOf(propertyValue);
-	        } catch (Exception ex) {
-	            if (logger.isTraceEnabled()) {
-	                logger.trace(String.format("Boolean system property could not be parsed.  Its value was '%s'", propertyValue));
-	            }
-	            return defaultValue;
-	        }
-	    }
-	    private static String coalesce(String... strings) {
-	        for (String string : strings) {
-	            if (!StringUtils.isEmpty(string)) {
-	                return string;
-	            }
-	        }
-	        return null;
-	    }
+	private boolean getBooleanValue(final String propertyValue, final boolean defaultValue) {
+		try {
+			return Boolean.valueOf(propertyValue);
+		} catch (Exception ex) {
+			if (logger.isTraceEnabled()) {
+				logger.trace(String.format("Boolean system property could not be parsed.  Its value was '%s'", propertyValue));
+			}
+			return defaultValue;
+		}
+	}
+	private static String coalesce(String... strings) {
+		for (String string : strings) {
+			if (!StringUtils.isEmpty(string)) {
+				return string;
+			}
+		}
+		return null;
+	}
 
-	    public boolean getBooleanProperty(final String propertyName, final boolean defaultValue) {
-	        return getBooleanValue(propertyName, defaultValue);
-	    }
+	public boolean getBooleanProperty(final String propertyName, final boolean defaultValue) {
+		return getBooleanValue(propertyName, defaultValue);
+	}
 
-	    public boolean getBooleanProperty(final String propertyName) {
-	        return getBooleanValue(propertyName, false);
-	    }
+	public boolean getBooleanProperty(final String propertyName) {
+		return getBooleanValue(propertyName, false);
+	}
 
-	    public String getEnvironmentProperty(final SysProps property, final String def) {
-	        String propKey = property.getPropertyName();
-	        return coalesce(System.getProperty(propKey), System.getenv(propKey), getProperty(propKey), def);
-	    }
+	public String getEnvironmentProperty(final SysProps property, final String def) {
+		String propKey = property.getPropertyName();
+		return coalesce(System.getProperty(propKey), System.getenv(propKey), getProperty(propKey), def);
+	}
 
 }

@@ -3,13 +3,9 @@ package com.mybus.controller;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.Booking;
-import com.mybus.model.ServiceReport;
-import com.mybus.model.User;
-import com.mybus.service.AbhiBusPassengerReportService;
+import com.mybus.model.*;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
-import junit.framework.TestCase;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -105,5 +101,22 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/booking/"+booking.getId()), currentUser));
         actions.andExpect(jsonPath("$").exists());
         actions.andExpect(jsonPath("$.bookedBy").value("BookedByTest"));
+    }
+
+
+    @Test
+    public void testPendingServiceReports() throws Exception {
+        ServiceReport report = createTestData();
+        ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/pending/"),
+                currentUser));
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+        actions.andExpect(jsonPath("$[0].busType").value("Sleeper"));
+        report.setStatus(ServiceStatus.HALT);
+        serviceReportDAO.save(report);
+        actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/pending/"),
+                currentUser));
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(0)));
     }
 }

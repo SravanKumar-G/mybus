@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.BookingDAO;
+import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Booking;
 import com.mybus.model.ServiceForm;
@@ -29,6 +30,9 @@ public class ServiceReportController {
 
 	@Autowired
 	private ServiceReportsManager serviceReportsManager;
+
+	@Autowired
+	private ServiceReportMongoDAO serviceReportMongoDAO;
 
 	@RequestMapping(value = "serviceReport/downloadStatus", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get status of reports download", response = JSONObject.class)
@@ -93,6 +97,17 @@ public class ServiceReportController {
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new BadRequestException("Error refreshing reports", e);
+		}
+	}
+
+	@RequestMapping(value = "serviceReport/pending", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load pending reports", response = JSONObject.class)
+	public Iterable<ServiceReport> findPendingReports(HttpServletRequest request) {
+		try{
+			return serviceReportMongoDAO.findPendingReports(null);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new BadRequestException("Error :Load pending reports ", e);
 		}
 	}
 

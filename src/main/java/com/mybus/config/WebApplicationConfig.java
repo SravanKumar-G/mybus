@@ -139,7 +139,8 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     @Bean
     public CommonsMultipartResolver multipartResolver() {
         final CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        final int maxUploadSize = props.getIntegerProperty(SystemProperties.SysProps.MAX_UPLOAD_SIZE_BYTES, MAX_UPLOAD_SIZE_DEFAULT);
+        final int maxUploadSize = props.getIntegerProperty(SystemProperties.SysProps.MAX_UPLOAD_SIZE_BYTES.getPropertyName(),
+                MAX_UPLOAD_SIZE_DEFAULT);
         multipartResolver.setMaxUploadSize(maxUploadSize);
         return multipartResolver;
     }
