@@ -165,12 +165,13 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         }
         $scope.submitReport = function() {
             serviceReportsManager.submitReport($scope.service, function (response) {
-                //callback(response.data);
                 sweetAlert("Great", "The report successfully submitted", "success");
-                $scope.goToServiceForm($scope.service);
+                window.history.back();
+                //$scope.goToServiceForm($scope.service);
             },function (error) {
                 swal("Oops...", "Error submitting the report", "error");
             });
+
         }
         $scope.goToServiceForm = function(service) {
             if(service.attributes.formId) {
@@ -379,11 +380,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 }
             })
         };
-        
+
         var loadServicesData = function (tableParams, $defer) {
             serviceReportsManager.getServices($scope.date, function(data){
                 $scope.serviceList = data.data;
-                console.log(data);
              })
         };
 
@@ -413,11 +413,13 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         	loadPassengerData($scope.serviceReportTableParams);
         }
         
+
+
         $scope.init = function() {
             $scope.submitted = 0;
             $scope.serviceReportTableParams = new NgTableParams({
                 page: 1,
-                count:250,
+                count:9999,
                 sorting: {
                     source: 'asc'
                 }
@@ -425,14 +427,17 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 total: $scope.currentPageOfReports.length,
                 getData: function (params) {
                     loadTableData(params);
-                	loadServicesData(params);
+                    loadServicesData(params);
                 }
             });
         };
+
+
         $scope.init();
         $scope.$on('ReportDownloaded',function(e,value){
             $scope.init();
         });
+
         $scope.goToServiceReport = function(service) {
             if(service.attributes.formId) {
                 $location.url('serviceform/' + service.attributes.formId);
@@ -440,6 +445,54 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $location.url('servicereport/' + service.id);
             }
         }
+    })
+
+    .controller('pendingReportController', function($scope, serviceReportsManager,NgTableParams,$filter,$location){
+        $scope.headline = "Pending Reports";
+        $scope.currentPageOfPendingReports = [];
+        var loadPendingData = function (tableParams, $defer) {
+            serviceReportsManager.pendingReports(function(data){
+                $scope.pendingReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                tableParams.total($scope.pendingReports.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve($scope.pendingReports);
+                }
+                $scope.currentPageOfPendingReports = $scope.pendingReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+            })
+        };
+
+        $scope.goToServiceReport = function(service) {
+            if(service.attributes.formId) {
+                $location.url('serviceform/' + service.attributes.formId);
+            } else {
+                $location.url('servicereport/' + service.id);
+            }
+        }
+
+
+        $scope.init = function() {
+            $scope.submitted = 0;
+            $scope.pendingTableParams = new NgTableParams({
+                page: 1,
+                count:9999,
+                sorting: {
+                    source: 'asc'
+                }
+            }, {
+                total: $scope.currentPageOfPendingReports.length,
+                getData: function (params) {
+                    loadPendingData(params);
+                }
+            });
+        };
+
+
+        $scope.init();
+        $scope.$on('ReportDownloaded',function(e,value){
+            $scope.init();
+        });
+
+
     })
     .factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};
@@ -478,7 +531,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     });
             },
             pendingReports:function(callback) {
-                $http.get('serviceReport/pending')
+                $http.get('/api/v1/serviceReport/pending')
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
