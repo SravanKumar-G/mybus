@@ -166,7 +166,7 @@
                             </li>
 
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
-                                <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></a>
+                                <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="analytics">
                                 <my-menu url="bookingAnalytics" label="BookingAnalytics" class="nav navbar-nav  col-md-12"></my-menu>
@@ -174,7 +174,7 @@
 
 
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
-                                <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></a>
+                                <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
@@ -189,7 +189,7 @@
                                 <my-menu label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
-                                <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></a>
+                                <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
@@ -200,6 +200,12 @@
                                 <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="CashBalances" class="nav navbar-nav col-md-12"></my-menu>
+                            </ul>
+                            <li data-toggle="collapse" data-target="#checklist" class="collapsed">
+                                <a><i class="fa fa-book fa-lg"></i> Check List <span class="arrow"></span></a>
+                            </li>
+                            <ul class="sub-menu collapse" id="checklist">
+                                <my-menu url="pendingreports" label="PendingReports" class="nav navbar-nav  col-md-12"></my-menu>
                             </ul>
 
                             <li>
@@ -232,7 +238,7 @@
                     </div>
                 </div>
             </div>  
-                    </div>
+                        </breadscrumb></div>
                 </div>
             </div>
         </div>
