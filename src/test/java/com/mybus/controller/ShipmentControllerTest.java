@@ -38,8 +38,6 @@ import static org.junit.Assert.*;
  */
 
 public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
-    @Autowired
-    private ShipmentManager shipmentManager;
 
     @Autowired
     private ShipmentDAO shipmentDAO;
