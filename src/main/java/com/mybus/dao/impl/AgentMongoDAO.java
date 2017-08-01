@@ -38,11 +38,11 @@ public class AgentMongoDAO {
         return namesList;
     }
 
-    public List<Agent> findAgents(String key, boolean showInvalid) {
+    public List<Agent> findAgents(String nameQuery, boolean showInvalid) {
         List<Agent> agents = null;
         Query query = new Query();
-        if(key != null) {
-            query.addCriteria(Criteria.where("username").regex(key));
+        if(nameQuery != null) {
+            query.addCriteria(Criteria.where("username").regex(nameQuery));
         }
         if(showInvalid){
             query.addCriteria(Criteria.where("branchOfficeId").exists(false));
