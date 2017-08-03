@@ -49,6 +49,7 @@ public class ServiceReport extends AbstractDocument  {
     private String submittedBy;
     private String verifiedBy;
     private int totalSeats;
+    @Indexed
     private ServiceStatus status;
     private String conductorInfo;
     private String notes;

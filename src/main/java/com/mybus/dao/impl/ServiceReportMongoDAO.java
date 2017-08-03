@@ -7,6 +7,7 @@ import com.mybus.service.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -41,8 +42,9 @@ public class ServiceReportMongoDAO {
     public Iterable<ServiceReport> findPendingReports(final Pageable pageable) throws ParseException {
         String startDate = systemProperties.getStringProperty("service.startDate", "2017-06-01");
         Criteria criteria = new Criteria();
-        criteria.orOperator(Criteria.where("status").exists(false), Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
+        criteria.andOperator(Criteria.where("status").exists(false), Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
         Query query = new Query(criteria);
+        query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
         return mongoTemplate.find(query, ServiceReport.class);
     }
 

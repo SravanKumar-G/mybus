@@ -11,6 +11,8 @@ import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
 import org.scribe.utils.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,6 +39,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  */
 @Service
 public class BookingMongoDAO {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookingMongoDAO.class);
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -77,6 +82,7 @@ public class BookingMongoDAO {
      * @return
      */
     public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
+        long start = System.currentTimeMillis();
         Preconditions.checkNotNull(agent, "Agent not found");
         BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
         Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
@@ -85,6 +91,8 @@ public class BookingMongoDAO {
         addIsBookingDueConditions(query);
         query.addCriteria(where("source").ne(branchOffice.getName()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        long end = System.currentTimeMillis();
+        logger.info("Finding return tickets for agent %s took " + (end-start), agent.getUsername());
         return bookings;
     }
 

@@ -50,11 +50,11 @@ for(i in users) {
 serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
 //delete ServiceForm
 payment.setServiceFormId(serviceForm.getId());
-<<<<<<< Updated upstream
+
 
 //ISODate("2017-04-29T00:00:00Z") -- aws
  var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-04-28T04:00:00Z")}).toArray();
- var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-06-01T04:00:00Z")}).toArray();
+ var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-06-03T00:00:00Z")}).toArray();
 
  for(i in serviceReports) {
     var serviceReport = serviceReports[i];
@@ -70,7 +70,7 @@ payment.setServiceFormId(serviceForm.getId());
     db.serviceReport.remove({"_id": ObjectId(serviceReport._id.str)});
  }
 
- db.serviceReportStatus.remove({'reportDate': ISODate("2017-06-01T04:00:00Z")})
+ db.serviceReportStatus.remove({'reportDate': ISODate("2017-06-03T00:00:00Z")})
 
 
 
