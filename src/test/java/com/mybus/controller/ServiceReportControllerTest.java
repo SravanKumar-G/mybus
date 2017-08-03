@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -107,6 +108,8 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
     @Test
     public void testPendingServiceReports() throws Exception {
         ServiceReport report = createTestData();
+        report.setJourneyDate(ServiceConstants.df.parse("2017-06-02"));
+        serviceReportDAO.save(report);
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/pending/"),
                 currentUser));
         actions.andExpect(jsonPath("$").isArray());
