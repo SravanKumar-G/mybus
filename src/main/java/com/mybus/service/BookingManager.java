@@ -57,8 +57,16 @@ public class BookingManager {
         return bookingMongoDAO.markBookingPaid(bookingId);
     }
 
-    public void validateAgentBookings(String agentName) {
-        Iterable<Booking> bookings = bookingDAO.findByBookedByAndHasValidAgent(agentName, false);
+    /**
+     * validates all the bookings for an agent. This is triggered when agent is allotted to an office.
+     * This will update the bookings made by that agent and service reports containing the bookings.
+     * @param agent
+     */
+    public void validateAgentBookings(Agent agent) {
+        if(agent.getBranchOfficeId() == null) {
+            return;
+        }
+        Iterable<Booking> bookings = bookingDAO.findByBookedByAndHasValidAgent(agent.getUsername(), false);
         Set<String> serviceNumbers = new HashSet<>();
         for(Booking booking: bookings) {
             serviceNumbers.add(booking.getServiceId());

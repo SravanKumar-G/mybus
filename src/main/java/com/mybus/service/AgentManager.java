@@ -60,9 +60,7 @@ public class AgentManager {
      * @return
      */
     public Agent save(Agent agent) {
-        if(agent.getBranchOfficeId() != null) {
-            bookingManager.validateAgentBookings(agent.getUsername());
-        }
+        bookingManager.validateAgentBookings(agent);
         return agentDAO.save(agent);
     }
 

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.text.ParseException;
 import java.util.*;
 
@@ -103,14 +104,22 @@ public class ServiceReportsManager {
 
     public ServiceReport getReport(String id) {
         ServiceReport report = serviceReportDAO.findOne(id);
-        Iterable<Booking> bookings = bookingDAO.findByServiceId(report.getId());
+        List<Booking> bookings = IteratorUtils.toList(bookingDAO.findByServiceId(report.getId()).iterator());
+        Optional<Booking> invalidBooking = bookings.stream().filter(b -> !b.isHasValidAgent()).findFirst();
+        if(invalidBooking.isPresent()) {
+            report.setInvalid(true);
+        } else {
+            report.setInvalid(false);
+        }
         //round up the digits
         report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
         report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
-        report.setBookings(IteratorUtils.toList(bookings.iterator()));
-        report.getAttributes().put("updatedBy", userManager.getUser(report.getUpdatedBy()).getFullName());
+        report.setBookings(bookings);
+        if(report.getUpdatedBy() != null) {
+            report.getAttributes().put("updatedBy", userManager.getUser(report.getUpdatedBy()).getFullName());
+        }
         return report;
     }
 

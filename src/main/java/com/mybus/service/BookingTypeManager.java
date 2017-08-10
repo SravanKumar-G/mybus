@@ -47,8 +47,17 @@ public class BookingTypeManager {
     }
 
     public boolean hasValidAgent(Booking booking) {
+        if(isOnlineBooking(booking)) {
+            return true;
+        }
         return getBookingAgent(booking) != null;
     }
+
+    /**
+     * Finds booking agent also checks if the agent has a valid branchoffice allocated to it.
+     * @param booking
+     * @return
+     */
     public Agent getBookingAgent(Booking booking) {
         if(booking.getBookedBy() == null) {
             return null;
