@@ -13,12 +13,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,6 +78,23 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.content").isArray());
         actions.andExpect(jsonPath("$.content", Matchers.hasSize(5)));
+    }
+
+    @Test
+    public void searchExpenses() throws Exception {
+        for(int i=0;i<10;i++){
+            OfficeExpense officeExpense = new OfficeExpense();
+            officeExpense.setDescription("Testing "+ i);
+            if(i%2 == 0) {
+                officeExpense.setStatus(Payment.STATUS_APPROVED);
+            }
+            officeExpense = officeExpenseDAO.save(officeExpense);
+            ResultActions actions = mockMvc.perform(asUser(post("/api/v1/officeExpense")
+                    .content(getObjectMapper().writeValueAsBytes(officeExpense)), currentUser)
+                    .contentType(MediaType.APPLICATION_JSON));
+            actions.andExpect(status().isOk());
+        }
+
     }
 
 }

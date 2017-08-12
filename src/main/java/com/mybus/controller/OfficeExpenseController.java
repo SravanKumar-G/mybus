@@ -85,4 +85,12 @@ public class OfficeExpenseController {
         return response;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "officeExpenses/search", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    public Page<OfficeExpense> search(HttpServletRequest request,
+                                      @RequestBody final JSONObject query, final Pageable pageable) {
+        return officeExpenseManager.findOfficeExpenses(query, pageable);
+    }
+
+
 }
