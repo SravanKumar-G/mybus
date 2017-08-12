@@ -19,8 +19,6 @@ public class ExpenseMongoDAOTest extends AbstractControllerIntegrationTest {
     @Autowired
     private PaymentDAO paymentDAO;
 
-    @Autowired
-    private PaymentMongoDAO expenseMongoDAO;
     @Before
     @After
     public void cleanup() {

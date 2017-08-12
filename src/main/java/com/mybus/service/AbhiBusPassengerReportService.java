@@ -194,7 +194,7 @@ public class AbhiBusPassengerReportService {
             Date journeyDate = ServiceConstants.df.parse(date);
             serviceReport.setJourneyDate(journeyDate);
             if(busService.containsKey("ServiceId")){
-                serviceReport.setServiceNumber(busService.get("ServiceId").toString());
+                serviceReport.setServiceId(busService.get("ServiceId").toString());
             }
             if(busService.containsKey("ServiceName")){
                 serviceReport.setServiceName(busService.get("ServiceName").toString());
@@ -261,10 +261,17 @@ public class AbhiBusPassengerReportService {
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
                     if(savedReport != null) {
-                        if(bookingDAO.findByTicketNo(booking.getTicketNo().trim()) == null) {
+                        Booking savedBooking = bookingDAO.findByTicketNo(booking.getTicketNo().trim());
+                        if(savedBooking == null) {
                         	logger.info("found new booking");
                             calculateServiceReportIncome(serviceReport, booking);
                             serviceReport.getBookings().add(booking);
+                        } else {
+                            //refreshing the booking status
+                            if(!savedBooking.isHasValidAgent()) {
+                                savedBooking.setHasValidAgent(bookingTypeManager.hasValidAgent(savedBooking));
+                                bookingDAO.save(savedBooking);
+                            }
                         }
                     }else {
                     	logger.info("not found serviceReport");
@@ -281,12 +288,20 @@ public class AbhiBusPassengerReportService {
     }
 
     private ServiceReport getByJourneyDateAndServiceNumber(String serviceNumber, Date journeyDate) {
+        //check if there is service combo for that service number
         ServiceCombo serviceCombo = serviceComboMongoDAO.findServiceCombo(serviceNumber);
-        if(serviceCombo == null) {
-            return null;
+        ServiceReport report = null;
+        if(serviceCombo != null) {
+            //check for the service report with either of the numbers from combo
+            report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceCombo.getServiceNumber());
+            if(report == null) {
+                report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
+                        serviceCombo.getComboNumbers());
+            }
+        } else {
+            report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceNumber);
         }
-        return serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
-                serviceCombo.getServiceNumber());
+        return report;
     }
 
 	private double roundUp(double value) {
@@ -345,12 +360,14 @@ public class AbhiBusPassengerReportService {
         if(bookingTypeManager.isRedbusBooking(booking)){
             serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
             booking.setPaymentType(BookingType.REDBUS);
+            booking.setHasValidAgent(true);
         } else if(bookingTypeManager.isOnlineBooking(booking)) {
             serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
             booking.setPaymentType(BookingType.ONLINE);
+            booking.setHasValidAgent(true);
         } else {
             Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
-            booking.setHasValidAgent(bookingAgent != null);
+            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
             serviceReport.setInvalid(bookingAgent == null);
             adjustAgentBookingCommission(booking, bookingAgent);
             serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());

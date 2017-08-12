@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.json.simple.JSONObject;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
@@ -55,6 +56,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     @RequiresValue
     private String role;
     private String planType;
+    @Indexed
     private String branchOfficeId;
 
     @Field(AMOUNT_TO_BE_PAID)

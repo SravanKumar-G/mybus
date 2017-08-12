@@ -70,7 +70,8 @@ payment.setServiceFormId(serviceForm.getId());
     db.serviceReport.remove({"_id": ObjectId(serviceReport._id.str)});
  }
 
- db.serviceReportStatus.remove({'reportDate': ISODate("2017-06-03T00:00:00Z")})
+ db.serviceReportStatus.remove({'reportDate': ISODate("2017-08-09T04:00:00Z")})
+db.serviceReportStatus.remove({'reportDate': ISODate("2017-05-02T00:00:00Z")})
 
 
 
@@ -81,4 +82,3 @@ db.booking.createIndex({'serviceId':1})
 db.booking.createIndex({'bookedBy':1})
 db.booking.createIndex({'source':1})
 
- db.serviceReportStatus.remove({'reportDate': ISODate("2017-05-02T00:00:00Z")})

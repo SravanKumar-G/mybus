@@ -7,6 +7,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.model.User;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,6 @@ public class OfficeExpenseManager {
 
     @Autowired
     private OfficeExpenseDAO officeExpenseDAO;
-
-    @Autowired
-    private SessionManager sessionManager;
 
     @Autowired
     private OfficeExpenseMongoDAO officeExpenseMongoDAO;
@@ -102,5 +100,10 @@ public class OfficeExpenseManager {
             officeExpense.getAttributes().put("createdBy", userNames.get(officeExpense.getCreatedBy()));
         }
         return officeExpenses;
+    }
+
+    public Page<OfficeExpense> findOfficeExpenses(JSONObject query, Pageable pageable) {
+        return null;
+        //return officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
     }
 }
