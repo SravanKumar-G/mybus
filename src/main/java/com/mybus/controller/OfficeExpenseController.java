@@ -87,7 +87,7 @@ public class OfficeExpenseController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "officeExpenses/search", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @RequestMapping(value = "officeExpenses/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     public List<OfficeExpense> search(HttpServletRequest request,
                                       @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return officeExpenseManager.findOfficeExpenses(query, pageable);
