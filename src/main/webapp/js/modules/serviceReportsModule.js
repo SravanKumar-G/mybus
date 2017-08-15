@@ -9,8 +9,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 //
 // ============================= List All ===================================
 //
-
-
     .controller('ServiceReportsController', function($scope,$rootScope,$stateParams,$location) {
         $scope.headline = "Service Reports";
         $rootScope.urlDate = $stateParams.date;
@@ -224,7 +222,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.date = null;
         $scope.downloadedOn = null;
         $scope.downloaded = false;
-        $scope.loading = false;
         $scope.currentPageOfReports = [];
         $scope.submitted = 0;
         $scope.verified = 0;
@@ -294,6 +291,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         }
         $scope.checkStatus = function() {
             $scope.parseDate();
+            loadServicesData();
             serviceReportsManager.getServiceReportStatus($scope.date, function(data){
                 $scope.downloaded = data.downloaded;
                 $scope.loading = false;
@@ -303,7 +301,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 }
             });
         }
-        $scope.checkStatus();
 
         $scope.downloadReports = function() {
             if($scope.dt >= $scope.tomorrow){
@@ -346,7 +343,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
             else{
                 $scope.serviceReportByDate($scope.dt);
-                $scope.checkStatus();
                 $scope.init();
             }
         }
@@ -359,7 +355,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
             else{
                 $scope.serviceReportByDate($scope.dt);
-                $scope.checkStatus();
                 $scope.init();
             }
         }
@@ -383,7 +378,8 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
         var loadServicesData = function (tableParams, $defer) {
             serviceReportsManager.getServices($scope.date, function(data){
-                $scope.serviceList = data.data;
+                $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
+
              })
         };
 
@@ -426,8 +422,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }, {
                 total: $scope.currentPageOfReports.length,
                 getData: function (params) {
-                    loadTableData(params);
-                    loadServicesData(params);
+                    $scope.checkStatus();
                 }
             });
         };
@@ -468,8 +463,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $location.url('servicereport/' + service.id);
             }
         }
-
-
         $scope.init = function() {
             $scope.submitted = 0;
             $scope.pendingTableParams = new NgTableParams({
@@ -485,14 +478,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 }
             });
         };
-
-
         $scope.init();
         $scope.$on('ReportDownloaded',function(e,value){
             $scope.init();
         });
-
-
     })
     .factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};

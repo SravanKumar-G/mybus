@@ -59,7 +59,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     page: 1, // show first page
                     count:10,
                     sorting: {
-                        fullName: 'asc'
+                        createdAt: 'desc'
                     },
                 }, {
                     counts:[],
@@ -74,7 +74,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     page: 1, // show first page
                     count:15,
                     sorting: {
-                        fullName: 'asc'
+                        createdAt: 'desc'
                     },
                 }, {
                     counts:[],
