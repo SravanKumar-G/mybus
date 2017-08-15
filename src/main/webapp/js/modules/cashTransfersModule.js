@@ -87,7 +87,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     size:10,
                     count:10,
                     sorting: {
-                        date: 'asc'
+                        createdAt: 'desc'
                     },
                 }, {
                     counts:[],
@@ -103,7 +103,7 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
                     size:10,
                     count:10,
                     sorting: {
-                        date: 'asc'
+                        createdAt: 'desc'
                     },
                 }, {
                     counts:[],

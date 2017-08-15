@@ -92,7 +92,7 @@ public class BookingMongoDAO {
         query.addCriteria(where("source").ne(branchOffice.getName()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         long end = System.currentTimeMillis();
-        logger.info("Finding return tickets for agent %s took " + (end-start), agent.getUsername());
+        logger.info(String.format("Finding return tickets for agent %s took " + (end-start), agent.getUsername()));
         return bookings;
     }
 

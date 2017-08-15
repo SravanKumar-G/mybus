@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
@@ -121,7 +122,7 @@ public class DueReportManager {
         officeDue.setManagerName(office.getAttributes().get(BranchOffice.MANAGER_NAME));
         List<String> namesList = agentMongoDAO.findAgentNamesByOfficeId(branchOfficeId);
         List<Booking> bookings = bookingMongoDAO.findDueBookings(namesList, null);
-        class OfficeDueByDate {
+        class OfficeDueByDate implements Comparable {
             @Getter
             @Setter
             private String date;
@@ -130,6 +131,11 @@ public class DueReportManager {
             private double totalDue;
             public OfficeDueByDate(String date) {
                 this.date = date;
+            }
+
+            @Override
+            public int compareTo(Object o) {
+                return ((OfficeDueByDate)o).getDate().compareTo(this.getDate());
             }
         }
         Map<String, OfficeDueByDate> officeDues = new HashMap<>();
@@ -140,7 +146,9 @@ public class DueReportManager {
             OfficeDueByDate dueByDate = officeDues.get(booking.getJDate());
             dueByDate.setTotalDue(dueByDate.getTotalDue() + booking.getNetAmt());
         }
-        officeDue.setDuesByDate(officeDues.values());
+        List result = Lists.newArrayList(officeDues.values());
+        Collections.sort(result);
+        officeDue.setDuesByDate(result);
         return officeDue;
     }
 
@@ -191,12 +199,14 @@ public class DueReportManager {
         List<Booking> bookings = new ArrayList<>();
         agents.parallelStream().forEach(agent -> {
             //if branchoffice doesn't match skip the agent
-            if(branchOfficeId != null){
+            if(branchOfficeId != null && agent.getBranchOfficeId() != null){
                 if(agent.getBranchOfficeId().equals(branchOfficeId)) {
                     bookings.addAll(bookingMongoDAO.findReturnTicketDuesForAgent(agent));
                 }
             } else {
-                bookings.addAll(bookingMongoDAO.findReturnTicketDuesForAgent(agent));
+                if(agent.getBranchOfficeId() != null) {
+                    bookings.addAll(bookingMongoDAO.findReturnTicketDuesForAgent(agent));
+                }
             }
         });
         return bookings;

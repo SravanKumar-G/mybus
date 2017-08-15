@@ -10,17 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -114,7 +113,7 @@ public class PaymentMongoDAO {
     }
 
     public long getPaymentsCount(boolean pending) {
-        Query q = getPaymentsQuery(pending);
+        Query q = getPaymentsQuery(pending, null);
         return mongoTemplate.count(q, Payment.class);
     }
 
@@ -130,24 +129,25 @@ public class PaymentMongoDAO {
     }
 
     public Page<Payment> findPendingPayments(Pageable pageable) {
-        Query q = getPaymentsQuery(true);
-        if(pageable != null) {
-            q.with(pageable);
-        }
+        Query q = getPaymentsQuery(true, pageable);
         long count = mongoTemplate.count(q, Payment.class);
         List<Payment> payments = mongoTemplate.find(q, Payment.class);
         return new PageImpl<Payment>(payments, pageable, count);
     }
     public Page<Payment> findNonPendingPayments(Pageable pageable) {
-        Query q = getPaymentsQuery(false);
-        if(pageable != null) {
-            q.with(pageable);
-        }
+        Query q = getPaymentsQuery(false, pageable);
+
         long count = mongoTemplate.count(q, Payment.class);
         List<Payment> payments = mongoTemplate.find(q, Payment.class);
         return new PageImpl<Payment>(payments, pageable, count);
     }
 
+    /**
+     * Find payments for given date
+     * @param date
+     * @param pageable
+     * @return
+     */
     public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
         Query q = getPaymentsByDateQuery(date);
         if(pageable != null) {
@@ -158,7 +158,7 @@ public class PaymentMongoDAO {
         return new PageImpl<Payment>(payments, pageable, count);
     }
     
-    private Query getPaymentsQuery(boolean pending) {
+    private Query getPaymentsQuery(boolean pending, Pageable pageable) {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
@@ -174,6 +174,11 @@ public class PaymentMongoDAO {
         }
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
+        if(pageable == null) {
+            q.with(new Sort(Sort.Direction.DESC,"createdAt"));
+        } else {
+            q.with(pageable);
+        }
         return q;
     }
 

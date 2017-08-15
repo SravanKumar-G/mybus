@@ -1,12 +1,13 @@
 package com.mybus.controller;
 
-import com.mybus.dao.CityDAO;
 import com.mybus.dao.OfficeExpenseDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.model.User;
+import com.mybus.service.ServiceConstants;
 import org.hamcrest.Matchers;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,7 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.Assert.*;
+import java.util.Date;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -82,19 +84,37 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
 
     @Test
     public void searchExpenses() throws Exception {
+        Date date = new Date();
         for(int i=0;i<10;i++){
             OfficeExpense officeExpense = new OfficeExpense();
             officeExpense.setDescription("Testing "+ i);
             if(i%2 == 0) {
                 officeExpense.setStatus(Payment.STATUS_APPROVED);
             }
+            date.setDate(date.getDate() -1);
+            officeExpense.setDate(date);
             officeExpense = officeExpenseDAO.save(officeExpense);
             ResultActions actions = mockMvc.perform(asUser(post("/api/v1/officeExpense")
                     .content(getObjectMapper().writeValueAsBytes(officeExpense)), currentUser)
                     .contentType(MediaType.APPLICATION_JSON));
             actions.andExpect(status().isOk());
         }
-
+        JSONObject query = new JSONObject();
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/search")
+                .content(getObjectMapper().writeValueAsBytes(query)), currentUser)
+                .contentType(MediaType.APPLICATION_JSON));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(10)));
+        date = new Date();
+        date.setDate(date.getDate() -5);
+        query.put("startDate",  ServiceConstants.df.format(date));
+        actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/search")
+                .content(getObjectMapper().writeValueAsBytes(query)), currentUser)
+                .contentType(MediaType.APPLICATION_JSON));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
     }
 
 }

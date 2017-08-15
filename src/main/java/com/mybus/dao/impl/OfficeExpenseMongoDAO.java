@@ -1,10 +1,8 @@
 package com.mybus.dao.impl;
 
 import com.mybus.dao.OfficeExpenseDAO;
-import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.BranchOffice;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.model.User;
@@ -149,8 +147,10 @@ public class OfficeExpenseMongoDAO {
         if(query.get("userId") != null) {
             match.add(Criteria.where("createdBy").is(ServiceConstants.df.parse(query.get("startDate").toString())));
         }
-        criteria.andOperator(match.toArray(new Criteria[match.size()]));
-        q.addCriteria(criteria);
+        if(match.size() > 0) {
+            criteria.andOperator(match.toArray(new Criteria[match.size()]));
+            q.addCriteria(criteria);
+        }
         List<OfficeExpense> expenses = mongoTemplate.find(q, OfficeExpense.class);
         return expenses;
     }
