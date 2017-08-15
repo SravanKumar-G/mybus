@@ -23,7 +23,8 @@ var myBus = angular.module('myBus', [
   'myBus.paginationService',
   'myBus.expensesIncomesReportsModule',
   'myBus.returnTicketsModule',
-  'myBus.bookingModule'
+  'myBus.bookingModule',
+  'myBus.sequenceModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -145,6 +146,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/serviceReports.tpl.html',
                 controller: 'ServiceReportsController'
             })
+            .state('shipmentsequence', {
+            level:2,
+            url:'/shipmentSequence',
+            templateUrl: 'partials/shipmentSequence.tpl.html',
+            controller: 'sequenceController'
+        })
             .state('pendingreports', {
                 level:2,
                 url:'/pendingReports',

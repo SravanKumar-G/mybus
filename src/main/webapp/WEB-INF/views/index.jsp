@@ -46,6 +46,7 @@
     <script src="js/services/paginationService.js"></script>
     <script src="js/modules/returnTicketsModule.js"></script>
     <script src="js/modules/bookingModule.js"></script>
+    <script src="js/modules/sequenceModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -200,6 +201,8 @@
                                 <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="CashBalances" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="ShipmentSequence" class="nav navbar-nav col-md-12"></my-menu>
+
                             </ul>
                             <li data-toggle="collapse" data-target="#checklist" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i> Check List <span class="arrow"></span></a>
