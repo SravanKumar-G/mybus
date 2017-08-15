@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
@@ -86,9 +87,9 @@ public class OfficeExpenseController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "officeExpenses/search", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
-    public Page<OfficeExpense> search(HttpServletRequest request,
-                                      @RequestBody final JSONObject query, final Pageable pageable) {
+    @RequestMapping(value = "officeExpenses/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public List<OfficeExpense> search(HttpServletRequest request,
+                                      @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return officeExpenseManager.findOfficeExpenses(query, pageable);
     }
 

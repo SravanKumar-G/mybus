@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -102,8 +103,8 @@ public class OfficeExpenseManager {
         return officeExpenses;
     }
 
-    public Page<OfficeExpense> findOfficeExpenses(JSONObject query, Pageable pageable) {
-        return null;
-        //return officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
+    public List<OfficeExpense> findOfficeExpenses(JSONObject query, Pageable pageable) throws ParseException {
+        //return null;
+        return officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
     }
 }
