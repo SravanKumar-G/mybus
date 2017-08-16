@@ -83,39 +83,57 @@
 
         <div class="tab-content" ng-show="tab==3">
 
-            <form name="searchExpense" class="form-horizontal" role="form" autocomplete="off">
-            <div class="col-sm-3">
-                <p class="input-group">
-                    <input type="text" name="startDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
-                           is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
-                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                    {{dt.getFullYear()+"-"+monthNames[dt.getMonth()]+"-"+dt.getDate()}}
-                    <span class="input-group-btn">
-                        <span class="error" ng-show="searchExpense.startDate.$error.max">Start date should be before end date</span>
-                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-                </p>
-            </div>
-            <div class="col-sm-3">
-                <p class="input-group">
-                    <input type="text" name="endDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt2"
-                           is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true"
-                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                            {{dt2.getFullYear()+"-"+monthNames[dt2.getMonth()]+"-"+dt2.getDate()}}
-                    <span class="input-group-btn">
-                        <span class="error" ng-show="searchExpense.endDate.$error.max">You choose future date as end date</span>
+            <form name="searchExpense" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">Start Date</label>
+                    <div class="col-sm-3" >
+                        <input type="text" name="startDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
+                               is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                               close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
+                        {{dt.getFullYear()+"-"+monthNames[dt.getMonth()]+"-"+dt.getDate()}}
+                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+
+                        <span class="input-group-btn">
+                            <span class="error" ng-show="searchExpense.startDate.$error.max">Start date should be before end date</span>
+                        </span>
+
+                    </div>
+
+                    <label class="col-sm-2 control-label ">End Date</label>
+                    <div class="col-sm-3" >
+                        <input type="text" name="endDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt2"
+                               is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true"
+                               close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
+                        {{dt2.getFullYear()+"-"+monthNames[dt2.getMonth()]+"-"+dt2.getDate()}}
                         <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </p>
+
+
+                        <span class="input-group-btn">
+                            <span class="error" ng-show="searchExpense.startDate.$error.max">You choose future date as end date</span>
+                        </span>
+                    </div>
+                </div>
+
+
+            <div class=" form-group">
+                <div class="col-sm-5">
+                    <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="OfficeSelect">
+                        <option value="" selected="selected">Branch Office (optional)</option>
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
+                        <option value="" selected="selected">User (Optional)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button></button>
+
             </div>
-            <div class="col-xs-4">
-                <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="OfficeSelect" required></select>
-            </div>
+
+
             </form>
 
-            <button type="button" class="btn btn-sm btn-success" ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button>
-
-                </button>
 
             <table class="table table-bordered table-condensed table-hover" ng-table="searchTableParams">
                 <tr ng-repeat="expense in searchExpenses">
