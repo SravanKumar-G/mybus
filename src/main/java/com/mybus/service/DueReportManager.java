@@ -37,9 +37,6 @@ public class DueReportManager {
     private BookingMongoDAO bookingMongoDAO;
 
     @Autowired
-    private BookingDAO bookingDAO;
-
-    @Autowired
     private SessionManager sessionManager;
 
     /**
