@@ -32,16 +32,13 @@ public class UserManager {
     private MongoQueryDAO mongoQueryDAO;
 
     @Autowired
-    private CityManager cityManager;
-
-    @Autowired
     private BranchOfficeManager branchOfficeManager;
 
     public User findOne(String userId) {
         return userDAO.findOne(userId);
     }
     public User saveUser(User user){
-        validate(user);
+        user.validate();
         User duplicateUser = userDAO.findOneByUserName(user.getUserName());
         if (duplicateUser != null && !duplicateUser.getId().equals(user.getId())) {
             throw new RuntimeException("A user already exists with username");
@@ -117,13 +114,6 @@ public class UserManager {
         List<User> users = IteratorUtils.toList(mongoQueryDAO
                 .getDocuments(User.class, User.COLLECTION_NAME, fields, query, null).iterator());
         return users;
-    }
-
-    private void validate(final User user){
-        List<String> errors = RequiredFieldValidator.validateModel(user, User.class);
-        if(!errors.isEmpty()) {
-            throw new BadRequestException("Required data missing ");
-        }
     }
 
     public List<User> findAll() {

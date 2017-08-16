@@ -1,5 +1,7 @@
 package com.mybus.model;
 
+import com.mybus.dao.RequiredFieldValidator;
+import com.mybus.exception.BadRequestException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
@@ -17,6 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+
 
 @EqualsAndHashCode(of = { "_id" })
 @ApiModel(value = "AbstractDocument")
@@ -85,5 +89,15 @@ public abstract class AbstractDocument {
         }
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
+    }
+
+    /**
+     * Method for running required validations on model objects
+     */
+    public void validate(){
+        List<String> errors = RequiredFieldValidator.validateModel(this, this.getClass());
+        if(!errors.isEmpty()) {
+            throw new BadRequestException("Required data missing ");
+        }
     }
 }
