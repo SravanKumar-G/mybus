@@ -1,9 +1,6 @@
 package com.mybus.service;
 
-import com.mybus.dao.BookingDAO;
-import com.mybus.dao.ServiceComboDAO;
-import com.mybus.dao.ServiceReportDAO;
-import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -48,6 +45,8 @@ public class AbhiBusPassengerReportService {
     @Autowired
     private BookingTypeManager bookingTypeManager;
 
+    @Autowired
+    private ServiceExpenseDAO serviceExpenseDAO;
 
     public void init() {
         try {
@@ -68,7 +67,7 @@ public class AbhiBusPassengerReportService {
      * @throws Exception
      */
     public List<Map<String, String>> getActiveServicesByDate(String date) throws Exception{
-        logger.info("downloading reports for date:" + date);
+        logger.info("loading reports for date:" + date);
         init();
         Map<String, Map<String, String>> serviceReportsMap = new HashMap<>();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
@@ -161,7 +160,6 @@ public class AbhiBusPassengerReportService {
             serviceReportStatus = serviceReportStatusDAO.save
                     (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
             init();
-            Map<String, ServiceReport> serviceComboBookings = new HashMap<>();
             HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
             inputParam.put("jdate", date);
             Vector params = new Vector();
@@ -348,6 +346,7 @@ public class AbhiBusPassengerReportService {
             serviceReport.setNetIncome(roundUp(serviceReport.getNetCashIncome() +
                     serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
             final ServiceReport savedReport = serviceReportDAO.save(serviceReport);
+            serviceExpenseDAO.save(new ServiceExpense(savedReport));
             bookings.stream().forEach(booking -> {
                 booking.setServiceId(savedReport.getId());
             });

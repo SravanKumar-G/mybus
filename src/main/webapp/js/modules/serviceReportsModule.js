@@ -469,7 +469,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 page: 1,
                 count:9999,
                 sorting: {
-                    source: 'asc'
+                    jdate: 'desc'
                 }
             }, {
                 total: $scope.currentPageOfPendingReports.length,

@@ -10,10 +10,10 @@ import lombok.Setter;
  * @author  schanda on 02/13/16.
  *
  */
+@Getter
+@Setter
 public class ServiceLayout {
 
-	@Getter
-	@Setter
 	private String layoutId;
 	
 }

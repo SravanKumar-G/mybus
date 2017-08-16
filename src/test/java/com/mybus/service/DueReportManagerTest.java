@@ -119,7 +119,7 @@ public class DueReportManagerTest extends AbstractControllerIntegrationTest {
         Map<String,List<Booking>> mappedByAgentName = new HashMap<>();
         dueReportManager.groupReturnTicketDues(dueBookings, mappedByDate, mappedByAgentName);
         assertEquals(3, mappedByDate.keySet().size());
-         dueReportManager.groupReturnTicketDuesByAgentName(dueBookings);
+        dueReportManager.groupReturnTicketDuesByAgentName(dueBookings);
         assertEquals(3, mappedByAgentName.keySet().size());
     }
 
