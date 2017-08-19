@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;

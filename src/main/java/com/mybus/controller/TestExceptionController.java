@@ -1,14 +1,13 @@
 package com.mybus.controller;
 
-import java.io.IOException;
-
+import com.mybus.exception.CustomGenericException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mybus.exception.CustomGenericException;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/api/v1/")

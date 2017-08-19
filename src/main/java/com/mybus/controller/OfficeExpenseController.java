@@ -92,6 +92,4 @@ public class OfficeExpenseController {
                                       @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return officeExpenseManager.findOfficeExpenses(query, pageable);
     }
-
-
 }

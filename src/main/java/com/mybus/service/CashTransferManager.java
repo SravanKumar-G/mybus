@@ -3,15 +3,20 @@ package com.mybus.service;
 import com.mybus.dao.CashTransferDAO;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.dao.impl.CashTransferMongoDAO;
 import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.model.CashTransfer;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentType;
-import com.mybus.model.User;
+import com.mybus.util.ServiceUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by srinikandula on 3/19/17.
@@ -31,6 +36,11 @@ public class CashTransferManager {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private CashTransferMongoDAO cashTransferMongoDAO;
+
+    @Autowired
+    private ServiceUtils serviceUtils;
     /**
      *
      * @param cashTransfer
@@ -80,5 +90,11 @@ public class CashTransferManager {
 
     public CashTransfer findOne(String id) {
         return cashTransferDAO.findOne(id);
+    }
+
+    public List<CashTransfer> search(JSONObject query, Pageable pageable) throws ParseException {
+        List<CashTransfer> cashTransfers = cashTransferMongoDAO.search(query,pageable);
+        serviceUtils.fillInUserNames(cashTransfers);
+        return cashTransfers;
     }
 }

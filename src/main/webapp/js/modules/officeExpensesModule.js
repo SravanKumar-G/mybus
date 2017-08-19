@@ -61,27 +61,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
-        var loadsearchExpenses = function (tableParams) {
 
-            var sortingProps = tableParams.sorting();
-            var sortProps = ""
-            for(var prop in sortingProps) {
-                sortProps += prop+"," +sortingProps[prop];
-            }
-            $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-
-            officeExpensesManager.searchExpenses(searchExpense,pageable, function(response){
-                if(angular.isArray(response)) {
-                    $scope.loading = false;
-                    $scope.searchExpenses = response;
-                    tableParams.total(response.totalElements);
-                    $scope.count = response.totalElements;
-                    $scope.searchTotal = response.totalElements;
-                    tableParams.data = $scope.searchExpenses;
-                }
-            });
-        };
         $scope.init = function() {
             officeExpensesManager.count(true, function(expensesCount){
                 $scope.pendingTableParams = new NgTableParams({
@@ -115,27 +95,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             });
 
         };
-        $scope.searchInit = function (){
-            officeExpensesManager.count(false, function(count){
-                $scope.searchTableParams = new NgTableParams({
-                    page: 1, // show first page
-                    count:15,
-                    sorting: {
-                        fullName: 'asc'
-                    },
-                }, {
-                    counts:[],
-                    total:count,
-                    getData: function (params) {
-                        loadsearchExpenses(params);
-                    }
-                });
-            });
-        }
+
         $scope.init();
-        $scope.searchFilter = function(){
-            $scope.init();
-        }
+
         $scope.handleClickAddExpense = function() {
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl : 'add-expense-modal.html',
@@ -184,13 +146,11 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
 
         /* date picker functions */
         $scope.check = true;
-        $scope.tomorrow;
-        $scope.OfficeSelect = null;
+        $scope.officeId = null;
         $scope.userSelect = null;
         $scope.today = function() {
             $scope.dt = new Date();
             $scope.dt2 = new Date();
-            $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
         };
 
         $scope.today();
@@ -199,8 +159,8 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.altInputFormats = ['M!/d!/yyyy'];
 
         $scope.clear = function() {
-            $scope.dt = null;
-            $scope.dt2 = null;
+            $scope.dt = new Date();
+            $scope.dt2 = new Date();
         };
 
         $scope.inlineOptions = {
@@ -208,15 +168,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             minDate: new Date(),
             showWeeks: true
         };
-        $scope.dateChanged = function() {
-            if($scope.dt >= $scope.tomorrow || $scope.dt2 >= $scope.tomorrow){
-                swal("Oops...", "U've checked for future, Check Later", "error");
-                $scope.check = false;
-            }
-            else{
-                $scope.init();
-            }
-        }
+
         $scope.dateOptions = {
             formatYear: 'yy',
             minDate: new Date(),
@@ -267,24 +219,41 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             opened: false
         };
 
-        var searchExpense = {};
+        $scope.query = {};
+        var loadsearchExpenses = function (tableParams) {
+            $scope.loading = true;
+            officeExpensesManager.searchExpenses($scope.query, function(response){
+                $scope.loading = false;
+                $scope.searchExpenses = response;
+                tableParams.data = $scope.searchExpenses;
 
-
-        $scope.search = function(){
-
-            //$scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate()
-            //$scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate()
-            searchExpense = {
-                "startDate" : $scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate(),
-                "endDate" :  $scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate(),
-                "officeId" : $scope.OfficeSelect,
-                "userId" : $scope.userSelect
-            }
-            $scope.searchInit();
-
+            });
+        };
+        $scope.searchInit = function (){
+            $scope.searchTableParams = new NgTableParams({
+                page: 1, // show first page
+                count:15,
+                sorting: {
+                    date: 'asc'
+                },
+            }, {
+                counts:[],
+                getData: function (params) {
+                    loadsearchExpenses(params);
+                }
+            });
         }
 
 
+        $scope.search = function(){
+            $scope.query = {
+                "startDate" : $scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate(),
+                "endDate" :  $scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate(),
+                "officeId" : $scope.officeId,
+                "userId" : $scope.userSelect
+            }
+            $scope.searchInit();
+        }
     })
 
     .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager, branchOfficeManager,expenseId) {
@@ -411,17 +380,14 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     $log.debug("error retrieving expenses");
                 });
         },
-        searchExpenses: function(searchExpense,pageable, callback){
-            var searchObject = {query : searchExpense , params : pageable}
-            $http.post('/api/v1/officeExpenses/search', searchObject).then(function (response) {
+        searchExpenses: function(searchExpense, callback){
+            $http.post('/api/v1/officeExpenses/search', searchExpense).then(function (response) {
                 if (angular.isFunction(callback)) {
                     callback(response.data);
-                    $rootScope.$broadcast('UpdateHeader');
                 }
             }, function (err, status) {
-                sweetAlert("Error", err.data.message, "error");
+                sweetAlert("Error searching expenses", err.message, "error");
             });
-
         },
 
         count: function (pending, callback) {

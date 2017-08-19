@@ -2,7 +2,6 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.ServiceComboDAO;
-import com.mybus.model.Amenity;
 import com.mybus.model.ServiceCombo;
 import com.mybus.service.ServiceComboManager;
 import io.swagger.annotations.Api;

@@ -1,13 +1,12 @@
 package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
-import com.mybus.dao.CashTransferDAO;
 import com.mybus.dao.PaymentDAO;
-import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.dao.impl.PaymentMongoDAO;
 import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -15,11 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -39,7 +38,7 @@ public class PaymentManager {
     private AgentDAO agentDAO;
 
     @Autowired
-    private BranchOfficeMongoDAO branchOfficeMongoDAO;
+    private ServiceUtils serviceUtils;
 
     @Autowired
     private UserManager userManager;
@@ -48,9 +47,6 @@ public class PaymentManager {
 
     @Autowired
     private UserMongoDAO userMongoDAO;
-
-    @Autowired
-    private CashTransferDAO cashTransferDAO;
 
 
     public Payment updatePayment(Payment payment) {
@@ -125,33 +121,19 @@ public class PaymentManager {
     public Page<Payment> findPayments(JSONObject query, Pageable pageable) {
         List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
         long count =  paymentMongoDAO.count(query);
-        loadUserNames(payments);
+        serviceUtils.fillInUserNames(payments);
         Page<Payment> page = new PageImpl<>(payments, pageable, count);
         return page;
     }
 
-    private void loadUserNames(List<Payment> payments) {
-        Map<String, String> userNames = userManager.getUserNames(true);
-        payments.forEach(payment -> {
-            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
-            payment.getAttributes().put("updatedBy", userNames.get(payment.getUpdatedBy()));
-        });
-    }
-
-    private void loadUserNames(Payment payment) {
-        Map<String, String> userNames = userManager.getUserNames(true);
-        payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
-        payment.getAttributes().put("updatedBy", userNames.get(payment.getUpdatedBy()));
-
-    }
     public Page<Payment> findPendingPayments(Pageable pageable) {
         Page<Payment> page = paymentMongoDAO.findPendingPayments(pageable);
-        loadUserNames(page.getContent());
+        serviceUtils.fillInUserNames(page.getContent());
         return page;
     }
     public Page<Payment> findNonPendingPayments(Pageable pageable) {
         Page<Payment> page = paymentMongoDAO.findNonPendingPayments(pageable);
-        loadUserNames(page.getContent());
+        serviceUtils.fillInUserNames(page.getContent());
         return page;
     }
 
@@ -161,16 +143,13 @@ public class PaymentManager {
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }
-        loadUserNames(payment);
+        serviceUtils.fillInUserNames(payment);
         return payment;
     }
 
     public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
         Page<Payment> payments = paymentMongoDAO.findPaymentsByDate(date, pageable);
-        Map<String,String> userNames = userManager.getUserNames(true);
-        for(Payment payment:payments.getContent()) {
-            payment.getAttributes().put("createdBy", userNames.get(payment.getCreatedBy()));
-        }
+        serviceUtils.fillInUserNames(payments.getContent());
         return payments;
     }
 }

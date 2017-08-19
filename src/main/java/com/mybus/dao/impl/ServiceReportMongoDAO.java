@@ -1,14 +1,12 @@
 package com.mybus.dao.impl;
 
 import com.mybus.SystemProperties;
-import com.mybus.model.ServiceCombo;
 import com.mybus.model.ServiceReport;
 import com.mybus.service.ServiceConstants;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

@@ -2,7 +2,6 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.PaymentMongoDAO;
-import com.mybus.exception.BadRequestException;
 import com.mybus.model.Payment;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;

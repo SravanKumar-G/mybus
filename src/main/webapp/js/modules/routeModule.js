@@ -183,24 +183,17 @@
                 routesManager.updateRoute($scope.route, function (data) {
                     $rootScope.modalInstance.close(data);
                 });
-
-            }
-
-            else
-            {
+            } else {
                 if ($scope.route.name == null || $scope.route.toCityId == null  ) {
                     $log.error("nothing was added.");
                     $rootScope.modalInstance.close(null);
-                }
-                else{
+                } else {
                     routesManager.createRoute($scope.route, function (data) {
                         $rootScope.modalInstance.close(data);
                     });
                 }
-
             }
         }
-
     })
 
     // ============================================================================================================= //
@@ -208,9 +201,7 @@
     // ============================================================================================================= //
 
     .factory('routesManager', function ($rootScope,$q, $http, $log) {
-
         var routes = {};
-
         return{
             /*getRoutes: function (pageable, callback) {
                 $http({url:'/api/v1/routes',method: "GET",params: pageable})
@@ -241,7 +232,6 @@
                     url:'/api/v1/routes'
                 });
             },
-
             getRoute: function(routeId,callback){
                 $http.get('/api/v1/route/'+routeId)
                     .then(function(response){
@@ -250,8 +240,6 @@
                         $log.debug("error retrieving cities");
                     });
             },
-
-
             count: function (callback) {
                 $http.get('/api/v1/routes/count')
                     .then(function (response) {
@@ -269,8 +257,6 @@
                     sweetAlert("Error", err.message, "error");
                 });
             },
-
-
             deleteRoute: function(routeId) {
                 swal({
                     title: "Are you sure?",
@@ -280,7 +266,6 @@
                     closeOnConfirm: false,
                     confirmButtonText: "Yes, delete it!",
                     confirmButtonColor: "#ec6c62"},function(){
-
                     $http.delete('/api/v1/route/' + routeId).then(function () {
                         $rootScope.$broadcast('RoutesInitComplete');
                         swal("Deleted!", "Route was successfully deleted!", "success");

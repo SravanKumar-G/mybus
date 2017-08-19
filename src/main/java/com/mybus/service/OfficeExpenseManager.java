@@ -6,7 +6,7 @@ import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
-import com.mybus.model.User;
+import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -38,6 +37,9 @@ public class OfficeExpenseManager {
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private ServiceUtils serviceUtils;
 
     public OfficeExpense save(OfficeExpense officeExpense) {
         return officeExpenseMongoDAO.save(officeExpense);
@@ -60,16 +62,11 @@ public class OfficeExpenseManager {
     }
 
     private void loadUserNames(List<OfficeExpense> officeExpenses) {
-        Map<String, String> userNames = userManager.getUserNames(true);
         officeExpenses.forEach(officeExpense -> {
-            loadUserNames(userNames, officeExpense);
+            serviceUtils.fillInUserNames(officeExpense);
         });
     }
 
-    private void loadUserNames(Map<String, String> userNames, OfficeExpense officeExpense) {
-        officeExpense.getAttributes().put("createdBy", userNames.get(officeExpense.getCreatedBy()));
-        officeExpense.getAttributes().put("updatedBy", userNames.get(officeExpense.getUpdatedBy()));
-    }
 
     public long findCount(boolean pending) {
         return officeExpenseMongoDAO.count(pending);
@@ -90,21 +87,19 @@ public class OfficeExpenseManager {
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }
-        loadUserNames(userManager.getUserNames(true), payment);
+        serviceUtils.fillInUserNames( payment);
         return payment;
     }
 
     public Page<OfficeExpense> findOfficeExpenseByDate(String date, Pageable pageable) {
         Page<OfficeExpense> officeExpenses = officeExpenseMongoDAO.findOfficeExpensesByDate(date, pageable);
-        Map<String,String> userNames = userManager.getUserNames(true);
-        for(OfficeExpense officeExpense:officeExpenses.getContent()) {
-            officeExpense.getAttributes().put("createdBy", userNames.get(officeExpense.getCreatedBy()));
-        }
+        serviceUtils.fillInUserNames(officeExpenses.getContent());
         return officeExpenses;
     }
 
     public List<OfficeExpense> findOfficeExpenses(JSONObject query, Pageable pageable) throws ParseException {
-        //return null;
-        return officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
+        List<OfficeExpense> expenses = officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
+        serviceUtils.fillInUserNames(expenses);
+        return expenses;
     }
 }

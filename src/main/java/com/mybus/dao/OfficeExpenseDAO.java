@@ -2,7 +2,6 @@ package com.mybus.dao;
 
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
-import com.mybus.model.PaymentType;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

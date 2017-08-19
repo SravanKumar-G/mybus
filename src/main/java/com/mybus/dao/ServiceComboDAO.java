@@ -1,7 +1,6 @@
 package com.mybus.dao;
 
 import com.mybus.model.ServiceCombo;
-import com.mybus.model.ServiceForm;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,11 @@
 package com.mybus.dao.impl;
 
 import com.mybus.dao.OfficeExpenseDAO;
-import com.mybus.dao.UserDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
-import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
+import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -40,7 +37,7 @@ public class OfficeExpenseMongoDAO {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private UserDAO userDAO;
+    private ServiceUtils serviceUtils;
 
     @Autowired
     private SessionManager sessionManager;
@@ -130,27 +127,7 @@ public class OfficeExpenseMongoDAO {
     }
 
     public List<OfficeExpense> searchOfficeExpenses(JSONObject query, Pageable pageable) throws ParseException {
-        Query q = new Query();
-        List<Criteria> match = new ArrayList<>();
-        Criteria criteria = new Criteria();
-        if(query.get("startDate") != null) {
-            match.add(Criteria.where("date").gte(ServiceConstants.df.parse(query.get("startDate").toString())));
-        }
-        if(query.get("endDate") != null) {
-            match.add(Criteria.where("date").lte(ServiceConstants.df.parse(query.get("endDate").toString())));
-        }
-        if(query.get("officeId") != null) {
-            List<User> officeUsers = userDAO.findByBranchOfficeId(query.get("officeId").toString());
-            List<String> officeUserIds = officeUsers.stream().map(User::getId).collect(Collectors.toList());
-            match.add(Criteria.where("createdBy").in(officeUserIds));
-        }
-        if(query.get("userId") != null) {
-            match.add(Criteria.where("createdBy").is(ServiceConstants.df.parse(query.get("startDate").toString())));
-        }
-        if(match.size() > 0) {
-            criteria.andOperator(match.toArray(new Criteria[match.size()]));
-            q.addCriteria(criteria);
-        }
+        Query q = serviceUtils.createSearchQuery(query, pageable);
         List<OfficeExpense> expenses = mongoTemplate.find(q, OfficeExpense.class);
         return expenses;
     }
