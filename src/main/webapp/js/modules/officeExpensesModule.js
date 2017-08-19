@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams, officeExpensesManager, userManager, branchOfficeManager){
+    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, NgTableParams, officeExpensesManager, userManager, branchOfficeManager){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
@@ -244,6 +244,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             });
         }
 
+        $scope.print = function(eleId) {
+            printManager.print(eleId);
+        }
 
         $scope.search = function(){
             $scope.query = {
@@ -452,6 +455,24 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     sweetAlert("Error", err.data.message, "error");
                 });
             }
+        }
+    }
+}).factory('printManager', function () {
+    return {
+        print: function (eleId) {
+            var mywindow = window.open('', 'PRINT', 'height=400,width=800');
+            mywindow.document.write('<html><head><title>' + document.title  + '</title> <style>table{border: 1px}</style>');
+            mywindow.document.write('</head><body >');
+            mywindow.document.write('<h1>' + document.title  + '</h1>');
+            mywindow.document.write(document.getElementById(eleId).innerHTML);
+            mywindow.document.write('</body></html>');
+
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10*/
+
+            mywindow.print();
+            mywindow.close();
+            return true;
         }
     }
 });

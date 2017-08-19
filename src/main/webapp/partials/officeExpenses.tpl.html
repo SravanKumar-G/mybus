@@ -118,28 +118,25 @@
                         </select>
                     </div>
                     <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button></button>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="print('officeExpenses')"> Print </button></button>
 
                 </div>
             </form>
+            <div id="officeExpenses">
+                <table class="table table-bordered table-condensed table-hover"  ng-table="searchTableParams">
+                    <tr ng-repeat="expense in searchExpenses" ng-style="!expense.status && {'color':'red'}">
+                        <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
+                        <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                        <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
+                        <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
+                        <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
+                    </tr>
 
-            <table class="table table-bordered table-condensed table-hover" ng-table="searchTableParams">
-                <tr ng-repeat="expense in searchExpenses">
-                    <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
-                    <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
-                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
-                    <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
-                    <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
-                    <td data-title="'Status'" sortable="'status'" class="clickable-item">
-                        <span ng-if="expense.status">
-                           {{expense.status}}
-                        </span>
-                    </td>
-                </tr>
-
-                <tr ng-if="!searchExpenses || searchExpenses.length === 0">
-                    <td colspan="8">No Expenses found for office. </td>
-                </tr>
-            </table>
+                    <tr ng-if="!searchExpenses || searchExpenses.length === 0">
+                        <td colspan="8">No Expenses found for office. </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
