@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap'])
-    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location ,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
+    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location, printManager,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
         $scope.payments = [];
         $scope.totalExpense = 0;
         $scope.totalIncome = 0;
@@ -10,6 +10,10 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
         $scope.user = userManager.getUser();
         $scope.currentPageOfPayments=[];
         $rootScope.urlDate = $stateParams.date;
+
+        $scope.print = function(eleId) {
+            printManager.print(eleId);
+        }
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
