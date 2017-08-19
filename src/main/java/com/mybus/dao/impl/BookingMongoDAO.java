@@ -2,14 +2,12 @@ package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
-
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
-import com.mybus.model.Payment;
 import org.scribe.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +25,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;

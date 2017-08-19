@@ -1,15 +1,11 @@
 package com.mybus.service;
 
-import com.mongodb.BasicDBObject;
-import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
-import com.mybus.dao.impl.BranchOfficeMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
-import com.mybus.model.PaymentType;
 import com.mybus.model.ServiceReport;
 import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
@@ -17,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

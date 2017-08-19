@@ -15,11 +15,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 
 
 @EqualsAndHashCode(of = { "_id" })

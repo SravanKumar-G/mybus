@@ -4,7 +4,6 @@ import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
-
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
 import java.text.ParseException;
 import java.util.*;
 

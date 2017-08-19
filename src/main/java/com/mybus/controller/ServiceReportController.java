@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.BookingDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Booking;

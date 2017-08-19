@@ -7,7 +7,6 @@
     <br>
 
     <div class="bpdp-tab" ng-init="tab=1">
-
         <ul>
             <li class="tab"  ng-class="{active:tab==1}">
                 <a href ng-click="tab = 1">Pending</a>
@@ -55,14 +54,12 @@
             </table>
         </div>
 
-
-
         <div class="tab-content" ng-show="tab==2">
             Total :{{approvedTotal}}
             <table class="table table-bordered table-condensed table-hover" ng-table="approvedTableParams">
                 <tr ng-repeat="expense in approvedExpenses">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
-                    <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                    <td width="300px" data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
@@ -72,19 +69,14 @@
                         </span>
                     </td>
                 </tr>
-
                 <tr ng-if="!approvedExpenses || approvedExpenses.length === 0">
                     <td colspan="8">No Expenses found for office. </td>
                 </tr>
             </table>
         </div>
 
-
-
         <div class="tab-content" ng-show="tab==3">
-
             <form name="searchExpense" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
-
                 <div class="form-group">
                     <label class="col-sm-2 control-label ">Start Date</label>
                     <div class="col-sm-3" >
@@ -114,49 +106,41 @@
                         </span>
                     </div>
                 </div>
+                <div class=" form-group">
+                    <div class="col-sm-5">
+                        <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="officeId">
+                            <option value="" selected="selected">Branch Office (optional)</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5">
+                        <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
+                            <option value="" selected="selected">User (Optional)</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button></button>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="print('officeExpenses')"> Print </button></button>
 
-
-            <div class=" form-group">
-                <div class="col-sm-5">
-                    <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="OfficeSelect">
-                        <option value="" selected="selected">Branch Office (optional)</option>
-                    </select>
                 </div>
-                <div class="col-sm-5">
-                    <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
-                        <option value="" selected="selected">User (Optional)</option>
-                    </select>
-                </div>
-                <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button></button>
-
-            </div>
-
-
             </form>
+            <div id="officeExpenses">
+                <table class="table table-bordered table-condensed table-hover"  ng-table="searchTableParams">
+                    <tr ng-repeat="expense in searchExpenses" ng-style="!expense.status && {'color':'red'}">
+                        <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
+                        <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                        <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
+                        <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
+                        <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
+                    </tr>
 
-
-            <table class="table table-bordered table-condensed table-hover" ng-table="searchTableParams">
-                <tr ng-repeat="expense in searchExpenses">
-                    <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
-                    <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
-                    <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
-                    <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
-                    <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
-                    <td data-title="'Status'" sortable="'status'" class="clickable-item">
-                        <span ng-if="expense.status">
-                           {{expense.status}}
-                        </span>
-                    </td>
-                </tr>
-
-                <tr ng-if="!searchExpenses || searchExpenses.length === 0">
-                    <td colspan="8">No Expenses found for office. </td>
-                </tr>
-            </table>
-        </div>
+                    <tr ng-if="!searchExpenses || searchExpenses.length === 0">
+                        <td colspan="8">No Expenses found for office. </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 
 <div ng-show="loading">
     Please wait while the report data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>

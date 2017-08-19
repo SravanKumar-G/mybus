@@ -1,19 +1,10 @@
 package com.mybus.controller;
 
-import com.google.common.collect.Lists;
-import com.mongodb.BasicDBObject;
-import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.MongoQueryDAO;
-import com.mybus.model.Layout;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by skandula on 2/13/16.

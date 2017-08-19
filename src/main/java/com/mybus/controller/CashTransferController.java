@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by srinikandula on 3/19/17.
@@ -93,4 +94,10 @@ public class CashTransferController extends MyBusBaseController {
         return cashTransferManager.findOne(id);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public List<CashTransfer> search(HttpServletRequest request,
+                                      @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+        return cashTransferManager.search(query, pageable);
+    }
 }

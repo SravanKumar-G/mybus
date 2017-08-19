@@ -1,7 +1,6 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mybus.service.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,8 +3,6 @@ package com.mybus.exception;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
-import com.mybus.exception.CustomGenericException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

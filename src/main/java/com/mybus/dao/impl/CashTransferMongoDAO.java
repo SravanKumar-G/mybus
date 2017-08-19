@@ -1,10 +1,10 @@
 package com.mybus.dao.impl;
 
 import com.mybus.model.CashTransfer;
-import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.service.UserManager;
+import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +34,8 @@ public class CashTransferMongoDAO {
 
     @Autowired
     private UserManager userManager;
+    @Autowired
+    private ServiceUtils serviceUtils;
 
     /**
      *
@@ -116,5 +118,11 @@ public class CashTransferMongoDAO {
             cashTransfer.getAttributes().put("fromUser", userNames.get(cashTransfer.getFromUserId()));
             cashTransfer.getAttributes().put("toUser", userNames.get(cashTransfer.getToUserId()));
         }
+    }
+
+    public List<CashTransfer> search(JSONObject query, Pageable pageable) throws ParseException {
+        Query q = serviceUtils.createSearchQuery(query, pageable);
+        List<CashTransfer> cashTransfers = mongoTemplate.find(q, CashTransfer.class);
+        return cashTransfers;
     }
 }
