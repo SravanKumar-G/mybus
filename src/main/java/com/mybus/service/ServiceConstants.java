@@ -7,5 +7,5 @@ import java.text.SimpleDateFormat;
  */
 public class ServiceConstants {
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    public static String[] EXPENSE_TYPES = {"BATTA", "DIESEL", "MATERIAL PURCHASE", "OFFICE RENT", "PC MONTHLY", "SALARY", "TRIP ADVANCE", "VEHICLE MAINTENANCE", "OTHER"};
+    public static String[] EXPENSE_TYPES = {"BATTA", "DIESEL", "MATERIAL PURCHASE", "OFFICE RENT", "PC MONTHLY", "SALARY", "STATIONARY", "TRIP ADVANCE", "WASHING BILL" ,"VEHICLE MAINTENANCE", "OTHER"};
 }
