@@ -214,7 +214,7 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             })
         }
 
-        $scope.BookingDuePopUpExpenses = function(bookingId){
+        $scope.bookingDuePopUpExpenses = function(bookingId){
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl : 'booking-popup-modal.html',
                 controller : 'popUpBookingControllerExpenses',

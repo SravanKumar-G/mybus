@@ -1,8 +1,10 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.OfficeExpense;
 import com.mybus.service.OfficeExpenseManager;
+import com.mybus.service.ServiceConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -16,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -91,5 +94,11 @@ public class OfficeExpenseController {
     public List<OfficeExpense> search(HttpServletRequest request,
                                       @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return officeExpenseManager.findOfficeExpenses(query, pageable);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "officeExpenses/types", method = RequestMethod.GET)
+    public String[] getExpenseTypes(HttpServletRequest request) throws Exception {
+        return ServiceConstants.EXPENSE_TYPES;
     }
 }

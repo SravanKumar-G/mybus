@@ -32,14 +32,14 @@
 
 <!---------------------------------------- view ------------------------------------------------------------>
 
-<div ng-show="!loading" id="expensesAndIncome">
+<div ng-show="!loading">
     <table class="table table-bordered table-condensed table-hover"   ng-table="paymentTableParams">
         <tr ng-repeat="payment in currentPageOfPayments">
             <td data-title="'CreatedOn'" sortable="'createdAt'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt | date}}</td>
             <td data-title="'Journey Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
             <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
                 <a ng-if="payment.serviceFormId" ng-click="serviceReportsPopUp(payment.serviceFormId)">{{payment.description}}</a>
-                <a ng-if="payment.bookingId" ng-click="BookingDuePopUpExpenses(payment.bookingId)">{{payment.description}}</a>                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
+                <a ng-if="payment.bookingId" ng-click="bookingDuePopUpExpenses(payment.bookingId)">{{payment.description}}</a>                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
             </td>
             <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
             <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
@@ -55,6 +55,29 @@
         </tr>
     </table>
 </div>
+<span style="display: none">
+    <div id="expensesAndIncome">
+        <table class="table table-bordered table-condensed table-hover"   ng-table="paymentTableParams">
+            <tr ng-repeat="payment in currentPageOfPayments">
+                <td data-title="'CreatedOn'" sortable="'createdAt'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.createdAt | date}}</td>
+                <td data-title="'Journey Date'" sortable="'date'" class="clickable-item" ng-click="goToExpense(expense.id)">{{payment.date | date}}</td>
+                <td data-title="'Description'" class="clickable-item" ng-click="goToExpense(expense.id)">
+                    <a ng-if="payment.serviceFormId" ng-click="serviceReportsPopUp(payment.serviceFormId)">{{payment.description}}</a>
+                    <a ng-if="payment.bookingId" ng-click="bookingDuePopUpExpenses(payment.bookingId)">{{payment.description}}</a>                <span ng-if="!payment.serviceFormId && !payment.bookingId">{{payment.description}}</span>
+                </td>
+                <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
+                <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(expense.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+                <td data-title="'CreatedUser'" class="clickable-item">{{payment.attributes.createdBy}}</td>
+                 <td data-title="'Status'" sortable="'status'" class="clickable-item">
+                    <span ng-if="payment.status">
+                       {{payment.status}}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</span>
+
 
 <div ng-show="loading">
     Please wait while the payments data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>

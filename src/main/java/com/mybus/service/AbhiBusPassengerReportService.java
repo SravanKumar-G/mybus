@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import com.mybus.SystemProperties;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceExpenseDAO;
 import com.mybus.dao.ServiceReportDAO;
@@ -7,16 +8,12 @@ import com.mybus.dao.ServiceReportStatusDAO;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
-import org.apache.xmlrpc.client.XmlRpcClient;
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
 
@@ -25,8 +22,7 @@ import java.util.*;
  * Created by srinikandula on 2/18/17.
  */
 @Service
-public class AbhiBusPassengerReportService {
-    public static XmlRpcClient xmlRpcClient;
+public class AbhiBusPassengerReportService extends BaseService{
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
 
     @Autowired
@@ -48,19 +44,11 @@ public class AbhiBusPassengerReportService {
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
+    private SystemProperties systemProperties;
+
+    @Autowired
     private ServiceExpenseDAO serviceExpenseDAO;
 
-    public void init() {
-        try {
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(ServiceConstants.ABHI_BUS_URL));
-            xmlRpcClient = new XmlRpcClient();
-            xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
-            xmlRpcClient.setConfig(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Find active services for a given date
