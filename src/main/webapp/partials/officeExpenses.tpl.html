@@ -28,6 +28,7 @@
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                     <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item" >{{expense.createdAt| date}}</td>
                     <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                    <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
@@ -60,6 +61,7 @@
                 <tr ng-repeat="expense in approvedExpenses">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                     <td width="300px" data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                    <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
@@ -107,14 +109,19 @@
                     </div>
                 </div>
                 <div class=" form-group">
-                    <div class="col-sm-5">
+                    <div class="col-sm-3">
                         <select id="branchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="officeId">
                             <option value="" selected="selected">Branch Office (optional)</option>
                         </select>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-3">
                         <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
                             <option value="" selected="selected">User (Optional)</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <select id="expense" ng-options="e for e in expenseTypes" class="form-control" ng-model="expenseType">
+                            <option value="" selected="selected">Expense (Optional)</option>
                         </select>
                     </div>
                     <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchExpense.$invalid "> Search Expense </button></button>
@@ -127,6 +134,7 @@
                     <tr ng-repeat="expense in searchExpenses" ng-style="!expense.status && {'color':'red'}">
                         <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                         <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
+                        <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
                         <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                         <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                         <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
@@ -181,6 +189,12 @@
                     <label class="col-sm-2 control-label" for="expenseAmount">Amount</label>
                     <div class="col-sm-6">
                         <input type="number" id="expenseAmount" class="form-control" ng-model="expense.amount" placeholder="Amount" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="branchOffice">Expense Type</label>
+                    <div class="col-sm-6">
+                        <select id="expenseType" ng-options="e for e in expenseTypes" class="form-control" ng-model="expense.expenseType"></select>
                     </div>
                 </div>
                 <div class="form-group">

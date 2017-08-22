@@ -19,6 +19,14 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         userManager.getUserNames(function (data) {
             $scope.members = data;
         });
+
+        officeExpensesManager.loadExpenseTypes(function (data) {
+            $scope.expenseTypes = data.data;
+        });
+
+        userManager.getUserNames(function (data) {
+            $scope.members = data;
+        });
         $scope.canAddExpense = function() {
             return user.admin || user.branchOfficeId;
         }
@@ -93,11 +101,8 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     }
                 });
             });
-
         };
-
         $scope.init();
-
         $scope.handleClickAddExpense = function() {
             $rootScope.modalInstance = $uibModal.open({
                 templateUrl : 'add-expense-modal.html',
@@ -109,7 +114,6 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 }
             });
         };
-
         $rootScope.$on('UpdateHeader',function (e,value) {
             $scope.init();
         });
@@ -142,7 +146,6 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Expense is updated", "success");
             });
         }
-
 
         /* date picker functions */
         $scope.check = true;
@@ -253,17 +256,16 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 "startDate" : $scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate(),
                 "endDate" :  $scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate(),
                 "officeId" : $scope.officeId,
+                "expenseType" : $scope.expenseType,
                 "userId" : $scope.userSelect
             }
             $scope.searchInit();
         }
     })
-
     .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager, branchOfficeManager,expenseId) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
-
         $scope.checkType = function(check){
             if (check == true ){
                 $scope.type = true;
@@ -271,22 +273,20 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             else{
                 $scope.type = false;
             }
-
         }
         $scope.user = userManager.getUser();
-
         $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
         $scope.today();
-
-
+        $scope.expenseTypes = [];
         branchOfficeManager.loadNames(function (data) {
             $scope.offices = data;
         });
-
+        officeExpensesManager.loadExpenseTypes(function (data) {
+            $scope.expenseTypes = data.data;
+        });
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
-
 
         if (expenseId) {
             $scope.setExpenseIntoModal = function (expenseId) {
@@ -316,14 +316,12 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             }
         }
 
-
         $scope.inlineOptions = {
             customClass: getDayClass,
             minDate: new Date(),
             showWeeks: true
         };
         $scope.dateChanged = function () {
-
         }
         $scope.dateOptions = {
             formatYear: 'yy',
@@ -367,6 +365,14 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         };
     }).factory('officeExpensesManager', function ($rootScope, $http, $log) {
     return {
+        loadExpenseTypes: function (callback) {
+            $http({url:'/api/v1/officeExpenses/types',method:"GET"})
+                .then(function (response) {
+                    callback(response);
+                }, function (error) {
+                    $log.debug("error retrieving expense types");
+                });
+        },
         pendingOfficeExpenses: function (pageable, callback) {
             $http({url:'/api/v1/officeExpenses/pending',method:"GET", params: pageable})
                 .then(function (response) {

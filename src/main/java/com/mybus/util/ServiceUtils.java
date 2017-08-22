@@ -91,6 +91,9 @@ public class ServiceUtils {
             List<String> officeUserIds = officeUsers.stream().map(User::getId).collect(Collectors.toList());
             match.add(Criteria.where("createdBy").in(officeUserIds));
         }
+        if(query.get("expenseType") != null) {
+            match.add(Criteria.where("expenseType").is(query.get("expenseType").toString()));
+        }
         if(query.get("userId") != null) {
             match.add(Criteria.where("createdBy").is(query.get("userId").toString()));
         }

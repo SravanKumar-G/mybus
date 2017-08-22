@@ -14,43 +14,42 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
         $scope.loading = false;
         $scope.currentPageOfOffices = [];
         var pageable ;
-
         var loadTableData = function (tableParams) {
             paginationService.pagination(tableParams, function(response){
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
-                $scope.loading = true;
-                branchOfficeManager.loadAll(pageable, function(response){
-                    if(angular.isArray(response.content)){
-                        $scope.loading = false;
-                        $scope.branchOffice = response.content;
-                        tableParams.data = $scope.branchOffice;
-                        tableParams.total(response.totalElements);
-                        $scope.count = response.totalElements;
-                        $scope.currentPageOfOffices = $scope.branchOffice;
-                    }
-                })
-            };
+            $scope.loading = true;
+            branchOfficeManager.loadAll(pageable, function(response){
+                if(angular.isArray(response.content)){
+                    $scope.loading = false;
+                    $scope.branchOffice = response.content;
+                    tableParams.data = $scope.branchOffice;
+                    tableParams.total(response.totalElements);
+                    $scope.count = response.totalElements;
+                    $scope.currentPageOfOffices = $scope.branchOffice;
+                }
+            })
+        };
 
-            $scope.init = function(){
-                branchOfficeManager.count(function(branchOfficeCount){
-                    $scope.officeTableParams = new NgTableParams({
-                            page: 1,
-                            count:10,
-                            sorting: {
-                                name: 'asc'
-                            }
-                        },
-                        {
-                            counts:[],
-                            total:branchOfficeCount,
-                            getData: function (params) {
-                                loadTableData(params);
-                            }
-                        });
-                });
-            };
-            $scope.init();
+        $scope.init = function(){
+            branchOfficeManager.count(function(branchOfficeCount){
+                $scope.officeTableParams = new NgTableParams({
+                        page: 1,
+                        count:10,
+                        sorting: {
+                            name: 'asc'
+                        }
+                    },
+                    {
+                        counts:[],
+                        total:branchOfficeCount,
+                        getData: function (params) {
+                            loadTableData(params);
+                        }
+                    });
+            });
+        };
+        $scope.init();
 
         $scope.addOffice = function () {
             $state.go('editbranchoffice');
@@ -66,11 +65,8 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
         $scope.$on('check',function(e,value){
             $scope.init();
         });
-
     })
-
     // ============================= Add/Edit ========================================
-
     .controller('EditBranchOfficeController', function($scope,$stateParams,userManager,$window,$log, cityManager, $location, cancelManager,branchOfficeManager ) {
         $scope.headline = "Edit Branch Office";
         $scope.id=$stateParams.id;
@@ -123,13 +119,10 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                 $scope.managerName = data.attributes.managerName;
             });
         }
-
     })
     .factory('branchOfficeManager', function ($http, $log,$rootScope) {
         var branchOffices = {};
         return {
-
-
             loadAll: function ( pageable, callback) {
                 $http({url: '/api/v1/branchOffices', method: "GET", params: pageable})
                     .then(function (response) {
@@ -138,8 +131,6 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                         swal("oops", error, "error");
                     });
             },
-
-
             loadNames: function (callback) {
                 $http.get('/api/v1/branchOffice/names')
                     .then(function (response) {
@@ -169,7 +160,6 @@ angular.module('myBus.branchOfficeModule', ['ngTable', 'ui.bootstrap'])
                         sweetAlert("Error",err.message,"error");
                     });
                 }
-
             },
             count: function (callback) {
                 $http.get('/api/v1/branchOffices/count',{})

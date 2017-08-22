@@ -101,8 +101,9 @@ public class SystemProperties {
 
 	public static enum SysProps {
 
-		FACTUAL_API_KEY("factual.api.key"), 
-		FACTUAL_SECRET("factual.secret"), 
+		ABHIBUS_API_URL("abhibus.api.url"),
+		FACTUAL_API_KEY("factual.api.key"),
+		FACTUAL_SECRET("factual.secret"),
 		MAX_UPLOAD_SIZE_BYTES("max.upload.size"),
 		JSON_PREFIX_TAINT_ENABLED("json.prefix.taint.enabled"),
 		REST_API_DOCS_ENABLED("rest.api.docs.enabled");

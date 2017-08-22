@@ -2,42 +2,22 @@ package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
-import org.apache.xmlrpc.client.XmlRpcClient;
-import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
 import java.util.*;
-
-import static com.mybus.service.ServiceConstants.ABHI_BUS_URL;
 
 
 /**
  * Created by srinikandula on 2/18/17.
  */
 @Service
-public class ABAgentService {
-    public static XmlRpcClient xmlRpcClient;
+public class ABAgentService extends BaseService{
     private static final Logger logger = LoggerFactory.getLogger(ABAgentService.class);
-
     @Autowired
     private AgentDAO agentDAO;
-
-    public void init() {
-        try {
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(ABHI_BUS_URL));
-            xmlRpcClient = new XmlRpcClient();
-            xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
-            xmlRpcClient.setConfig(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void downloadAgents() throws Exception{
         logger.info("downloading agents data:" );
