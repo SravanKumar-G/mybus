@@ -65,13 +65,11 @@ public class AbhiBusPassengerReportService extends BaseService{
         Vector params = new Vector();
         params.add(inputParam);
         HashMap busLists = (HashMap) xmlRpcClient.execute("index.serviceslist", params);
-        logger.info("Bus Leng"+busLists.size());
         Object busList[] = null;
         Iterator it = busLists.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             busList = (Object[]) pair.getValue();
-            logger.info("services size:"+busList.length);
             for (Object busServ: busList) {
                 Map busService = (HashMap) busServ;
                 Map<String, String> serviceInfo = new JSONObject();
@@ -262,7 +260,6 @@ public class AbhiBusPassengerReportService extends BaseService{
                             }
                         }
                     }else {
-                    	logger.info("not found serviceReport");
                         calculateServiceReportIncome(serviceReport, booking);
                         serviceReport.getBookings().add(booking);
                     }
