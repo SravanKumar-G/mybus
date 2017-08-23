@@ -31,14 +31,13 @@ public class ServiceExpense extends AbstractDocument  {
     @Indexed
     private String serviceReportId;
 
-    @RequiresValue
     @Indexed
     private String serviceNumber;
 
     @RequiresValue
     @Indexed
     private Date journeyDate;
-    private double avgFuelConsumption;
+    private double estimatedFuelConsumption;
     private double fuelConsumption;
     private double taxPayment;
     private double financeEMI;
@@ -50,5 +49,8 @@ public class ServiceExpense extends AbstractDocument  {
         }
         this.serviceReportId = serviceReport.getId();
         this.journeyDate = serviceReport.getJourneyDate();
+    }
+    public ServiceExpense(){
+
     }
 }

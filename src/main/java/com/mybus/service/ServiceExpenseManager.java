@@ -54,10 +54,11 @@ public class ServiceExpenseManager {
     public List<ServiceExpense> getServiceExpenses(String journeyDate) {
         List<ServiceExpense> serviceExpenses = new ArrayList<>();
         try {
-            Iterable<ServiceExpense> expenses = serviceExpenseDAO
-                    .findByJourneyDate(ServiceConstants.df.parse(journeyDate));
-            for(ServiceExpense expense: expenses) {
-                serviceExpenses.add(loadServiceInfo(expense));
+            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDate(ServiceConstants.df.parse(journeyDate));
+            if(!expenses.isEmpty()) {
+                for(ServiceExpense expense: expenses) {
+                    serviceExpenses.add(loadServiceInfo(expense));
+                }
             }
         } catch (ParseException e) {
             logger.error("Error finding service expenses ", e);
