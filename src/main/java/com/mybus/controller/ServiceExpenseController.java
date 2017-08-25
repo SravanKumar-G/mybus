@@ -10,10 +10,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -38,6 +35,20 @@ public class ServiceExpenseController {
 	public List<ServiceExpense> getAll(HttpServletRequest request,
 									   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) throws ParseException {
 		return serviceExpenseManager.getServiceExpenses(travelDate);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
+	public ServiceExpense get(HttpServletRequest request,
+									   @ApiParam(value = "Date of travel") @PathVariable final String id) throws ParseException {
+		return serviceExpenseManager.getServiceExpense(id);
+	}
+
+	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
+	public ServiceExpense getAll(HttpServletRequest request,
+								 @RequestBody final ServiceExpense serviceExpense) throws ParseException {
+		return serviceExpenseManager.save(serviceExpense);
 	}
 
 }
