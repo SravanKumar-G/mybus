@@ -24,7 +24,7 @@ public class BaseService {
         try {
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
             String url = systemProperties.getProperty(SystemProperties.SysProps.ABHIBUS_API_URL);
-            logger.info("Using the URL " + url);
+            //logger.info("Using the URL " + url);
             config.setServerURL(new URL(url));
             xmlRpcClient = new XmlRpcClient();
             xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
