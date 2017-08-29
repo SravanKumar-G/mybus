@@ -159,6 +159,8 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                     $scope.payments = response.content;
                     branchOfficeManager.loadNames(function (data) {
                         $scope.branches = data;
+                        $scope.totalExpense = 0;
+                        $scope.totalIncome = 0;
                         angular.forEach($scope.payments, function (payment) {
                             if (payment.type=='EXPENSE'){
                                 $scope.totalExpense = $scope.totalExpense + payment.amount;

@@ -24,8 +24,6 @@ public class ServiceExpenseManager {
     @Autowired
     private ServiceReportDAO serviceReportDAO;
 
-    @Autowired
-    private MongoQueryDAO mongoQueryDAO;
 
     public ServiceExpense save(ServiceExpense serviceExpense) {
         serviceExpense.validate();
