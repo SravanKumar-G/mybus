@@ -4,6 +4,7 @@ import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -45,6 +46,8 @@ public class ServiceReportsManager {
     @Autowired
     private ServiceFormDAO serviceFormDAO;
 
+    @Autowired
+    private ServiceUtils serviceUtils;
 
     @Autowired
     private BookingTypeManager bookingTypeManager;
@@ -57,8 +60,7 @@ public class ServiceReportsManager {
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
-        ServiceReportStatus status = serviceReportStatusDAO
-                .findByReportDate(ServiceConstants.df.parse(date));
+        ServiceReportStatus status = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
         if(status != null) {
             response.put("downloaded", true);
             response.put("downloadedOn", dtf.print(status.getCreatedAt()));
@@ -94,10 +96,13 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public Iterable<ServiceReport> getReports(Date date) {
+    public List<ServiceReport> getReports(Date date) {
         JSONObject query = new JSONObject();
         query.put(ServiceReport.JOURNEY_DATE, date);
-        return serviceReportMongoDAO.findReports(query, null);
+        List<ServiceReport> reports = IteratorUtils.toList(
+                serviceReportMongoDAO.findReports(query, null).iterator());
+        serviceUtils.fillInUserNames(reports);
+        return reports;
     }
 
     public ServiceReport getReport(String id) {
