@@ -40,7 +40,7 @@
     <div class="row" style="margin-top:20px;">
        	<form name="thisForm" class="form-horizontal" autocomplete="off" role="form">
 		    <div class="form-group">
-		        <label class="col-sm-2 control-label" for="city">Services</label>
+		        <label class="col-sm-2 control-label" for="service">Services</label>
 		        <div class="col-sm-4">
 		            <select id="service" ng-options="service.serviceId as service.serviceName for service in serviceList" class="form-control" ng-model="serviceId"></select>
 		        </div>
@@ -68,6 +68,9 @@
 	            <td data-title="'Status'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">
 	                {{service.status}}
 	            </td>
+                <td data-title="'Submitted By'"  sortable="'status'" class="clickable-item col-md-2" ng-click="goToServiceReport(service)">
+                    {{service.attributes.updatedBy}}
+                </td>
 	         </tr>
 	        <tr ng-if="!currentPageOfReports || currentPageOfReports.length === 0">
 	            <td colspan="7">No reports exist. </td>
