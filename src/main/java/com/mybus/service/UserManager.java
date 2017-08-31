@@ -54,14 +54,18 @@ public class UserManager {
     public User updateUser(User user) {
         Preconditions.checkNotNull(user, "The user can not be null");
         Preconditions.checkNotNull(user.getId(), "Unknown user for update");
-        //validateAgent(user);
         User loadedUser = userDAO.findOne(user.getId());
-        try {
-            loadedUser.merge(user);
-        }catch (Exception e) {
-            logger.error("Error merging user", e);
-            throw new BadRequestException("Error merging user info");
-        }
+        loadedUser.setUserName(user.getUserName());
+        loadedUser.setFirstName(user.getFirstName());
+        loadedUser.setLastName(user.getLastName());
+        loadedUser.setContact(user.getContact());
+        loadedUser.setPassword(user.getPassword());
+        loadedUser.setBranchOfficeId(user.getBranchOfficeId());
+        loadedUser.setEmail(user.getEmail());
+        loadedUser.setSecondaryContact(user.getSecondaryContact());
+        loadedUser.setAddress1(user.getAddress1());
+        loadedUser.setActive(user.isActive());
+        loadedUser.setRole(user.getRole());
         return saveUser(loadedUser);
     }
 
