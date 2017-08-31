@@ -53,6 +53,9 @@
                             </div>
                         </span>
                     </td>
+                    <td data-title="'Service Tax'"  class="clickable-item col-md-2" >
+                        {{booking.serviceTax}}
+                    </td>
                 </tr>
                 <tr><td>Total Seats:{{service.totalSeats}}</td></tr>
                 <tr ng-if="!currentPageOfBookings || currentPageOfBookings.length === 0">
