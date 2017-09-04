@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.PaymentMongoDAO;
+import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
@@ -84,6 +86,14 @@ public class PaymentController {
         logger.debug("put payment called");
         return paymentManager.updatePayment(paymnet);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payment/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    public List<Payment> search(HttpServletRequest request,
+                                      @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+        return paymentManager.search(query, pageable);
+    }
+
 
     @RequestMapping(value = "payment/{id}", method = RequestMethod.DELETE, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Delete a Payment", response = Payment.class)
