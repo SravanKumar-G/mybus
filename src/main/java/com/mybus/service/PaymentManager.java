@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -151,5 +152,9 @@ public class PaymentManager {
         Page<Payment> payments = paymentMongoDAO.findPaymentsByDate(date, pageable);
         serviceUtils.fillInUserNames(payments.getContent());
         return payments;
+    }
+
+    public List<Payment> search(JSONObject query, Pageable pageable) throws ParseException {
+        return paymentMongoDAO.search(query, pageable);
     }
 }
