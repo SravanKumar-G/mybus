@@ -10,6 +10,9 @@
             <li class="tab" ng-class="{active:tab==2}">
                 <a href ng-click="tab = 2">Approved/Rejected</a>
             </li>
+            <li class="tab" ng-class="{active:tab==3}">
+                <a href ng-click="tab = 3">Search</a>
+            </li>
         </ul>
 
         <div class="tab-content" ng-show="tab==1">
@@ -76,18 +79,68 @@
                 </tr>
             </table>
         </div>
+        <div class="tab-content" ng-show="tab==3">
+            <form name="searchPayment">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Start Date :</label>
+                <div class="col-sm-3">
+                    <input type="text" name="startDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="stDt"
+                           is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
+                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
+                    {{stDt.getFullYear()+"-"+monthNames[stDt.getMonth()]+"-"+stDt.getDate()}}
+                    <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                </div>
+
+                <label class="col-sm-2 control-label ">End Date :</label>
+                <div class="col-sm-3" >
+                    <input type="text" name="endDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="endDt"
+                           is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true"
+                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
+                    {{endDt.getFullYear()+"-"+monthNames[endDt.getMonth()]+"-"+endDt.getDate()}}
+                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                </div>
+            </div><br/><br/><br/>
+            <div class=" form-group">
+                <div class="col-sm-5">
+                    <select id="searchBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="officeSelect">
+                        <option value="" selected="selected">Branch Office (optional)</option>
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
+                        <option value="" selected="selected">User (Optional)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchPayments.$invalid "> Search Payments </button></button>
+            </div>
+            </form>
+            <br/>
+            <table class="table table-bordered table-condensed table-hover" ng-table="searchPaymentsTableParams">
+                <tr ng-repeat="payment in searchPayments">
+                    <td data-title="'Date'" sortable="'date'" class="clickable-item">{{payment.date | date}}</td>
+                    <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item">{{payment.createdAt| date}}</td>
+                    <td data-title="'Description'" sortable="'description'" class="clickable-item">{{payment.description}}</td>
+                    <td data-title="'Income'" sortable="'amount'" class="clickable-item"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
+                    <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
+                    <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
+                </tr>
+                <tr ng-if="!searchPayments || searchPayments.length === 0">
+                    <td colspan="7">No Payments</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 
 
 <div ng-show="loading">
-    Please wait while the agents data is loaded <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+    Please wait while the payments data is loading <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
 </div>
 
 <!-------------------------------------------- ADD -------------------------------------------------->
 <script type="text/ng-template" id="add-payment-modal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add</h3>
+        <h3 class="modal-title">Add/Edit</h3>
     </div>
     <div class="modal-body">
 

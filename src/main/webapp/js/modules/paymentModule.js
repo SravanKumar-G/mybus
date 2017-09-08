@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
-    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams,serviceReportsManager, paymentManager, userManager){
+    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams,serviceReportsManager, paymentManager, userManager,branchOfficeManager){
         $scope.loading = false;
         $scope.query = {"status":null};
         $scope.user = userManager.getUser();
@@ -10,6 +10,12 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         $scope.pendingPayments=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
+        userManager.getUserNames(function (data) {
+            $scope.members = data;
+        });
         $scope.canAddPayment = function() {
             var user = userManager.getUser();
             return user.admin || user.branchOfficeId;
@@ -155,6 +161,113 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 swal("Great", "Payment is updated", "success");
             });
         }
+        $scope.officeSelect = null;
+        $scope.userSelect = null;
+        $scope.today = function () {
+            $scope.stDt = new Date();
+            $scope.endDt = new Date();
+            $scope.tomorrow = new Date($scope.stDt.getTime() + (24 * 60 * 60 * 1000));
+        };
+        $scope.today();
+        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
+        $scope.altInputFormats = ['M!/d!/yyyy'];
+
+        $scope.clear = function() {
+            $scope.stDt = null;
+            $scope.endDt = null;
+        };
+
+        $scope.inlineOptions = {
+            customClass: getDayClass,
+            minDate: new Date(),
+            showWeeks: true
+        };
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            minDate: new Date(),
+            startingDay: 1
+        };
+        $scope.dateChanged = function() {
+            if($scope.stDt >= $scope.tomorrow || $scope.endDt >= $scope.tomorrow){
+                swal("Oops...", "U've checked for future, Check Later", "error");
+            }
+            else{
+                //$scope.searchInit();
+            }
+        }
+        $scope.toggleMin = function() {
+            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
+            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
+        };
+        $scope.toggleMin();
+        $scope.open1 = function() {
+            $scope.popup1.opened = true;
+        };
+        $scope.setDate = function(year, month, day) {
+            $scope.stDt = new Date(year, month, day);
+            $scope.endDt = new Date(year, month, day);
+        };
+        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        $scope.popup1= {
+            opened: false
+        };
+        function getDayClass(data) {
+            var date = data.date,
+                mode = data.mode;
+            if (mode === 'day') {
+                var dayToCheck = new Date(date).setHours(0,0,0,0);
+                for (var i = 0; i < $scope.events.length; i++) {
+                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+
+                    if (dayToCheck === currentDay) {
+                        return $scope.events[i].status;
+                    }
+                }
+            }
+            return '';
+        }
+        $scope.open2 = function() {
+            $scope.popup2.opened = true;
+        };
+
+        $scope.popup2 = {
+            opened: false
+        };
+        $scope.query = {};
+        var loadSearchPayments = function (tableParams) {
+            $scope.loading = true;
+            paymentManager.searchPayments($scope.query, function(response){
+                $scope.loading = false;
+                $scope.searchPayments = response;
+                tableParams.data = $scope.searchPayments;
+            });
+        };
+        $scope.searchInit = function (){
+            $scope.searchPaymentsTableParams = new NgTableParams({
+                page: 1,
+                count:15,
+                sorting: {
+                    date: 'asc'
+                },
+            }, {
+                counts:[],
+                getData: function (params) {
+                    loadSearchPayments(params);
+                }
+            });
+        }
+        $scope.search = function(){
+            $scope.query = {
+                "startDate" : $scope.stDt.getFullYear()+"-"+[$scope.stDt.getMonth()+1]+"-"+$scope.stDt.getDate(),
+                "endDate" :  $scope.endDt.getFullYear()+"-"+[$scope.endDt.getMonth()+1]+"-"+$scope.endDt.getDate(),
+                "officeId" : $scope.officeSelect,
+                "userId" : $scope.userSelect
+            }
+            $scope.searchInit();
+        }
     })
     .controller("popUpController", function($scope,$rootScope, serviceReportsManager , formId){
         $scope.service = {};
@@ -216,7 +329,6 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 $location.url('/payments');
             });
         }
-
 
         $scope.inlineOptions = {
             customClass: getDayClass,
@@ -344,6 +456,16 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                     },function (err,status) {
                         sweetAlert("Error",err.message,"error");
                     });
+            },
+            searchPayments: function(searchPayments, callback){
+                $http.post('/api/v1/payment/search', searchPayments)
+                    .then(function (response) {
+                    if (angular.isFunction(callback)) {
+                        callback(response.data);
+                    }
+                }, function (err, status) {
+                    sweetAlert("Error searching payments", err.message, "error");
+                });
             },
             save: function (payment, callback) {
                 if (!payment.id) {
