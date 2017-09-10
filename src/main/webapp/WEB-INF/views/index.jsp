@@ -47,6 +47,7 @@
     <script src="js/modules/returnTicketsModule.js"></script>
     <script src="js/modules/bookingModule.js"></script>
     <script src="js/modules/sequenceModule.js"></script>
+    <script src="js/modules/fuelExpenseReportModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -194,6 +195,7 @@
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu label="FuelExpenseReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="CashTransfers" class="nav navbar-nav col-md-12">Cash Transfers</my-menu>
                                 <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
