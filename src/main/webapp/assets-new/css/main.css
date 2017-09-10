@@ -686,3 +686,8 @@ footer a:hover, footer a:focus{
         padding-left: 15px;
     }
 }
+
+
+.navbar-collapse.in {
+    overflow-y: initial !important;
+}
