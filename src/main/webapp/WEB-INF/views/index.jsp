@@ -10,20 +10,24 @@
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="node_modules/ng-table/bundles/ng-table.css">
+    <link href="node_modules/angularjs-datepicker/dist/angular-datepicker.css" rel="stylesheet" type="text/css" />
 
     <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <script src="lib/underscore-min-1.5.2.js"></script>
     <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="lib/jquery.table2excel.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-animate/angular-animate.js"></script>
 
+    <script src="node_modules/angularjs-datepicker/dist/angular-datepicker.js"></script>
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <script src="node_modules/angular-strap/dist/angular-strap.js"></script>
     <script src="node_modules/angular-strap/dist/angular-strap.tpl.min.js"></script>
     <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
     <script src="node_modules/ng-table/bundles/ng-table.js"></script>
+    <script src="node_modules/angular-file-upload/dist/angular-file-upload.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/modules/usersModule.js"></script>
     <script src="js/services/appConfigManager.js"></script>

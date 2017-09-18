@@ -52,7 +52,7 @@ public class VehicleController extends MyBusBaseController{
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a new vehicle")
-    public ResponseEntity createUser(HttpServletRequest request,
+    public ResponseEntity createVehicle(HttpServletRequest request,
                                      @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
         logger.debug("create vehicle called");
         return new ResponseEntity<>(vehicleManager.saveVehicle(vehicle), HttpStatus.OK);

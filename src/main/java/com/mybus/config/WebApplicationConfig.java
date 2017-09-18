@@ -227,7 +227,6 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
         stringConverter.setWriteAcceptCharset(false);
-
         converters.add(new ByteArrayHttpMessageConverter());
         converters.add(stringConverter);
         converters.add(new ResourceHttpMessageConverter());

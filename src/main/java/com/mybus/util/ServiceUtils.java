@@ -5,6 +5,7 @@ import com.mybus.model.AbstractDocument;
 import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tika.Tika;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,8 @@ public class ServiceUtils {
     private UserDAO userDAO;
 
     private Map<String, String> userNames = new HashMap<>();
+
+
     /**
      * Method to parse date string. Boolean param indicates if the time should be should set to end of the day
      * @param dateString

@@ -6,7 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.joda.time.DateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -36,15 +41,33 @@ public class Vehicle extends AbstractDocument  {
     private long yearOfManufacture;
     private long numberOfTyres;
     private String permitNumber;
-    private Date permitExpiry;
+
+    @RequiresValue
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso= DateTimeFormat.ISO.NONE)
+    private DateTime permitExpiry;
     private String insuranceProvider;
     private String policyNumber;
+
+    @RequiresValue
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private Date insuranceExpiry;
+
     private String fitnessNumber;
-    private String fitnessExpiry;
+
+    @RequiresValue
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
+    private Date fitnessExpiry;
+
+    @RequiresValue
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private Date pollutionExpiry;
     private double emi;
     private int emiDueOn;
+
     private List<VehicleTaxPayment> taxPayments;
 
     public Vehicle(final String type, final String description, final String regNo, final boolean active){

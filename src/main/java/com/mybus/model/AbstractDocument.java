@@ -93,7 +93,7 @@ public abstract class AbstractDocument {
     public void validate(){
         List<String> errors = RequiredFieldValidator.validateModel(this, this.getClass());
         if(!errors.isEmpty()) {
-            throw new BadRequestException("Required data missing ");
+            throw new BadRequestException(String.join("; ", errors));
         }
     }
 }

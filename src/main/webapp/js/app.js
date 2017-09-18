@@ -223,17 +223,23 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
             })
+            .state('createvehicle', {
+                level:2,
+                url:'/createvehicle',
+                templateUrl: 'partials/vehicle-edit.tpl.html',
+                controller: 'EditVehicleController'
+            })
+            .state('vehicle/:id', {
+                level:2,
+                url:'/vehicle/:id',
+                templateUrl: 'partials/vehicle-edit.tpl.html',
+                controller: 'EditVehicleController'
+            })
             .state('officeexpenses', {
                 level:1,
                 url:'/officeexpenses',
                 templateUrl: 'partials/officeExpenses.tpl.html',
                 controller: 'OfficeExpensesController'
-            })
-            .state('createvehicle', {
-                level:2,
-                url:'/vehicle/create',
-                templateUrl: 'partials/vehicle-edit.tpl.html',
-                controller: 'EditVehicleController'
             })
             .state('layouts', {
                 level:1,
