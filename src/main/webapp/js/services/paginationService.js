@@ -14,7 +14,7 @@ angular.module('myBus.paginationService', ['ngTable'])
             callback(sortProps);
         },
         exportToExcel : function(tableId, fileName){
-            $(tableId).table2excel({
+            $("#"+tableId).table2excel({
                 // exclude CSS class
                 exclude: ".noExl",
                 name: "Worksheet Name",

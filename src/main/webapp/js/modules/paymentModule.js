@@ -2,7 +2,8 @@
 /*global angular, _*/
 
 angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
-    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams,serviceReportsManager, paymentManager, userManager,branchOfficeManager){
+    .controller("PaymentController",function($rootScope, $scope, $filter, $location, $log,$uibModal, NgTableParams,serviceReportsManager, paymentManager, userManager,
+                                             branchOfficeManager, paginationService){
         $scope.loading = false;
         $scope.query = {"status":null};
         $scope.user = userManager.getUser();
@@ -267,6 +268,10 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 "userId" : $scope.userSelect
             }
             $scope.searchInit();
+        }
+
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
         }
     })
     .controller("popUpController", function($scope,$rootScope, serviceReportsManager , formId){

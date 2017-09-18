@@ -101,21 +101,22 @@
                 </div>
             </div><br/><br/><br/>
             <div class=" form-group">
-                <div class="col-sm-5">
+                <div class="col-sm-3">
                     <select id="searchBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="officeSelect">
                         <option value="" selected="selected">Branch Office (optional)</option>
                     </select>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-3">
                     <select id="user" ng-options="member.id as member.fullName for member in members" class="form-control" ng-model="userSelect" >
                         <option value="" selected="selected">User (Optional)</option>
                     </select>
                 </div>
                 <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "searchPayments.$invalid "> Search Payments </button></button>
+                <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('paymentsSearchResults', 'Payments')" ng-disabled = "searchPayments.$invalid "> Export to Excel </button></button>
             </div>
             </form>
             <br/>
-            <table class="table table-bordered table-condensed table-hover" ng-table="searchPaymentsTableParams">
+            <table class="table table-bordered table-condensed table-hover" ng-table="searchPaymentsTableParams" id="paymentsSearchResults">
                 <tr ng-repeat="payment in searchPayments">
                     <td data-title="'Date'" sortable="'date'" class="clickable-item">{{payment.date | date}}</td>
                     <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item">{{payment.createdAt| date}}</td>
