@@ -53,7 +53,7 @@ public class CashTransferManager {
             income.setAmount(cashTransfer.getAmount());
             income.setType(PaymentType.INCOME);
             income.setStatus(Payment.STATUS_AUTO);
-            income.setDescription(Payment.CASH_TRANSFER);
+            income.setDescription(Payment.CASH_TRANSFER+ " recieved from "+ userDAO.findOne(cashTransfer.getFromUserId()).getFullName());
             income.setDate(new Date());
             paymentDAO.save(income);
             Payment expense = paymentDAO.findByCashTransferRef(cashTransfer.getId());
