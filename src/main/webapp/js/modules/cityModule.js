@@ -9,7 +9,6 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
 
 
     .controller('CitiesController', function ($scope, $uibModal, $http, $log, NgTableParams, $filter, cityManager, $location, $rootScope,paginationService) {
-        $log.debug('CitiesController loading');
         $scope.headline = "Cities";
         $scope.currentPageOfCities = [];
         $scope.loading =false;
@@ -316,41 +315,6 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
                         sweetAlert("Oops...", "Error loading BoardingPoint data!", "error" + angular.toJson(error));
                     });
             }
-        }
-    }).controller('DateRangePickerCtrl', function ($scope) {
-
-        $scope.clearStart = function () {
-            $scope.dateRangeStart = null;
-        };
-
-        $scope.clearEnd = function () {
-            $scope.$parent.dateRangeEnd = null;
-        };
-
-        $scope.toggleMin = function() {
-            $scope.minDate = $scope.minDate ? null : new Date();
-        };
-        $scope.toggleMin();
-
-        $scope.openStart = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.startOpened = true;
-        };
-        $scope.openEnd = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.endOpened = true;
-        };
-
-        $scope.minDate = new Date('2014-08-01');
-        $scope.maxDate = new Date();
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[1];
-
-        $scope.dateOptions = {
-            initDate: new Date()
         }
     }).controller('BoardingPointsListController', function ($scope, $http,$uibModal, $log, NgTableParams,$state,$stateParams, $filter, cityManager, $rootScope) {
         $log.debug('BoardingPointsListController');

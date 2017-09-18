@@ -20,9 +20,7 @@ public class VehicleManager {
     private VehicleDAO vehicleDAO;
 
     public Vehicle saveVehicle(Vehicle vehicle){
-        Preconditions.checkNotNull(vehicle, "The vehicle can not be null");
-        Preconditions.checkNotNull(vehicle.getRegNo(), "Registration number can not be null");
-        Preconditions.checkNotNull(vehicle.getVehicleType(), "Vehical type can not be null");
+        vehicle.validate();
         Vehicle duplicateVehicle = vehicleDAO.findOneByRegNo(vehicle.getRegNo());
         if (duplicateVehicle != null && !duplicateVehicle.getId().equals(vehicle.getId())) {
             throw new RuntimeException("A Vehicle already exists with the same Registration number");

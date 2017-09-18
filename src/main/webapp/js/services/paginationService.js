@@ -12,7 +12,14 @@ angular.module('myBus.paginationService', ['ngTable'])
                 sortProps += prop + "," + sortingProps[prop];
             }
             callback(sortProps);
+        },
+        exportToExcel : function(tableId, fileName){
+            $("#"+tableId).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "Worksheet Name",
+                filename: fileName
+            });
         }
-
     }
 });

@@ -36,8 +36,6 @@ public class AgentController {
 	@Autowired
 	private ABAgentService agentService;
 
-	@Autowired
-	private AgentDAO agentDAO;
 
 	@RequestMapping(value = "agent/download", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Download the agents from Abhibus", response = JSONObject.class)
