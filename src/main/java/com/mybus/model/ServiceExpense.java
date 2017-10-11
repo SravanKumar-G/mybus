@@ -38,8 +38,15 @@ public class ServiceExpense extends AbstractDocument  {
     @Indexed
     private Date journeyDate;
     private double estimatedFuelConsumption;
-    private double fuelConsumption;
-    private double taxPayment;
+    private double fuelQuantity;
+    private double fuelRate;
+    private double fuelCost;
+    private double paidLuggage;
+    private double toPayLuggage;
+    private double driverSalary1;
+    private double driverSalary2;
+    private double cleanerSalary;
+
     private double financeEMI;
     private double avgMaintenanace;
 

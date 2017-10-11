@@ -116,6 +116,17 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.service.netIncome = (parseFloat($scope.service.netCashIncome) +
             parseFloat($scope.service.netRedbusIncome) +
             parseFloat($scope.service.netOnlineIncome)).toFixed(2);
+
+            $scope.service.serviceExpense.fuelCost = parseFloat($scope.service.serviceExpense.fuelQuantity) * parseFloat($scope.service.serviceExpense.fuelRate);
+
+            $scope.service.netRealization = parseFloat($scope.service.netIncome)
+                - parseFloat($scope.service.serviceExpense.fuelCost)
+                + parseFloat($scope.service.serviceExpense.paidLuggage)
+                + parseFloat($scope.service.serviceExpense.toPayLuggage)
+                - parseFloat($scope.service.serviceExpense.driverSalary1)
+                - parseFloat($scope.service.serviceExpense.driverSalary2)
+                - parseFloat($scope.service.serviceExpense.cleanerSalary);
+
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.due) {
@@ -123,6 +134,16 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 }
             }
             $scope.service.netCashIncome = netCashIncome.toFixed(2);
+        }
+        $scope.getFuelCost=function() {
+            if($scope.service && $scope.service.serviceExpense){
+                return $scope.service.serviceExpense.fuelCost;
+            }
+        }
+        $scope.getNetRealization=function() {
+            if($scope.service){
+                return  $scope.service.netRealization;
+            }
         }
         $scope.countSeats = function(){
             var seatsCount = 0;

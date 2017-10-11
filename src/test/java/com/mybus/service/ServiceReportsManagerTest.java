@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,9 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
     @Autowired
     private PaymentDAO paymentDAO;
+
+    @Autowired
+    private ServiceExpenseManager serviceExpenseManager;
 
     @Before
     @After
@@ -180,6 +184,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         user = userDAO.save(user);
         sessionManager.setCurrentUser(user);
         Calendar calendar = Calendar.getInstance();
+        List<String> reportIds = new ArrayList<>();
         for(int i=0; i<3; i++) {
             ServiceReport report = new ServiceReport();
             calendar.add(Calendar.DAY_OF_MONTH, i);
@@ -196,7 +201,15 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
                 report.getBookings().add(bookingDAO.save(booking));
             }
             report.setStatus(ServiceStatus.SUBMITTED);
+
+            //add service expense
+            ServiceExpense serviceExpense = new ServiceExpense(report);
+            serviceExpense.setToPayLuggage(100);
+            serviceExpense.setPaidLuggage(100);
+            serviceExpense.setDriverSalary1(100);
+            report.setServiceExpense(serviceExpenseManager.save(serviceExpense));
             serviceReportsManager.submitReport(report);
+            reportIds.add(report.getId());
         }
         user = userDAO.findOne(user.getId());
         assertEquals(1200, user.getAmountToBePaid(), 0.0);
@@ -207,5 +220,17 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         assertEquals(2, reports.size());
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());
         assertEquals(20, bookings.size());
+        for(ServiceReport report : reports) {
+            ServiceReport serviceReport = serviceReportsManager.getReport(report.getId());
+            assertNotNull(serviceReport.getServiceExpense());
+            assertEquals(100, serviceReport.getServiceExpense().getToPayLuggage(), 0.0);
+            assertEquals(100, serviceReport.getServiceExpense().getPaidLuggage(), 0.0);
+            assertEquals(100, serviceReport.getServiceExpense().getDriverSalary1(), 0.0);
+            assertEquals(0, serviceReport.getServiceExpense().getDriverSalary2(), 0.0);
+
+        }
+
     }
+
+
 }

@@ -58,6 +58,9 @@ public class ServiceReportsManager {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private ServiceExpenseManager serviceExpenseManager;
+
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
         ServiceReportStatus status = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
@@ -114,6 +117,7 @@ public class ServiceReportsManager {
         } else {
             report.setInvalid(false);
         }
+        report.setServiceExpense(serviceExpenseManager.getServiceExpense(report.getId()));
         //round up the digits
         report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
@@ -143,6 +147,9 @@ public class ServiceReportsManager {
         if(savedReport.getStatus() != null) {
             throw new BadRequestException("Oops, looks like the report has been already submitted");
         }
+        //save the service expense
+        ServiceExpense serviceExpense = serviceReport.getServiceExpense();
+        serviceExpenseManager.updateFromServiceReport(serviceExpense);
         if(serviceReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
             Map<String, List<String>> seatBookings = new HashMap<>();
             Booking redbusBooking = new Booking();
@@ -225,6 +232,7 @@ public class ServiceReportsManager {
             serviceForm.setJDate(serviceReport.getJourneyDate());
             serviceForm.setConductorInfo(serviceReport.getConductorInfo());
             serviceForm.setNotes(serviceReport.getNotes());
+            serviceForm.setNetRealization(serviceReport.getNetRealization());
             ServiceForm savedForm = serviceFormDAO.save(serviceForm);
             paymentManager.createPayment(serviceForm, false);
             serviceForm.getBookings().stream().forEach(booking -> {
@@ -263,17 +271,21 @@ public class ServiceReportsManager {
     }
 
     public ServiceForm getForm(String id) {
-        ServiceForm report = serviceFormDAO.findOne(id);
-        Iterable<Booking> bookings = bookingDAO.findByFormId(report.getId());
+        ServiceForm serviceForm = serviceFormDAO.findOne(id);
+        Iterable<Booking> bookings = bookingDAO.findByFormId(serviceForm.getId());
+
+        //load the service expense
+        serviceForm.setServiceExpense(serviceExpenseManager.getServiceExpense(serviceForm.getServiceReportId()));
+
         //round up the digits
-        report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
-        report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
-        report.setNetCashIncome(roundUp(report.getNetCashIncome()));
-        report.setNetIncome(roundUp(report.getNetIncome()));
-        report.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
-        report.setBookings(IteratorUtils.toList(bookings.iterator()));
-        report.getAttributes().put("createdBy", userManager.getUser(report.getCreatedBy()).getFullName());
-        return report;
+        serviceForm.setNetRedbusIncome(roundUp(serviceForm.getNetRedbusIncome()));
+        serviceForm.setNetOnlineIncome(roundUp(serviceForm.getNetOnlineIncome()));
+        serviceForm.setNetCashIncome(roundUp(serviceForm.getNetCashIncome()));
+        serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
+        serviceForm.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
+        serviceForm.setBookings(IteratorUtils.toList(bookings.iterator()));
+        serviceForm.getAttributes().put("createdBy", userManager.getUser(serviceForm.getCreatedBy()).getFullName());
+        return serviceForm;
     }
 
     public void clearServiceReports(Date date) {
