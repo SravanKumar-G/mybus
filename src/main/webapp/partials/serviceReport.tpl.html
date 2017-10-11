@@ -76,6 +76,45 @@
             <button type="button" class="btn btn-sm btn-primary" ng-click="addExpense()">
                 <span class="glyphicon glyphicon-plus"></span> Add Expense
             </button>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr>
+                    <td>Fuel Quantity</td>
+                    <td><input type="number" placeholder="Fuel Quantity" ng-model="service.serviceExpense.fuelQuantity" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>Fuel rate per liter</td>
+                    <td><input type="number" placeholder="Fuel rate" ng-model="service.serviceExpense.fuelRate" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>Fuel cost for this trip</td>
+                    <td>{{getFuelCost()}}</td>
+                </tr>
+                <tr>
+                    <td>Paid Luggage</td>
+                    <td><input type="number" placeholder="Paid Luggage Booked" ng-model="service.serviceExpense.paidLuggage" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>To Pay Luggage</td>
+                    <td><input type="number" placeholder="To Pay Luggage Booked" ng-model="service.serviceExpense.toPayLuggage" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>Driver 1 Salary</td>
+                    <td><input type="number" placeholder="Driver 1 Salary" ng-model="service.serviceExpense.driverSalary1" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>Driver 2 Salary</td>
+                    <td><input type="number" placeholder="Driver 2 Salary" ng-model="service.serviceExpense.driverSalary2" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td>Cleaner Salary</td>
+                    <td><input type="number" placeholder="Cleaner Salary" ng-model="service.serviceExpense.cleanerSalary" ng-change="calculateNet()"></td>
+                </tr>
+                <tr>
+                    <td><b>Net Realization<b/> </td>
+                    <td>{{service.netRealization}}</td>
+                </tr>
+
+            </table>
             <br/>
             <br/>
             <br/>

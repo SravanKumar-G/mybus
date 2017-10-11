@@ -30,8 +30,8 @@ public class ServiceExpenseManager {
         return serviceExpenseDAO.save(serviceExpense);
     }
 
-    public ServiceExpense getServiceExpense(String serviceExpenseId) {
-        return loadServiceInfo(serviceExpenseDAO.findOne(serviceExpenseId));
+    public ServiceExpense getServiceExpense(String serviceReportId) {
+        return loadServiceInfo(serviceExpenseDAO.findByServiceReportId(serviceReportId));
 
     }
     /**
@@ -40,6 +40,9 @@ public class ServiceExpenseManager {
      * @return
      */
     private ServiceExpense loadServiceInfo(ServiceExpense serviceExpense) {
+        if(serviceExpense == null) {
+            return null;
+        }
         serviceExpense.validate();
         ServiceReport serviceReport = serviceReportDAO.findOne(serviceExpense.getServiceReportId());
         serviceExpense.getAttributes().put("to", serviceReport.getDestination());
@@ -62,5 +65,25 @@ public class ServiceExpenseManager {
             logger.error("Error finding service expenses ", e);
         }
         return serviceExpenses;
+    }
+
+    /**
+     * Update the data with
+     * @param serviceExpense
+     */
+    public void updateFromServiceReport(ServiceExpense serviceExpense) {
+        if(serviceExpense != null) {
+            ServiceExpense savedExpense = serviceExpenseDAO.findOne(serviceExpense.getId());
+            savedExpense.setFuelQuantity(serviceExpense.getFuelQuantity());
+            savedExpense.setFuelRate(serviceExpense.getFuelRate());
+            savedExpense.setFuelCost(serviceExpense.getFuelCost());
+            savedExpense.setDriverSalary1(serviceExpense.getDriverSalary1());
+            savedExpense.setDriverSalary2(serviceExpense.getDriverSalary2());
+            savedExpense.setCleanerSalary(serviceExpense.getCleanerSalary());
+            savedExpense.setPaidLuggage(serviceExpense.getPaidLuggage());
+            savedExpense.setToPayLuggage(serviceExpense.getToPayLuggage());
+            serviceExpenseDAO.save(savedExpense);
+        }
+
     }
 }
