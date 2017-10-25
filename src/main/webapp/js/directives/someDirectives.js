@@ -34,7 +34,7 @@ angular.module('myBus')
         scope: {
             ngModel: "=",
         },
-        template: '<div class="row">\n' +
+        template:
         '    <div>\n' +
         '        <p class="input-group">\n' +
         '          <input type="text" class="form-control" uib-datepicker-popup ng-model="ngModel" is-open="opened" ng-required="true"  />\n' +
@@ -43,8 +43,7 @@ angular.module('myBus')
         '<i class="glyphicon glyphicon-calendar"></i></button>\n' +
         '          </span>\n' +
         '        </p>\n' +
-        '    </div>\n' +
-        '</div> ',
+        '    </div>\n',
         require: 'ngModel',
         link: function (scope) {
             scope.opened=false;

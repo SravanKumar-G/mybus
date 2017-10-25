@@ -31,6 +31,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -79,6 +80,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     private static final int MAX_UPLOAD_SIZE_DEFAULT = 52428800;
 
     private static final Logger logger = LoggerFactory.getLogger(WebApplicationConfig.class);
+
 
     @Autowired
     private SystemProperties props;
@@ -267,8 +269,6 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         
     }
 
-
-   
     @Bean
 	public VelocityEngine velocityEngine() throws VelocityException, IOException{
 		VelocityEngineFactoryBean factory = new VelocityEngineFactoryBean();
@@ -293,4 +293,5 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
 		javaMailSenderImpl.setJavaMailProperties(javaMailProperties);
 		return javaMailSenderImpl;
 	}
+
 }

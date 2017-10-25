@@ -211,7 +211,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.headline = "Service Reports";
         $scope.urlDate = $stateParams.date;
 
-
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
@@ -247,19 +246,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.submitted = 0;
         $scope.verified = 0;
         $scope.loading = true;
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
-        $scope.altInputFormats = ['M!/d!/yyyy'];
+        $scope.$watch('dt', function(newValue, oldValue) {
+            $scope.dateChanged();
+        });
 
-        $scope.clear = function() {
-            $scope.dt = null;
-        };
-
-        $scope.inlineOptions = {
-            customClass: getDayClass,
-            minDate: new Date(),
-            showWeeks: true
-        };
         $scope.dateChanged = function() {
             if ($scope.dt >= $scope.tomorrow) {
                 swal("Oops...", "U've checked for future, Check Later", "error");
@@ -269,47 +259,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $scope.checkStatus();
             }
         }
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            minDate: new Date(),
-            startingDay: 1
-        };
-        // Disable weekend selection
-        function disabled(data) {
-            var date = data.date,
-                mode = data.mode;
-            return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-        }
 
-        $scope.toggleMin = function() {
-            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-        };
-        $scope.toggleMin();
-        $scope.open1 = function() {
-            $scope.popup1.opened = true;
-        };
-        $scope.setDate = function(year, month, day) {
-            $scope.dt = new Date(year, month, day);
-        };
-        $scope.popup1 = {
-            opened: false
-        };
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0,0,0,0);
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                    if (dayToCheck === currentDay) {
-                        return $scope.events[i].status;
-                    }
-                }
-            }
-            return '';
-        }
         $scope.checkStatus = function() {
             $scope.parseDate();
             loadServicesData();
@@ -396,14 +346,12 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 }
             })
         };
-
         var loadServicesData = function (tableParams, $defer) {
             serviceReportsManager.getServices($scope.date, function(data){
                 $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
 
              })
         };
-
         var loadPassengerData = function (tableParams, $defer) {
             serviceReportsManager.getPassengerReport($scope.date, $scope.serviceIds, function(data){
                 $scope.downloaded = true;
@@ -424,14 +372,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $scope.currentPageOfReports = data.data;
              })
         };
-        
         $scope.getPassengerReport = function(serviceIds) {
         	$scope.serviceIds = serviceIds;
         	loadPassengerData($scope.serviceReportTableParams);
         }
-        
-
-
         $scope.init = function() {
             $scope.submitted = 0;
             $scope.serviceReportTableParams = new NgTableParams({

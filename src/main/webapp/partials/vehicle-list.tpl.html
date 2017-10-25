@@ -1,25 +1,36 @@
-<div class="toolbar-button-div pull-right">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="addVehicleOnClick()"><span
-            class="glyphicon glyphicon-plus"></span> Add Vehicle
-    </button>
+<div class="toolbar-button-div">
+    <div class="row">
+        <div class="col-xs-2">
+            Look up Vehicle :
+        </div>
+        <div class="col-xs-4">
+            <input class="form-control"  ng-model="searchText" type="search" placeholder="Search text">
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addVehicleOnClick()"><span
+                    class="glyphicon glyphicon-plus"></span> Add Vehicle
+            </button>
+        </div>
+
+    </div>
+
 </div>
+
 <table class="table table-bordered table-condensed table-hover" ng-table="vehicleContentTableParams">
-    <tr ng-repeat="vehicle in currentPageOfVehicles" ng-class="vehicle.active?'':'bg-danger'">
-        <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-6">{{ vehicle.vehicleType }}</td>
-        <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-4">{{ vehicle.regNo }}</td>
-        <td data-title="'Description'" class="clickable-item col-md-4">{{ vehicle.description }}</td>
-        <td data-title="'Active'" class="clickable-item col-md-4">{{ vehicle.active }}</td>
-        <td>
-            <md-button>
+    <tr ng-repeat="vehicle in currentPageOfVehicles | filter:searchText" ng-class="vehicle.active?'':'bg-danger'">
+        <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-2">{{ vehicle.vehicleType }}</td>
+        <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-2">{{ vehicle.regNo }}</td>
+        <td data-title="'Permit Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
+        <td data-title="'Insurance Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
+        <td data-title="'Auth Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
+        <td data-title="'Polution Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
+        <td class="clickable-item col-md-3">
                 <md-icon type="button" class="btn" ng-click="deleteVehicleOnClick(vehicle.id)">
-                    <span class="glyphicon glyphicon-remove"></span></md-icon>
-            </md-button>
-        </td>
-        <td>
-            <md-button>
-                <md-icon type="button" class="btn" ng-click="updateVehicleOnClick(vehicle.id)">
-                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
-            </md-button>
+                    <span class="glyphicon glyphicon-remove"></span>
+                </md-icon>
+               <md-icon type="button" class="btn" ng-click="updateVehicleOnClick(vehicle.id)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+               </md-icon>
         </td>
     </tr>
     <tr ng-if="!currentPageOfVehicles || currentPageOfVehicles.length === 0">
