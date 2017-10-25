@@ -25,7 +25,8 @@ var myBus = angular.module('myBus', [
     'myBus.returnTicketsModule',
         'myBus.bookingModule',
     'myBus.sequenceModule',
-    'myBus.fuelExpenseReportModule'
+    'myBus.fuelExpenseReportModule',
+    'myBus.invoiceModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -35,6 +36,11 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/agents',
                 templateUrl: 'partials/agents.tpl.html',
                 controller: 'AgentController'
+            })
+            .state('invoices',{
+            url:'/inovices',
+            templateUrl: 'partials/invoice.tpl.html',
+            controller: 'InvoiceController'
             })
             .state('amenities',{
                 url:'/amenities',

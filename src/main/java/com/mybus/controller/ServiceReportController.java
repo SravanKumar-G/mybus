@@ -4,6 +4,7 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Booking;
+import com.mybus.model.Invoice;
 import com.mybus.model.ServiceForm;
 import com.mybus.model.ServiceReport;
 import com.mybus.service.ServiceConstants;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  *
@@ -139,6 +141,18 @@ public class ServiceReportController {
 			return report;
 		}catch (Exception e) {
 			throw new BadRequestException("Error loading report");
+		}
+	}
+
+	@RequestMapping(value = "serviceForm/bookings/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load one service form", response = JSONObject.class)
+	public Invoice findBookings(HttpServletRequest request,
+								@RequestBody final JSONObject query) {
+		try{
+			Invoice invoice = serviceReportsManager.findBookings(query);
+			return invoice;
+		}catch (Exception e) {
+			throw new BadRequestException("Error loading report ", e);
 		}
 	}
 

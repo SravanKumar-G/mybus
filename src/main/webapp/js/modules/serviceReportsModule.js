@@ -119,7 +119,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
             $scope.service.serviceExpense.fuelCost = parseFloat($scope.service.serviceExpense.fuelQuantity) * parseFloat($scope.service.serviceExpense.fuelRate);
 
-            $scope.service.netRealization = parseFloat($scope.service.netIncome)
+            $scope.service.serviceExpense.netRealization = parseFloat($scope.service.netIncome)
                 - parseFloat($scope.service.serviceExpense.fuelCost)
                 + parseFloat($scope.service.serviceExpense.paidLuggage)
                 + parseFloat($scope.service.serviceExpense.toPayLuggage)

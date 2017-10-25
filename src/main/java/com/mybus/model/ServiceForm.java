@@ -36,7 +36,6 @@ public class ServiceForm extends AbstractDocument  {
     private String conductorInfo;
     private int seatsCount;
     private String notes;
-    public double netRealization;
     private ServiceExpense serviceExpense;
 
     public ServiceForm() {

@@ -36,7 +36,7 @@
                 <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ service.attributes.from }}</td>
                 <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ service.attributes.to }}</td>
                 <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ service.journeyDate | date }}</td>
-                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{service.fuelConsumption}}</td>
+                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{service.fuelQuantity}}/{{service.fuelCost}}</td>
                 <td data-title="'Edit'" class="clickable-item col-md-2">
                     <md-icon type="button" class="btn" ng-click="">
                         <span class="glyphicon glyphicon-pencil" ng-click="updateFuelExpense(service.id)" ></span></md-icon>
@@ -71,37 +71,50 @@
             <div class="row top-buffer-5">
                 <label class="col-xs-2 control-label" >Vehicle :</label>
                 <div class="col-xs-7 col-xs-offset-1">
-                    {{service.attributes.busType}}
+                    {{serviceExpense.attributes.busType}}
                 </div>
             </div>
             <div class="row top-buffer-5">
                 <label class="col-xs-2 control-label" >From :</label>
                 <div class="col-xs-7 col-xs-offset-1">
-                    {{service.attributes.from}}
+                    {{serviceExpense.attributes.from}}
                 </div>
             </div>
             <div class="row top-buffer-5">
                 <label class="col-xs-2 control-label" >To :</label>
                 <div class="col-xs-7 col-xs-offset-1">
-                    {{service.attributes.to}}
+                    {{serviceExpense.attributes.to}}
                 </div>
             </div>
             <div class="row top-buffer-5">
                 <label class="col-xs-2 control-label" >Journey Date :</label>
                 <div class="col-xs-7 col-xs-offset-1">
-                    {{service.journeyDate | date}}
+                    {{serviceExpense.journeyDate | date}}
                 </div>
             </div>
             <div class="row top-buffer-5">
-                <label class="col-xs-2 control-label" >Fuel Consumption<span class="data-required">*</span></label>
+                <label class="col-xs-2 control-label" >Fuel Quantity<span class="data-required">*</span></label>
                 <div class="col-xs-7 col-xs-offset-1">
-                    <input type="number" class="form-control" ng-model="service.fuelConsumption"
-                    placeholder="Fuel Consumed" required>
+                    <input type="number" class="form-control" ng-model="serviceExpense.fuelQuantity"
+                    placeholder="Fuel Quantity" required ng-change="getFuelCost()">
+                </div>
+            </div>
+            <div class="row top-buffer-5">
+                <label class="col-xs-2 control-label" >Fuel Rate<span class="data-required">*</span></label>
+                <div class="col-xs-7 col-xs-offset-1">
+                    <input type="number" class="form-control" ng-model="serviceExpense.fuelRate"
+                           placeholder="Fuel Rate" required ng-change="getFuelCost()">
+                </div>
+            </div>
+            <div class="row top-buffer-5">
+                <label class="col-xs-2 control-label" >Fuel Cost<span class="data-required">*</span></label>
+                <div class="col-xs-7 col-xs-offset-1">
+                    {{serviceExpense.fuelCost}}
                 </div>
             </div>
         </form>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok(service.id)">Update</button>
+            <button class="btn btn-primary" ng-click="ok(serviceExpense.id)">Update</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
     </div>

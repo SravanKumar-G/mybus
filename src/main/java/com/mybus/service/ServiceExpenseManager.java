@@ -27,12 +27,22 @@ public class ServiceExpenseManager {
 
     public ServiceExpense save(ServiceExpense serviceExpense) {
         serviceExpense.validate();
+        /*serviceExpense.setNetRealization(
+                - parseFloat($scope.serviceExpense.fuelCost)
+                + parseFloat($scope.serviceExpense.paidLuggage)
+                + parseFloat($scope.serviceExpense.toPayLuggage)
+                - parseFloat($scope.serviceExpense.driverSalary1)
+                - parseFloat($scope.serviceExpense.driverSalary2)
+                - parseFloat($scope.serviceExpense.cleanerSalary);
+                */
         return serviceExpenseDAO.save(serviceExpense);
     }
 
-    public ServiceExpense getServiceExpense(String serviceReportId) {
+    public ServiceExpense getServiceExpenseByServiceReportId(String serviceReportId) {
         return loadServiceInfo(serviceExpenseDAO.findByServiceReportId(serviceReportId));
-
+    }
+    public ServiceExpense getServiceExpense(String id) {
+        return loadServiceInfo(serviceExpenseDAO.findOne(id));
     }
     /**
      * Load the information from servicereport
@@ -82,6 +92,7 @@ public class ServiceExpenseManager {
             savedExpense.setCleanerSalary(serviceExpense.getCleanerSalary());
             savedExpense.setPaidLuggage(serviceExpense.getPaidLuggage());
             savedExpense.setToPayLuggage(serviceExpense.getToPayLuggage());
+            savedExpense.setNetRealization(serviceExpense.getNetRealization());
             serviceExpenseDAO.save(savedExpense);
         }
 

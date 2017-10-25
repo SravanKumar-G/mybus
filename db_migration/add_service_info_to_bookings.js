@@ -82,3 +82,26 @@ db.booking.createIndex({'serviceId':1})
 db.booking.createIndex({'bookedBy':1})
 db.booking.createIndex({'source':1})
 
+
+
+//fix the submitted services but still show as pending
+
+var serviceForms = db.serviceForm.find({},{'serviceReportId':1}).toArray()
+for(i in serviceForms) {
+    var serviceForm = serviceForms[i];
+    if(serviceForm.serviceReportId) {
+        var serviceReport = db.serviceReport.findOne(serviceForm.serviceReportId);
+        if(serviceReport && !serviceReport.status) {
+            print('Wrong status for service report  ' + serviceForm.serviceReportId +'   found form ' + serviceForm._id.str);
+            serviceReport.status = "SUBMITTED";
+            serviceReport.attrs.formId = serviceForm._id.str;
+            db.serviceReport.update( { _id: ObjectId("59d53e13e4b01bd7b6cc133e")},
+                { $set:
+                    {"attrs.formId": "59d53f1fe4b01bd7b6cc135c"}
+                });
+        }
+	}
+}
+
+
+

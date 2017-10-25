@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -47,11 +48,6 @@ public class BookingMongoDAO {
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
 
-    @Autowired
-    private AgentDAO agentDAO;
-
-    @Autowired
-    private BookingDAO bookingDAO;
 
     /**
      * Find due bookings by agent names and Journey Date
@@ -217,4 +213,21 @@ public class BookingMongoDAO {
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }
+
+    public List<Booking> findBookings(Date start, Date end, List<String> bookedBy) {
+        final Query query = new Query();
+        if(bookedBy != null && bookedBy.size() != 0 && bookedBy.size() !=3){
+            List<String> channels = new ArrayList<>();
+            for(String name: bookedBy) {
+                if(name.equals("ABHIBUS")) {
+                    channels.add("ABHIBUS");
+                }
+            }
+            query.addCriteria(where("bookedBy").in(bookedBy));
+        }
+        query.addCriteria(where("journeyDate").gte(start).lte(end));
+        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        return bookings;
+    }
+
 }
