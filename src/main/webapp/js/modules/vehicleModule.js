@@ -69,11 +69,9 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             $location.url('vehicle/'+id);
         };
     })
-
     .controller('EditVehicleController', function ($scope,$state,$stateParams, $rootScope, $http,$log, vehicleManager) {
         $scope.headline = "Vehicle";
         $scope.vehicles= [];
-        console.log('edit called');
         $scope.vehicleId = $stateParams.id;
         if($scope.vehicleId){
             vehicleManager.getVehicleById($scope.vehicleId, function(vehicle) {
@@ -84,7 +82,8 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
                 insuranceExpiry: new Date(),
                 permitExpiry : new Date(),
                 fitnessExpiry : new Date(),
-                pollutionExpiry : new Date()
+                pollutionExpiry : new Date(),
+                authExpiry: new Date()
             };
         }
 

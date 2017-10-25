@@ -165,10 +165,11 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             }
         })
         .controller("editFuelExpenseReportController",function ($scope,$rootScope,fuelExpensesServiceManager,serviceId) {
+            $scope.serviceExpense = {};
             if(serviceId) {
                 $scope.setFuelExpense = function (serviceId) {
                     fuelExpensesServiceManager.getFuelExpense(serviceId, function (data) {
-                        $scope.service = data;
+                        $scope.serviceExpense = data;
                     });
                 };
                 $scope.setFuelExpense(serviceId);
@@ -180,7 +181,7 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                         swal("Error!", "Please fix the errors in the form", "error");
                         return;
                     }
-                    fuelExpensesServiceManager.updateFuelExpense($scope.service, function (data) {
+                    fuelExpensesServiceManager.updateFuelExpense($scope.serviceExpense, function (data) {
                         $rootScope.modalInstance.close(data);
                     });
                 }
@@ -189,6 +190,20 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 }
             };
 
+            $scope.getFuelCost = function() {
+                if($scope.serviceExpense) {
+                    $scope.serviceExpense.fuelCost = $scope.serviceExpense.fuelQuantity * $scope.serviceExpense.fuelRate;
+                }
+                $scope.service.serviceExpense.netRealization = parseFloat($scope.service.netIncome)
+                    - parseFloat($scope.serviceExpense.fuelCost)
+                    + parseFloat($scope.serviceExpense.paidLuggage)
+                    + parseFloat($scope.serviceExpense.toPayLuggage)
+                    - parseFloat($scope.serviceExpense.driverSalary1)
+                    - parseFloat($scope.serviceExpense.driverSalary2)
+                    - parseFloat($scope.serviceExpense.cleanerSalary);
+
+                return $scope.serviceExpense.fuelCost;
+            }
             $scope.cancel = function () {
                 $rootScope.modalInstance.dismiss('cancel');
             };

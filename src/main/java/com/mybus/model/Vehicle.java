@@ -52,19 +52,25 @@ public class Vehicle extends AbstractDocument  {
     @RequiresValue
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
-    private Date insuranceExpiry;
+    private DateTime insuranceExpiry;
 
     private String fitnessNumber;
 
     @RequiresValue
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
-    private Date fitnessExpiry;
+    private DateTime fitnessExpiry;
 
     @RequiresValue
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
-    private Date pollutionExpiry;
+    private DateTime pollutionExpiry;
+
+    @RequiresValue
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
+    private DateTime authExpiry;
+
     private double emi;
     private int emiDueOn;
 

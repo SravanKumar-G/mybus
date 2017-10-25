@@ -55,7 +55,6 @@ public class ServiceReport extends AbstractDocument  {
     private String notes;
     private boolean invalid;
     public String jDate;
-    public double netRealization;
     private ServiceExpense serviceExpense;
 
     public ServiceReport() {

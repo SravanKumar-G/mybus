@@ -46,9 +46,10 @@ public class ServiceExpense extends AbstractDocument  {
     private double driverSalary1;
     private double driverSalary2;
     private double cleanerSalary;
-
+    private double netRealization;
     private double financeEMI;
     private double avgMaintenanace;
+
 
     public ServiceExpense(ServiceReport serviceReport) {
         if(serviceReport.getId() == null) {

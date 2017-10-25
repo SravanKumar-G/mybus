@@ -42,7 +42,13 @@ public class ServiceUtils {
         }
         DateFormat df = ServiceConstants.df;
         if (!endOfTheDay) {
-            return df.parse(dateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(df.parse(dateString));
+            cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+            cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+            cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+            cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+            return cal.getTime();
         } else {
             Calendar cal = Calendar.getInstance();
             cal.setTime(df.parse(dateString));

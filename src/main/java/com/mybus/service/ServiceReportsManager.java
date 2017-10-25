@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.dao.*;
+import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -39,6 +40,9 @@ public class ServiceReportsManager {
 
     @Autowired
     private BookingDAO bookingDAO;
+
+    @Autowired
+    private BookingMongoDAO bookingMongoDAO;
 
     @Autowired
     private PaymentDAO paymentDAO;
@@ -117,7 +121,7 @@ public class ServiceReportsManager {
         } else {
             report.setInvalid(false);
         }
-        report.setServiceExpense(serviceExpenseManager.getServiceExpense(report.getId()));
+        report.setServiceExpense(serviceExpenseManager.getServiceExpenseByServiceReportId(report.getId()));
         //round up the digits
         report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
@@ -232,7 +236,6 @@ public class ServiceReportsManager {
             serviceForm.setJDate(serviceReport.getJourneyDate());
             serviceForm.setConductorInfo(serviceReport.getConductorInfo());
             serviceForm.setNotes(serviceReport.getNotes());
-            serviceForm.setNetRealization(serviceReport.getNetRealization());
             ServiceForm savedForm = serviceFormDAO.save(serviceForm);
             paymentManager.createPayment(serviceForm, false);
             serviceForm.getBookings().stream().forEach(booking -> {
@@ -275,7 +278,7 @@ public class ServiceReportsManager {
         Iterable<Booking> bookings = bookingDAO.findByFormId(serviceForm.getId());
 
         //load the service expense
-        serviceForm.setServiceExpense(serviceExpenseManager.getServiceExpense(serviceForm.getServiceReportId()));
+        serviceForm.setServiceExpense(serviceExpenseManager.getServiceExpenseByServiceReportId(serviceForm.getServiceReportId()));
 
         //round up the digits
         serviceForm.setNetRedbusIncome(roundUp(serviceForm.getNetRedbusIncome()));
@@ -319,5 +322,18 @@ public class ServiceReportsManager {
 
     public Booking getBooking(String bookingId) {
         return bookingDAO.findOne(bookingId);
+    }
+
+    public Invoice findBookings(JSONObject query) {
+        Invoice invoice = new Invoice();
+        try {
+            List<Booking> bookings = bookingMongoDAO.findBookings(
+                    ServiceUtils.parseDate(query.get("startDate").toString(), false),
+                    ServiceUtils.parseDate(query.get("endDate").toString(), true), ((List<String>)query.get("channel")));
+            invoice.setBookings(bookings);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return invoice;
     }
 }

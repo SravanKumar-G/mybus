@@ -9,6 +9,12 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
         $scope.user = userManager.getUser();
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
+        userManager.getUserNames(function (data) {
+            $scope.members = data;
+        });
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {
             var user = userManager.getUser();

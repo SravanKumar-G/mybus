@@ -103,6 +103,7 @@ public class SystemProperties {
 
 		ABHIBUS_API_URL("abhibus.api.url"),
 		AWS_S3_OFFICEEXPENSESBUCKET("aws.s3.officeExpensesBucket"),
+		EXPIRATION_BUFFER("expiry.buffer"),
 		FACTUAL_API_KEY("factual.api.key"),
 		FACTUAL_SECRET("factual.secret"),
 		MAX_UPLOAD_SIZE_BYTES("max.upload.size"),

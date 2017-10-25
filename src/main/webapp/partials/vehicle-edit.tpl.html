@@ -24,26 +24,31 @@
                 </div>
                 <label class="col-sm-2 control-label">Permit Expiry</label>
                 <div class="col-sm-4">
-                    <date-picker></date-picker>
+                    <my-datepicker ng-model="vehicle.permitExpiry"></my-datepicker>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Insurance Expiry</label>
                 <div class="col-sm-4">
-                    <input type="date" ngModel="vehicle.insuranceExpiry" class="form-control" >
+                    <my-datepicker ng-model="vehicle.insuranceExpiry"></my-datepicker>
                 </div>
                 <label class="col-sm-2 control-label">Fitness Expiry</label>
                 <div class="col-sm-4">
-                    <input type="date" ngModel="vehicle.fitnessExpiry" class="form-control" >
+                    <my-datepicker ng-model="vehicle.fitnessExpiry"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Pollution Expiry</label>
                 <div class="col-sm-4">
-                    <input type="date" ngModel="vehicle.pollutionExpiry" class="form-control" >
+                    <my-datepicker ng-model="vehicle.pollutionExpiry">
+                </div>
+                <label class="col-sm-2 control-label">Authorization Expiry</label>
+                <div class="col-sm-4">
+                    <my-datepicker ng-model="vehicle.authExpiry">
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="chasisNumber">Chasis Number</label>
                 <div class="col-sm-4">

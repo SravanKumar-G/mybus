@@ -52,6 +52,7 @@
     <script src="js/modules/bookingModule.js"></script>
     <script src="js/modules/sequenceModule.js"></script>
     <script src="js/modules/fuelExpenseReportModule.js"></script>
+    <script src="js/modules/invoiceModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -207,6 +208,7 @@
                                 <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="CashBalances" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Invoices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ShipmentSequence" class="nav navbar-nav col-md-12"></my-menu>
 
                             </ul>
