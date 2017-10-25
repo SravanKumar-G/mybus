@@ -25,7 +25,7 @@ public class SchedulerService {
     @Autowired
     private VehicleMongoDAO vehicleMongoDAO;
 
-    @Scheduled(fixedDelay =10000)
+    @Scheduled(cron = "0 0 0 * *")
     public void checkExpiryDates () {
         logger.info("checking expiry date..."+ systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
         int buffer = Integer.parseInt(systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
