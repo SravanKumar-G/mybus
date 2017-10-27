@@ -43,6 +43,7 @@
     <script src="js/modules/agentModule.js"></script>
     <script src="js/modules/dueReportModule.js"></script>
     <script src="js/modules/serviceComboModule.js"></script>
+    <script src="js/modules/tripComboModule.js"></script>
     <script src="js/modules/cashTransfersModule.js"></script>
     <script src="js/modules/vehicleExpensesModule.js"></script>
     <script src="js/modules/expensesIncomesReportsModule.js"></script>
@@ -189,6 +190,7 @@
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
