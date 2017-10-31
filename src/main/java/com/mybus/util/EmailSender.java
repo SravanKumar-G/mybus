@@ -26,10 +26,10 @@ public class EmailSender {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
-        props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.starttls.enable", true);
 
         // Get the Session object.
         Session session = Session.getInstance(props,
@@ -49,6 +49,14 @@ public class EmailSender {
         } catch (MessagingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        }
+    }
+
+    public void sendExpiringNotifications(String content){
+        String subject ="Important! Vehicle documents exipring";
+        if(content.length() > 0) {
+            String to = systemProperties.getProperty("expiring.notification.send.to");
+            sendEmail(to, content, subject);
         }
     }
 }
