@@ -27,7 +27,7 @@ public class VehicleMongoDAO {
         match.add(where("insuranceExpiry").lte(date));
         match.add(where("pollutionExpiry").lte(date));
         match.add(where("authExpiry").lte(date));
-        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        criteria.orOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return mongoTemplate.find(q, Vehicle.class);
     }
