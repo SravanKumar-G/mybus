@@ -30,7 +30,7 @@ public class SchedulerService {
     @Autowired
     private EmailSender emailSender;
 
-    @Scheduled(cron = "0 0 0 * * ")
+    @Scheduled(cron = "0 0 0 * * *")
     //@Scheduled(fixedDelay = 10000)
     public void checkExpiryDates () {
         logger.info("checking expiry date..."+ systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
