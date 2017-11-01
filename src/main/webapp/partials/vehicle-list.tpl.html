@@ -21,9 +21,10 @@
         <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-2">{{ vehicle.vehicleType }}</td>
         <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-2">{{ vehicle.regNo }}</td>
         <td data-title="'Permit Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
-        <td data-title="'Insurance Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
-        <td data-title="'Auth Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
-        <td data-title="'Polution Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
+        <td data-title="'Fitness Exipry'" class="clickable-item col-md-2">{{ vehicle.fitnessExpiry|date }}</td>
+        <td data-title="'Insurance Exipry'" class="clickable-item col-md-2">{{ vehicle.insuranceExpiry|date }}</td>
+        <td data-title="'Auth Exipry'" class="clickable-item col-md-2">{{ vehicle.authExpiry|date }}</td>
+        <td data-title="'Polution Exipry'" class="clickable-item col-md-2">{{ vehicle.pollutionExpiry|date }}</td>
         <td class="clickable-item col-md-3">
                 <md-icon type="button" class="btn" ng-click="deleteVehicleOnClick(vehicle.id)">
                     <span class="glyphicon glyphicon-remove"></span>
