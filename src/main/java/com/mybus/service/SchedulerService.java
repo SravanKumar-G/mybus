@@ -30,8 +30,8 @@ public class SchedulerService {
     @Autowired
     private EmailSender emailSender;
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    //@Scheduled(fixedDelay = 10000)
+    //@Scheduled(cron = "3 0 0 * * ?")
+    @Scheduled(fixedDelay = 50000)
     public void checkExpiryDates () {
         logger.info("checking expiry date..."+ systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
         int buffer = Integer.parseInt(systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
