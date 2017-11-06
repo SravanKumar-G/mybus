@@ -232,7 +232,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
                     //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
-                    booking.setSeats(passengerInfo.get("Seats").toString());
+                    booking.setSeats(passengerInfo.get("Seats").toString().replace(",", " ,"));
                     booking.setName(passengerInfo.get("PassengerName").toString());
                     booking.setSource(passengerInfo.get("Source").toString());
                     booking.setDestination(passengerInfo.get("Destination").toString());
