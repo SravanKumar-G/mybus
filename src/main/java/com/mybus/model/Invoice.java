@@ -19,6 +19,10 @@ import java.util.List;
 @Setter
 public class Invoice extends AbstractDocument{
     private List<Booking> bookings;
+    private Date from;
+    private Date to;
+    private double totalSale;
+    private double totalGST;
     public Invoice() {
 
     }

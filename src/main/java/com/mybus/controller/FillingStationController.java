@@ -43,18 +43,20 @@ public class FillingStationController {
 	public long count() {
 		return fillingStationManager.count();
 	}
+
+
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "add amenity")
-	public FillingStation addAmenity(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
+	@ApiOperation(value = "add fillingStation")
+	public FillingStation addFillingStation(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
 		LOGGER.debug("add fillingStation");
 		return fillingStationManager.save(fillingStation);
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "add amenity")
-	public FillingStation updateAmenity(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
+	@ApiOperation(value = "add fillingStation")
+	public FillingStation updateFillingStation(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
 		LOGGER.debug("save fillingStation");
 		return fillingStationManager.upate(fillingStation);
 	}
@@ -71,7 +73,7 @@ public class FillingStationController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ApiOperation(value ="Delete a fillingStation")
-	public JSONObject deleteAmenity(HttpServletRequest request,
+	public JSONObject deleteFillingStation(HttpServletRequest request,
 			@ApiParam(value = "Id of the fillingStation to be deleted") @PathVariable final String id) {
 		LOGGER.debug("delete fillingStation called");
 		JSONObject response = new JSONObject();
