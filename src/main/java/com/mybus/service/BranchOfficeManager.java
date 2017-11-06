@@ -49,7 +49,7 @@ public class BranchOfficeManager {
         if(errors.isEmpty()) {
             return branchOfficeDAO.save(branchOffice);
         } else {
-            throw new BadRequestException("Required data missing ");
+            throw new BadRequestException("Required data missing ", String.join(",", errors));
         }
     }
     public BranchOffice findOne(String branchOfficeId) {

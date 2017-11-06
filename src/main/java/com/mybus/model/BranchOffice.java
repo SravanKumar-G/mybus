@@ -41,7 +41,6 @@ public class BranchOffice extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private long contact;
 
-    @RequiresValue
     private String address;
 
     private double cashBalance = 0;
