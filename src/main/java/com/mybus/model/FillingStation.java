@@ -13,6 +13,6 @@ import lombok.Setter;
 public class FillingStation extends AbstractDocument {
     @RequiresValue
     private String name;
-    private String address;
+    private String contact;
     private boolean active;
 }

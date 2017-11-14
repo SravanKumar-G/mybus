@@ -21,8 +21,8 @@ public class FillingStationManager {
 	@Autowired
 	private FillingStationDAO fillingStationDAO;
 	
-	public Page<FillingStation> findAll(Pageable pageable){
-		return fillingStationDAO.findAll(pageable);
+	public Iterable<FillingStation> findAll(){
+		return fillingStationDAO.findAll();
 	}
 	
 	public FillingStation save(FillingStation fillingStation){

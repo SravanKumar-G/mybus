@@ -32,7 +32,7 @@ public class Booking extends AbstractDocument{
     private String country;
     private String postalCode;
     private BookingType paymentType;
-    private double amount;
+
     private BookingPayment payment;
     @Indexed(unique = true)
     private String ticketNo;
@@ -53,7 +53,10 @@ public class Booking extends AbstractDocument{
     private String landmark;
     private String boardingTime;
     private String orderId;
+
     private double netAmt;
+    //capture the actual cost
+    private double originalCost;
     private boolean due;
     @Indexed
     private boolean hasValidAgent;

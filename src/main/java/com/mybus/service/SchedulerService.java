@@ -39,23 +39,23 @@ public class SchedulerService {
         calendar.set(Calendar.DATE, (calendar.get(Calendar.DATE) - buffer));
         List<Vehicle> vehicles = IteratorUtils.toList(vehicleMongoDAO.findExpiring(calendar.getTime()).iterator());
         List<String> permitExpiring = vehicles.stream()
-                .filter(v -> v.getPermitExpiry().isBefore(calendar.getTime().getTime())).map(Vehicle::getRegNo)
+                .filter(v -> v.getPermitExpiry().isBefore(calendar.getTime().getTime())).map(x -> x.getRegNo() +"(" + x.getPermitExpiry()+ ")")
                 .collect(Collectors.toList());
 
         List<String> fitnessExpiring = vehicles.stream()
-                .filter(v -> v.getFitnessExpiry().isBefore(calendar.getTime().getTime())).map(Vehicle::getRegNo)
+                .filter(v -> v.getFitnessExpiry().isBefore(calendar.getTime().getTime())).map(x -> x.getRegNo() +"(" + x.getFitnessExpiry()+ ")")
                 .collect(Collectors.toList());
 
         List<String> authExpiring = vehicles.stream()
-                .filter(v -> v.getAuthExpiry().isBefore(calendar.getTime().getTime())).map(Vehicle::getRegNo)
+                .filter(v -> v.getAuthExpiry().isBefore(calendar.getTime().getTime())).map(x -> x.getRegNo() +"(" + x.getAuthExpiry()+ ")")
                 .collect(Collectors.toList());
 
         List<String> pollutionExpiring = vehicles.stream()
-                .filter(v -> v.getPollutionExpiry().isBefore(calendar.getTime().getTime())).map(Vehicle::getRegNo)
+                .filter(v -> v.getPollutionExpiry().isBefore(calendar.getTime().getTime())).map(x -> x.getRegNo() +"(" + x.getPollutionExpiry()+ ")")
                 .collect(Collectors.toList());
 
         List<String> insuranceExpiring = vehicles.stream()
-                .filter(v -> v.getInsuranceExpiry().isBefore(calendar.getTime().getTime())).map(Vehicle::getRegNo)
+                .filter(v -> v.getInsuranceExpiry().isBefore(calendar.getTime().getTime())).map(x -> x.getRegNo() +"(" + x.getInsuranceExpiry()+ ")")
                 .collect(Collectors.toList());
 
         StringBuilder builder = new StringBuilder();

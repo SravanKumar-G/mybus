@@ -1,9 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Amenity;
 import com.mybus.model.FillingStation;
-import com.mybus.service.AmenitiesManager;
 import com.mybus.service.FillingStationManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/api/v1/fillingStations")
-@Api(value="AmenityiesController")
+@Api(value="FillingStationController")
 public class FillingStationController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FillingStationController.class);
@@ -30,11 +28,11 @@ public class FillingStationController {
 	private FillingStationManager fillingStationManager;
 
 	@ResponseStatus(value = HttpStatus.OK)
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get all the fillingStations available", response = Page.class, responseContainer = "List")
-	public Page<FillingStation> getAll(final Pageable pageable) {
+	public Iterable<FillingStation> getAll() {
 		LOGGER.debug("Get all the fillingStations available");
-		return fillingStationManager.findAll(pageable);
+		return fillingStationManager.findAll();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -55,9 +53,9 @@ public class FillingStationController {
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "add fillingStation")
+	@ApiOperation(value = "Update fillingStation")
 	public FillingStation updateFillingStation(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
-		LOGGER.debug("save fillingStation");
+		LOGGER.debug("update fillingStation");
 		return fillingStationManager.upate(fillingStation);
 	}
 

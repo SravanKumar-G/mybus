@@ -115,6 +115,15 @@ public class ServiceReportsManager {
     public ServiceReport getReport(String id) {
         ServiceReport report = serviceReportDAO.findOne(id);
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findByServiceId(report.getId()).iterator());
+        //set the original cost for the old bookings
+        if(report.getStatus() == null) {
+            bookings.stream().forEach(booking ->
+            {
+                if (booking.getOriginalCost() == 0) {
+                    booking.setOriginalCost(booking.getNetAmt());
+                }
+            });
+        }
         Optional<Booking> invalidBooking = bookings.stream().filter(b -> !b.isHasValidAgent()).findFirst();
         if(invalidBooking.isPresent()) {
             report.setInvalid(true);
@@ -140,6 +149,11 @@ public class ServiceReportsManager {
         return (double) Math.round(value * 100) / 100;
     }
 
+    /**
+     * Submit the service report after the rates and expenses have been verified
+     * @param serviceReport
+     * @return
+     */
     public ServiceForm submitReport(ServiceReport serviceReport) {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
@@ -148,7 +162,7 @@ public class ServiceReportsManager {
         serviceForm.setServiceNumber(serviceReport.getServiceNumber());
         serviceForm.setServiceName(serviceReport.getServiceName());
         ServiceReport savedReport = serviceReportDAO.findOne(serviceReport.getId());
-        if(savedReport.getStatus() != null) {
+        if(savedReport.getStatus() != null && savedReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
             throw new BadRequestException("Oops, looks like the report has been already submitted");
         }
         //save the service expense
@@ -252,7 +266,15 @@ public class ServiceReportsManager {
         return serviceForm;
     }
 
-
+    /**
+     * Save the serviceReport for ticket cost verification
+     * @param serviceReport
+     */
+    public ServiceReport saveServiceReportForVerification(ServiceReport serviceReport) {
+        serviceReport.setStatus(ServiceStatus.REQUIRE_VERIFICATION);
+        bookingDAO.save(serviceReport.getBookings());
+        return serviceReportDAO.save(serviceReport);
+    }
     private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking) {
         if(bookingTypeManager.isRedbusBooking(booking)) {
             if (seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
@@ -336,4 +358,5 @@ public class ServiceReportsManager {
         }
         return invoice;
     }
+
 }

@@ -28,7 +28,8 @@ var myBus = angular.module('myBus', [
     'myBus.sequenceModule',
     'myBus.fuelExpenseReportModule',
     'myBus.invoiceModule',
-    'myBus.gstFilters'
+    'myBus.gstFilters',
+    'myBus.fillingStations'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -378,6 +379,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             url:'/gstfilters',
             templateUrl: 'partials/gstFilters.tpl.html',
             controller: 'GSTFiltersController'
+        }).state('fillingstations',{
+            url:'/fillingstations',
+            templateUrl: 'partials/fillingStations.tpl.html',
+            controller: 'FillingStationsController'
         });
         $urlRouterProvider.otherwise( '/');
     }]);

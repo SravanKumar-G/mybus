@@ -3,12 +3,10 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.Booking;
-import com.mybus.model.Invoice;
-import com.mybus.model.ServiceForm;
-import com.mybus.model.ServiceReport;
+import com.mybus.model.*;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
+import com.mybus.service.SessionManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,6 +33,9 @@ public class ServiceReportController {
 
 	@Autowired
 	private ServiceReportMongoDAO serviceReportMongoDAO;
+
+	@Autowired
+	private SessionManager sessionManager;
 
 	@RequestMapping(value = "serviceReport/downloadStatus", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get status of reports download", response = JSONObject.class)
@@ -160,7 +162,18 @@ public class ServiceReportController {
 	@ApiOperation(value ="Submit service report", response = JSONObject.class)
 	public void submitReport(HttpServletRequest request,
 				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
-		 serviceReportsManager.submitReport(serviceReport);
+		if(serviceReport.isRequiresVerification()) {
+			User currentUser = sessionManager.getCurrentUser();
+			if(currentUser.isCanVerifyRates()){
+				serviceReport.setVerifiedOn(new Date());
+				serviceReport.setVerifiedBy(currentUser.getId());
+				serviceReportsManager.submitReport(serviceReport);
+			} else {
+				serviceReportsManager.saveServiceReportForVerification(serviceReport);
+			}
+		} else {
+			serviceReportsManager.submitReport(serviceReport);
+		}
 	}
 
 }
