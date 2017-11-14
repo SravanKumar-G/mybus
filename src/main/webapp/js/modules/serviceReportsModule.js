@@ -58,10 +58,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         agentManager.getNames(function(names){
             $scope.agents = names;
         });
+
         $scope.currentUser = userManager.getUser();
         var loadTableData = function (tableParams, $defer) {
             serviceReportsManager.getReport($scope.serviceId, function(data){
                 $scope.service = data;
+                if($scope.service.requiresVerification === undefined) {
+                    $scope.service.requiresVerification = false;
+                }
                 $scope.downloaded = true;
                 $scope.allBookings = tableParams.sorting() ? $filter('orderBy')($scope.service.bookings, tableParams.orderBy()) : $scope.service.bookings;
                 tableParams.total($scope.allBookings.length);
@@ -95,14 +99,23 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 && booking.bookedBy !='abhibus-mantis'
                 && booking.bookedBy !='ABHIBUS';
         }
-
-        $scope.calculateNet = function() {
+        $scope.rateToBeVerified=function(booking) {
+            return (booking.netAmt < (booking.originalCost*85/100));
+        }
+        $scope.calculateNet = function(changedBooking) {
             var netCashIncome = 0;
             var expenseTotal = 0;
+            //if the net amount is 13% less than original cost
+            if(Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
+                $scope.service.requiresVerification = true;
+            } else{
+                $scope.service.requiresVerification = false;
+            }
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.paymentType == "CASH" && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
+
                 }
             }
             for (var i =0; i< $scope.service.expenses.length;i++) {
@@ -111,7 +124,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     expenseTotal += parseFloat(expense.amount);
                 }
             }
-            netCashIncome-=expenseTotal;
+            netCashIncome -= expenseTotal;
             $scope.service.netCashIncome = netCashIncome.toFixed(2);
             $scope.service.netIncome = (parseFloat($scope.service.netCashIncome) +
             parseFloat($scope.service.netRedbusIncome) +
@@ -180,7 +193,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.submit = function() {
             $scope.service.status = "SUBMITTED";
             $scope.submitReport();
+        }
 
+        $scope.canSubmit = function() {
+            if($scope.service.status==='REQUIRE_VERIFICATION') {
+                if($scope.currentUser.canVerifyRates){
+                    return true;
+                }
+            } else if(!$scope.service.requiresVerification){
+                return (!$scope.service.invalid && !$scope.service.status);
+            }
+            return false;
+        }
+        $scope.requireVerification = function(){
+            return !$scope.service.invalid && $scope.service.requiresVerification && $scope.service.status !== "SUBMITTED";
         }
         $scope.submitReport = function() {
             serviceReportsManager.submitReport($scope.service, function (response) {

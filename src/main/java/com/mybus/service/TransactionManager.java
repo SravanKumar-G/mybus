@@ -26,7 +26,7 @@ public class TransactionManager {
     @Async
     public void createBookingTransaction(Booking booking, Agent agent) {
         Transaction transaction = new Transaction();
-        transaction.setAmount(booking.getAmount());
+        transaction.setAmount(booking.getOriginalCost());
         transaction.getAttributes().put(BOOKING_ID, booking.getId());
         transaction.setBranchOfficeId(agent.getBranchOfficeId());
         transaction.setType(TransactionType.INCOME);

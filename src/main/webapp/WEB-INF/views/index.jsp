@@ -54,6 +54,8 @@
     <script src="js/modules/sequenceModule.js"></script>
     <script src="js/modules/fuelExpenseReportModule.js"></script>
     <script src="js/modules/invoiceModule.js"></script>
+    <script src="js/modules/gstFiltersModule.js"></script>
+    <script src="js/modules/fillingStationsModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -189,13 +191,15 @@
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="GSTFilters" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="FillingStations" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="Vehicle Staff" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="VehicleStaff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>

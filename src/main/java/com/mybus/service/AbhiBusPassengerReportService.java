@@ -246,6 +246,9 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
+                    //copy the cost to for verifying the difference
+                    booking.setOriginalCost(booking.getNetAmt());
+
                     if(savedReport != null) {
                         Booking savedBooking = bookingDAO.findByTicketNo(booking.getTicketNo().trim());
                         if(savedBooking == null) {

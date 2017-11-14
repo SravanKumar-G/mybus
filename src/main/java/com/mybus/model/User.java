@@ -42,7 +42,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     @Field(LAST_NAME)
     @RequiresValue
     private String lastName;
-
+    private boolean canVerifyRates;
     private boolean admin;
     private boolean active;
     @RequiresValue

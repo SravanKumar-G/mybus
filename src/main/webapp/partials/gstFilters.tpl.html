@@ -1,0 +1,29 @@
+<div class="toolbar-button-div">
+    <div class="row">
+        <div class="col-xs-2">
+            Look up Service :
+        </div>
+        <div class="col-xs-4">
+            <input class="form-control"  ng-model="searchText" type="search" placeholder="Search text">
+        </div>
+        <div class="col-xs-6">
+            <button type="button" class="btn btn-sm btn-primary pull-right" ng-click="save()">
+                <span class="glyphicon glyphicon-save"></span> Save
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<table class="table table-bordered table-condensed table-hover" ng-table="filterTableParams">
+    <tr ng-repeat="filter in filters | filter:searchText">
+        <td data-title="'Service Numbers'"  sortable="'serviceNumber'" class="clickable-item col-md-2">{{ filter.serviceNumber }}</td>
+        <td data-title="'Service Name'"sortable="'serviceName'" class="clickable-item col-md-2">{{ filter.serviceName }}</td>
+        <td data-title="'GST Enabled'" class="clickable-item col-md-2">
+            <input type="checkbox" ng-model="filter.hasGST">
+        </td>
+    </tr>
+    <tr ng-if="!filters || filters.length === 0">
+        <td colspan="6">No Filters exist.</td>
+    </tr>
+</table>

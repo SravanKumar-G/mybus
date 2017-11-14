@@ -14,7 +14,7 @@
         <div class="col-sm-7" style="overflow-y: auto;height: 60%;">
             <h4>Bookings</h4>
             <table class="table table-bordered table-condensed table-hover" ng-table="bookingsTableParams">
-                <tr ng-repeat="booking in currentPageOfBookings" ng-s>
+                <tr ng-repeat="booking in currentPageOfBookings" ng-s ng-class="{changedRate: rateToBeVerified(booking)}">
                     <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1">
                         <span ng-show="booking.id != null" title="{{booking.seats}}">
                              {{ booking.seats | cut:true:10:' ...'}}
@@ -44,9 +44,9 @@
                         <span ng-show="isOnlineBooking(booking)">{{booking.netAmt}} </span>
                         <span ng-show="isNotOnlineBooking(booking)">
                             <div class="row">
-                                <div class="col-sm-5"><input type="number" ng-model="booking.netAmt" ng-change="calculateNet()" style="width:70px;">
+                                <div class="col-sm-5"><input type="number" ng-model="booking.netAmt" ng-change="calculateNet(booking)" style="width:70px;">
                                 </div>
-                                <div class="col-sm-4"><input type="checkbox" ng-model="booking.due" ng-change="calculateNet()">Due</div>
+                                <div class="col-sm-4"><input type="checkbox" ng-model="booking.due" ng-change="calculateNet(booking)">Due</div>
                                 <div class="col-sm-1" ng-if="booking.index">
                                     <span class="glyphicon glyphicon-remove-sign"  ng-click="deleteBooking(booking)"></span>
                                 </div>
@@ -76,45 +76,6 @@
             <button type="button" class="btn btn-sm btn-primary" ng-click="addExpense()">
                 <span class="glyphicon glyphicon-plus"></span> Add Expense
             </button>
-            <table class="table table-bordered table-condensed table-hover">
-                <tr>
-                    <td>Fuel Quantity</td>
-                    <td><input type="number" placeholder="Fuel Quantity" ng-model="service.serviceExpense.fuelQuantity" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>Fuel rate per liter</td>
-                    <td><input type="number" placeholder="Fuel rate" ng-model="service.serviceExpense.fuelRate" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>Fuel cost for this trip</td>
-                    <td>{{getFuelCost()}}</td>
-                </tr>
-                <tr>
-                    <td>Paid Luggage</td>
-                    <td><input type="number" placeholder="Paid Luggage Booked" ng-model="service.serviceExpense.paidLuggage" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>To Pay Luggage</td>
-                    <td><input type="number" placeholder="To Pay Luggage Booked" ng-model="service.serviceExpense.toPayLuggage" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>Driver 1 Salary</td>
-                    <td><input type="number" placeholder="Driver 1 Salary" ng-model="service.serviceExpense.driverSalary1" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>Driver 2 Salary</td>
-                    <td><input type="number" placeholder="Driver 2 Salary" ng-model="service.serviceExpense.driverSalary2" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td>Cleaner Salary</td>
-                    <td><input type="number" placeholder="Cleaner Salary" ng-model="service.serviceExpense.cleanerSalary" ng-change="calculateNet()"></td>
-                </tr>
-                <tr>
-                    <td><b>Net Realization<b/> </td>
-                    <td>{{service.serviceExpense.netRealization}}</td>
-                </tr>
-
-            </table>
             <br/>
             <br/>
             <br/>
@@ -136,7 +97,11 @@
             <button type="button" class="btn btn-sm btn-danger" ng-click="haltService()" ng-if="!service.invalid && !service.status">
                 <span class="glyphicon"></span> Halted Service
             </button>
-            <button type="button" class="btn btn-sm btn-success" ng-click="submit()" ng-if="!service.invalid && !service.status">
+            <button type="button" class="btn btn-sm btn-warning" ng-click="submit()" ng-if="requireVerification()">
+                <span class="glyphicon"></span> Submit For Verification
+            </button>
+
+            <button type="button" class="btn btn-sm btn-success" ng-click="submit()" ng-if="canSubmit()">
                 <span class="glyphicon"></span> Submit Report
             </button>
             <span ng-if="service.status" style="color:red"> Service report has been submitted on {{service.updatedAt|date}} by {{service.attributes.updatedBy}}</span>

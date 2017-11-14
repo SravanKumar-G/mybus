@@ -1,9 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Amenity;
 import com.mybus.model.FillingStation;
-import com.mybus.service.AmenitiesManager;
 import com.mybus.service.FillingStationManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/api/v1/fillingStations")
-@Api(value="AmenityiesController")
+@Api(value="FillingStationController")
 public class FillingStationController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FillingStationController.class);
@@ -30,11 +28,11 @@ public class FillingStationController {
 	private FillingStationManager fillingStationManager;
 
 	@ResponseStatus(value = HttpStatus.OK)
-	@RequestMapping(value = "all", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get all the fillingStations available", response = Page.class, responseContainer = "List")
-	public Page<FillingStation> getAll(final Pageable pageable) {
+	public Iterable<FillingStation> getAll() {
 		LOGGER.debug("Get all the fillingStations available");
-		return fillingStationManager.findAll(pageable);
+		return fillingStationManager.findAll();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -43,19 +41,21 @@ public class FillingStationController {
 	public long count() {
 		return fillingStationManager.count();
 	}
+
+
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "add amenity")
-	public FillingStation addAmenity(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
+	@ApiOperation(value = "add fillingStation")
+	public FillingStation addFillingStation(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
 		LOGGER.debug("add fillingStation");
 		return fillingStationManager.save(fillingStation);
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value = "add amenity")
-	public FillingStation updateAmenity(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
-		LOGGER.debug("save fillingStation");
+	@ApiOperation(value = "Update fillingStation")
+	public FillingStation updateFillingStation(HttpServletRequest request,@RequestBody FillingStation fillingStation) {
+		LOGGER.debug("update fillingStation");
 		return fillingStationManager.upate(fillingStation);
 	}
 
@@ -71,7 +71,7 @@ public class FillingStationController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ApiOperation(value ="Delete a fillingStation")
-	public JSONObject deleteAmenity(HttpServletRequest request,
+	public JSONObject deleteFillingStation(HttpServletRequest request,
 			@ApiParam(value = "Id of the fillingStation to be deleted") @PathVariable final String id) {
 		LOGGER.debug("delete fillingStation called");
 		JSONObject response = new JSONObject();

@@ -20,6 +20,16 @@ import java.util.*;
 @Setter
 @CompoundIndex(name = "sr_jdate_srvnum", def = "{'serviceNumber' : 1, 'journeyDate' : 1}", unique = true)
 public class ServiceReport extends AbstractDocument  {
+
+    enum ServiceReportStatus {
+        HALT,
+        SUBMITTED,
+        REQUIRE_VERIFICATION;
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
     public static final String STATUS_HALT = "Halt";
     public static final String STATUS_SUBMIT = "Submitted";
     public static final String COLLECTION_NAME = "serviceReport";
@@ -47,7 +57,9 @@ public class ServiceReport extends AbstractDocument  {
     private double netOnlineIncome;
     private double netIncome;
     private String submittedBy;
+    private Date verifiedOn;
     private String verifiedBy;
+    private boolean requiresVerification;
     private int totalSeats;
     @Indexed
     private ServiceStatus status;
