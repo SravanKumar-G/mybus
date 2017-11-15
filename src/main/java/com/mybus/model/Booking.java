@@ -18,9 +18,12 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode(of={"id", "ticketNo"})
 public class Booking extends AbstractDocument{
+
+    //this is serviceReportId
     @Indexed
     private String serviceId;
     private int index;
+    //this is serviceFormId
     private String formId;
     private String emailID;
     private String name;

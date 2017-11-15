@@ -274,6 +274,8 @@ public class ServiceReportsManager {
      */
     public ServiceReport saveServiceReportForVerification(ServiceReport serviceReport) {
         serviceReport.setStatus(ServiceStatus.REQUIRE_VERIFICATION);
+        //incase if any service booking added in the frontend
+        serviceReport.getBookings().stream().forEach(booking -> booking.setServiceId(serviceReport.getId()));
         bookingDAO.save(serviceReport.getBookings());
         //save the expenses, reload them when the service report is re-loaded
         serviceReport.getExpenses().stream().forEach(expense -> {
