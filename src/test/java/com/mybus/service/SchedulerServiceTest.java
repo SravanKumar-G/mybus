@@ -6,6 +6,7 @@ import com.mybus.model.Vehicle;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,6 +34,7 @@ public class SchedulerServiceTest extends AbstractControllerIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void testSendExpiredNotifications() {
        DateTime dateTime = new DateTime();
         dateTime = dateTime.minusDays(300);
