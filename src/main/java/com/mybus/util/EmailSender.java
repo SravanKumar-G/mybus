@@ -59,4 +59,11 @@ public class EmailSender {
             sendEmail(to, content, subject);
         }
     }
+    public void sendServiceReportsToBeReviewed(String content){
+        String subject ="Important! Service reports need to be reviewed";
+        if(content.length() > 0) {
+            String to = systemProperties.getProperty("serviceReports.review.notification.send.to");
+            sendEmail(to, content, subject);
+        }
+    }
 }

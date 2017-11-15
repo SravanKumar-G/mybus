@@ -21,7 +21,7 @@ import java.util.*;
 @CompoundIndex(name = "sr_jdate_srvnum", def = "{'serviceNumber' : 1, 'journeyDate' : 1}", unique = true)
 public class ServiceReport extends AbstractDocument  {
 
-    enum ServiceReportStatus {
+    public enum ServiceReportStatus {
         HALT,
         SUBMITTED,
         REQUIRE_VERIFICATION;
@@ -56,9 +56,13 @@ public class ServiceReport extends AbstractDocument  {
     private double netRedbusIncome;
     private double netOnlineIncome;
     private double netIncome;
-    private String submittedBy;
+    
     private Date verifiedOn;
     private String verifiedBy;
+
+    private Date submittedOn;
+    private String submitedBy;
+
     private boolean requiresVerification;
     private int totalSeats;
     @Indexed
