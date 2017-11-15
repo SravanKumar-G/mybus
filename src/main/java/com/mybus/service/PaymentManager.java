@@ -95,7 +95,6 @@ public class PaymentManager {
     public Payment createPayment(ServiceForm serviceForm, boolean deleteForm) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
-        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(serviceForm.getNetCashIncome());
         payment.setServiceFormId(serviceForm.getId());
         if(deleteForm){

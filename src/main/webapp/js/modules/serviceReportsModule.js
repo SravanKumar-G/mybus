@@ -106,16 +106,15 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             var netCashIncome = 0;
             var expenseTotal = 0;
             //if the net amount is 13% less than original cost
-            if(Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
+
+            if( changedBooking && Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
                 $scope.service.requiresVerification = true;
-            } else{
-                $scope.service.requiresVerification = false;
             }
+
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.paymentType == "CASH" && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
-
                 }
             }
             for (var i =0; i< $scope.service.expenses.length;i++) {

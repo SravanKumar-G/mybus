@@ -162,16 +162,20 @@ public class ServiceReportController {
 	@ApiOperation(value ="Submit service report", response = JSONObject.class)
 	public void submitReport(HttpServletRequest request,
 				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
+		User currentUser = sessionManager.getCurrentUser();
 		if(serviceReport.isRequiresVerification()) {
-			User currentUser = sessionManager.getCurrentUser();
 			if(currentUser.isCanVerifyRates()){
 				serviceReport.setVerifiedOn(new Date());
 				serviceReport.setVerifiedBy(currentUser.getId());
 				serviceReportsManager.submitReport(serviceReport);
 			} else {
+				serviceReport.setSubmittedOn(new Date());
+				serviceReport.setSubmitedBy(currentUser.getId());
 				serviceReportsManager.saveServiceReportForVerification(serviceReport);
 			}
 		} else {
+			serviceReport.setSubmittedOn(new Date());
+			serviceReport.setSubmitedBy(currentUser.getId());
 			serviceReportsManager.submitReport(serviceReport);
 		}
 	}

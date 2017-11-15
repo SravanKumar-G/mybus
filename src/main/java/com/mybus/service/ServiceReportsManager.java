@@ -137,6 +137,8 @@ public class ServiceReportsManager {
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
         report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
         report.setBookings(bookings);
+        List<Payment> expenses = paymentDAO.findByServiceReportId(report.getId());
+        report.setExpenses(expenses);
         if(report.getUpdatedBy() != null) {
             report.getAttributes().put("updatedBy", userManager.getUser(report.getUpdatedBy()).getFullName());
         }
@@ -273,6 +275,11 @@ public class ServiceReportsManager {
     public ServiceReport saveServiceReportForVerification(ServiceReport serviceReport) {
         serviceReport.setStatus(ServiceStatus.REQUIRE_VERIFICATION);
         bookingDAO.save(serviceReport.getBookings());
+        //save the expenses, reload them when the service report is re-loaded
+        serviceReport.getExpenses().stream().forEach(expense -> {
+            expense.setServiceReportId(serviceReport.getId());
+        });
+        paymentDAO.save(serviceReport.getExpenses());
         return serviceReportDAO.save(serviceReport);
     }
     private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking) {

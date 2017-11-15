@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Expiring vehicle documents</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table#t01 tr:nth-child(even) {
+            background-color: #eee;
+        }
+        table#t01 tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+    #if($haltedReports && !$haltedReports.empty)
+        <table id="t01">
+            <caption>Halted reports</caption>
+            <tbody>
+            <tr>
+                <th>Service#</th>
+                <th>JourneyDate</th>
+                <th>Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Vehicle</th>
+                <th>Cash/Net Income</th>
+            </tr>
+                #foreach($serviceReport in $haltedReports)
+                <tr>
+                    <td>$serviceReport.serviceNumber</td>
+                    <td>$serviceReport.journeyDate</td>
+                    <td>$serviceReport.busType</td>
+                    <td>$serviceReport.source</td>
+                    <td>$serviceReport.destination</td>
+                    <td>$serviceReport.vehicleRegNumber</td>
+                    <td>$serviceReport.netCashIncome/ $serviceReport.netIncome</td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    #end
+
+<br/>
+<br/>
+<br/>
+
+    #if($reportsToBeReviewed && !$reportsToBeReviewed.empty)
+    <table id="t01">
+        <caption>Service reports to be Reviewed</caption>
+        <tbody>
+        <tr>
+            <th>Service#</th>
+            <th>JourneyDate</th>
+            <th>Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Vehicle</th>
+            <th>Cash/Net Income</th>
+        </tr>
+            #foreach($serviceReport in $reportsToBeReviewed)
+            <tr>
+                <td>$serviceReport.serviceNumber</td>
+                <td>$serviceReport.journeyDate</td>
+                <td>$serviceReport.busType</td>
+                <td>$serviceReport.source</td>
+                <td>$serviceReport.destination</td>
+                <td>$serviceReport.vehicleRegNumber</td>
+                <td>$serviceReport.netCashIncome/ $serviceReport.netIncome</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+    #end
+    <br/>
+    <br/>
+    <br/>
+
+    #if($pendingReports && !$pendingReports.empty)
+    <table id="t01">
+        <caption>Service reports to be submitted</caption>
+        <tbody>
+        <tr>
+            <th>Service#</th>
+            <th>JourneyDate</th>
+            <th>Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Vehicle</th>
+            <th>Cash/Net Income</th>
+        </tr>
+            #foreach($serviceReport in $pendingReports)
+            <tr>
+                <td>$serviceReport.serviceNumber</td>
+                <td>$serviceReport.journeyDate</td>
+                <td>$serviceReport.busType</td>
+                <td>$serviceReport.source</td>
+                <td>$serviceReport.destination</td>
+                <td>$serviceReport.vehicleRegNumber</td>
+                <td>$serviceReport.netCashIncome/ $serviceReport.netIncome</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+    #end
+</body>
+</html>
