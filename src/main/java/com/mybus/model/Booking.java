@@ -63,6 +63,8 @@ public class Booking extends AbstractDocument{
     private boolean due;
     @Indexed
     private boolean hasValidAgent;
+    private boolean requireVerification;
+
     private String serviceName;
     private String serviceNumber;
     public Booking() {

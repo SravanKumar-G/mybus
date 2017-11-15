@@ -100,7 +100,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 && booking.bookedBy !='ABHIBUS';
         }
         $scope.rateToBeVerified=function(booking) {
-            return (booking.netAmt < (booking.originalCost*85/100));
+            return booking.requireVerification || (booking.netAmt < (booking.originalCost*85/100));
         }
         $scope.calculateNet = function(changedBooking) {
             var netCashIncome = 0;
@@ -108,10 +108,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             //if the net amount is 13% less than original cost
             if(changedBooking){
                 if( Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
-                    $scope.service.requiresVerification = true;
+                    changedBooking.requireVerification = true;
                 } else {
-                    $scope.service.requiresVerification = false;
+                    changedBooking.requireVerification = false;
                 }
+                var bookingsToBeVerified = _.find($scope.service.bookings, function(booking) {
+                    return booking.requireVerification ===true;
+                });
+                $scope.service.requiresVerification = bookingsToBeVerified != null;
             }
 
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
