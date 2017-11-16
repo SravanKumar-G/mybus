@@ -172,6 +172,7 @@ public class PaymentMongoDAO {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
         match.add(Criteria.where("formId").exists(false));
+        match.add(Criteria.where("serviceReportId").exists(false));
         match.add(where("vehicleId").exists(false));
         if(pending) {
             match.add(where("status").exists(false));
