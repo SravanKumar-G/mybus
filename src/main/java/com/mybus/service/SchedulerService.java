@@ -58,7 +58,7 @@ public class SchedulerService {
     }
 
 
-    @Scheduled(cron = "0 5 1 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     //@Scheduled(fixedDelay = 50000)
     public void checkServiceReportsReview () throws ParseException {
         Map<String, Object> context = new HashMap<>();
