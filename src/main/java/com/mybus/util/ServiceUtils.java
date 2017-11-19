@@ -1,5 +1,7 @@
 package com.mybus.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.AbstractDocument;
 import com.mybus.model.User;
@@ -26,6 +28,9 @@ public class ServiceUtils {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Map<String, String> userNames = new HashMap<>();
 
@@ -66,9 +71,34 @@ public class ServiceUtils {
         }
     }
 
+    /**
+     *
+     * @param abstractDocuments  list of mongo documents which requires usernames to be populated with
+     * @param fieldName name of the field to look up the userId from
+     */
+    public void fillInUserNames(List abstractDocuments, String fieldName) {
+        for(Object abstractDocument: abstractDocuments){
+            fillInUserNames((AbstractDocument) abstractDocument, fieldName);
+        }
+    }
+
+    /**
+     *  list of mongo documents which requires usernames to be populated with
+     * @param abstractDocument
+     */
     public void fillInUserNames(AbstractDocument abstractDocument) {
         fillInUsername(abstractDocument, abstractDocument.getCreatedBy(), "createdBy");
         fillInUsername(abstractDocument, abstractDocument.getUpdatedBy(), "updatedBy");
+    }
+
+    public void fillInUserNames(AbstractDocument abstractDocument,String fieldName) {
+        try {
+            JSONObject jsonObject = objectMapper.readValue(objectMapper.writeValueAsString(abstractDocument), JSONObject.class);
+            fillInUsername(abstractDocument, jsonObject.get(fieldName).toString(), fieldName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void fillInUsername(AbstractDocument abstractDocument, String userId, String attributeName) {

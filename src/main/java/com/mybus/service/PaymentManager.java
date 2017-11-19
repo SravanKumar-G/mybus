@@ -51,7 +51,6 @@ public class PaymentManager {
 
 
     public Payment updatePayment(Payment payment) {
-        logger.debug("updating balance for office:" + payment.getBranchOfficeId() + " type:"+payment.getType());
         if(payment.getStatus() != null && (payment.getStatus().equals(Payment.STATUS_APPROVED) ||
                 payment.getStatus().equals(Payment.STATUS_AUTO))){
             updateUserBalance(payment);
@@ -60,7 +59,19 @@ public class PaymentManager {
     }
 
     private void updateUserBalance(Payment payment) {
-        User currentUser = sessionManager.getCurrentUser();
+        User currentUser = null;
+        if(payment.getCreatedBy() != null) {
+            currentUser = userManager.findOne(payment.getCreatedBy());
+        }
+        if(payment.getSubmittedBy() != null) {
+            currentUser = userManager.findOne(payment.getSubmittedBy());
+        }
+        if(currentUser == null){
+            currentUser = sessionManager.getCurrentUser();
+        }
+        if(currentUser == null) {
+            throw new RuntimeException("User must be logged in");
+        }
         if(!payment.getStatus().equals(Payment.STATUS_AUTO)){
             currentUser = userManager.findOne(payment.getCreatedBy());
         }
@@ -97,6 +108,7 @@ public class PaymentManager {
         Payment payment = new Payment();
         payment.setAmount(serviceForm.getNetCashIncome());
         payment.setServiceFormId(serviceForm.getId());
+        payment.setSubmittedBy(serviceForm.getSubmittedBy());
         if(deleteForm){
             payment.setType(PaymentType.EXPENSE);
             payment.setDescription("Service form refresh");

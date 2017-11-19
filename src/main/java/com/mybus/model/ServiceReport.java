@@ -35,6 +35,7 @@ public class ServiceReport extends AbstractDocument  {
     public static final String COLLECTION_NAME = "serviceReport";
     public static final String SUBMITTED_ID = "formId";
     public static final String JOURNEY_DATE = "journeyDate";
+    public static final String SUBMITTED_BY = "submittedBy";
     /**
      * serviceId from Abhibus
      */
@@ -61,7 +62,8 @@ public class ServiceReport extends AbstractDocument  {
     private String verifiedBy;
 
     private Date submittedOn;
-    private String submitedBy;
+    @Field(SUBMITTED_BY)
+    private String submittedBy;
 
     private boolean requiresVerification;
     private int totalSeats;
