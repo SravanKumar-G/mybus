@@ -170,12 +170,12 @@ public class ServiceReportController {
 				serviceReportsManager.submitReport(serviceReport);
 			} else {
 				serviceReport.setSubmittedOn(new Date());
-				serviceReport.setSubmitedBy(currentUser.getId());
+				serviceReport.setSubmittedBy(currentUser.getId());
 				serviceReportsManager.saveServiceReportForVerification(serviceReport);
 			}
 		} else {
 			serviceReport.setSubmittedOn(new Date());
-			serviceReport.setSubmitedBy(currentUser.getId());
+			serviceReport.setSubmittedBy(currentUser.getId());
 			serviceReportsManager.submitReport(serviceReport);
 		}
 	}

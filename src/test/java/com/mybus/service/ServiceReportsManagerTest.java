@@ -227,9 +227,64 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             assertEquals(100, serviceReport.getServiceExpense().getPaidLuggage(), 0.0);
             assertEquals(100, serviceReport.getServiceExpense().getDriverSalary1(), 0.0);
             assertEquals(0, serviceReport.getServiceExpense().getDriverSalary2(), 0.0);
-
         }
 
+    }
+
+
+    @Test
+    public void testFormSubmit(){
+        ServiceReport serviceReport = new ServiceReport();
+        serviceReport.setJourneyDate(new Date());
+        for(int i=0; i<3; i++) {
+            Booking booking = new Booking();
+            booking.setSeats("D"+i+",E"+i);
+            booking.setNetAmt(2500);
+            if(i ==2){
+                booking.setDue(true);
+            } else {
+                serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+            }
+            serviceReport.getBookings().add(bookingDAO.save(booking));
+        }
+        serviceReport = serviceReportDAO.save(serviceReport);
+        User user = userDAO.save(UserTestService.createNew());
+        sessionManager.setCurrentUser(user);
+        serviceReport.setStatus(ServiceStatus.SUBMITTED);
+        serviceReportsManager.submitReport(serviceReport);
+        user = userDAO.findOne(user.getId());
+        assertEquals(5000, user.getAmountToBePaid(), 0.0);
+        User verifyingUser = userDAO.save(UserTestService.createNew());
+    }
+
+
+    @Test
+    public void testFormVerification(){
+        ServiceReport serviceReport = new ServiceReport();
+        serviceReport.setJourneyDate(new Date());
+        for(int i=0; i<3; i++) {
+            Booking booking = new Booking();
+            booking.setSeats("D"+i+",E"+i);
+            booking.setNetAmt(2500);
+            if(i ==2){
+                booking.setDue(true);
+            } else {
+                serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+            }
+            serviceReport.getBookings().add(bookingDAO.save(booking));
+        }
+        serviceReport = serviceReportDAO.save(serviceReport);
+        User user = userDAO.save(UserTestService.createNew());
+        serviceReport.setStatus(ServiceStatus.SUBMITTED);
+        serviceReport.setSubmittedBy(user.getId());
+        User verifyingUser = userDAO.save(UserTestService.createNew());
+        sessionManager.setCurrentUser(verifyingUser);
+        serviceReportsManager.submitReport(serviceReport);
+        user = userDAO.findOne(user.getId());
+        verifyingUser = userDAO.findOne(verifyingUser.getId());
+
+        assertEquals(5000, user.getAmountToBePaid(), 0.0);
+        assertEquals(0, verifyingUser.getAmountToBePaid(), 0.0);
     }
 
 

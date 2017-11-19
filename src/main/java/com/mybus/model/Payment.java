@@ -42,6 +42,8 @@ public class Payment extends AbstractDocument {
     private String bookingId;
     private String cashTransferRef;
     private Date duePaidOn;
+    //for service reports we need to find out the user who submmitted it
+    private String submittedBy;
     public Payment() {
         //this.status = STATUS_PENDING;
     }

@@ -108,7 +108,7 @@ public class ServiceReportsManager {
         query.put(ServiceReport.JOURNEY_DATE, date);
         List<ServiceReport> reports = IteratorUtils.toList(
                 serviceReportMongoDAO.findReports(query, null).iterator());
-        serviceUtils.fillInUserNames(reports);
+        serviceUtils.fillInUserNames(reports, ServiceReport.SUBMITTED_BY);
         return reports;
     }
 
@@ -160,6 +160,8 @@ public class ServiceReportsManager {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
         serviceReport.setNetCashIncome(0);
+        //need to set this for update balance of the submitted user but not the verified user
+        serviceForm.setSubmittedBy(serviceReport.getSubmittedBy());
         serviceForm.setServiceReportId(serviceReport.getId());
         serviceForm.setServiceNumber(serviceReport.getServiceNumber());
         serviceForm.setServiceName(serviceReport.getServiceName());
@@ -170,7 +172,7 @@ public class ServiceReportsManager {
         //save the service expense
         ServiceExpense serviceExpense = serviceReport.getServiceExpense();
         serviceExpenseManager.updateFromServiceReport(serviceExpense);
-        if(serviceReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
+        if(serviceReport.getStatus() != null && serviceReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
             Map<String, List<String>> seatBookings = new HashMap<>();
             Booking redbusBooking = new Booking();
             redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
@@ -318,7 +320,11 @@ public class ServiceReportsManager {
         serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
         serviceForm.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         serviceForm.setBookings(IteratorUtils.toList(bookings.iterator()));
-        serviceForm.getAttributes().put("createdBy", userManager.getUser(serviceForm.getCreatedBy()).getFullName());
+        if(serviceForm.getSubmittedBy() != null) {
+            serviceForm.getAttributes().put("submittedBy", userManager.getUser(serviceForm.getSubmittedBy()).getFullName());
+        } else {
+            serviceForm.getAttributes().put("submittedBy", userManager.getUser(serviceForm.getCreatedBy()).getFullName());
+        }
         return serviceForm;
     }
 
