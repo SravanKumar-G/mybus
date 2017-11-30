@@ -157,27 +157,6 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 if (angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.payments = response.content;
-                    branchOfficeManager.loadNames(function (data) {
-                        $scope.branches = data;
-                        $scope.totalExpense = 0;
-                        $scope.totalIncome = 0;
-                        angular.forEach($scope.payments, function (payment) {
-                            if (payment.type=='EXPENSE'){
-                                $scope.totalExpense = $scope.totalExpense + payment.amount;
-                            }
-                            else if(payment.type=='INCOME') {
-                                $scope.totalIncome = $scope.totalIncome + payment.amount;
-                            }
-                            else{
-                                console.log('error')
-                            }
-                            angular.forEach($scope.branches, function (branchOffice) {
-                                if (branchOffice.id == payment.branchOfficeId) {
-                                    payment.attributes.branchOfficeId = branchOffice.name;
-                                }
-                            })
-                        })
-                    });
                 }
                 tableParams.total(response.totalElements);
                 $scope.count = response.totalElements;

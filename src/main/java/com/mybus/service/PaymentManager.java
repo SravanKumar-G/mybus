@@ -108,11 +108,12 @@ public class PaymentManager {
         Payment payment = new Payment();
         payment.setAmount(serviceForm.getNetCashIncome());
         payment.setServiceFormId(serviceForm.getId());
+
+        //need to set this for updating the balance for verified forms
         payment.setSubmittedBy(serviceForm.getSubmittedBy());
         if(deleteForm){
             payment.setType(PaymentType.EXPENSE);
             payment.setDescription("Service form refresh");
-
         } else {
             payment.setType(PaymentType.INCOME);
             payment.setDescription("Service form: "+ serviceForm.getServiceName());
@@ -130,6 +131,7 @@ public class PaymentManager {
         }
         paymentDAO.delete(payment);
     }
+
     public Page<Payment> findPayments(JSONObject query, Pageable pageable) {
         List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
         long count =  paymentMongoDAO.count(query);

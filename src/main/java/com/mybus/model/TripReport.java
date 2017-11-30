@@ -21,11 +21,13 @@ public class TripReport extends AbstractDocument {
     private String startServiceReportId;
     private Date endDate;
     private String endServiceReportId;
+
     private String vehicleRegNumber;
+
     private double startAdvance;
     private String startAdvanceGivenBy;
     private double extraAdvance;
-    private String exraAdvanceGivenBy;
+    private String extraAdvanceGivenBy;
     private List<FuelLoadEntry> fuelLoadEntries;
     private List<String> staffIds;
     private List<Payment> expenses;

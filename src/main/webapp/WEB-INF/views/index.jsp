@@ -77,12 +77,6 @@
 
         <nav class="navbar navbar-default panel_heading_background ng-scope" role="navigation" ng-controller="headerNavBarhomeCtrl">
             <div class="navbar-header">
-                <!-- ngIf: general_operater -->
-                <!--<div class="pull-left ng-scope" ng-if="general_operater">
-                    <a href="" ui-sref-active="active" ng-click="redirectToHome()">
-                        <img ng-src="library/images/srikrishna.jpg" class="img-responsive image_logo" alt="Responsive image" src="library/images/srikrishna.jpg">
-                    </a>
-                </div> --> <!-- end ngIf: general_operater -->
                 <a class="navbar-brand" href="index.html" title="HOME"><i class="fa fa-bus"></i> Sri Krishna <span>travels</span></a>
             </div>
             
@@ -205,6 +199,7 @@
                                 <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
+                                <my-menu url="tripReports" label="TripReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="FuelExpenseReports" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
