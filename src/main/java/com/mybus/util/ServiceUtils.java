@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -76,7 +77,7 @@ public class ServiceUtils {
      * @param abstractDocuments  list of mongo documents which requires usernames to be populated with
      * @param fieldName name of the field to look up the userId from
      */
-    public void fillInUserNames(List abstractDocuments, String fieldName) {
+    public void fillInUserNames(List abstractDocuments, String fieldName) throws IOException {
         for(Object abstractDocument: abstractDocuments){
             fillInUserNames((AbstractDocument) abstractDocument, fieldName);
         }
@@ -91,12 +92,14 @@ public class ServiceUtils {
         fillInUsername(abstractDocument, abstractDocument.getUpdatedBy(), "updatedBy");
     }
 
-    public void fillInUserNames(AbstractDocument abstractDocument,String fieldName) {
+    public void fillInUserNames(AbstractDocument abstractDocument,String fieldName) throws IOException {
         try {
             JSONObject jsonObject = objectMapper.readValue(objectMapper.writeValueAsString(abstractDocument), JSONObject.class);
-            fillInUsername(abstractDocument, jsonObject.get(fieldName).toString(), fieldName);
+            if(jsonObject.get(fieldName) != null) {
+                fillInUsername(abstractDocument, jsonObject.get(fieldName).toString(), fieldName);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
 
     }

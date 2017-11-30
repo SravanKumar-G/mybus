@@ -35,7 +35,7 @@ public class TripReportManager {
 
 	enum TripReportStatus {
 		CLOSED,
-		CANCLED,
+		CANCELED,
 		STARTED;
 		@Override
 		public String toString() {

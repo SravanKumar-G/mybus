@@ -87,7 +87,7 @@ public class ServiceReportController {
 			return serviceReportsManager.getReports(ServiceConstants.df.parse(travelDate));
 		}catch (Exception e) {
 			e.printStackTrace();
-			throw new BadRequestException("Error loading reports");
+			throw new BadRequestException("Error loading reports", e);
 		}
 	}
 

@@ -37,7 +37,7 @@ public class SchedulerService {
     @Autowired
     private ServiceReportMongoDAO serviceReportMongoDAO;
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 5 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void checkExpiryDates () {
         logger.info("checking expiry date..." + systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));
@@ -58,7 +58,7 @@ public class SchedulerService {
     }
 
 
-    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 0 2 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void checkServiceReportsReview () throws ParseException {
         Map<String, Object> context = new HashMap<>();

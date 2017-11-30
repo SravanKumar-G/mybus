@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -103,7 +104,7 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public List<ServiceReport> getReports(Date date) {
+    public List<ServiceReport> getReports(Date date) throws IOException {
         JSONObject query = new JSONObject();
         query.put(ServiceReport.JOURNEY_DATE, date);
         List<ServiceReport> reports = IteratorUtils.toList(
