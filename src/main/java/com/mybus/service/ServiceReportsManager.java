@@ -246,7 +246,6 @@ public class ServiceReportsManager {
             serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
             serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
             serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());
-            //branchOfficeMongoDAO.updateCashBalance(currentUser.getBranchOfficeId(), serviceForm.getNetCashIncome());
             serviceForm.setNetIncome(serviceReport.getNetRedbusIncome() + serviceReport.getNetOnlineIncome() + cashIncome);
             serviceForm.setSource(serviceReport.getSource());
             serviceForm.setDestination(serviceReport.getDestination());

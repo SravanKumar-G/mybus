@@ -27,7 +27,6 @@ public class Payment extends AbstractDocument {
     public static final String BRANCHOFFICEID = "branchOfficeId";
 
     private Date date;
-    private String dateStr;
     private String name;
     private int index;
     private String description;

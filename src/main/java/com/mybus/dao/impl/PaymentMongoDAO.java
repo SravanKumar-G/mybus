@@ -216,18 +216,17 @@ public class PaymentMongoDAO {
         	throw new BadRequestException("Exception preparing payment query", e);
         }
         List<Criteria> match = new ArrayList<>();
-        List<Criteria> matchOr = new ArrayList<>();
-
         Criteria criteria = new Criteria();
-        match.add(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()));
-        //match.add(Criteria.where("date").gte(startDate).lt(endDate));
-        //add the service forms as well
-        //get current office employees
+        //show the submitted form payments as well
+        match.add(
+                Criteria.where("date").gte(startDate).lt(endDate)
+                        .orOperator(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()),
+                Criteria.where("submittedBy").is(sessionManager.getCurrentUser().getId())));
+
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
         //skip form expenses
         match.add(Criteria.where("formId").exists(false));
         match.add(Criteria.where("status").ne(Payment.STATUS_PENDING));
-        //criteria.orOperator(Criteria.where("createdBy").in());
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return q;
