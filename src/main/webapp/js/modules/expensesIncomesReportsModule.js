@@ -157,6 +157,19 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
                 if (angular.isArray(response.content)) {
                     $scope.loading = false;
                     $scope.payments = response.content;
+                    $scope.totalExpense = 0;
+                    $scope.totalIncome = 0;
+                    angular.forEach($scope.payments, function (payment) {
+                        if (payment.type=='EXPENSE'){
+                            $scope.totalExpense = $scope.totalExpense + payment.amount;
+                        }
+                        else if(payment.type=='INCOME') {
+                            $scope.totalIncome = $scope.totalIncome + payment.amount;
+                        }
+                        else{
+                            console.log('Unknown payment type')
+                        }
+                    })
                 }
                 tableParams.total(response.totalElements);
                 $scope.count = response.totalElements;
