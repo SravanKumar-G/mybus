@@ -20,6 +20,7 @@
     <tr ng-repeat="vehicle in currentPageOfVehicles | filter:searchText" ng-class="vehicle.active?'':'bg-danger'">
         <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-2">{{ vehicle.vehicleType }}</td>
         <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-2">{{ vehicle.regNo }}</td>
+        <td data-title="'Chasis #'" sortable="'chasisNumber'" class="clickable-item col-md-2">{{ vehicle.chasisNumber }}</td>
         <td data-title="'Permit Exipry'" class="clickable-item col-md-2">{{ vehicle.permitExpiry|date }}</td>
         <td data-title="'Fitness Exipry'" class="clickable-item col-md-2">{{ vehicle.fitnessExpiry|date }}</td>
         <td data-title="'Insurance Exipry'" class="clickable-item col-md-2">{{ vehicle.insuranceExpiry|date }}</td>
