@@ -218,10 +218,9 @@ public class PaymentMongoDAO {
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
         //show the submitted form payments as well
-        match.add(
-                Criteria.where("date").gte(startDate).lt(endDate)
-                        .orOperator(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId()),
-                Criteria.where("submittedBy").is(sessionManager.getCurrentUser().getId())));
+        //match.add(Criteria.where("date").gte(startDate).lt(endDate));
+        match.add(new Criteria().orOperator(Criteria.where("createdBy").is(sessionManager.getCurrentUser().getId())
+                ,Criteria.where("submittedBy").is(sessionManager.getCurrentUser().getId())));
 
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
         //skip form expenses
