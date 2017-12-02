@@ -46,7 +46,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             $location.url('payments');
         }
     })
-    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
+    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, dueReportManager, branchOfficeManager, userManager, NgTableParams, $filter, $location) {
         $scope.headline = "Office Due Report";
         $scope.currentPageOfDues = [];
         $scope.officeId = $stateParams.id;
@@ -54,7 +54,10 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.officeDue = {};
         $scope.startDate = new Date();
         $scope.endDate = new Date();
-
+        $scope.offices = [];
+        branchOfficeManager.loadNames(function (data) {
+            $scope.offices = data;
+        });
         var pageable ;
         var loadTableDataByDate = function (tableParams) {
             $scope.loading = true;
