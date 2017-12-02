@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -232,5 +233,15 @@ public class DueReportManager {
             result.get(booking.getBookedBy()).add(booking);
         });
         return result;
+    }
+
+    public List<Booking> searchDues(String start, String end, String branchOfficeId) throws ParseException {
+        List<String> namesList = null;
+        if(branchOfficeId != null) {
+            namesList = agentMongoDAO.findAgentNamesByOfficeId(branchOfficeId);
+        }
+        List<Booking> dues = bookingMongoDAO.findDueBookings(ServiceConstants.df.parse(start), ServiceConstants.df.parse(end),
+                namesList);
+        return dues;
     }
 }

@@ -230,4 +230,15 @@ public class BookingMongoDAO {
         return bookings;
     }
 
+    public List<Booking> findDueBookings(Date start, Date end, List<String> bookedBy) {
+        final Query query = new Query();
+        if(bookedBy != null && bookedBy.size() != 0){
+            query.addCriteria(where("bookedBy").in(bookedBy));
+        }
+        query.addCriteria(where("due").is(true));
+        query.addCriteria(where("journeyDate").gte(start).lte(end));
+        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        return bookings;
+    }
+
 }

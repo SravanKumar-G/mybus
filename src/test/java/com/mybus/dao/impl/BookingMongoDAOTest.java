@@ -113,16 +113,7 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
     public void testFindOfficeDuesByService() {
         BranchOffice branchOffice1 = branchOfficeDAO.save(new BranchOffice());
         BranchOffice branchOffice2 = branchOfficeDAO.save(new BranchOffice());
-        for(int i=0; i<21; i++) {
-            Agent agent = new Agent();
-            if(i%2 == 0) {
-                agent.setBranchOfficeId(branchOffice1.getId());
-            } else {
-                agent.setBranchOfficeId(branchOffice2.getId());
-            }
-            agent.setUsername("agent" + i);
-            agentDAO.save(agent);
-        }
+        createTestAgents(branchOffice1, branchOffice2);
         for(int i=0; i<21; i++) {
             Booking booking = new Booking();
             booking.setName("bookingName"+i);
