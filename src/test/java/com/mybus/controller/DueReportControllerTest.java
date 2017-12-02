@@ -118,7 +118,7 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
         actions = mockMvc.perform(asUser(get("/api/v1/dueReport/search?startDate="+startDate+"&endDate="+endDate+"&branchOfficeId="+branchOffice2.getId()), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+        actions.andExpect(jsonPath("$", Matchers.hasSize(7)));
 
 
     }
