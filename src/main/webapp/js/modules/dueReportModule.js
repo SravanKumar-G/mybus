@@ -52,6 +52,9 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.officeId = $stateParams.id;
         $scope.loading = false;
         $scope.officeDue = {};
+        $scope.startDate = new Date();
+        $scope.endDate = new Date();
+
         var pageable ;
         var loadTableDataByDate = function (tableParams) {
             $scope.loading = true;
@@ -138,6 +141,12 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         }
         $scope.showDueReportByAgent = function(agentName) {
             $location.url('officeduereportbyagent/'+agentName);
+        }
+        $scope.dueBookings = [];
+        $scope.search = function(){
+            dueReportManager.searchDues($scope.startDate, $scope.endDate, $scope.branchOfficeId,function(data){
+                $scope.dueBookings = data;
+            });
         }
     })
     .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
@@ -368,13 +377,25 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     });
             },
             payBooking:function(id, callback) {
-
                 $http.put('/api/v1/dueReport/payBookingDue/'+id)
                     .then(function (response) {
                         $rootScope.$broadcast('ReloadOfficeDueReport');
                         callback(response.data);
                     },function (error) {
                         $log.debug("error paying a booking");
+                        sweetAlert("Error",err.data.message,"error");
+                    });
+
+            },
+            searchDues:function(startDate, endDate, branchOfficeId, callback) {
+                var st = startDate.getFullYear()+"-"+[startDate.getMonth()+1]+"-"+startDate.getDate();
+                var end = endDate.getFullYear()+"-"+[endDate.getMonth()+1]+"-"+endDate.getDate();
+
+                $http.get('/api/v1/dueReport/search?startDate='+st+'&endDate='+end+"&branchOfficeId="+ branchOfficeId)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error finding due report");
                         sweetAlert("Error",err.data.message,"error");
                     });
 

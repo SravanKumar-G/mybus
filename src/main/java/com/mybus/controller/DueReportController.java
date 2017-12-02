@@ -3,6 +3,7 @@ package com.mybus.controller;
 import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Booking;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.BranchOfficeDue;
 import com.mybus.service.BookingManager;
 import com.mybus.service.DueReportManager;
@@ -18,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.print.Book;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +73,19 @@ public class DueReportController extends MyBusBaseController{
                                               @PathVariable(value = "date", required = true) String date,
                                               final Pageable pageable) {
         return dueReportManager.getOfficeDuesByDate(id, date);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/search", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Search DueReport", response = BranchOfficeDue.class )
+    public List<Booking> searchDues(HttpServletRequest request,
+                                 @ApiParam(value = "Start date in yyyy/mm/dd format")
+                                         @RequestParam(value = "startDate", required = true) final String startDate,
+                                 @ApiParam(value = "End date in yyyy/mm/dd format")
+                                         @RequestParam(value = "endDate", required = true) final String endDate,
+                                 @RequestParam(value = "branchOfficeId", required = false) final String branchOfficeId)
+            throws ParseException {
+        return dueReportManager.searchDues(startDate, endDate, branchOfficeId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

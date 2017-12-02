@@ -53,10 +53,10 @@ public class SchedulerService {
             context.put("pollutionExpiring", vehicles.stream().filter(v -> v.getPollutionExpiry().isBefore(calendar.getTime().getTime())).collect(Collectors.toList()));
             context.put("insuranceExpiring", vehicles.stream().filter(v -> v.getInsuranceExpiry().isBefore(calendar.getTime().getTime())).collect(Collectors.toList()));
             String content = velocityEngineService.trasnform(context, VelocityEngineService.EXPIRING_DOCUMENTS_TEMPLATE);
+            logger.info("Sending email for notifying expiring documents ...");
             emailSender.sendExpiringNotifications(content);
         }
     }
-
 
     @Scheduled(cron = "0 0 2 * * *")
     //@Scheduled(fixedDelay = 50000)
