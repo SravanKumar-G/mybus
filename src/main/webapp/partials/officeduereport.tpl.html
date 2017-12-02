@@ -93,6 +93,7 @@
             <br/>
             <table class="table table-bordered table-condensed table-hover" ng-table="searchBookingsParams" id="dueSearchResults">
                 <tr ng-repeat="booking in dueBookings ">
+                    <td data-title="'BookedBy'" sortable="'bookedBy'" class="clickable-item col-md-1" >{{booking.bookedBy}}</td>
                     <td data-title="'Passenger'" class="clickable-item col-md-1" >{{booking.name}} {{booking.phoneNo}}</td>
                     <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1" >{{booking.seats }}</td>
                     <td data-title="'Service #'"  sortable="'service Number'" class="clickable-item col-md-1" >{{booking.serviceNumber }}</td>
