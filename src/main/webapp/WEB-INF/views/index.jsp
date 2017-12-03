@@ -218,6 +218,7 @@
                             </li>
                             <ul class="sub-menu collapse" id="checklist">
                                 <my-menu url="pendingreports" label="PendingReports" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu url="reportstobereviewed" label="ReportsToBeReviewed" class="nav navbar-nav  col-md-12"></my-menu>
                             </ul>
 
                             <li>

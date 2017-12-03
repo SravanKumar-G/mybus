@@ -113,7 +113,16 @@ public class ServiceReportController {
 			throw new BadRequestException("Error :Load pending reports ", e);
 		}
 	}
-
+	@RequestMapping(value = "serviceReport/toBeReviewed", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load pending reports", response = JSONObject.class)
+	public Iterable<ServiceReport> findReportsReportsToBeViewed(HttpServletRequest request) {
+		try{
+			return serviceReportMongoDAO.findReportsToBeReviewed(null);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new BadRequestException("Error :Load pending reports ", e);
+		}
+	}
 	@RequestMapping(value = "serviceReport/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service report", response = JSONObject.class)
 	public ServiceReport getServiceReport(HttpServletRequest request,

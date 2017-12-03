@@ -441,7 +441,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
     .controller('pendingReportController', function($scope, serviceReportsManager,NgTableParams,$filter,$location){
         $scope.headline = "Pending Reports";
-        $scope.currentPageOfPendingReports = [];
+        $scope.reports = [];
         var loadPendingData = function (tableParams, $defer) {
             serviceReportsManager.pendingReports(function(data){
                 $scope.pendingReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
@@ -449,7 +449,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 if (angular.isDefined($defer)) {
                     $defer.resolve($scope.pendingReports);
                 }
-                $scope.currentPageOfPendingReports = $scope.pendingReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                $scope.reports = $scope.pendingReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
             })
         };
 
@@ -469,7 +469,45 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     jdate: 'desc'
                 }
             }, {
-                total: $scope.currentPageOfPendingReports.length,
+                total: $scope.reports.length,
+                getData: function (params) {
+                    loadPendingData(params);
+                }
+            });
+        };
+        $scope.init();
+        $scope.$on('ReportDownloaded',function(e,value){
+            $scope.init();
+        });
+    }).controller('ReportsToBeReviewedController', function($scope, serviceReportsManager,NgTableParams,$filter,$location){
+        $scope.headline = "Reports To Be Reviewed";
+        $scope.reports = [];
+        var loadPendingData = function (tableParams, $defer) {
+            serviceReportsManager.reportsToBeReviewed(function(data){
+                $scope.reports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                tableParams.total($scope.reports.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve($scope.reports);
+                }
+            })
+        };
+        $scope.goToServiceReport = function(service) {
+            if(service.attributes.formId) {
+                $location.url('serviceform/' + service.attributes.formId);
+            } else {
+                $location.url('servicereport/' + service.id);
+            }
+        }
+        $scope.init = function() {
+            $scope.submitted = 0;
+            $scope.pendingTableParams = new NgTableParams({
+                page: 1,
+                count:9999,
+                sorting: {
+                    jdate: 'desc'
+                }
+            }, {
+                total: $scope.reports.length,
                 getData: function (params) {
                     loadPendingData(params);
                 }
@@ -522,6 +560,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading pending service reports");
+                    });
+            },
+            reportsToBeReviewed:function(callback) {
+                $http.get('/api/v1/serviceReport/toBeReviewed')
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        $log.debug("error loading toBeReviewed service reports");
                     });
             },
             getReport:function(id,callback) {
