@@ -62,17 +62,17 @@ public class SchedulerService {
     //@Scheduled(fixedDelay = 50000)
     public void checkServiceReportsReview () throws ParseException {
         Map<String, Object> context = new HashMap<>();
-        List<ServiceReport> reports = serviceReportMongoDAO.findPendingReports(null);
+        List<ServiceReport> reports = IteratorUtils.toList(serviceReportMongoDAO.findPendingReports(null).iterator());
         if(!reports.isEmpty()) {
             context.put("pendingReports", reports);
         }
-        reports = serviceReportMongoDAO.findReportsToBeReviewed(null);
+        reports = IteratorUtils.toList(serviceReportMongoDAO.findReportsToBeReviewed(null).iterator());
         if(!reports.isEmpty()) {
             context.put("reportsToBeReviewed", reports);
         }
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -2);
-        reports = serviceReportMongoDAO.findHaltedReports(calendar.getTime());
+        reports = IteratorUtils.toList(serviceReportMongoDAO.findHaltedReports(calendar.getTime()).iterator());
         if(!reports.isEmpty()) {
             context.put("haltedReports", reports);
         }

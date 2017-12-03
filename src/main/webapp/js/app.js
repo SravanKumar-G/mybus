@@ -178,6 +178,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/pendingReports.tpl.html',
                 controller: 'pendingReportController'
             })
+            .state('reportstobereviewed', {
+                level:2,
+                url:'/reportstobereviewed',
+                templateUrl: 'partials/pendingReports.tpl.html',
+                controller: 'ReportsToBeReviewedController'
+            })
             .state('servicecombo', {
                 level:2,
                 url:'/servicecombo',

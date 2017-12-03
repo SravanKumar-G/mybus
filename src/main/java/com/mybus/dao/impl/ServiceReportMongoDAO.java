@@ -42,30 +42,27 @@ public class ServiceReportMongoDAO {
         return reports;
     }
 
-    public List<ServiceReport> findPendingReports(final Pageable pageable) throws ParseException {
-        String startDate = systemProperties.getStringProperty("service.startDate", "2017-06-01");
-        Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("status").exists(false), Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
-        Query query = new Query(criteria);
-        query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
-        List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(query, ServiceReport.class).iterator());
-        return reports;
+    public Iterable<ServiceReport> findPendingReports(final Pageable pageable) throws ParseException {
+        return getServiceReports(null);
     }
-    public List<ServiceReport> findReportsToBeReviewed(final Pageable pageable) throws ParseException {
-        String startDate = systemProperties.getStringProperty("service.startDate", "2017-06-01");
-        Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("status").is(ServiceReport.ServiceReportStatus.REQUIRE_VERIFICATION),
-                Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
-        Query query = new Query(criteria);
-        query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
-        List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(query, ServiceReport.class).iterator());
-        return reports;
+    public Iterable<ServiceReport> findReportsToBeReviewed(final Pageable pageable) throws ParseException {
+        return getServiceReports(ServiceReport.ServiceReportStatus.REQUIRE_VERIFICATION.toString());
     }
 
-    public List<ServiceReport> findHaltedReports(Date date) {
+    public Iterable<ServiceReport> findHaltedReports(Date date) throws ParseException {
+        return getServiceReports(ServiceReport.ServiceReportStatus.HALT.toString());
+    }
+
+    private Iterable<ServiceReport> getServiceReports(String status) throws ParseException {
+        String startDate = systemProperties.getStringProperty("service.startDate", "2017-06-01");
         Criteria criteria = new Criteria();
-        criteria.andOperator(Criteria.where("status").is(ServiceReport.ServiceReportStatus.HALT),
-                Criteria.where("journeyDate").gte(date));
+        if(status == null){
+            criteria.andOperator(Criteria.where("status").exists(false),
+                    Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
+        } else {
+            criteria.andOperator(Criteria.where("status").is(status),
+                    Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
+        }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(query, ServiceReport.class).iterator());
