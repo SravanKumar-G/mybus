@@ -151,6 +151,21 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 $scope.dueBookings = data;
             });
         }
+        $scope.payBooking = function(bookingId, officeId, serviceNumber) {
+            swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, pay now!",
+                closeOnConfirm: true }, function() {
+                dueReportManager.payBooking(bookingId, function(data) {
+                    $rootScope.$broadcast('UpdateHeader');
+                    $scope.search();
+                },function (error) {
+                    sweetAlert("Oops...", "Error submitting the report", "error");
+                });
+            });
+        }
+
     })
     .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
         $scope.headline = "Office Due Report";

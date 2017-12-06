@@ -24,12 +24,13 @@ var myBus = angular.module('myBus', [
     'myBus.paginationService',
     'myBus.expensesIncomesReportsModule',
     'myBus.returnTicketsModule',
-        'myBus.bookingModule',
+    'myBus.bookingModule',
     'myBus.sequenceModule',
     'myBus.fuelExpenseReportModule',
     'myBus.invoiceModule',
     'myBus.gstFilters',
-    'myBus.fillingStations'
+    'myBus.fillingStations',
+    'myBus.tripReportsModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -357,39 +358,57 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/booking',
                 templateUrl: 'partials/booking-info.tpl.html',
                 controller: 'BookingController as bookingCtrl'
-            }).state('shipments',{
-            url:'/shipments',
-            templateUrl: 'partials/shipments.tpl.html',
-            controller: 'ShipmentsController'
-        }).state('shipment',{
-            url:'/shipment/:id',
-            templateUrl: 'partials/shipmentedit.tpl.html',
-            controller: 'EditShipmentController'
-        }).state('editshipment',{
-            url:'/shipment',
-            templateUrl: 'partials/shipmentedit.tpl.html',
-            controller: 'EditShipmentController'
-        }).state('branchoffices',{
-            url:'/branchoffices',
-            templateUrl: 'partials/branchOffices.tpl.html',
-            controller: 'BranchOfficesController'
-        }).state('branchoffice',{
-            url:'/branchoffice/:id',
-            templateUrl: 'partials/branchOfficeEdit.tpl.html',
-            controller: 'EditBranchOfficeController'
-        }).state('editbranchoffice',{
-            url:'/branchoffice',
-            templateUrl: 'partials/branchOfficeEdit.tpl.html',
-            controller: 'EditBranchOfficeController'
-        }).state('gstfilters',{
-            url:'/gstfilters',
-            templateUrl: 'partials/gstFilters.tpl.html',
-            controller: 'GSTFiltersController'
-        }).state('fillingstations',{
-            url:'/fillingstations',
-            templateUrl: 'partials/fillingStations.tpl.html',
-            controller: 'FillingStationsController'
-        });
+            })
+            .state('shipments',{
+                url:'/shipments',
+                templateUrl: 'partials/shipments.tpl.html',
+                controller: 'ShipmentsController'
+            })
+            .state('shipment',{
+                url:'/shipment/:id',
+                templateUrl: 'partials/shipmentedit.tpl.html',
+                controller: 'EditShipmentController'
+            })
+            .state('editshipment',{
+                url:'/shipment',
+                templateUrl: 'partials/shipmentedit.tpl.html',
+                controller: 'EditShipmentController'
+            })
+            .state('branchoffices',{
+                url:'/branchoffices',
+                templateUrl: 'partials/branchOffices.tpl.html',
+                controller: 'BranchOfficesController'
+            })
+            .state('branchoffice',{
+                url:'/branchoffice/:id',
+                templateUrl: 'partials/branchOfficeEdit.tpl.html',
+                controller: 'EditBranchOfficeController'
+            })
+            .state('editbranchoffice',{
+                url:'/branchoffice',
+                templateUrl: 'partials/branchOfficeEdit.tpl.html',
+                controller: 'EditBranchOfficeController'
+            }).state('gstfilters',{
+                url:'/gstfilters',
+                templateUrl: 'partials/gstFilters.tpl.html',
+                controller: 'GSTFiltersController'
+            })
+            .state('fillingstations',{
+                url:'/fillingstations',
+                templateUrl: 'partials/fillingStations.tpl.html',
+                controller: 'FillingStationsController'
+            })
+            .state('tripreports',{
+                url:'/tripreports',
+                templateUrl: 'partials/tripReports.tpl.html',
+                controller: 'TripReportsController'
+            })
+            .state('tripreports/:date', {
+                level:2,
+                url:'/tripReports/:date',
+                templateUrl: 'partials/tripReports.tpl.html',
+                controller: 'TripReportsController'
+            });
         $urlRouterProvider.otherwise( '/');
     }]);
 
