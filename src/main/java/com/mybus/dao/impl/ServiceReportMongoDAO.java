@@ -65,6 +65,9 @@ public class ServiceReportMongoDAO {
         }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
+        query.fields().exclude("bookings");
+        query.fields().exclude("expenses");
+        query.fields().exclude("serviceExpense");
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(query, ServiceReport.class).iterator());
         return reports;
     }
