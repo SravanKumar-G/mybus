@@ -79,7 +79,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                         fullName: 'asc'
                     },
                 }, {
-                    counts:[],
+                    counts:[10,50,100],
                     total:expensesCount,
                     getData: function (params) {
                         loadPendingExpenses(params);
@@ -94,7 +94,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                         fullName: 'asc'
                     },
                 }, {
-                    counts:[],
+                    counts:[10,50,100],
                     total:count,
                     getData: function (params) {
                         loadApprovedExpenses(params);
