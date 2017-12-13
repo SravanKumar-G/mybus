@@ -78,7 +78,7 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public JSONObject downloadReport(String date) throws Exception {
+    public JSONObject downloadReports(String date) throws Exception {
         ServiceReportStatus status = reportService.downloadReports(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +37,9 @@ public class SchedulerService {
 
     @Autowired
     private ServiceReportMongoDAO serviceReportMongoDAO;
+
+    @Autowired
+    private ServiceReportsManager serviceReportsManager;
 
     @Scheduled(cron = "0 0 5 * * *")
     //@Scheduled(fixedDelay = 50000)
@@ -80,5 +84,11 @@ public class SchedulerService {
             String content = velocityEngineService.trasnform(context, VelocityEngineService.PENDING_SERVICEREPORTS_TEMPLATE);
             emailSender.sendServiceReportsToBeReviewed(content);
         }
+    }
+
+    @Scheduled(cron = "0 0 1 * * *")
+    //@Scheduled(fixedDelay = 50000)
+    public void downloadServiceReports () throws Exception {
+        serviceReportsManager.downloadReports(ServiceConstants.df.format(new Date()));
     }
 }

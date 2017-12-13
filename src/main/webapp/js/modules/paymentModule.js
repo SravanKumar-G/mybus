@@ -69,7 +69,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         createdAt: 'desc'
                     },
                 }, {
-                    counts:[],
+                    counts:[10,50,100],
                     total:paymentsCount,
                     getData: function (params) {
                         loadPendingPayments(params);
@@ -84,7 +84,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                         createdAt: 'desc'
                     },
                 }, {
-                    counts:[],
+                    counts:[10,50,100],
                     total:count,
                     getData: function (params) {
                         loadApprovedPayments(params);

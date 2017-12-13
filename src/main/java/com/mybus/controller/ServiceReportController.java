@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -49,7 +48,7 @@ public class ServiceReportController {
 	public JSONObject downloadReports(HttpServletRequest request,
 										@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
-			return serviceReportsManager.downloadReport(travelDate);
+			return serviceReportsManager.downloadReports(travelDate);
 		}catch (Exception e) {
 			throw new BadRequestException("Error downloading reports");
 		}
