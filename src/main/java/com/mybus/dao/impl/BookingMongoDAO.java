@@ -8,6 +8,7 @@ import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
+import com.mybus.model.Invoice;
 import org.scribe.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,8 +215,11 @@ public class BookingMongoDAO {
         return bookings;
     }
 
-    public List<Booking> findBookings(Date start, Date end, List<String> bookedBy) {
+    public Invoice findBookingsInvoice(Date start, Date end, List<String> bookedBy) {
+        Invoice invoice = new Invoice();
         final Query query = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
         if(bookedBy != null && bookedBy.size() != 0 && bookedBy.size() !=3){
             List<String> channels = new ArrayList<>();
             for(String name: bookedBy) {
@@ -223,12 +227,24 @@ public class BookingMongoDAO {
                     channels.add("ABHIBUS");
                 }
             }
-            query.addCriteria(where("bookedBy").in(bookedBy));
+            match.add(where("bookedBy").in(bookedBy));
         }
-        query.addCriteria(where("journeyDate").gte(start).lte(end));
-        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
-        return bookings;
+        match.add(where("journeyDate").gte(start).lte(end));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        query.addCriteria(criteria);
+        invoice.setBookings(mongoTemplate.find(query, Booking.class));
+         Aggregation agg = newAggregation(
+                match(criteria),
+                group().sum("netAmt").as("bookingTotal").sum("serviceTax").as("totalTax"));
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
+        List<BasicDBObject> result = groupResults.getMappedResults();
+        invoice.setTotalTax(result.get(0).getDouble("totalTax"));
+        invoice.setTotalSale(result.get(0).getDouble("bookingTotal"));
+        return invoice;
     }
+
+
 
     public List<Booking> findDueBookings(Date start, Date end, List<String> bookedBy) {
         final Query query = new Query();

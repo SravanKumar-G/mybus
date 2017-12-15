@@ -95,10 +95,6 @@ for(i in serviceForms) {
             print('Wrong status for service report  ' + serviceForm.serviceReportId +'   found form ' + serviceForm._id.str);
             serviceReport.status = "SUBMITTED";
             serviceReport.attrs.formId = serviceForm._id.str;
-            db.serviceReport.update( { _id: ObjectId("59d53e13e4b01bd7b6cc133e")},
-                { $set:
-                    {"attrs.formId": "59d53f1fe4b01bd7b6cc135c"}
-                });
         }
 	}
 }
