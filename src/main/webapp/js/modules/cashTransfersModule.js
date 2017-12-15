@@ -2,19 +2,14 @@
 /*global angular, _*/
 
 angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
-    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager, branchOfficeManager){
+    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager){
         $scope.loading = false;
         $scope.approvedCashTransfers=[];
         $scope.pendingCashTransfers=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
         $scope.user = userManager.getUser();
-        branchOfficeManager.loadNames(function(data) {
-            $scope.offices = data;
-        });
-        userManager.getUserNames(function (data) {
-            $scope.members = data;
-        });
+
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {
             var user = userManager.getUser();
@@ -30,21 +25,12 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             });
             cashTransferManager.pendingCashTransfers(pageable).then(function(response) {
                 let pendingCashTransfers = response[0].data.content;
-                let userNames = response[2].data;
+                let userNames = response[1].data;
                 if (angular.isArray(pendingCashTransfers)) {
                     $scope.loading = false;
                     $scope.pendingCashTransfers = pendingCashTransfers;
-                    $scope.branches = response[1].data;
                     angular.forEach($scope.pendingCashTransfers, function (cashTransfer) {
-                        angular.forEach($scope.branches, function (branchOffice) {
-                            if (branchOffice.id == cashTransfer.fromOfficeId) {
-                                cashTransfer.attributes.fromOfficeId = branchOffice.name;
-                            }
-                            if (branchOffice.id == cashTransfer.toOfficeId) {
-                                cashTransfer.attributes.toOfficeId = branchOffice.name;
-                            }
-                            cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
-                        })
+                        cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
                     });
                     $scope.loading = false;
                     tableParams.total(response[0].data.totalElements);
@@ -61,21 +47,12 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             });
             cashTransferManager.approvedCashTransfers(pageable).then(function(response) {
                 let approvedCashTransfers = response[0].data.content;
-                let userNames = response[2].data;
+                let userNames = response[1].data;
                 if (angular.isArray(approvedCashTransfers)) {
                     $scope.loading = false;
                     $scope.approvedCashTransfers = approvedCashTransfers;
-                    $scope.branches = response[1].data;
                     angular.forEach($scope.approvedCashTransfers, function (cashTransfer) {
-                        angular.forEach($scope.branches, function (branchOffice) {
-                            if (branchOffice.id == cashTransfer.fromOfficeId) {
-                                cashTransfer.attributes.fromOfficeId = branchOffice.name;
-                            }
-                            if (branchOffice.id == cashTransfer.toOfficeId) {
-                                cashTransfer.attributes.toOfficeId = branchOffice.name;
-                            }
-                            cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
-                        })
+                        cashTransfer.attributes.createdBy = userNames[cashTransfer.createdBy];
                     });
                     $scope.loading = false;
                     tableParams.total(response[0].data.totalElements);
@@ -422,7 +399,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             pendingCashTransfers: function (pageable) {
                 var deferred = $q.defer();
                 $q.all([$http({url:'/api/v1/cashTransfer/pending/all',method:"GET", params: pageable}),
-                $http.get('/api/v1/branchOffice/names'),
                     $http.get('/api/v1/userNamesMap')]).then(
                     function(results) {
                         deferred.resolve(results)
@@ -438,7 +414,6 @@ angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
             approvedCashTransfers: function (pageable) {
                 var deferred = $q.defer();
                 $q.all([$http({url:'/api/v1/cashTransfer/nonpending/all',method:"GET", params: pageable}),
-                    $http.get('/api/v1/branchOffice/names'),
                     $http.get('/api/v1/userNamesMap')]).then(
                     function(results) {
                         deferred.resolve(results)

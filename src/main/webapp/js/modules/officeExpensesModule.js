@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, NgTableParams, officeExpensesManager, userManager, branchOfficeManager){
+    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, NgTableParams, officeExpensesManager, userManager){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
@@ -13,9 +13,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.approvedTotal = 0;
         var user = userManager.getUser();
         $scope.currentUser = user.fullName;
-        branchOfficeManager.loadNames(function(data) {
-            $scope.offices = data;
-        });
+
         userManager.getUserNames(function (data) {
             $scope.members = data;
         });
@@ -262,7 +260,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             $scope.searchInit();
         }
     })
-    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager, branchOfficeManager,expenseId) {
+    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
@@ -278,9 +276,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
         $scope.today();
         $scope.expenseTypes = [];
-        branchOfficeManager.loadNames(function (data) {
-            $scope.offices = data;
-        });
+
         officeExpensesManager.loadExpenseTypes(function (data) {
             $scope.expenseTypes = data.data;
         });

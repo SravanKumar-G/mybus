@@ -361,13 +361,12 @@ public class ServiceReportsManager {
         return bookingDAO.findOne(bookingId);
     }
 
-    public Invoice findBookings(JSONObject query) {
-        Invoice invoice = new Invoice();
+    public Invoice findBookingsInvoice(JSONObject query) {
+        Invoice invoice = null;
         try {
-            List<Booking> bookings = bookingMongoDAO.findBookings(
+            invoice = bookingMongoDAO.findBookingsInvoice(
                     ServiceUtils.parseDate(query.get("startDate").toString(), false),
                     ServiceUtils.parseDate(query.get("endDate").toString(), true), ((List<String>)query.get("channel")));
-            invoice.setBookings(bookings);
         } catch (ParseException e) {
             e.printStackTrace();
         }
