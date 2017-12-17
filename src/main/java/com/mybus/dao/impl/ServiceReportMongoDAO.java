@@ -43,25 +43,28 @@ public class ServiceReportMongoDAO {
     }
 
     public Iterable<ServiceReport> findPendingReports(final Pageable pageable) throws ParseException {
-        return getServiceReports(null);
+        return getServiceReports(null, null);
     }
     public Iterable<ServiceReport> findReportsToBeReviewed(final Pageable pageable) throws ParseException {
-        return getServiceReports(ServiceReport.ServiceReportStatus.REQUIRE_VERIFICATION.toString());
+        return getServiceReports(ServiceReport.ServiceReportStatus.REQUIRE_VERIFICATION.toString(), null);
     }
 
     public Iterable<ServiceReport> findHaltedReports(Date date) throws ParseException {
-        return getServiceReports(ServiceReport.ServiceReportStatus.HALT.toString());
+        return getServiceReports(ServiceReport.ServiceReportStatus.HALT.toString(), date);
     }
 
-    private Iterable<ServiceReport> getServiceReports(String status) throws ParseException {
-        String startDate = systemProperties.getStringProperty("service.startDate", "2017-06-01");
+    private Iterable<ServiceReport> getServiceReports(String status, Date date) throws ParseException {
+        Date startDate = ServiceConstants.df.parse(systemProperties.getStringProperty("service.startDate", "2017-06-01"));
+        if(date != null) {
+            startDate = date;
+        }
         Criteria criteria = new Criteria();
         if(status == null){
             criteria.andOperator(Criteria.where("status").exists(false),
-                    Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
+                    Criteria.where("journeyDate").gte(startDate));
         } else {
             criteria.andOperator(Criteria.where("status").is(status),
-                    Criteria.where("journeyDate").gte(ServiceConstants.df.parse(startDate)));
+                    Criteria.where("journeyDate").gte(startDate));
         }
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC,"journeyDate"));

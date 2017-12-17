@@ -55,10 +55,12 @@ public class ServiceExpenseManager {
         }
         serviceExpense.validate();
         ServiceReport serviceReport = serviceReportDAO.findOne(serviceExpense.getServiceReportId());
-        serviceExpense.getAttributes().put("to", serviceReport.getDestination());
-        serviceExpense.getAttributes().put("from", serviceReport.getSource());
-        serviceExpense.getAttributes().put("busType", serviceReport.getBusType());
-        serviceExpense.getAttributes().put("busType", serviceReport.getVehicleRegNumber());
+        if(serviceReport != null) {
+            serviceExpense.getAttributes().put("to", serviceReport.getDestination());
+            serviceExpense.getAttributes().put("from", serviceReport.getSource());
+            serviceExpense.getAttributes().put("busType", serviceReport.getBusType());
+            serviceExpense.getAttributes().put("VehicleNumber", serviceReport.getVehicleRegNumber());
+        }
         return serviceExpense;
     }
 
