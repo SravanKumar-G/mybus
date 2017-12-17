@@ -278,19 +278,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.submitted = 0;
         $scope.verified = 0;
         $scope.loading = true;
-        $scope.$watch('dt', function(newValue, oldValue) {
-            $scope.dateChanged();
-        });
 
-        $scope.dateChanged = function() {
-            if ($scope.dt >= $scope.tomorrow) {
-                swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else {
-                $scope.serviceReportByDate($scope.dt);
-                $scope.checkStatus();
-            }
-        }
+        $scope.$watch('dt', function(newValue, oldValue) {
+            $scope.serviceReportByDate($scope.dt);
+        });
 
         $scope.checkStatus = function() {
             $scope.parseDate();
@@ -333,9 +324,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             var currentUser = userManager.getUser();
             return currentUser.admin;
         }
-        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
+
 
         $scope.nextDay = function() {
             var dt = $scope.dt;
@@ -343,24 +332,16 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.dt.setTime(dt.getTime());//new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
             if($scope.dt >= $scope.tomorrow){
                 swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else{
+            } else{
                 $scope.serviceReportByDate($scope.dt);
-                $scope.init();
             }
         }
         $scope.previousDay = function() {
             var dt = $scope.dt;
             dt.setTime(dt.getTime() - 24 * 60 * 60 * 1000);
-            $scope.dt = dt;// new Date(dt.getFullYear(), dt.getUTCMonth() ,dt.getDate());
-            if($scope.dt >= $scope.tomorrow){
-                swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else{
-                $scope.serviceReportByDate($scope.dt);
-                $scope.init();
-            }
+            $scope.serviceReportByDate(dt);
         }
+
         var loadTableData = function (tableParams, $defer) {
             serviceReportsManager.loadReports($scope.date, function(data){
                 $scope.allReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
@@ -381,33 +362,9 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         var loadServicesData = function (tableParams, $defer) {
             serviceReportsManager.getServices($scope.date, function(data){
                 $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
+             })
+        };
 
-             })
-        };
-        var loadPassengerData = function (tableParams, $defer) {
-            serviceReportsManager.getPassengerReport($scope.date, $scope.serviceIds, function(data){
-                $scope.downloaded = true;
-                $scope.allReports = tableParams.sorting() ? $filter('orderBy')(data.data, tableParams.orderBy()) : data.data;
-                tableParams.total($scope.allReports.length);
-                if (angular.isDefined($defer)) {
-                    $defer.resolve($scope.allReports);
-                }
-                $scope.currentPageOfReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-                if( $scope.submitted == 0) {
-                    angular.forEach($scope.currentPageOfReports, function (service) {
-                        if (service.status == "SUBMITTED") {
-                            $scope.submitted = $scope.submitted + 1;
-                        }
-                    });
-                }
-                
-                $scope.currentPageOfReports = data.data;
-             })
-        };
-        $scope.getPassengerReport = function(serviceIds) {
-        	$scope.serviceIds = serviceIds;
-        	loadPassengerData($scope.serviceReportTableParams);
-        }
         $scope.init = function() {
             $scope.submitted = 0;
             $scope.serviceReportTableParams = new NgTableParams({
