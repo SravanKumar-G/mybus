@@ -154,17 +154,6 @@ public class ServiceReportController {
 		}
 	}
 
-	@RequestMapping(value = "serviceForm/bookings/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-	@ApiOperation(value ="Load one service form", response = JSONObject.class)
-	public Invoice findBookings(HttpServletRequest request,
-								@RequestBody final JSONObject query) {
-		try{
-			Invoice invoice = serviceReportsManager.findBookings(query);
-			return invoice;
-		}catch (Exception e) {
-			throw new BadRequestException("Error loading report ", e);
-		}
-	}
 
 	@RequestMapping(value = "serviceReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Submit service report", response = JSONObject.class)

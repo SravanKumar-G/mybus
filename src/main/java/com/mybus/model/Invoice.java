@@ -22,7 +22,7 @@ public class Invoice extends AbstractDocument{
     private Date from;
     private Date to;
     private double totalSale;
-    private double totalGST;
+    private double totalTax;
     public Invoice() {
 
     }

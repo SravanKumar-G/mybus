@@ -89,6 +89,8 @@ public class SchedulerService {
     @Scheduled(cron = "0 0 1 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void downloadServiceReports () throws Exception {
-        serviceReportsManager.downloadReports(ServiceConstants.df.format(new Date()));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)-1);
+        serviceReportsManager.downloadReports(ServiceConstants.df.format(calendar.getTime()));
     }
 }

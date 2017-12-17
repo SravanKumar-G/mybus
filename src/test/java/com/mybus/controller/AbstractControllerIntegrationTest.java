@@ -79,6 +79,7 @@ public abstract class AbstractControllerIntegrationTest {
             booking.setServiceNumber("ServiceNumber" + (i % 3));
             booking.setFormId("ServiceNumber" + (i % 3));
             booking.setNetAmt(200);
+            booking.setServiceTax(20);
             booking.setDue(true);
             booking.setJourneyDate(calendar.getTime());
             booking.setBookedBy("agent" + i);

@@ -44,9 +44,6 @@ public class AbhiBusPassengerReportService extends BaseService{
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
-    private SystemProperties systemProperties;
-
-    @Autowired
     private ServiceExpenseDAO serviceExpenseDAO;
 
 
@@ -56,10 +53,12 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @return
      * @throws Exception
      */
-    public List<Map<String, String>> getActiveServicesByDate(String date) throws Exception{
+    public List<Map<String, String>> getActiveServicesByDate(String date, boolean saveServiceReports) throws Exception{
         logger.info("loading reports for date:" + date);
         init();
-        Map<String, Map<String, String>> serviceReportsMap = new HashMap<>();
+        Map<String, Map<String, String>> serviceReportsInfoMap = new HashMap<>();
+        Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
+
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         Vector params = new Vector();
@@ -68,6 +67,7 @@ public class AbhiBusPassengerReportService extends BaseService{
         Object busList[] = null;
         Iterator it = busLists.entrySet().iterator();
         while (it.hasNext()) {
+            ServiceReport serviceReport = new ServiceReport();
             Map.Entry pair = (Map.Entry)it.next();
             busList = (Object[]) pair.getValue();
             for (Object busServ: busList) {
@@ -75,44 +75,62 @@ public class AbhiBusPassengerReportService extends BaseService{
                 Map<String, String> serviceInfo = new JSONObject();
                 if(busService.containsKey("ServiceId")){
                     serviceInfo.put("serviceId", busService.get("ServiceId").toString());
+                    serviceReport.setServiceId(busService.get("ServiceId").toString());
                 }
                 if(busService.containsKey("ServiceName")){
                     serviceInfo.put("serviceName", busService.get("ServiceName").toString());
+                    serviceReport.setServiceName(busService.get("ServiceName").toString());
                 }
                 if(busService.containsKey("ServiceNumber")){
                     serviceInfo.put("serviceNumber", busService.get("ServiceNumber").toString());
+                    serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
                 }
                 if(busService.containsKey("BusType")){
                     serviceInfo.put("busType", busService.get("BusType").toString());
+                    serviceReport.setBusType(busService.get("BusType").toString());
                 }
                 if(busService.containsKey("Service_Source")){
                     serviceInfo.put("source", busService.get("Service_Source").toString());
+                    serviceReport.setSource(busService.get("Service_Source").toString());
                 }
                 if(busService.containsKey("Service_Destination")){
                     serviceInfo.put("destination", busService.get("Service_Destination").toString());
+                    serviceReport.setDestination(busService.get("Service_Destination").toString());
                 }
                 if(busService.containsKey("Vehicle_No")){
                     serviceInfo.put("vehicleRegNumber", busService.get("Vehicle_No").toString());
+                    serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
                 }
-                serviceReportsMap.put(serviceInfo.get("serviceNumber"), serviceInfo);
+                serviceReportsMap.put(serviceInfo.get("serviceNumber"), serviceReport);
+                serviceReportsInfoMap.put(serviceInfo.get("serviceNumber"), serviceInfo);
             }
         }
         List<Map<String, String>> serviceReports = new ArrayList<>();
         Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
         for(Map.Entry<String, String[]> serviceCombo: serviceComboMappings.entrySet()){
-            Map<String, String> serviceReportInfo = serviceReportsMap.remove(serviceCombo.getKey());
+            Map<String, String> serviceReportInfo = serviceReportsInfoMap.remove(serviceCombo.getKey());
             if(serviceReportInfo != null){
                 for(String comboNumber: serviceCombo.getValue()){
                     String currentServiceIds = serviceReportInfo.get("serviceId");
-                    Map<String, String> comboService = serviceReportsMap.remove(comboNumber);
+                    Map<String, String> comboService = serviceReportsInfoMap.remove(comboNumber);
                     if(comboService != null) {
+                        logger.info("found combo service "+ serviceCombo);
                         serviceReportInfo.put("serviceId", currentServiceIds + "," + comboService.get("serviceId"));
                     }
                 }
                 serviceReports.add(serviceReportInfo);
             }
         }
-        serviceReports.addAll(serviceReportsMap.values());
+        serviceReports.addAll(serviceReportsInfoMap.values());
+        //Save the reports now, the passenger reports may not have the report data if no online booking is done
+
+        if(saveServiceReports) {
+            for(ServiceReport report: serviceReportsMap.values()){
+                if(serviceReportDAO.findByJourneyDateAndServiceId(report.getJourneyDate(), report.getServiceId()) == null) {
+                    serviceReportDAO.save(report);
+                }
+            }
+        }
         return serviceReports;
     }
 
@@ -181,6 +199,11 @@ public class AbhiBusPassengerReportService extends BaseService{
             serviceReport.setJourneyDate(journeyDate);
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceId(busService.get("ServiceId").toString());
+            }
+            ServiceReport downloadedReport = serviceReportDAO.findByJourneyDateAndServiceId
+                    (serviceReport.getJourneyDate(), serviceReport.getServiceId());
+            if(downloadedReport != null) {
+                serviceReport = downloadedReport;
             }
             if(busService.containsKey("ServiceName")){
                 serviceReport.setServiceName(busService.get("ServiceName").toString());
