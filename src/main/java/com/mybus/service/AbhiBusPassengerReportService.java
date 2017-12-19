@@ -58,7 +58,6 @@ public class AbhiBusPassengerReportService extends BaseService{
         init();
         Map<String, Map<String, String>> serviceReportsInfoMap = new HashMap<>();
         Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
-
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         Vector params = new Vector();
@@ -67,10 +66,11 @@ public class AbhiBusPassengerReportService extends BaseService{
         Object busList[] = null;
         Iterator it = busLists.entrySet().iterator();
         while (it.hasNext()) {
-            ServiceReport serviceReport = new ServiceReport();
             Map.Entry pair = (Map.Entry)it.next();
             busList = (Object[]) pair.getValue();
             for (Object busServ: busList) {
+                ServiceReport serviceReport = new ServiceReport();
+                serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
                 Map busService = (HashMap) busServ;
                 Map<String, String> serviceInfo = new JSONObject();
                 if(busService.containsKey("ServiceId")){
@@ -233,7 +233,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                 }
                 serviceReport.setConductorInfo(conductorInfo);
             }
-            ServiceReport savedReport = getByJourneyDateAndServiceNumber(serviceReport.getServiceNumber(), journeyDate);
+            /*ServiceReport savedReport = getByJourneyDateAndServiceNumber(serviceReport.getServiceNumber(), journeyDate);
             
             if(savedReport != null) {
                 if(savedReport.getStatus() != null) {
@@ -241,7 +241,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     //throw new BadRequestException("The report have been already submitted and can not redownloaded");
                 }
                 serviceReport = savedReport;
-            }
+            }*/
             Object[] passengerInfos = (Object[]) busService.get("PassengerInfo");
             for (Object info: passengerInfos) {
                 Map passengerInfo = (HashMap) info;
@@ -271,23 +271,16 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
                     //copy the cost to for verifying the difference
                     booking.setOriginalCost(booking.getNetAmt());
-
-                    if(savedReport != null) {
-                        Booking savedBooking = bookingDAO.findByTicketNo(booking.getTicketNo().trim());
-                        if(savedBooking == null) {
-                        	logger.info("found new booking");
-                            calculateServiceReportIncome(serviceReport, booking);
-                            serviceReport.getBookings().add(booking);
-                        } else {
-                            //refreshing the booking status
-                            if(!savedBooking.isHasValidAgent()) {
-                                savedBooking.setHasValidAgent(bookingTypeManager.hasValidAgent(savedBooking));
-                                bookingDAO.save(savedBooking);
-                            }
-                        }
-                    }else {
+                    Booking savedBooking = bookingDAO.findByTicketNo(booking.getTicketNo().trim());
+                    if(savedBooking == null) {
                         calculateServiceReportIncome(serviceReport, booking);
                         serviceReport.getBookings().add(booking);
+                    } else {
+                        //refreshing the booking status
+                        if(!savedBooking.isHasValidAgent()) {
+                            savedBooking.setHasValidAgent(bookingTypeManager.hasValidAgent(savedBooking));
+                            bookingDAO.save(savedBooking);
+                        }
                     }
                 }catch (Exception e) {
                     throw new BadRequestException("Failed downloading reports");
