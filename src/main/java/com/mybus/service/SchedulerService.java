@@ -86,7 +86,7 @@ public class SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0 1 * * *")
+   // @Scheduled(cron = "0 0 1 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void downloadServiceReports () throws Exception {
         Calendar calendar = Calendar.getInstance();
