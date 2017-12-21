@@ -394,6 +394,11 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 $location.url('servicereport/' + service.id);
             }
         }
+        $scope.getPassengerReport = function(serviceId){
+            serviceReportsManager.getPassengerReport($scope.dt, serviceId, function () {
+                console.log("Downloaded the report");
+            });
+        };
     })
 
     .controller('pendingReportController', function($scope, serviceReportsManager,NgTableParams,$filter,$location){
@@ -568,6 +573,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     $log.debug("error loading services for date");
                 });
             },getPassengerReport:function(date, serviceIds,callback) {
+
                 $http.get('api/v1/serviceReport/downloadServices?travelDate='+date+'&serviceNum='+serviceIds)
                 .then(function (response) {
                     callback(response.data);
