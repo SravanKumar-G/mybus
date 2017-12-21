@@ -22,13 +22,15 @@ public class BaseService {
 
     public void init() {
         try {
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            String url = systemProperties.getProperty(SystemProperties.SysProps.ABHIBUS_API_URL);
-            //logger.info("Using the URL " + url);
-            config.setServerURL(new URL(url));
-            xmlRpcClient = new XmlRpcClient();
-            xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
-            xmlRpcClient.setConfig(config);
+            if(xmlRpcClient == null) {
+                XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+                String url = systemProperties.getProperty(SystemProperties.SysProps.ABHIBUS_API_URL);
+                //logger.info("Using the URL " + url);
+                config.setServerURL(new URL(url));
+                xmlRpcClient = new XmlRpcClient();
+                xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
+                xmlRpcClient.setConfig(config);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

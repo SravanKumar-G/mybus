@@ -87,11 +87,10 @@ public class ServiceReportsManager {
     }
     
     public JSONObject getServicesByDate(String date) throws Exception {
-        List<Map<String, String>> serviceReports = reportService.getActiveServicesByDate(date, true);
+        Iterable<ServiceListing> serviceListings = reportService.getActiveServicesByDate(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
-        response.put("data", serviceReports);
-        //response.put("downloadedOn", dtf.print(status.getCreatedAt()));
+        response.put("data", serviceListings);
         return response;
     }
     

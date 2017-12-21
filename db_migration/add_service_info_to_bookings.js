@@ -54,7 +54,7 @@ payment.setServiceFormId(serviceForm.getId());
 
 //ISODate("2017-04-29T00:00:00Z") -- aws
  var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-04-28T04:00:00Z")}).toArray();
- var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-08-14T00:00:00Z")}).toArray();
+ var serviceReports = db.serviceReport.find({"journeyDate" : ISODate("2017-12-20T00:00:00Z")}).toArray();
 
  for(i in serviceReports) {
     var serviceReport = serviceReports[i];
@@ -71,8 +71,7 @@ payment.setServiceFormId(serviceForm.getId());
  }
 
  db.serviceReportStatus.remove({'reportDate': ISODate("2017-08-09T04:00:00Z")})
-db.serviceReportStatus.remove({'reportDate': ISODate("2017-05-02T00:00:00Z")})
-
+db.serviceReportStatus.remove({'reportDate': ISODate("2017-12-20T00:00:00Z")})
 
 
 //add indexes to booking

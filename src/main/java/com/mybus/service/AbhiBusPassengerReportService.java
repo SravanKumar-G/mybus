@@ -1,10 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.SystemProperties;
-import com.mybus.dao.BookingDAO;
-import com.mybus.dao.ServiceExpenseDAO;
-import com.mybus.dao.ServiceReportDAO;
-import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -46,6 +43,8 @@ public class AbhiBusPassengerReportService extends BaseService{
     @Autowired
     private ServiceExpenseDAO serviceExpenseDAO;
 
+    @Autowired
+    private ServiceListingDAO serviceListingDAO;
 
     /**
      * Find active services for a given date
@@ -53,99 +52,84 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @return
      * @throws Exception
      */
-    public List<Map<String, String>> getActiveServicesByDate(String date, boolean saveServiceReports) throws Exception{
+    public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading reports for date:" + date);
         init();
-        Map<String, Map<String, String>> serviceReportsInfoMap = new HashMap<>();
-        Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
+        Date journeyDate = ServiceConstants.df.parse(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         Vector params = new Vector();
+
         params.add(inputParam);
         HashMap busLists = (HashMap) xmlRpcClient.execute("index.serviceslist", params);
         Object busList[] = null;
         Iterator it = busLists.entrySet().iterator();
+        Map<String, ServiceListing> serviceListings = new HashMap<>();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             busList = (Object[]) pair.getValue();
             for (Object busServ: busList) {
-                ServiceReport serviceReport = new ServiceReport();
-                serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
+                ServiceListing serviceListing = new ServiceListing();
+                serviceListing.setJourneyDate(journeyDate);
                 Map busService = (HashMap) busServ;
-                Map<String, String> serviceInfo = new JSONObject();
                 if(busService.containsKey("ServiceId")){
-                    serviceInfo.put("serviceId", busService.get("ServiceId").toString());
-                    serviceReport.setServiceId(busService.get("ServiceId").toString());
+                      serviceListing.setServiceId(busService.get("ServiceId").toString());
                 }
                 if(busService.containsKey("ServiceName")){
-                    serviceInfo.put("serviceName", busService.get("ServiceName").toString());
-                    serviceReport.setServiceName(busService.get("ServiceName").toString());
+                     serviceListing.setServiceName(busService.get("ServiceName").toString());
                 }
                 if(busService.containsKey("ServiceNumber")){
-                    serviceInfo.put("serviceNumber", busService.get("ServiceNumber").toString());
-                    serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
+                    serviceListing.setServiceNumber(busService.get("ServiceNumber").toString());
                 }
                 if(busService.containsKey("BusType")){
-                    serviceInfo.put("busType", busService.get("BusType").toString());
-                    serviceReport.setBusType(busService.get("BusType").toString());
+                     serviceListing.setBusType(busService.get("BusType").toString());
                 }
                 if(busService.containsKey("Service_Source")){
-                    serviceInfo.put("source", busService.get("Service_Source").toString());
-                    serviceReport.setSource(busService.get("Service_Source").toString());
+                     serviceListing.setSource(busService.get("Service_Source").toString());
                 }
                 if(busService.containsKey("Service_Destination")){
-                    serviceInfo.put("destination", busService.get("Service_Destination").toString());
-                    serviceReport.setDestination(busService.get("Service_Destination").toString());
+                    serviceListing.setDestination(busService.get("Service_Destination").toString());
                 }
                 if(busService.containsKey("Vehicle_No")){
-                    serviceInfo.put("vehicleRegNumber", busService.get("Vehicle_No").toString());
-                    serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_No").toString());
                 }
-                serviceReportsMap.put(serviceInfo.get("serviceNumber"), serviceReport);
-                serviceReportsInfoMap.put(serviceInfo.get("serviceNumber"), serviceInfo);
+                serviceListings.put(serviceListing.getServiceNumber(), serviceListing);
             }
         }
-        List<Map<String, String>> serviceReports = new ArrayList<>();
-        Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
+         Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
         for(Map.Entry<String, String[]> serviceCombo: serviceComboMappings.entrySet()){
-            Map<String, String> serviceReportInfo = serviceReportsInfoMap.remove(serviceCombo.getKey());
-            if(serviceReportInfo != null){
+            ServiceListing serviceListing = serviceListings.get(serviceCombo.getKey());
+            if(serviceListing != null){
                 for(String comboNumber: serviceCombo.getValue()){
-                    String currentServiceIds = serviceReportInfo.get("serviceId");
-                    Map<String, String> comboService = serviceReportsInfoMap.remove(comboNumber);
-                    if(comboService != null) {
-                        logger.info("found combo service "+ serviceCombo);
-                        serviceReportInfo.put("serviceId", currentServiceIds + "," + comboService.get("serviceId"));
+                    String currentServiceIds = serviceListing.getServiceId();
+                    ServiceListing comboServiceListing = serviceListings.remove(comboNumber);
+                    if(comboServiceListing != null) {
+                        serviceListing.setServiceId(currentServiceIds + "," + comboServiceListing.getServiceId());
                     }
                 }
-                serviceReports.add(serviceReportInfo);
             }
         }
-        serviceReports.addAll(serviceReportsInfoMap.values());
-        //Save the reports now, the passenger reports may not have the report data if no online booking is done
-
-        if(saveServiceReports) {
-            for(ServiceReport report: serviceReportsMap.values()){
-                if(serviceReportDAO.findByJourneyDateAndServiceId(report.getJourneyDate(), report.getServiceId()) == null) {
-                    serviceReportDAO.save(report);
-                }
+        //save only if
+        serviceListings.values().stream().forEach(serviceListing -> {
+            if(serviceListingDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceListing.getServiceNumber()) == null){
+                serviceListingDAO.save(serviceListing);
             }
-        }
-        return serviceReports;
+        });
+        return serviceListings.values();
     }
 
-    public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceNum, String date) throws Exception{
-        logger.info("downloading service details for date:" + date);
+    public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceIds, String date) throws Exception{
+        logger.info("downloading service details for date:" + date +" serviceIds "+ serviceIds);
         init();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
-        inputParam.put("serviceids", serviceNum.trim());
+        inputParam.put("serviceids", serviceIds.trim());
         Vector params = new Vector();
         params.add(inputParam);
         Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
         Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
         List<ServiceReport> serviceReports = mergeServiceCombos(serviceReportsMap);
-        logger.info("Done: downloading service details for date:" + date);
+        logger.info("Done: downloading service details for date:" + date+" serviceIds "+ serviceIds);
         return serviceReports;
     }
 
@@ -159,13 +143,15 @@ public class AbhiBusPassengerReportService extends BaseService{
         logger.info("downloading reports for date:" + date);
         ServiceReportStatus serviceReportStatus = null;
         try{
-            serviceReportStatus = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
+            Date journeyDate = ServiceConstants.df.parse(date);
+            serviceReportStatus = serviceReportStatusDAO.findByReportDate(journeyDate);
             if(serviceReportStatus != null) {
                 logger.info("The reports are being downloaded for " + date);
                 return null;
             }
             serviceReportStatus = serviceReportStatusDAO.save
                     (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
+            /*
             init();
             HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
             inputParam.put("jdate", date);
@@ -174,6 +160,22 @@ public class AbhiBusPassengerReportService extends BaseService{
             Object busList[] = (Object[]) xmlRpcClient.execute("index.passengerreport", params);
             Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
             mergeServiceCombos(serviceReportsMap);
+
+            */
+            Iterable<ServiceListing> serviceListings = serviceListingDAO.findByJourneyDate(journeyDate);
+            for(ServiceListing serviceListing:serviceListings){
+                List<ServiceReport> serviceReports = getServiceDetailsByNumberAndDate(serviceListing.getServiceId(), date);
+                //if no passenger report is found create an empty service report
+                if(serviceReports == null || serviceReports.size() == 0){
+                    ServiceReport serviceReport = new ServiceReport();
+                    serviceReport.setJourneyDate(serviceListing.getJourneyDate());
+                    serviceReport.setSource(serviceListing.getSource());
+                    serviceReport.setDestination(serviceListing.getDestination());
+                    serviceReport.setServiceNumber(serviceListing.getServiceNumber());
+                    serviceReport.setServiceId(serviceListing.getServiceId());
+                    serviceReportDAO.save(serviceReport);
+                }
+            }
             serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);
         }catch (Exception e) {
             serviceReportStatusDAO.delete(serviceReportStatus);
@@ -201,11 +203,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             serviceReport.setJourneyDate(journeyDate);
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceId(busService.get("ServiceId").toString());
-            }
-            ServiceReport downloadedReport = serviceReportDAO.findByJourneyDateAndServiceId
-                    (serviceReport.getJourneyDate(), serviceReport.getServiceId());
-            if(downloadedReport != null) {
-                serviceReport = downloadedReport;
             }
             if(busService.containsKey("ServiceName")){
                 serviceReport.setServiceName(busService.get("ServiceName").toString());
