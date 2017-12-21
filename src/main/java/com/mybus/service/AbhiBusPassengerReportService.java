@@ -145,7 +145,8 @@ public class AbhiBusPassengerReportService extends BaseService{
         Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
         Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
         List<ServiceReport> serviceReports = mergeServiceCombos(serviceReportsMap);
-       return serviceReports;
+        logger.info("Done: downloading service details for date:" + date);
+        return serviceReports;
     }
 
     /**
@@ -177,8 +178,9 @@ public class AbhiBusPassengerReportService extends BaseService{
         }catch (Exception e) {
             serviceReportStatusDAO.delete(serviceReportStatus);
             e.printStackTrace();
-            throw new BadRequestException("Failed downloading the reports");
+            throw new BadRequestException("Failed downloading the reports " + e);
         }
+        logger.info("Done: downloading reports for date:" + date);
         return serviceReportStatusDAO.save(serviceReportStatus);
     }
 
@@ -326,6 +328,12 @@ public class AbhiBusPassengerReportService extends BaseService{
             ServiceReport serviceReport = serviceReportMap.remove(comboEntry.getKey());
             if(serviceReport != null) {
                 for(String comboNumber: comboEntry.getValue()) {
+                    //mark the combo report as HALT
+                    ServiceReport emptyComboReport = serviceReportDAO.findByJourneyDateAndServiceNumber(serviceReport.getJourneyDate(), comboNumber);
+                    if(emptyComboReport != null){
+                        emptyComboReport.setStatus(ServiceStatus.HALT);
+                        serviceReportDAO.save(emptyComboReport);
+                    }
                     ServiceReport comboReport = serviceReportMap.remove(comboNumber);
                     if(comboReport != null) {
                         serviceReport.setBusType(serviceReport.getBusType() + " " + comboReport.getBusType());
@@ -355,8 +363,8 @@ public class AbhiBusPassengerReportService extends BaseService{
             serviceExpenseDAO.save(new ServiceExpense(savedReport));
             bookings.stream().forEach(booking -> {
                 booking.setServiceId(savedReport.getId());
+                bookingDAO.save(booking);
             });
-            bookingDAO.save(bookings);
         }
         return serviceReports;
     }

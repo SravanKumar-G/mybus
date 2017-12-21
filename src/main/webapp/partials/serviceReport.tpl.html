@@ -23,6 +23,9 @@
                              <input ng-model="booking.seats" style="width:100px;" ng-change="countSeats()">
                         </span>
                     </td>
+                    <td data-title="'Tikcet#'"  sortable="'ticketNo'" class="clickable-item col-md-1">
+                        {{ booking.ticketNo }}
+                    </td>
                     <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2"
                         ng-style="isNotOnlineBooking(booking) && !booking.hasValidAgent && {'background-color':'red'}">
                         <span ng-show="booking.id != null" >

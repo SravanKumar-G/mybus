@@ -50,7 +50,7 @@ public class ServiceReportController {
 		try{
 			return serviceReportsManager.downloadReports(travelDate);
 		}catch (Exception e) {
-			throw new BadRequestException("Error downloading reports");
+			throw new BadRequestException("Error downloading reports "+ e);
 		}
 	}
 	
@@ -130,7 +130,7 @@ public class ServiceReportController {
 			ServiceReport report = serviceReportsManager.getReport(id);
 			return report;
 		}catch (Exception e) {
-			throw new BadRequestException("Error loading report");
+			throw new BadRequestException("Error loading report" + e);
 		}
 	}
 

@@ -34,6 +34,7 @@ public class Booking extends AbstractDocument{
     private String state;
     private String country;
     private String postalCode;
+    //REDBUS,ONLINE, AGENT
     private BookingType paymentType;
 
     private BookingPayment payment;
