@@ -253,6 +253,7 @@ public class BookingMongoDAO {
         }
         query.addCriteria(where("due").is(true));
         query.addCriteria(where("journeyDate").gte(start).lte(end));
+        query.addCriteria(where("formId").exists(true));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }

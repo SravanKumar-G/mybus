@@ -80,7 +80,7 @@ public class DueReportManager {
     }
 
     public List<Booking> getBranchOfficeDues(BranchOffice office) {
-        logger.info("Preparing due report");
+        logger.info("Preparing due report for office "+ office.getName());
         BranchOfficeDue officeDue = new BranchOfficeDue();
         officeDue.setName(office.getName());
         officeDue.setBranchOfficeId(office.getId());
