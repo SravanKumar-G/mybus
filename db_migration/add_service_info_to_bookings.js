@@ -101,3 +101,34 @@ for(i in serviceForms) {
 
 
 //remove duplicate bookings
+
+var duplicateTickets = db.booking.aggregate([{"$group" : {_id:"$ticketNo", ids: { $push : "$_id"},count:{$sum:1},due:{$push:"$due"}}},{"$match": {"count": { "$gt": 1 }}}]).toArray()
+
+for(t in duplicateTickets){
+    var ticket = duplicateTickets[t];
+
+    for(var i=0;i<ticket.due.length-1;i++){
+        if(ticket.due[i] === false){
+            db.booking.remove({"_id":ticket.ids[i]})
+        }
+    }
+}
+
+var duplicateTickets = db.booking.aggregate([{"$group" : {_id:"$ticketNo", ids: { $push : "$_id"},count:{$sum:1},due:{$push:"$due"}}},{"$match": {"count": { "$gt": 1 }}}]).toArray()
+
+for(t in duplicateTickets){
+    var ticket = duplicateTickets[t];
+    for(var i=0;i<ticket.due.length;i++){
+        if(ticket.due[0] === true && ticket.due[1] === true){
+            db.booking.remove({"_id":ticket.ids[0]})
+        }
+        if(ticket.due[0] === true && ticket.due[1] === false){
+            db.booking.remove({"_id":ticket.ids[1]})
+        }
+        if(ticket.due[0] === false && ticket.due[1] === true){
+            db.booking.remove({"_id":ticket.ids[0]})
+        }
+    }
+}
+
+
