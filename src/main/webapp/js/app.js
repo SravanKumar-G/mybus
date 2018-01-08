@@ -36,6 +36,11 @@ var myBus = angular.module('myBus', [
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
+            .state('cargoBooking',{
+                url:'/cargoBooking',
+                templateUrl: 'partials/cargoBooking.tpl.html',
+                controller: 'CargoBookingController'
+            })
             .state('agents',{
                 url:'/agents',
                 templateUrl: 'partials/agents.tpl.html',
