@@ -2,13 +2,22 @@
 /*global angular, _*/
 
 angular.module('myBus.cashTransfersModule', ['ngTable', 'ui.bootstrap'])
-    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, cashTransferManager, userManager){
+    .controller("cashTransfersController",function($rootScope, $scope, $filter, $location,paginationService, $log,$uibModal, NgTableParams, branchOfficeManager, cashTransferManager, userManager){
         $scope.loading = false;
         $scope.approvedCashTransfers=[];
         $scope.pendingCashTransfers=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
+        $scope.offices = [];
+        $scope.members =[];
         $scope.user = userManager.getUser();
+
+        userManager.getUserNames(function (data) {
+            $scope.members = data;
+        });
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
 
         $scope.currentPageOfCashTransfers=[];
         $scope.canAddCashTransfer = function() {

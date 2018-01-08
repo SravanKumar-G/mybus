@@ -19,6 +19,7 @@ public interface BookingDAO extends PagingAndSortingRepository<Booking, String> 
     Iterable<Booking> findByBookedByAndDue(String bookedBy, boolean due);
     Iterable<Booking> findByBookedByAndHasValidAgent(String bookedBy, boolean hasValidAgent);
     Booking findByTicketNo(String ticketNo);
+    Booking findByTicketNoAndDue(String ticketNo, boolean due);
     void deleteByServiceId(String serviceId);
     void deleteByFormId(String formId);
 

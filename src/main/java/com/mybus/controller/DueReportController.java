@@ -89,6 +89,15 @@ public class DueReportController extends MyBusBaseController{
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/searchByPNR", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Search DueReport", response = BranchOfficeDue.class )
+    public Iterable<Booking> searchDuesByPNR(HttpServletRequest request,
+                                    @RequestParam(value = "pnr", required = true) final String pnr)
+            throws ParseException {
+        return dueReportManager.searchDuesByPNR(pnr, true);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/payBookingDue/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
     public boolean recordDuePayment(HttpServletRequest request,

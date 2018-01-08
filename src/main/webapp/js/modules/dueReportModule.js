@@ -54,6 +54,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.officeDue = {};
         $scope.startDate = new Date();
         $scope.endDate = new Date();
+        $scope.pnr = null;
         $scope.offices = [];
         branchOfficeManager.loadNames(function (data) {
             $scope.offices = data;
@@ -151,7 +152,13 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 $scope.dueBookings = data;
             });
         }
-        $scope.payBooking = function(bookingId, officeId, serviceNumber) {
+
+        $scope.searchByPNR = function() {
+            dueReportManager.searchDuesByPNR($scope.pnr, function(data){
+                $scope.duesByPNR= data;
+            });
+        }
+        $scope.payBooking = function(bookingId) {
             swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -160,12 +167,12 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 dueReportManager.payBooking(bookingId, function(data) {
                     $rootScope.$broadcast('UpdateHeader');
                     $scope.search();
+                    $scope.duesByPNR=[];
                 },function (error) {
-                    sweetAlert("Oops...", "Error submitting the report", "error");
+                   alert("Error paying booking:" + error.data.message);
                 });
             });
         }
-
     })
     .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
         $scope.headline = "Office Due Report";
@@ -214,7 +221,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     loadTableData($scope.duesTableParams);
 
                 },function (error) {
-                    sweetAlert("Oops...", "Error submitting the report", "error");
+                    swal("Oops...", "Error submitting the report", "error");
                 });
             });
         }
@@ -318,7 +325,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     $location.url('officeduereportbyagent/'+agentName);
 
                 },function (error) {
-                    sweetAlert("Oops...", "Error submitting the report", "error");
+                    swal("Oops...", "Error submitting the report", "error");
                 });
             });
         }
@@ -337,7 +344,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due reports");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getBranchReport:function(id,callback) {
@@ -346,7 +353,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getReportByService:function(pageable,callback) {
@@ -355,7 +362,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getReportByAgents:function(pageable,callback) {
@@ -364,7 +371,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getBranchReportByDate:function(id,date,callback) {
@@ -373,7 +380,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getBranchReportByService:function(serviceNumber,callback) {
@@ -382,7 +389,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (error) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
             },
             getDueReportByAgent:function(agentName,callback) {
@@ -391,32 +398,36 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         callback(response.data);
                     },function (err) {
                         $log.debug("error loading due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",err.data.message,"error");
                     });
             },
-            payBooking:function(id, callback) {
+            payBooking:function(id, callback, errorCallback) {
                 $http.put('/api/v1/dueReport/payBookingDue/'+id)
                     .then(function (response) {
                         $rootScope.$broadcast('ReloadOfficeDueReport');
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error paying a booking");
-                        sweetAlert("Error",err.data.message,"error");
+                        errorCallback(error);
                     });
-
             },
             searchDues:function(startDate, endDate, branchOfficeId, callback) {
                 var st = startDate.getFullYear()+"-"+[startDate.getMonth()+1]+"-"+startDate.getDate();
                 var end = endDate.getFullYear()+"-"+[endDate.getMonth()+1]+"-"+endDate.getDate();
-
                 $http.get('/api/v1/dueReport/search?startDate='+st+'&endDate='+end+"&branchOfficeId="+ branchOfficeId)
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error finding due report");
-                        sweetAlert("Error",err.data.message,"error");
+                        swal("Error",error.data.message,"error");
                     });
+            },
+            searchDuesByPNR:function(pnr, callback) {
+                $http.get('/api/v1/dueReport/searchByPNR?pnr='+pnr)
+                    .then(function (response) {
+                        callback(response.data);
+                    },function (error) {
 
+                        swal("Error",error.data.message,"error");
+                    });
             }
         }
     });

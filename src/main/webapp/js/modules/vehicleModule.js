@@ -2,58 +2,20 @@
 /*global angular,_*/
 
 angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
-    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log,paginationService, NgTableParams, $uibModal, $filter,$stateParams, vehicleManager, $location) {
+    .controller('VehicleController', function ($scope,$rootScope, $state,$http, $log,paginationService, $uibModal, $filter,$stateParams, vehicleManager, $location) {
         $log.debug('vehicleController');
-        $scope.vehicle = {};
         $scope.count = 0;
         $scope.loading = false;
-        $scope.vehiclesCount = 0;
-        $scope.currentPageOfVehicles = [];
         $scope.id = $stateParams.id;
         var pageable ;
-
-        var loadTableData = function (tableParams) {
-            paginationService.pagination(tableParams, function(response){
-                pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
-            });
-            $scope.loading = true;
-            vehicleManager.getVehicles(pageable, function(response){
-                if(angular.isArray(response.content)){
-                    $scope.loading = false;
-                    $scope.vehicles = response.content;
-                    tableParams.total(response.totalElements);
-                    $scope.count = response.totalElements;
-                    tableParams.data = $scope.vehicles;
-                    $scope.currentPageOfVehicles = $scope.vehicles;
-                }
-            })
-        };
-
-        $scope.init = function(){
-            vehicleManager.count(function(vehiclesCount){
-                $scope.vehicleContentTableParams = new NgTableParams(
-                    {
-                        page: 1,
-                        size: 10,
-                        count: 10,
-                        sorting: {
-                            regNo: 'asc'
-                        }
-                    },
-                    {
-                        counts:[],
-                        total: vehiclesCount,
-                        getData: function (params) {
-                            loadTableData(params);
-                        }
-                    }
-                )
-            })
-        };
-        $scope.init();
-
-        $scope.$on('reloadVehicleInfo',function(e,value){
-            $scope.init();
+        $scope.loading = true;
+        vehicleManager.getVehicles(pageable, function(response){
+            if(angular.isArray(response.content)){
+                $scope.loading = false;
+                $scope.vehicles = response.content;
+                $scope.count = response.totalElements;
+                $scope.currentPageOfVehicles = $scope.vehicles;
+            }
         });
 
         $scope.addVehicleOnClick = function (){
@@ -65,7 +27,6 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             });
         };
         $scope.updateVehicleOnClick = function(id) {
-            //$state.go('vehicle/'+id);
             $location.url('vehicle/'+id);
         };
     })

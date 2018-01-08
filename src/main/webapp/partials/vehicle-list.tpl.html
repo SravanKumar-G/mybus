@@ -1,6 +1,9 @@
 <div class="toolbar-button-div">
     <div class="row">
         <div class="col-xs-2">
+           Count : {{count}}
+        </div>
+        <div class="col-xs-2">
             Look up Vehicle :
         </div>
         <div class="col-xs-4">
@@ -17,7 +20,7 @@
 </div>
 
 <table class="table table-bordered table-condensed table-hover" ng-table="vehicleContentTableParams">
-    <tr ng-repeat="vehicle in currentPageOfVehicles | filter:searchText" ng-class="vehicle.active?'':'bg-danger'">
+    <tr ng-repeat="vehicle in vehicles | filter:searchText" ng-class="vehicle.active?'':'bg-danger'">
         <td data-title="'Vehicle Type'"  sortable="'vehicleType'" class="clickable-item col-md-2">{{ vehicle.vehicleType }}</td>
         <td data-title="'Registration #'"sortable="'regNo'" class="clickable-item col-md-2">{{ vehicle.regNo }}</td>
         <td data-title="'Chasis #'" sortable="'chasisNumber'" class="clickable-item col-md-2">{{ vehicle.chasisNumber }}</td>
@@ -35,7 +38,7 @@
                </md-icon>
         </td>
     </tr>
-    <tr ng-if="!currentPageOfVehicles || currentPageOfVehicles.length === 0">
+    <tr ng-if="!vehicles || vehicles.length === 0">
         <td colspan="6">No Vehicle exist.  Please add some.</td>
     </tr>
 </table>

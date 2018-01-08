@@ -2,6 +2,7 @@ package com.mybus.service;
 
 import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
+import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
@@ -35,6 +36,9 @@ public class DueReportManager {
 
     @Autowired
     private BookingMongoDAO bookingMongoDAO;
+
+    @Autowired
+    private BookingDAO bookingDAO;
 
     @Autowired
     private SessionManager sessionManager;
@@ -243,5 +247,14 @@ public class DueReportManager {
         List<Booking> dues = bookingMongoDAO.findDueBookings(ServiceConstants.df.parse(start), ServiceConstants.df.parse(end),
                 namesList);
         return dues;
+    }
+
+    public Iterable<Booking> searchDuesByPNR(String pnr, boolean due) {
+        List<Booking> bookings = new ArrayList<>();
+        Booking booking = bookingDAO.findByTicketNoAndDue(pnr, due);
+        if(booking != null) {
+            bookings.add(bookingDAO.findByTicketNoAndDue(pnr, due));
+        }
+        return bookings;
     }
 }
