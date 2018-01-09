@@ -29,6 +29,7 @@
                 </select>
             </div>
             <button type="button" class="btn btn-sm btn-success " ng-click="search()" ng-disabled = "invoice.$invalid "> Search Bookings </button>
+            <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('invoiceSearchResults', 'Invoice')" > Export to Excel </button></button>
 
         </div>
         <div ng-show="!loading">
@@ -41,7 +42,7 @@
                 </table>
             </div>
 
-            <table class="table table-bordered table-condensed table-hover" ng-table="searchTableParams" >
+            <table class="table table-bordered table-condensed table-hover" ng-table="searchTableParams" id="invoiceSearchResults">
                 <tr ng-repeat="booking in invoice.bookings">
                     <td data-title="'Journey Date'" sortable="'date'" style="width: 30px;" class="clickable-item" >{{booking.journeyDate | date}}</td>
                     <td data-title="'Tikcet'" sortable="'ticketNo'" style="width: 30px;" class="clickable-item" >{{booking.ticketNo}}</td>

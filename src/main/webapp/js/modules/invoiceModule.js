@@ -36,6 +36,9 @@ angular.module('myBus.invoiceModule', ['ngTable', 'ui.bootstrap'])
             }
             $scope.searchInit();
         }
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
 
     })
     .factory('invoiceManager', function ($rootScope, $q, $http, $log) {
