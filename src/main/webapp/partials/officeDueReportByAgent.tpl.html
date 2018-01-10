@@ -3,11 +3,13 @@
     <legend>{{ headline }}</legend>
     <div class="row">
         <div class="col-sm-6"> Agent Name :  <b>{{agentName}}</b></div>
+        <div class="col-sm-6">         <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('agentDuesReport', 'AgentDuesReport')"> Export to Excel </button></button>
+        </div>
     </div>
     <div class="row">
         <br/>
     </div>
-    <table class="table table-bordered table-condensed table-hover" ng-table="duesTableParams">
+    <table class="table table-bordered table-condensed table-hover" ng-table="duesTableParams" id="agentDuesReport">
         <tr ng-repeat="booking in currentPageOfDuesByAgent ">
             <td data-title="'Passenger'" class="clickable-item col-md-1" >{{booking.name}} {{booking.phoneNo}}</td>
             <td data-title="'PNR'"  sortable="'ticketNo'" class="clickable-item col-md-1" >{{booking.ticketNo}}</td>
