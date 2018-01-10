@@ -30,14 +30,15 @@ var myBus = angular.module('myBus', [
     'myBus.invoiceModule',
     'myBus.gstFilters',
     'myBus.fillingStations',
-    'myBus.tripReportsModule'
+    'myBus.tripReportsModule',
+    'myBus.cargoBooking'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
-            .state('cargoBooking',{
-                url:'/cargoBooking',
+            .state('cargobooking',{
+                url:'/cargobooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
             })

@@ -9,6 +9,7 @@ import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Invoice;
+import com.mybus.service.BookingTypeManager;
 import org.scribe.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,10 +225,10 @@ public class BookingMongoDAO {
             List<String> channels = new ArrayList<>();
             for(String name: bookedBy) {
                 if(name.equals("ABHIBUS")) {
-                    channels.add("ABHIBUS");
+                    channels.addAll(BookingTypeManager.ABHIBUS_BOOKING_CHANNELS);
                 }
             }
-            match.add(where("bookedBy").in(bookedBy));
+            match.add(where("bookedBy").in(channels));
         }
         match.add(where("journeyDate").gte(start).lte(end));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
@@ -239,8 +240,10 @@ public class BookingMongoDAO {
         AggregationResults<BasicDBObject> groupResults
                 = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
         List<BasicDBObject> result = groupResults.getMappedResults();
-        invoice.setTotalTax(result.get(0).getDouble("totalTax"));
-        invoice.setTotalSale(result.get(0).getDouble("bookingTotal"));
+        if(!result.isEmpty()) {
+            invoice.setTotalTax(result.get(0).getDouble("totalTax"));
+            invoice.setTotalSale(result.get(0).getDouble("bookingTotal"));
+        }
         return invoice;
     }
 
