@@ -57,6 +57,7 @@
     <script src="js/modules/gstFiltersModule.js"></script>
     <script src="js/modules/fillingStationsModule.js"></script>
     <script src="js/modules/tripReportsModule.js"></script>
+    <script src="js/modules/cargoBookingModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -159,28 +160,24 @@
         <!-- Sidebar -->
       
         <div  id="sidebar-wrapper" class="nav-side-menu" >
-                    
-
                     <div class="menu-list">
-
                         <ul id="menu-content" class="menu-content ">
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-home fa-lg"></i> Home
-                                </a>
+                            <li data-toggle="collapse" data-target="#cargo" class="collapsed">
+                                <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
-
+                            <ul class="sub-menu collapse" id="cargo">
+                                <my-menu url="cargoBooking" label="CargoBooking" class="nav navbar-nav  col-md-12"></my-menu>
+                            </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="analytics">
                                 <my-menu url="bookingAnalytics" label="BookingAnalytics" class="nav navbar-nav  col-md-12"></my-menu>
                             </ul>
-
-
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></span></a>
                             </li>
+
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>

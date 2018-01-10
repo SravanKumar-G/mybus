@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by srinikandula on 12/12/16.
  */
@@ -19,6 +22,7 @@ public class BookingTypeManager {
     public static final String REDBUS_CHANNEL = "REDBUS-API";
     public static final String ONLINE_CHANNEL = "ONLINE";
     public static final String CASH_CHANNEL = "CASH";
+    public static final List<String> ABHIBUS_BOOKING_CHANNELS = Arrays.asList("ONLINE", "YATRAGENIE-API", "PAYTM-API", "ABHIBUS");
 
     @Autowired
     private AgentDAO agentDAO;
@@ -30,16 +34,13 @@ public class BookingTypeManager {
         if(booking.getBookedBy() == null) {
             return false;
         }
-        return booking.getBookedBy().equalsIgnoreCase("REDBUS-API");
+        return booking.getBookedBy().equalsIgnoreCase(REDBUS_CHANNEL);
     }
     public boolean isOnlineBooking(Booking booking) {
         if(booking.getBookedBy() == null) {
             return false;
         }
-        if(booking.getBookedBy().equalsIgnoreCase("ONLINE") ||
-                booking.getBookedBy().equalsIgnoreCase("YATRAGENIE-API") ||
-                booking.getBookedBy().equalsIgnoreCase("PAYTM-API") ||
-                booking.getBookedBy().equalsIgnoreCase("ABHIBUS")){
+        if(ABHIBUS_BOOKING_CHANNELS.contains(booking.getBookedBy())){
             return true;
         } else {
             return false;
