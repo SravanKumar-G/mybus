@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -96,6 +97,7 @@ public class PaymentManager {
         payment.setDate(booking.getJourneyDate());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setBookingId(booking.getId());
+        payment.setSubmittedBy(currentUser.getId());
         payment.setDescription(Payment.BOOKING_DUE_PAYMENT + " "+booking.getBookedBy()+" : " + booking.getTicketNo());
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
@@ -161,9 +163,9 @@ public class PaymentManager {
         return payment;
     }
 
-    public Page<Payment> findPaymentsByDate(String date, Pageable pageable) {
+    public Page<Payment> findPaymentsByDate(String date, Pageable pageable) throws IOException {
         Page<Payment> payments = paymentMongoDAO.findPaymentsByDate(date, pageable);
-        serviceUtils.fillInUserNames(payments.getContent());
+        serviceUtils.fillInUserNames(payments.getContent(), ServiceReport.SUBMITTED_BY);
         return payments;
     }
 
