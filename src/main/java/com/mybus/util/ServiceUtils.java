@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -34,8 +35,10 @@ public class ServiceUtils {
     private ObjectMapper objectMapper;
 
     private Map<String, String> userNames = new HashMap<>();
+    @PostConstruct
+    public void init(){
 
-
+    }
     /**
      * Method to parse date string. Boolean param indicates if the time should be should set to end of the day
      * @param dateString
