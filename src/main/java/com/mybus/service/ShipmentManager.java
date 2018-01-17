@@ -6,6 +6,7 @@ import com.mybus.dao.ShipmentDAO;
 import com.mybus.dao.impl.ShipmentMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Shipment;
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,15 +29,21 @@ public class ShipmentManager {
     @Autowired
     private ShipmentMongoDAO shipmentMongoDAO;
 
+    @Autowired
+    private ShipmentSequenceManager shipmentSequenceManager;
+
     public Shipment findOne(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "shipmentId is required");
         Shipment shipment = shipmentDAO.findOne(shipmentId);
         Preconditions.checkNotNull(shipment, "No Shipment found with id");
         return shipment;
     }
-
-
     public Shipment saveWithValidations(Shipment shipment) {
+        if(shipment.getShipmentType() == null) {
+            throw new BadRequestException("ShipmentType missing ");
+        }
+        String shipmentNumber = shipmentSequenceManager.createLRNumber(shipment.getShipmentType());
+        shipment.setShipmentNumber(shipmentNumber);
         List<String> errors = RequiredFieldValidator.validateModel(shipment, Shipment.class);
         if(errors.isEmpty()) {
             return shipmentDAO.save(shipment);

@@ -96,7 +96,7 @@ public class PaymentManager {
         payment.setDate(booking.getJourneyDate());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setBookingId(booking.getId());
-        payment.setDescription(Payment.BOOKING_DUE_PAYMENT);
+        payment.setDescription(Payment.BOOKING_DUE_PAYMENT + " "+booking.getBookedBy()+" : " + booking.getTicketNo());
         payment.setType(PaymentType.INCOME);
         payment.setStatus(Payment.STATUS_AUTO);
         payment.setDuePaidOn(new Date());

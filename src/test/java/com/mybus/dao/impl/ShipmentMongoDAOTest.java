@@ -38,50 +38,50 @@ public class ShipmentMongoDAOTest extends AbstractControllerIntegrationTest {
             System.out.println(shipment.getId());
         }
         JSONObject query = new JSONObject();
-        query.put("fromCityId", "1234");
+        query.put("fromBranchId", "1234");
         List<Shipment> shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(5, shipments.size());
-        query.put("fromCityId", "12345");
+        query.put("fromBranchId", "12345");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(0, shipments.size());
 
         //test with toCityId
-        query.remove("fromCityId");
-        query.put("toCityId", "1234");
+        query.remove("fromBranchId");
+        query.put("toBranchId", "1234");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(5, shipments.size());
-        query.put("toCityId", "12345");
+        query.put("toBranchId", "12345");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(0, shipments.size());
 
         //test my email
-        query.remove("toCityId");
-        query.put("email", "email@e.com");
+        query.remove("toBranchId");
+        query.put("fromEmail", "email@e.com");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(5, shipments.size());
 
         //change email and test
         Shipment shipment = shipments.get(0);
-        shipment.setEmail("srini@email.com");
+        shipment.setFromEmail("srini@email.com");
         shipmentDAO.save(shipment);
-        query.put("email", "srini@email.com");
+        query.put("fromEmail", "srini@email.com");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(1, shipments.size());
 
         //test querying only email field
-        String fields[] = {"email"};
+        String fields[] = {"fromEmail"};
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(Shipment.class, Shipment.COLLECTION_NAME, fields, query, null).iterator());
         assertEquals(1, shipments.size());
         shipment = shipments.get(0);
-        assertEquals("srini@email.com", shipment.getEmail());
-        assertNull(shipment.getFromCityId());
-        assertNull(shipment.getToCityId());
+        assertEquals("srini@email.com", shipment.getFromEmail());
+        assertNull(shipment.getFromBranchId());
+        assertNull(shipment.getToBranchId());
     }
 }
