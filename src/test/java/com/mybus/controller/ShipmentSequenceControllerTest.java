@@ -54,6 +54,4 @@ public class ShipmentSequenceControllerTest extends AbstractControllerIntegratio
         actions.andExpect(jsonPath("$.shipmentType").value("To Pay"));
     }
 
-
-
 }

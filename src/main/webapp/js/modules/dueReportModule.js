@@ -281,7 +281,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
 
     })
 
-    .controller('OfficeDueByAgentController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
+    .controller('OfficeDueByAgentController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams,paginationService, $filter, $location) {
         $scope.headline = "Office Due Report By Agent";
         $scope.agentName = $stateParams.agentName;
         $scope.loading = false;
@@ -329,7 +329,9 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 });
             });
         }
-
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
 
     })
 

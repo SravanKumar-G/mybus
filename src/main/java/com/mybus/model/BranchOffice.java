@@ -49,6 +49,10 @@ public class BranchOffice extends AbstractDocument implements AttributesDocument
     public boolean containsKey(String attributeName) {
         return false;
     }
+    public BranchOffice(String name, String cityId){
+        this.name = name;
+        this.cityId = cityId;
+    }
     public static BranchOffice fromJson(String json) {
         return new Gson().fromJson(json, BranchOffice.class);
     }

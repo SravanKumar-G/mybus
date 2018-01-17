@@ -2,6 +2,7 @@ package com.mybus.service;
 
 import com.mongodb.WriteResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
+import com.mybus.model.ShipmentType;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,17 +24,27 @@ public class ShipmentSequenceManager {
     @Autowired
     private ShipmentSequenceDAO shipmentSequenceDAO;
 
-    public ShipmentSequence nextSequeceNumber(String shipmentCode) {
-        Update updateOp = new Update();
-        updateOp.inc("nextNumber", 1);
-        final Query query = new Query();
-        query.addCriteria(where("shipmentCode").is(shipmentCode));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
-        if(writeResult.getN() == 1){
-            return shipmentSequenceDAO.findByShipmentCode(shipmentCode);
+    private ShipmentSequence nextSequeceNumber(ShipmentType shipmentType) {
+        ShipmentSequence shipmentSequence = null;
+        if(shipmentSequenceDAO.findByShipmentCode(shipmentType.getKey()) == null){
+            shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence(shipmentType));
         } else {
-            throw new IllegalStateException("next number failed");
+            Update updateOp = new Update();
+            updateOp.inc("nextNumber", 1);
+            final Query query = new Query();
+            query.addCriteria(where("shipmentCode").is(shipmentType.getKey()));
+            WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
+            if(writeResult.getN() == 1){
+                shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentType.getKey());
+            } else {
+                throw new IllegalStateException("next number failed");
+            }
         }
+        return shipmentSequence;
     }
 
+    public String createLRNumber(ShipmentType shipmentType) {
+        ShipmentSequence shipmentSequence = nextSequeceNumber(shipmentType);
+        return shipmentType.getKey()+ shipmentSequence.nextNumber;
+    }
 }

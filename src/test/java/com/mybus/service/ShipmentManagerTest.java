@@ -4,6 +4,7 @@ import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.ShipmentDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Shipment;
+import com.mybus.model.ShipmentType;
 import com.mybus.test.util.ShipmentTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;

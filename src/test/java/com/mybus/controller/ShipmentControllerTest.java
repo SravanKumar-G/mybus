@@ -2,9 +2,8 @@ package com.mybus.controller;
 
 import com.mybus.dao.ShipmentDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.City;
-import com.mybus.model.Shipment;
-import com.mybus.model.User;
+import com.mybus.model.*;
+import com.mybus.service.BranchOfficeManager;
 import com.mybus.service.CityManager;
 import com.mybus.service.ShipmentManager;
 import com.mybus.test.util.ShipmentTestService;
@@ -50,7 +49,7 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private CityManager cityManager;
+    private BranchOfficeManager branchOfficeManager;
 
     @Before
     @After
@@ -78,7 +77,7 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
             shipmentDAO.save(ShipmentTestService.createNew());
         }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("fromCityId", "1234");
+        jsonObject.put("fromBranchId", "1234");
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(jsonPath("$").isArray());
@@ -146,18 +145,21 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
     }
     @Test
     public void testCreateShipment() throws Exception {
-        City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
-        City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
-        cityManager.saveCity(fromCity);
-        cityManager.saveCity(toCity);
+        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
+        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch = branchOfficeManager.save(fromBranch);
+        toBranch = branchOfficeManager.save(toBranch);
         Shipment shipment = ShipmentTestService.createNew();
-        shipment.setFromCityId(fromCity.getId());
-        shipment.setToCityId(toCity.getId());
+        shipment.setFromBranchId(fromBranch.getId());
+        shipment.setToBranchId(toBranch.getId());
+        shipment.setShipmentType(ShipmentType.FREE);
+
+
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
                 .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.fromCityId").value(shipment.getFromCityId()));
-        actions.andExpect(jsonPath("$.toCityId").value(shipment.getToCityId()));
+        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
+        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
         List<Shipment> shipments = IteratorUtils.toList(shipmentDAO.findAll().iterator());
         assertEquals(1, shipments.size());
     }
@@ -167,15 +169,15 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
     public void testUpdateShipment() throws Exception {
         Shipment shipment = ShipmentTestService.createNew();
         shipment = shipmentDAO.save(shipment);
-        shipment.setEmail("newemail@email.com");
+        shipment.setFromEmail("newemail@email.com");
         ResultActions actions = mockMvc.perform(asUser(put("/api/v1/shipment/"+shipment.getId())
                 .content(getObjectMapper().writeValueAsBytes(shipment))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.email").value(shipment.getEmail()));
+        actions.andExpect(jsonPath("$.fromEmail").value(shipment.getFromEmail()));
         List<Shipment> shipments = IteratorUtils.toList(shipmentDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        assertEquals(shipment.getEmail(), shipments.get(0).getEmail());
+        assertEquals(shipment.getFromEmail(), shipments.get(0).getFromEmail());
     }
 
     @Test
@@ -197,7 +199,7 @@ public class ShipmentControllerTest extends AbstractControllerIntegrationTest {
         shipment = shipmentDAO.save(shipment);
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/shipment/" + shipment.getId()), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.email").value(shipment.getEmail()));
+        actions.andExpect(jsonPath("$.fromEmail").value(shipment.getFromEmail()));
     }
     @Test
     public void testDeleteShipment() throws Exception {

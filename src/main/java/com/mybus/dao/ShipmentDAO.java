@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Repository
 public interface ShipmentDAO extends PagingAndSortingRepository<Shipment, String> {
-    List<Shipment> findByFromCityId(String fromCityId);
-    List<Shipment> findByToCityId(String toCityId);
-    List<Shipment> findByPaymentStatus(String paymentStatus);
+    List<Shipment> findByFromBranchId(String fromBranchId);
+    List<Shipment> findByToBranchId(String toBranchId);
 }

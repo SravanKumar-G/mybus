@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.Date;
 
@@ -23,31 +24,47 @@ public class Shipment extends AbstractDocument implements AttributesDocument{
     public static final String COLLECTION_NAME="shipment";
 
     @RequiresValue
-    private String fromCityId;
+    @Indexed(unique = true)
+    private String shipmentNumber;
+
     @RequiresValue
-    private String toCityId;
+    @Indexed(unique = true)
+    private String fromBranchId;
+
     @RequiresValue
-    private PaymentStatus paymentStatus;
+    @Indexed(unique = true)
+    private String toBranchId;
+
     @RequiresValue
     private ShipmentStatus shipmentStatus;
+
+    @RequiresValue
+    private ShipmentType shipmentType;
+
+
     @RequiresValue
     private int noOfPackages;
     private boolean active;
-    @RequiresValue
-    private String email;
+
+    private String fromEmail;
     @RequiresValue
     private long fromContact;
+    private String fromName;
+
+    private String toEmail;
     @RequiresValue
     private long toContact;
-    @RequiresValue
-    private String fromNameAddress;
-    @RequiresValue
-    private String toNameAddress;
+    private String toName;
+
+    private String fromAddress;
+    private String toAddress;
+
     private long weight;
     private String contents;
     private long frightCharges;
     private long deliveryCharges;
     private long otherCharges;
+
     @RequiresValue
     private long totalCharge;
 
