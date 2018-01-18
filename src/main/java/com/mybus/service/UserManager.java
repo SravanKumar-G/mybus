@@ -121,11 +121,6 @@ public class UserManager {
 
     public List<User> findAll() {
         List<User> users = IteratorUtils.toList(userDAO.findAll().iterator());
-        /*
-        Map<String, String> cityNames = cityManager.getCityNamesMap();
-        for(User user:users) {
-            user.getAttributes().put("cityName", cityNames.get(user.getCity()));
-        }*/
         return users;
     }
 

@@ -38,7 +38,7 @@ public class DueReportManager {
     private BookingMongoDAO bookingMongoDAO;
 
     @Autowired
-    private BookingDAO bookingDAO;
+    private UserManager userManager;
 
     @Autowired
     private SessionManager sessionManager;
@@ -249,12 +249,13 @@ public class DueReportManager {
         return dues;
     }
 
-    public Iterable<Booking> searchDuesByPNR(String pnr, boolean due) {
+    public Iterable<Booking> searchDuesByPNR(String pnr) {
         List<Booking> bookings = new ArrayList<>();
-        Booking booking = bookingDAO.findByTicketNoAndDue(pnr, due);
-        if(booking != null) {
-            bookings.add(bookingDAO.findByTicketNoAndDue(pnr, due));
+        Booking booking = bookingMongoDAO.findFormBooking(pnr);
+        if(booking != null && booking.getPaidBy() != null){
+            booking.getAttributes().put(Booking.PAID_BY, userManager.getUser(booking.getPaidBy()).getFullName());
         }
+        bookings.add(booking);
         return bookings;
     }
 }
