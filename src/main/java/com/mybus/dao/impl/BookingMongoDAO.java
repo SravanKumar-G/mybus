@@ -115,7 +115,9 @@ public class BookingMongoDAO {
     public boolean markBookingPaid(String bookingId) {
         Update updateOp = new Update();
         updateOp.set(Booking.DUE, false);
-        updateOp.set(Booking.PAID_BY, sessionManager.getCurrentUser().getId());
+        if(sessionManager.getCurrentUser() != null) {
+            updateOp.set(Booking.PAID_BY, sessionManager.getCurrentUser().getId());
+        }
         updateOp.set(Booking.PAID_ON, new Date());
         final Query query = new Query();
         query.addCriteria(where("_id").is(bookingId));
