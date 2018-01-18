@@ -134,7 +134,11 @@
                     <td data-title="'Journey Date'"  sortable="'jdate'" class="clickable-item col-md-1" >{{booking.jdate }}</td>
                     <td data-title="'Booked On'" sortable="'bookedDate'" class="clickable-item col-md-1" >{{booking.bookedDate }}</td>
                     <td data-title="'Due'"  sortable="'netAmt'" class="clickable-item col-md-1">{{ booking.netAmt }}</td>
-                    <td data-title="'Pay'"  class="clickable-item col-md-1"><a ng-if="booking.due" ng-click="payBooking(booking.id,null,agentName)">Pay Now</a></td>
+                    <td data-title="'Pay'"  class="clickable-item col-md-1" ng-if="booking.due"><a  ng-click="payBooking(booking.id,null,agentName)">Pay Now</a></td>
+                    <td data-title="'Paid on'"  ng-if="!booking.due" class="clickable-item col-md-1">Paid By:{{booking.attributes.paidBy}} on {{booking.paidOn|date}}</td>
+                </tr>
+                <tr ng-if="!duesByPNR || duesByPNR.length === 0">
+                    <td colspan="7">No Bookings found</td>
                 </tr>
             </table>
         </div>

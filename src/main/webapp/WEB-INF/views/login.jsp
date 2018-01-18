@@ -529,7 +529,6 @@
 <script src="assets-new/js/jquery-1.11.2.min.js"></script>
 <script src="assets-new/js/bootstrap.min.js"></script>
 <script src="assets-new/js/owl.carousel.min.js"></script>
-<script src="assets-new/js/contact.js"></script>
 <script src="assets-new/js/jquery.flexslider.js"></script>
 <script src="assets-new/js/script.js"></script>
 

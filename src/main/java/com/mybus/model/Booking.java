@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
@@ -18,6 +19,10 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode(of={"id", "ticketNo"})
 public class Booking extends AbstractDocument{
+
+    public static final String PAID_ON = "paidOn";
+    public static final String PAID_BY = "paidBy";
+    public static final String DUE = "due";
 
     //this is serviceReportId
     @Indexed
@@ -61,10 +66,15 @@ public class Booking extends AbstractDocument{
     private double netAmt;
     //capture the actual cost
     private double originalCost;
+    @Field(value = DUE)
     private boolean due;
     @Indexed
     private boolean hasValidAgent;
     private boolean requireVerification;
+    @Field(value = PAID_ON)
+    private Date paidOn;
+    @Field(value = PAID_BY)
+    private String paidBy;
 
     private String serviceName;
     private String serviceNumber;

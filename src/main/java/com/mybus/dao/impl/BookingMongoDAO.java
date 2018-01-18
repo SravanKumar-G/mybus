@@ -5,11 +5,13 @@ import com.mongodb.WriteResult;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Invoice;
 import com.mybus.service.BookingTypeManager;
+import com.mybus.service.SessionManager;
 import org.scribe.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,8 @@ public class BookingMongoDAO {
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
 
     /**
      * Find due bookings by agent names and Journey Date
@@ -110,7 +114,9 @@ public class BookingMongoDAO {
     }
     public boolean markBookingPaid(String bookingId) {
         Update updateOp = new Update();
-        updateOp.set("due", false);
+        updateOp.set(Booking.DUE, false);
+        updateOp.set(Booking.PAID_BY, sessionManager.getCurrentUser().getId());
+        updateOp.set(Booking.PAID_ON, new Date());
         final Query query = new Query();
         query.addCriteria(where("_id").is(bookingId));
         WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
@@ -259,6 +265,17 @@ public class BookingMongoDAO {
         query.addCriteria(where("formId").exists(true));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
+    }
+
+    public Booking findFormBooking(String ticketNumber) {
+        final Query query = new Query();
+        if(ticketNumber == null ){
+            throw new BadRequestException("ticketNumber is required");
+        }
+        query.addCriteria(where("ticketNo").is(ticketNumber));
+        query.addCriteria(where("formId").exists(true));
+        Booking booking = mongoTemplate.findOne(query, Booking.class);
+        return booking;
     }
 
 }
