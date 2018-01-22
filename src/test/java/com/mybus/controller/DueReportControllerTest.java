@@ -4,27 +4,27 @@ import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.User;
-import com.mybus.service.DueReportManager;
 import com.mybus.service.ServiceConstants;
-import junit.framework.TestCase;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,21 +65,12 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
     public void testGetDueBookingsByService() throws Exception {
         BranchOffice branchOffice1 = branchOfficeDAO.save(new BranchOffice());
         BranchOffice branchOffice2 = branchOfficeDAO.save(new BranchOffice());
-        for(int i=0; i<21; i++) {
-            Agent agent = new Agent();
-            if(i%2 == 0) {
-                agent.setBranchOfficeId(branchOffice1.getId());
-            } else {
-                agent.setBranchOfficeId(branchOffice2.getId());
-            }
-            agent.setUsername("agent" + i);
-            agentDAO.save(agent);
-        }
+        createTestAgents(branchOffice1, branchOffice2);
         for(int i=0; i<21; i++) {
             Booking booking = new Booking();
             booking.setName("bookingName"+i);
-            booking.setServiceNumber("ServiceNumber" + (i % 3));
             booking.setFormId("ServiceNumber" + (i % 3));
+            booking.setServiceNumber("ServiceNumber" + (i % 3));
             booking.setNetAmt(200);
             booking.setDue(true);
             booking.setBookedBy("agent" + i);
@@ -95,6 +86,28 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(0)));
     }
+
+    @Test
+    public void testPayPendingDues() throws Exception {
+        List<String> bookingIds = new ArrayList<>();
+        for(int i=0; i<5; i++) {
+            Booking booking = new Booking();
+            booking.setFormId("ServiceNumber" + (i % 3));
+            booking.setNetAmt(300);
+            booking.setDue(true);
+            booking.setBookedBy("agent" + i);
+            booking = bookingDAO.save(booking);
+            bookingIds.add(booking.getId());
+        }
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/dueReport/payBookingDues")
+                .content(getObjectMapper().writeValueAsBytes(bookingIds)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(currentUser.getAmountToBePaid(), 1500, 0.0);
+    }
+
     @Test
     public void testSearchDues() throws Exception {
         BranchOffice branchOffice1 = branchOfficeDAO.save(new BranchOffice());

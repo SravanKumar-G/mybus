@@ -89,7 +89,6 @@ public class PaymentManager {
      * @return
      */
     public Payment createPayment(Booking booking) {
-        Agent agent = agentDAO.findByUsername(booking.getBookedBy());
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
