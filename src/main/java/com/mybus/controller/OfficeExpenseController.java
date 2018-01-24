@@ -70,13 +70,7 @@ public class OfficeExpenseController {
         return officeExpenseManager.save(officeExpense);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "officeExpense", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public OfficeExpense updatePayment(HttpServletRequest request, @RequestBody final OfficeExpense officeExpense) {
-        logger.debug("put officeExpense called");
-        return officeExpenseManager.updateOfficeExpense(officeExpense);
-    }
+
 
     @RequestMapping(value = "officeExpense/{id}", method = RequestMethod.DELETE, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Delete a officeExpense")
@@ -100,5 +94,20 @@ public class OfficeExpenseController {
     @RequestMapping(value = "officeExpenses/types", method = RequestMethod.GET)
     public String[] getExpenseTypes(HttpServletRequest request) throws Exception {
         return ServiceConstants.EXPENSE_TYPES;
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "officeExpense", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OfficeExpense updatePayment(HttpServletRequest request, @RequestBody final OfficeExpense officeExpense) {
+        logger.debug("put officeExpense called");
+        return officeExpenseManager.updateOfficeExpense(officeExpense);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "officeExpenses/approveOrReject/{approve}", method = RequestMethod.POST)
+    public List<OfficeExpense> approveOrRejectExpenses(HttpServletRequest request, @PathVariable(name = "approve")String approve,
+                                            @RequestBody final List<String> ids)  {
+        return officeExpenseManager.approveOrRejectExpenses(ids, Boolean.valueOf(approve));
     }
 }

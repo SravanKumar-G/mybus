@@ -22,7 +22,9 @@ public class OfficeExpense extends AbstractDocument {
     private String description;
     private double amount;
     private String branchOfficeId;
-    private String status;
+    private ApproveStatus status;
+    private String reviewedBy;
+    private Date approvedOn;
     private String vehicleId;
     private String expenseType;
 }

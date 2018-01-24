@@ -11,6 +11,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.pendingExpenses=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
+        $scope.selectedPayments = [];
         var user = userManager.getUser();
         $scope.currentUser = user.fullName;
 
@@ -74,7 +75,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     page: 1, // show first page
                     count:10,
                     sorting: {
-                        fullName: 'asc'
+                        date: 'desc'
                     },
                 }, {
                     counts:[10,50,100],
@@ -89,7 +90,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     page: 1, // show first page
                     count:15,
                     sorting: {
-                        fullName: 'asc'
+                        date: 'desc'
                     },
                 }, {
                     counts:[10,50,100],
@@ -133,93 +134,6 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             });
         };
 
-        $scope.approveOrRejectExpense = function(expense, status){
-            if(status == "Reject"){
-                expense.status ="Rejected";
-            } else {
-                expense.status ="Approved";
-            }
-            officeExpensesManager.save(expense, function(data){
-                $rootScope.$broadcast('UpdateHeader');
-                swal("Great", "Expense is updated", "success");
-            });
-        }
-
-        /* date picker functions */
-        $scope.check = true;
-        $scope.officeId = null;
-        $scope.userSelect = null;
-        $scope.today = function() {
-            $scope.dt = new Date();
-            $scope.dt2 = new Date();
-        };
-
-        $scope.today();
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
-        $scope.altInputFormats = ['M!/d!/yyyy'];
-
-        $scope.clear = function() {
-            $scope.dt = new Date();
-            $scope.dt2 = new Date();
-        };
-
-        $scope.inlineOptions = {
-            customClass: getDayClass,
-            minDate: new Date(),
-            showWeeks: true
-        };
-
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            minDate: new Date(),
-            startingDay: 1
-        };
-
-        $scope.toggleMin = function() {
-            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-        };
-        $scope.toggleMin();
-        $scope.open1 = function() {
-            $scope.popup1.opened = true;
-        };
-        $scope.setDate = function(year, month, day) {
-            $scope.dt = new Date(year, month, day);
-            $scope.dt2 = new Date(year, month, day);
-        };
-        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        $scope.popup1= {
-            opened: false
-        };
-
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0,0,0,0);
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                    if (dayToCheck === currentDay) {
-                        return $scope.events[i].status;
-                    }
-                }
-            }
-            return '';
-        }
-
-        /*Date picker 2 */
-        $scope.open2 = function() {
-            $scope.popup2.opened = true;
-        };
-
-        $scope.popup2 = {
-            opened: false
-        };
-
         $scope.query = {};
         var loadsearchExpenses = function (tableParams) {
             $scope.loading = true;
@@ -259,6 +173,23 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             }
             $scope.searchInit();
         }
+
+        $scope.togglePaymentSelection = function(paymentId){
+            var idx = $scope.selectedPayments.indexOf(paymentId);
+            if (idx > -1) {
+                $scope.selectedPayments.splice(idx, 1);
+            } else {
+                $scope.selectedPayments.push(paymentId);
+            }
+        }
+        $scope.approveOrRejectExpense = function(status){
+            officeExpensesManager.approveOrRejectExpenses($scope.selectedPayments, status, function(data){
+                $rootScope.$broadcast('UpdateHeader');
+                $scope.selectedPayments = [];
+                swal("Great", "Expense is updated", "success");
+            });
+        }
+
     })
     .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId) {
         $scope.today = function () {
@@ -457,6 +388,18 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                     sweetAlert("Error", err.data.message, "error");
                 });
             }
+        },
+
+        approveOrRejectExpenses:function(paymentIds, approve, callback) {
+            $http.post('/api/v1/officeExpenses/approveOrReject/'+approve, paymentIds).then(function (response) {
+                if (angular.isFunction(callback)) {
+                    callback(response.data);
+                    $rootScope.$broadcast('UpdateHeader');
+                    $rootScope.modalInstance.dismiss('success');
+                }
+            }, function (err, status) {
+                sweetAlert("Error", err.data.message, "error");
+            });
         }
     }
 }).factory('printManager', function () {

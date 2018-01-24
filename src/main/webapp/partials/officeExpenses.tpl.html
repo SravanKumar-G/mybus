@@ -20,6 +20,8 @@
         </ul>
         <div class="tab-content" ng-show="tab==1">
             <div class="toolbar-button-div pull-right">
+                <button type="button" class="btn btn-sm btn-success pull-right " ng-click="approveOrRejectExpense(true)" ng-show = "selectedPayments.length > 0"> Approve Payments </button>
+                <button type="button" class="btn btn-sm btn-danger pull-right " ng-click="approveOrRejectExpense(false)" ng-show = "selectedPayments.length > 0"> Reject Payments </button>
                 <button type="button" class="btn btn-sm btn-primary" ng-click="handleClickAddExpense()" ng-if="canAddExpense()"><span class="glyphicon glyphicon-plus"></span> Add</button>
             </div>
             Total :{{pendingTotal}}
@@ -33,8 +35,12 @@
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
                         <span ng-if="!expense.status && user.id!=expense.createdBy">
-                            <a ng-click="approveOrRejectExpense(expense,'Approve')">Approve</a>
-                            <a ng-click="approveOrRejectExpense(expense,'Reject')">Reject</a>
+                             <input
+                                     type="checkbox"
+                                     name="selectedPayments[]"
+                                     value="{{expense.id}}"
+                                     ng-checked="selection.indexOf(expense.id) > -1"
+                                     ng-click="togglePaymentSelection(expense.id)">
                         </span>
                         <span ng-if="expense.status">
                            {{expense.status}}
