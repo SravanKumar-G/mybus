@@ -46,7 +46,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             $location.url('payments');
         }
     })
-    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, dueReportManager, branchOfficeManager, userManager, NgTableParams, $filter, $location) {
+    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, $uibModal, dueReportManager, branchOfficeManager, userManager, NgTableParams, $filter, $location) {
         $scope.headline = "Office Due Report";
         $scope.currentPageOfDues = [];
         $scope.officeId = $stateParams.id;
@@ -56,6 +56,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.endDate = new Date();
         $scope.pnr = null;
         $scope.offices = [];
+        $scope.selectedBookings = [];
         branchOfficeManager.loadNames(function (data) {
             $scope.offices = data;
         });
@@ -158,6 +159,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 $scope.duesByPNR= data;
             });
         }
+
         $scope.payBooking = function(bookingId) {
             swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
                 showCancelButton: true,
@@ -169,12 +171,41 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                     $scope.search();
                     $scope.duesByPNR=[];
                 },function (error) {
-                   alert("Error paying booking:" + error.data.message);
+                    alert("Error paying booking:" + error.data.message);
                 });
             });
         }
+
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        $scope.payBookings = function() {
+            dueReportManager.payBookings($scope.selectedBookings, function(data) {
+                $rootScope.$broadcast('UpdateHeader');
+                $scope.search();
+                dueReportManager.showDuePaymentSummary(data);
+            },function (error) {
+                alert("Error paying booking:" + error.data.message);
+            });
+        }
     })
-    .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter, $location) {
+    .controller('showDuePaymentSummaryController', function($scope, $rootScope, paidBookings) {
+        $scope.paidBookings = paidBookings;
+        $scope.totalAmount = 0;
+        for(var i=0; i<paidBookings.length; i++){
+            $scope.totalAmount +=paidBookings[i].netAmt;
+        }
+
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+    })
+    .controller('OfficeDueByDateReportController', function($scope, $rootScope, $stateParams, dueReportManager, userManager, NgTableParams, $filter) {
         $scope.headline = "Office Due Report";
         $scope.currentPageOfDues = [];
         $scope.officeId = $stateParams.id;
@@ -182,6 +213,9 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.loading = false;
         $scope.officeDue = {};
         $scope.currentPageOfDues = [];
+        $scope.selectedBookings = [];
+
+
         var loadTableData = function (tableParams) {
             $scope.loading = true;
             dueReportManager.getBranchReportByDate($scope.officeId,$scope.date,function (data) {
@@ -225,7 +259,23 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 });
             });
         }
-
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        $scope.payBookings = function() {
+            dueReportManager.payBookings($scope.selectedBookings, function(data) {
+                $rootScope.$broadcast('ReloadOfficeDueReport');
+                $scope.selectedBookings = [];
+                dueReportManager.showDuePaymentSummary(data);
+            },function (error) {
+                alert("Error paying booking:" + error.data.message);
+            });
+        }
 
     })
 
@@ -236,6 +286,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.loading = false;
         $scope.officeDue = {};
         $scope.currentPageOfDues = [];
+        $scope.selectedBookings = [];
         var loadTableData = function (tableParams) {
             $scope.loading = true;
             dueReportManager.getBranchReportByService($scope.serviceNo,function (data) {
@@ -277,7 +328,23 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 });
             });
         }
-
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        $scope.payBookings = function() {
+            dueReportManager.payBookings($scope.selectedBookings, function(data) {
+                $rootScope.$broadcast('ReloadOfficeDueReport');
+                $scope.selectedBookings = [];
+                dueReportManager.showDuePaymentSummary(data);
+            },function (error) {
+                alert("Error paying booking:" + error.data.message);
+            });
+        }
 
     })
 
@@ -287,6 +354,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.loading = false;
         $scope.agentDue = {};
         $scope.currentPageOfDuesByAgent = [];
+        $scope.selectedBookings = [];
         var loadTableData = function (tableParams) {
             $scope.loading = true;
             dueReportManager.getDueReportByAgent($scope.agentName,function (data) {
@@ -332,11 +400,28 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
         $scope.exportToExcel = function (tableId, fileName) {
             paginationService.exportToExcel(tableId, fileName);
         }
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        $scope.payBookings = function() {
+            dueReportManager.payBookings($scope.selectedBookings, function(data) {
+                $rootScope.$broadcast('ReloadOfficeDueReport');
+                $scope.selectedBookings = [];
+                dueReportManager.showDuePaymentSummary(data);
+            },function (error) {
+                alert("Error paying booking:" + error.data.message);
+            });
+        }
 
     })
 
 
-    .factory('dueReportManager', function ($http, $rootScope, $log) {
+    .factory('dueReportManager', function ($http, $rootScope, $log, $uibModal) {
         var pageable;
 
         return {
@@ -412,6 +497,31 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                         errorCallback(error);
                     });
             },
+            showDuePaymentSummary : function(paidBookings) {
+                $rootScope.modalInstance = $uibModal.open({
+                    templateUrl: 'partials/show-due-payment-summary.html',
+                    controller:'showDuePaymentSummaryController',
+                    resolve: {
+                        paidBookings: function () {
+                            return paidBookings;
+                        }
+                    }
+                });
+            },
+            payBookings:function(ids, callback, errorCallback) {
+                swal({title: "You want to Pay selected bookings now?",   text: "Are you sure?",   type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, pay now!",
+                    closeOnConfirm: true }, function() {
+                    $http.post('/api/v1/dueReport/payBookingDues/', ids).then(function (response) {
+                        callback(response.data);
+                    },function (error) {
+                        errorCallback(error);
+                    });
+                });
+            },
+
             searchDues:function(startDate, endDate, branchOfficeId, callback) {
                 var st = startDate.getFullYear()+"-"+[startDate.getMonth()+1]+"-"+startDate.getDate();
                 var end = endDate.getFullYear()+"-"+[endDate.getMonth()+1]+"-"+endDate.getDate();

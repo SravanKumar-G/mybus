@@ -132,3 +132,16 @@ for(t in duplicateTickets){
 }
 
 
+
+
+//Fix office expenses after migrating to ApproveStatus.java
+
+var officeExpenses = db.officeExpense.find({}).toArray()
+for(var i=0;i<officeExpenses.length;i++){
+     if(officeExpenses[i].status === 'APPROVED'){
+         officeExpenses[i].status = 'Approved';
+     } else if(officeExpenses[i].status === 'REJECTED'){
+         officeExpenses[i].status = 'Rejected';
+     }
+    db.officeExpense.save(officeExpenses[i]);
+}

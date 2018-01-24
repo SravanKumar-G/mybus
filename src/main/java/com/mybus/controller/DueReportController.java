@@ -1,5 +1,6 @@
 package com.mybus.controller;
 
+import com.google.gson.JsonArray;
 import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.exception.BadRequestException;
@@ -99,7 +100,7 @@ public class DueReportController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/payBookingDue/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
-    @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
+    @ApiOperation(value = "Record due payment")
     public boolean recordDuePayment(HttpServletRequest request,
                                               @ApiParam(value = "Id of the booking") @PathVariable final String id) {
         if(bookingManager.payBookingDue(id)){
@@ -107,6 +108,14 @@ public class DueReportController extends MyBusBaseController{
         } else {
             throw new BadRequestException("Booking payment failed");
         }
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "dueReport/payBookingDues", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Record due payment", response = JsonArray.class )
+    public List<Booking> recordDuePayments(HttpServletRequest request,
+                                    @ApiParam(value = "Ids of the bookings") @RequestBody final List<String> ids) {
+       return bookingManager.payBookingDues(ids);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

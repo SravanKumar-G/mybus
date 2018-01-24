@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.mybus.test.util.AmenityTestService;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,7 +32,9 @@ public class AmenitiesManagerTest extends AbstractControllerIntegrationTest {
 	private void cleanup() {
 		amenityDAO.deleteAll();
 	}
+
 	@After
+	@Before
 	public void teardown() {
 		cleanup();
 	}

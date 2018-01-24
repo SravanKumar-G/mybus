@@ -10,6 +10,7 @@
     <table class="table table-bordered table-condensed table-hover" ng-table="bookingsTableParams">
         <tr ng-repeat="booking in currentPageOfBookings">
             <td data-title="'Booked By'"  sortable="'bookedBy'" class="clickable-item col-md-1" >{{ booking.bookedBy }}</td>
+            <td data-title="'Ticket No'"  sortable="'ticketNo'" class="clickable-item col-md-1" >{{ booking.ticketNo }}</td>
             <td data-title="'Passenger'" class="clickable-item col-md-1" >{{booking.name}} {{booking.phoneNo}}</td>
             <td data-title="'Route'" sortable="'serviceNumber'" class="clickable-item col-md-1" >{{booking.source}} - {{booking.destination}} - {{booking.serviceName}})</td>
             <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1" >{{booking.seats }}</td>

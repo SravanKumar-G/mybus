@@ -2,8 +2,8 @@ package com.mybus.controller;
 
 import com.mybus.dao.OfficeExpenseDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.model.ApproveStatus;
 import com.mybus.model.OfficeExpense;
-import com.mybus.model.Payment;
 import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
 import org.hamcrest.Matchers;
@@ -19,12 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.*;
 
 /**
  * Created by busda001 on 4/29/17.
@@ -40,6 +43,8 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
 
 
     private User currentUser;
+    private User testUser;
+
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -50,6 +55,7 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         currentUser = new User("test", "test", "test", "test", true, true);
         cleanup();
         currentUser = userDAO.save(currentUser);
+        testUser = userDAO.save(new User("test1", "test1", "test1", "test1", true, true));
     }
 
     private void cleanup() {
@@ -67,7 +73,7 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
             OfficeExpense officeExpense = new OfficeExpense();
             officeExpense.setDescription("Testing "+ i);
             if(i%2 == 0) {
-                officeExpense.setStatus(Payment.STATUS_APPROVED);
+                officeExpense.setStatus(ApproveStatus.Approved);
             }
             officeExpenseDAO.save(officeExpense);
         }
@@ -89,7 +95,7 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
             OfficeExpense officeExpense = new OfficeExpense();
             officeExpense.setDescription("Testing "+ i);
             if(i%2 == 0) {
-                officeExpense.setStatus(Payment.STATUS_APPROVED);
+                officeExpense.setStatus(ApproveStatus.Approved);
             }
             date.setDate(date.getDate() -1);
             officeExpense.setDate(date);
@@ -116,5 +122,46 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
     }
+
+    @Test
+    public void approveExpenses() throws Exception {
+        List<String> ids = new ArrayList<>();
+        List<String> rejetids = new ArrayList<>();
+
+        for(int i=0;i<10;i++){
+            OfficeExpense officeExpense = officeExpenseDAO.save(new OfficeExpense());
+            officeExpense.setDescription("Testing "+ i);
+            officeExpense.setAmount(100);
+            officeExpense.setCreatedBy(testUser.getId());
+            if(i%2 == 0) {
+                rejetids.add(officeExpense.getId());
+            } else{
+                ids.add(officeExpense.getId());
+
+            }
+            officeExpenseDAO.save(officeExpense);
+        }
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/true")
+                .content(getObjectMapper().writeValueAsBytes(ids)).contentType(MediaType.APPLICATION_JSON), currentUser));
+
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
+        testUser = userDAO.findOne(testUser.getId());
+        assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
+
+        actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
+                .content(getObjectMapper().writeValueAsBytes(ids)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isInternalServerError());
+        testUser = userDAO.findOne(testUser.getId());
+        assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
+
+        actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
+                .content(getObjectMapper().writeValueAsBytes(rejetids)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        testUser = userDAO.findOne(testUser.getId());
+        assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
+    }
+
 
 }

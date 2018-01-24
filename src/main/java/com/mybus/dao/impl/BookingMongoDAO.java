@@ -269,6 +269,11 @@ public class BookingMongoDAO {
         return bookings;
     }
 
+    /**
+     * Find a booking that is submitted along with a form.
+     * @param ticketNumber
+     * @return
+     */
     public Booking findFormBooking(String ticketNumber) {
         final Query query = new Query();
         if(ticketNumber == null ){
@@ -280,4 +285,15 @@ public class BookingMongoDAO {
         return booking;
     }
 
+    /**
+     * Find bookings by list of _ids
+     * @param ids
+     * @return
+     */
+    public List<Booking> findBookingsByIds(List<String> ids) {
+        final Query query = new Query();
+        query.addCriteria(where("_id").in(ids));
+        List<Booking> bookings = mongoTemplate.find(query, Booking.class);
+        return bookings;
+    }
 }
