@@ -1,5 +1,99 @@
-<legend>{{ headline }}</legend>
+<div class="container">
 
+    <legend>{{ headline }}</legend>
 
-<span ng-show="!loading">
-</span>
+    <span ng-show="!loading"></span>
+
+    <form name="cargoDetails" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
+
+        <div class="form-group">
+            <label class="col-sm-1 control-label">From<span class="data-required">*</span>:</label>
+            <div class="col-sm-3">
+                <select ng-options="city.id as city.name for city in cities" class="form-control" ng-model="cargo.fromCityId"  required >
+                    <option value="">--Origin City--</option>
+                </select>
+            </div>
+
+            <label class="col-sm-1 control-label">To<span class="data-required">*</span>:</label>
+            <div class="col-sm-3">
+                <select ng-options=" city.id as city.name for city in cities" class="form-control" ng-model="cargo.toCityId"   required>
+                    <option value="">--Destination City--</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="col-sm-2 control-label">Date: {{dt.getDate()+"-"+(dt.getMonth()+1)+"-"+dt.getFullYear()}}</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">From Branch Office<span class="data-required">*</span></label>
+            <div class="col-sm-3">
+                <select id="fromBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cargo.fromBranchOfficeId" required></select>
+            </div>
+
+            <label class="col-sm-2 control-label">To Branch Office<span class="data-required">*</span></label>
+            <div class="col-sm-3">
+                <select id="toBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="cargo.toBranchOfficeId" required></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">LR Type<span class="data-required">*</span>:</label>
+            <div class="col-sm-3">
+                <select id="lrType" ng-options="" class="form-control" ng-model="cargo.lrType" required></select>
+            </div>
+            <label class="col-sm-2 control-label">WayBill No:</label>
+            <div class="col-sm-4"><input type="text" ng-model="cargo.wayBillNo"></div>
+        </div>
+
+        <div class="form-group" style="border: solid #b9b9b9; padding:15px;">
+            <h4>Sender's Details</h4>
+            <label class="col-sm-2 control-label">Mobile No<span class="data-required">*</span>:</label>
+            <div class="col-sm-4"><input type="number"ng-model="cargo.senderNo" placeholder="phone number" required></div>
+
+            <label class="col-sm-2 control-label">Sender's Name<span class="data-required">*</span>:</label>
+            <div class="col-sm-4"><input type="text" ng-model="cargo.senderName" required></div>
+
+        </div>
+
+        <div class="form-group" style="border: solid #b9b9b9; padding: 15px">
+            <h4>Receiver's Details</h4>
+            <label class="col-sm-2 control-label">Mobile No<span class="data-required">*</span>:</label>
+            <div class="col-sm-3"><input type="number" ng-model="cargo.receiverNo" required></div>
+
+            <label class="col-sm-2 control-label">Receiver's Name<span class="data-required">*</span>:</label>
+            <div class="col-sm-2"><input type="text" ng-model="cargo.receiverName" required></div>
+
+            <label class="col-sm-2 control-label checkbox">Copy Sender Details</label>
+            <div class="col-xs-1"><input type="checkbox" ng-init='checkStatus=false' ng-model='checkStatus' ng-change="copyDetails()"></div>
+        </div>
+
+        <table class="table table-bordered table-condensed table-hover">
+            <tr>
+                <td>Item Description</td>
+                <td>Value of Goods</td>
+                <td>Quantity</td>
+                <td>Kg's</td>
+                <td>CDM</td>
+                <td>Freight Charge</td>
+            </tr>
+            <tr ng-repeat="cargo in cargos">
+                <td><input type="text" placeholder="Item Description" ng-model="cargo.description"></td>
+                <td><input type="number" placeholder="value" ng-model="cargo.value"></td>
+                <td><input type="number" placeholder="quantity" ng-model="cargo.quantity"></td>
+                <td><input type="number" placeholder="weight" ng-model="cargo.weight"></td>
+                <td><input type="number" placeholder="CDM" ng-model="cargo.cdm"></td>
+                <td><input type="number" placeholder="charge" ng-model="cargo.charge">
+                    <span class="glyphicon glyphicon-remove-sign" ng-show="cargo.index" ng-click="deleteCargo(cargo)"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>TOTALS</td><td></td><td></td><td></td><td></td><td>{{totalPrice}}</td>
+            </tr>
+        </table>
+        <button type="button" class="btn btn-sm btn-primary" ng-click="addCargo()">
+            <span class="glyphicon glyphicon-plus"></span> Add Cargo
+        </button>
+    </form>
+</div>
