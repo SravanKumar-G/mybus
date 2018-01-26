@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap'])
-    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location, printManager,userManager,paymentManager,branchOfficeManager,paymentsReportsManager) {
+    .controller('expensesIncomesReportsCtrl', function ($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location, printManager,userManager,paymentManager,paginationService,paymentsReportsManager) {
         $scope.payments = [];
         $scope.totalExpense = 0;
         $scope.totalIncome = 0;
@@ -41,79 +41,31 @@ angular.module('myBus.expensesIncomesReportsModule', ['ngTable', 'ui.bootstrap']
             $scope.tomorrow = new Date($scope.todayDate.getTime() + (24 * 60 * 60 * 1000));
         }
 
-        $scope.date = null;
-        $scope.downloadedOn = null;
-        $scope.downloaded = false;
         $scope.loading = false;
         $scope.currentPageOfReports = [];
-        $scope.submitted = 0;
-        $scope.verified = 0;
         $scope.loading = true;
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
-        $scope.altInputFormats = ['M!/d!/yyyy'];
 
         $scope.clear = function() {
             $scope.dt = null;
         };
 
-        $scope.inlineOptions = {
-            customClass: getDayClass,
-            minDate: new Date(),
-            showWeeks: true
-        };
-        $scope.dateChanged = function() {
-            if($scope.dt >= $scope.tomorrow){
-                swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else{
-                $scope.reportsByDate($scope.dt)
-                $scope.init();
-            }
-        }
         $scope.dateOptions = {
             formatYear: 'yy',
             minDate: new Date(),
             startingDay: 1
         };
+        $scope.$watch('dt', function(newValue, oldValue) {
+            $scope.reportsByDate($scope.dt);
+        });
 
-        $scope.toggleMin = function() {
-            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-        };
-        $scope.toggleMin();
-        $scope.open1 = function() {
-            $scope.popup1.opened = true;
-        };
-        $scope.setDate = function(year, month, day) {
-            $scope.dt = new Date(year, month, day);
-        };
-        $scope.popup1 = {
-            opened: false
-        };
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0,0,0,0);
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                    if (dayToCheck === currentDay) {
-                        return $scope.events[i].status;
-                    }
-                }
-            }
-            return '';
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
         }
 
         $scope.isAdmin = function() {
             var currentUser = userManager.getUser();
             return currentUser.admin;
         }
-        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
 
         $scope.nextPaymentDay = function() {
                 var dt = $scope.dt;

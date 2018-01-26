@@ -164,8 +164,9 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 })
             }
         })
-        .controller("editFuelExpenseReportController",function ($scope,$rootScope,fuelExpensesServiceManager,serviceId) {
+        .controller("editFuelExpenseReportController",function ($scope,$rootScope,fuelExpensesServiceManager,serviceId, fillingStationsManager) {
             $scope.serviceExpense = {};
+            $scope.fillingStations = [];
             if(serviceId) {
                 $scope.setFuelExpense = function (serviceId) {
                     fuelExpensesServiceManager.getFuelExpense(serviceId, function (data) {
@@ -174,6 +175,9 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 };
                 $scope.setFuelExpense(serviceId);
             }
+            fillingStationsManager.getFillingStations(function(fillingStations){
+                $scope.fillingStations = fillingStations;
+            });
 
             $scope.ok = function () {
                 if(serviceId){

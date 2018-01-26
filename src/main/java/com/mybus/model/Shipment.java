@@ -23,6 +23,8 @@ import java.util.Date;
 public class Shipment extends AbstractDocument implements AttributesDocument{
     public static final String COLLECTION_NAME="shipment";
 
+    private String forUser;
+
     @RequiresValue
     @Indexed(unique = true)
     private String shipmentNumber;
@@ -48,16 +50,18 @@ public class Shipment extends AbstractDocument implements AttributesDocument{
 
     private String fromEmail;
     @RequiresValue
+    @Indexed
     private long fromContact;
     private String fromName;
 
+    private String wayBillNo;
+    private String tinNumber;
     private String toEmail;
+
     @RequiresValue
+    @Indexed
     private long toContact;
     private String toName;
-
-    private String fromAddress;
-    private String toAddress;
 
     private long weight;
     private String contents;

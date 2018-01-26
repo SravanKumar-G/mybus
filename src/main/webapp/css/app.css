@@ -27,7 +27,8 @@ pre.tiny-debug {
 
 .view-container{
     position: relative;
-    top: 100px;}
+    top: 50px;
+}
 
 .arrow {
     cursor: pointer;
