@@ -33,6 +33,7 @@
             <tr ng-repeat="service in currentPageOfFuelExpenseReports">
                 <!-- <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item">{{ service.serviceNumber }}</td> -->
                 <td data-title="'Vehicle'"  sortable="'vehicle'" class="clickable-item">{{ service.attributes.busType }}</td>
+                <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ service.vehicleNumber }}</td>
                 <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ service.attributes.from }}</td>
                 <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ service.attributes.to }}</td>
                 <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ service.journeyDate | date }}</td>
@@ -90,6 +91,19 @@
                 <label class="col-xs-2 control-label" >Journey Date :</label>
                 <div class="col-xs-7 col-xs-offset-1">
                     {{serviceExpense.journeyDate | date}}
+                </div>
+            </div>
+            <div class="row top-buffer-5">
+                <label class="col-xs-2 control-label" >Vehicel Number :</label>
+                <div class="col-xs-7 col-xs-offset-1">
+                    <input type="text" ng-model="serviceExpense.vehicleNumber" class="form-control">
+                </div>
+            </div>
+            <div class="row top-buffer-5">
+                <label class="col-xs-2 control-label" >Service Station :</label>
+                <div class="col-xs-7 col-xs-offset-1">
+                    <select id="fillingStation" ng-options="fillingStation.id as fillingStation.name for fillingStation in fillingStations" class="form-control" ng-model="serviceExpense.fillingStationId"  required></select>
+
                 </div>
             </div>
             <div class="row top-buffer-5">

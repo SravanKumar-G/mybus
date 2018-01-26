@@ -34,10 +34,12 @@ public class ServiceExpense extends AbstractDocument  {
     @Indexed
     private String serviceNumber;
 
+    private String vehicleNumber;
     @RequiresValue
     @Indexed
     private Date journeyDate;
     private double estimatedFuelConsumption;
+    private String fillingStationId;
     private double fuelQuantity;
     private double fuelRate;
     private double fuelCost;
@@ -56,7 +58,9 @@ public class ServiceExpense extends AbstractDocument  {
             throw new RuntimeException("Only saved service report can be used to create service expense");
         }
         this.serviceReportId = serviceReport.getId();
+        this.serviceReportId = serviceReport.getId();
         this.journeyDate = serviceReport.getJourneyDate();
+        this.vehicleNumber = serviceReport.getVehicleRegNumber();
     }
     public ServiceExpense(){
 

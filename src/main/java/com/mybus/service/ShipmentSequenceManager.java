@@ -5,6 +5,7 @@ import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.ShipmentType;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -46,5 +47,8 @@ public class ShipmentSequenceManager {
     public String createLRNumber(ShipmentType shipmentType) {
         ShipmentSequence shipmentSequence = nextSequeceNumber(shipmentType);
         return shipmentType.getKey()+ shipmentSequence.nextNumber;
+    }
+    public Iterable<ShipmentSequence> getShipmentTypes(){
+        return shipmentSequenceDAO.findAll(new Sort(Sort.Direction.DESC,"shipmentType"));
     }
 }

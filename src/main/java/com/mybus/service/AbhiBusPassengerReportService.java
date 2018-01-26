@@ -41,9 +41,6 @@ public class AbhiBusPassengerReportService extends BaseService{
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
-    private ServiceExpenseDAO serviceExpenseDAO;
-
-    @Autowired
     private ServiceListingDAO serviceListingDAO;
 
     /**
@@ -357,7 +354,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             serviceReport.setNetIncome(roundUp(serviceReport.getNetCashIncome() +
                     serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
             final ServiceReport savedReport = serviceReportDAO.save(serviceReport);
-            serviceExpenseDAO.save(new ServiceExpense(savedReport));
             bookings.stream().forEach(booking -> {
                 booking.setServiceId(savedReport.getId());
                 bookingDAO.save(booking);

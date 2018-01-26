@@ -6,6 +6,7 @@ import com.mybus.dao.ShipmentDAO;
 import com.mybus.dao.impl.ShipmentMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Shipment;
+import com.mybus.model.cargo.ShipmentSequence;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class ShipmentManager {
 
     @Autowired
     private ShipmentSequenceManager shipmentSequenceManager;
+
 
     public Shipment findOne(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "shipmentId is required");
@@ -75,5 +77,9 @@ public class ShipmentManager {
         Shipment shipment = shipmentDAO.findOne(shipmentId);
         Preconditions.checkNotNull(shipment, "No Shipment found with id");
         shipmentDAO.delete(shipment);
+    }
+
+    public Iterable<ShipmentSequence> getShipmentTypes() {
+        return shipmentSequenceManager.getShipmentTypes();
     }
 }

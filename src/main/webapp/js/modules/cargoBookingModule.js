@@ -2,35 +2,53 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cityManager,branchOfficeManager){
+    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager,forUser, branchOfficeManager){
         $scope.headline = "Cargo Booking";
-
-
+        $scope.shipmentTypes = [];
+        $scope.users = [];
+        $scope.shipment = {};
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
 
-        cityManager.getActiveCityNames(function (data) {
-            $scope.cities = data;
+        userManager.getUserNames(function(users){
+            $scope.users =users;
         });
 
+        cargoBookingManager.getShipmentTypes(function (types) {
+            $scope.shipmentTypes = types;
+        });
+
+
         $scope.copyDetails = function () {
-            $scope.cargo.receiverName = $scope.cargo.senderName;
-            $scope.cargo.receiverNo = $scope.cargo.senderNo;
+            $scope.shipment.receiverName = $scope.shipment.senderName;
+            $scope.shipment.receiverNo = $scope.shipment.senderNo;
         }
-        $scope.addCargo = function(){
-            if(!$scope.cargos) {
-                $scope.cargos = [];
+        $scope.addItem = function(){
+            if(!$scope.shipment.items) {
+                $scope.shipment.items = [];
             }
-            $scope.cargos.push({'index':$scope.cargos.length+1});
+            $scope.shipment.items.push({'index':$scope.shipment.items.length+1});
         }
+        $scope.addItem();
 
-        $scope.deleteCargo = function(cargo){
-            $scope.cargos.splice(cargo.index-1,1);
-            for(var index=0;index<$scope.cargos.length; index++) {
-                $scope.cargos[index].index = index+1;
+        $scope.deleteCargo = function(item){
+            $scope.shipment.items.splice(item.index-1,1);
+            for(var index=0;index<$scope.shipment.items.length; index++) {
+                $scope.shipment.items[index].index = index+1;
             }
         }
-
         $scope.dt = new Date();
+
+    }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
+        return {
+            getShipmentTypes: function ( callback) {
+                $http.get("/api/v1/shipment/types")
+                    .then(function (response) {
+                        callback(response.data)
+                    }, function (error) {
+                        swal("oops", error, "error");
+                    })
+            }
+        }
     });

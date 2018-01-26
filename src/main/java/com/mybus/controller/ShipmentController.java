@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.Shipment;
+import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.ShipmentManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -77,5 +79,12 @@ public class ShipmentController extends MyBusBaseController{
         shipmentManager.delete(id);
         response.put("deleted", true);
         return response;
+    }
+
+    @RequestMapping(value = "shipment/types", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get the Shipment", response = Shipment.class)
+    public Iterable<ShipmentSequence> getShipmentTypes(HttpServletRequest request) {
+        logger.debug("get shipment called");
+        return shipmentManager.getShipmentTypes();
     }
 }
