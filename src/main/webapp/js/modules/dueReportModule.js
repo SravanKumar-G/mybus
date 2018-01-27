@@ -46,7 +46,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             $location.url('payments');
         }
     })
-    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, $uibModal, dueReportManager, branchOfficeManager, userManager, NgTableParams, $filter, $location) {
+    .controller('OfficeDueReportController', function($scope, $rootScope, $stateParams, $uibModal, dueReportManager, branchOfficeManager, userManager, NgTableParams, $filter, $location, paginationService) {
         $scope.headline = "Office Due Report";
         $scope.currentPageOfDues = [];
         $scope.officeId = $stateParams.id;
@@ -153,6 +153,9 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 $scope.dueBookings = data;
             });
         }
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
 
         $scope.searchByPNR = function() {
             dueReportManager.searchDuesByPNR($scope.pnr, function(data){
@@ -188,6 +191,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             dueReportManager.payBookings($scope.selectedBookings, function(data) {
                 $rootScope.$broadcast('UpdateHeader');
                 $scope.search();
+                $scope.selectedBookings = [];
                 dueReportManager.showDuePaymentSummary(data);
             },function (error) {
                 alert("Error paying booking:" + error.data.message);
