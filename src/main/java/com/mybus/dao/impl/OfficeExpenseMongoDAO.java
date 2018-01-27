@@ -108,7 +108,7 @@ public class OfficeExpenseMongoDAO {
         try{
         	SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
         	String startTime = date + " 00:00"; 
-        	String endTime = date + " 24:00";
+        	String endTime = date + " 23:59";
         	startDate = simpleDateFormat.parse(startTime);  
         	endDate = simpleDateFormat.parse(endTime);
         }catch(Exception e){

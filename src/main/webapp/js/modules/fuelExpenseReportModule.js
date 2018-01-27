@@ -5,9 +5,11 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
         .controller("fuelExpenseReportsCtrl",function($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location,fuelExpensesServiceManager){
             $scope.loading = false;
             $rootScope.urlDate = $stateParams.date;
+            $scope.date = $stateParams.date;
             $scope.parseDate = function(){
                 $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
             };
+
             $scope.reportsByDate = function(date){
                 var dateObj = date;
                 var month = dateObj.getMonth() + 1;
@@ -22,6 +24,7 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $scope.parseDate();
                 $scope.reportsByDate($scope.dt)
             };
+
             if(!$scope.urlDate) {
                 $scope.today();
             } else {
@@ -29,71 +32,17 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $scope.todayDate = new Date();
                 $scope.tomorrow = new Date($scope.todayDate.getTime() + (24 * 60 * 60 * 1000));
             }
-            $scope.date = null;
-            $scope.loading = false;
             $scope.currentPageOfFuelExpenseReports = [];
-            //$scope.loading = true;
-            $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-            $scope.format = $scope.formats[0];
-            $scope.altInputFormats = ['M!/d!/yyyy'];
 
             $scope.clear = function() {
                 $scope.dt = null;
             };
 
-            $scope.inlineOptions = {
-                customClass: getDayClass,
-                minDate: new Date(),
-                showWeeks: true
-            };
-            $scope.dateChanged = function() {
-                if($scope.dt >= $scope.tomorrow){
-                    swal("Oops...", "U've checked for future, Check Later", "error");
-                }
-                else{
-                    $scope.reportsByDate($scope.dt)
-                    $scope.init();
-                }
-            }
-            $scope.dateOptions = {
-                formatYear: 'yy',
-                minDate: new Date(),
-                startingDay: 1
-            };
 
-            $scope.toggleMin = function() {
-                $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-                $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-            };
-            $scope.toggleMin();
-            $scope.open1 = function() {
-                $scope.popup1.opened = true;
-            };
-            $scope.setDate = function(year, month, day) {
-                $scope.dt = new Date(year, month, day);
-            };
-            $scope.popup1 = {
-                opened: false
-            };
-            function getDayClass(data) {
-                var date = data.date,
-                    mode = data.mode;
-                if (mode === 'day') {
-                    var dayToCheck = new Date(date).setHours(0,0,0,0);
-                    for (var i = 0; i < $scope.events.length; i++) {
-                        var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+            $scope.$watch('dt', function(newValue, oldValue) {
+                $scope.reportsByDate($scope.dt);
+            });
 
-                        if (dayToCheck === currentDay) {
-                            return $scope.events[i].status;
-                        }
-                    }
-                }
-                return '';
-            }
-
-            $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
 
             $scope.nextDay = function() {
                 var dt = $scope.dt;
@@ -152,21 +101,32 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $scope.init();
             });
 
-            $scope.updateFuelExpense = function(id) {
+            $scope.addOrUpdateFuelExpense = function(id) {
                 $rootScope.modalInstance = $uibModal.open({
                     templateUrl: 'update-fuelExpense-modal.html',
                     controller: 'editFuelExpenseReportController',
                     resolve : {
                         serviceId : function(){
                             return id;
+                        },
+                        date:function () {
+                            return $scope.date;
                         }
                     }
                 })
             }
         })
-        .controller("editFuelExpenseReportController",function ($scope,$rootScope,fuelExpensesServiceManager,serviceId, fillingStationsManager) {
+        .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, fuelExpensesServiceManager,serviceId, fillingStationsManager,serviceReportsManager ) {
             $scope.serviceExpense = {};
+            $scope.serviceExpense.journeyDate = new Date();
             $scope.fillingStations = [];
+
+            $scope.serviceList = [];
+
+            serviceReportsManager.getServices(date, function(data){
+                $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
+            });
+
             if(serviceId) {
                 $scope.setFuelExpense = function (serviceId) {
                     fuelExpensesServiceManager.getFuelExpense(serviceId, function (data) {
@@ -180,32 +140,21 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             });
 
             $scope.ok = function () {
-                if(serviceId){
-                    if ($scope.updateFuelExpenseForm.$invalid) {
-                        swal("Error!", "Please fix the errors in the form", "error");
-                        return;
-                    }
-                    fuelExpensesServiceManager.updateFuelExpense($scope.serviceExpense, function (data) {
-                        $rootScope.modalInstance.close(data);
-                    });
+
+                if ($scope.updateFuelExpenseForm.$invalid) {
+                    swal("Error!", "Please fix the errors in the form", "error");
+                    return;
                 }
-                else {
-                    swal("Error!","Something got wrong","error")
-                }
+                fuelExpensesServiceManager.saveFuelExpense($scope.serviceExpense, function (data) {
+                    $rootScope.modalInstance.close(data);
+                });
+
             };
 
             $scope.getFuelCost = function() {
                 if($scope.serviceExpense) {
                     $scope.serviceExpense.fuelCost = $scope.serviceExpense.fuelQuantity * $scope.serviceExpense.fuelRate;
                 }
-                $scope.service.serviceExpense.netRealization = parseFloat($scope.service.netIncome)
-                    - parseFloat($scope.serviceExpense.fuelCost)
-                    + parseFloat($scope.serviceExpense.paidLuggage)
-                    + parseFloat($scope.serviceExpense.toPayLuggage)
-                    - parseFloat($scope.serviceExpense.driverSalary1)
-                    - parseFloat($scope.serviceExpense.driverSalary2)
-                    - parseFloat($scope.serviceExpense.cleanerSalary);
-
                 return $scope.serviceExpense.fuelCost;
             }
             $scope.cancel = function () {
@@ -213,6 +162,7 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             };
         })
         .factory('fuelExpensesServiceManager',function ($http,$log,$rootScope) {
+
             return{
                 getFuelExpenseReports: function (date,callback) {
                     $http.get('/api/v1/serviceExpense/byDate?travelDate='+date)
@@ -230,8 +180,8 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                             $log.debug("error retrieving Fuel Expense reports");
                         });
                 },
-                updateFuelExpense: function (service) {
-                    $http.put('/api/v1/serviceExpense/',service)
+                saveFuelExpense: function (serviceExpense) {
+                    $http.put('/api/v1/serviceExpense/',serviceExpense)
                         .then(function (response) {
                             $rootScope.modalInstance.close();
                             sweetAlert("Great","Your Fuel Consumption successfully updated", "success");

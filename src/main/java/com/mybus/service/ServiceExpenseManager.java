@@ -27,6 +27,7 @@ public class ServiceExpenseManager {
 
     public ServiceExpense save(ServiceExpense serviceExpense) {
         serviceExpense.validate();
+        serviceExpense.setJourneyDate(serviceExpense.getJourneyDate());
         /*serviceExpense.setNetRealization(
                 - parseFloat($scope.serviceExpense.fuelCost)
                 + parseFloat($scope.serviceExpense.paidLuggage)

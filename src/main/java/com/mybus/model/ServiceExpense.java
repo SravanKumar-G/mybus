@@ -7,7 +7,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 
@@ -27,9 +30,13 @@ public class ServiceExpense extends AbstractDocument  {
     /**
      * The auto generated id of the ServiceReport
      */
-    @RequiresValue
+
     @Indexed
     private String serviceReportId;
+
+    @RequiresValue
+    @Indexed
+    private String serviceId;
 
     @Indexed
     private String serviceNumber;
@@ -37,7 +44,9 @@ public class ServiceExpense extends AbstractDocument  {
     private String vehicleNumber;
     @RequiresValue
     @Indexed
-    private Date journeyDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate journeyDate;
+
     private double estimatedFuelConsumption;
     private String fillingStationId;
     private double fuelQuantity;
@@ -59,7 +68,7 @@ public class ServiceExpense extends AbstractDocument  {
         }
         this.serviceReportId = serviceReport.getId();
         this.serviceReportId = serviceReport.getId();
-        this.journeyDate = serviceReport.getJourneyDate();
+        this.journeyDate =  serviceReport.getJourneyDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         this.vehicleNumber = serviceReport.getVehicleRegNumber();
     }
     public ServiceExpense(){
