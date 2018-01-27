@@ -188,6 +188,7 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             dueReportManager.payBookings($scope.selectedBookings, function(data) {
                 $rootScope.$broadcast('UpdateHeader');
                 $scope.search();
+                $scope.selectedBookings = [];
                 dueReportManager.showDuePaymentSummary(data);
             },function (error) {
                 alert("Error paying booking:" + error.data.message);

@@ -130,7 +130,9 @@ public class ServiceReportsManager {
         } else {
             report.setInvalid(false);
         }
+        /*
         report.setServiceExpense(serviceExpenseManager.getServiceExpenseByServiceReportId(report.getId()));
+        */
         //round up the digits
         report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
