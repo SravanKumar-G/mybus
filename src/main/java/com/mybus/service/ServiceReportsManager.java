@@ -310,10 +310,10 @@ public class ServiceReportsManager {
     public ServiceForm getForm(String id) {
         ServiceForm serviceForm = serviceFormDAO.findOne(id);
         Iterable<Booking> bookings = bookingDAO.findByFormId(serviceForm.getId());
-
+        /*
         //load the service expense
         serviceForm.setServiceExpense(serviceExpenseManager.getServiceExpenseByServiceReportId(serviceForm.getServiceReportId()));
-
+        */
         //round up the digits
         serviceForm.setNetRedbusIncome(roundUp(serviceForm.getNetRedbusIncome()));
         serviceForm.setNetOnlineIncome(roundUp(serviceForm.getNetOnlineIncome()));
