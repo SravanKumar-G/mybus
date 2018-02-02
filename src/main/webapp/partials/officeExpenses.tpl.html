@@ -88,12 +88,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label ">Start Date</label>
                     <div class="col-sm-3" >
-                        <input type="text" name="startDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt"
-                               is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
-                               close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                        {{dt.getFullYear()+"-"+monthNames[dt.getMonth()]+"-"+dt.getDate()}}
-                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-
+                        <my-datepicker ng-model="dt"></my-datepicker>
                         <span class="input-group-btn">
                             <span class="error" ng-show="searchExpense.startDate.$error.max">Start date should be before end date</span>
                         </span>
@@ -102,13 +97,7 @@
 
                     <label class="col-sm-2 control-label ">End Date</label>
                     <div class="col-sm-3" >
-                        <input type="text" name="endDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dt2"
-                               is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true"
-                               close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                        {{dt2.getFullYear()+"-"+monthNames[dt2.getMonth()]+"-"+dt2.getDate()}}
-                        <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-
-
+                        <my-datepicker ng-model="dt2"></my-datepicker>
                         <span class="input-group-btn">
                             <span class="error" ng-show="searchExpense.startDate.$error.max">You choose future date as end date</span>
                         </span>

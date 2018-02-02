@@ -92,20 +92,12 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Start Date :</label>
                 <div class="col-sm-3">
-                    <input type="text" name="startDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="stDt"
-                           is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true"
-                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                    {{stDt.getFullYear()+"-"+monthNames[stDt.getMonth()]+"-"+stDt.getDate()}}
-                    <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <my-datepicker ng-model="stDt"></my-datepicker>
                 </div>
 
                 <label class="col-sm-2 control-label ">End Date :</label>
                 <div class="col-sm-3" >
-                    <input type="text" name="endDate" class="form-control" uib-datepicker-popup="{{format}}" ng-model="endDt"
-                           is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true"
-                           close-text="Close" alt-input-formats="altInputFormats" ng-change="dateChanged()"  ng-show="false"/>
-                    {{endDt.getFullYear()+"-"+monthNames[endDt.getMonth()]+"-"+endDt.getDate()}}
-                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <my-datepicker ng-model="endDt"></my-datepicker>
                 </div>
             </div><br/><br/><br/>
             <div class=" form-group">
