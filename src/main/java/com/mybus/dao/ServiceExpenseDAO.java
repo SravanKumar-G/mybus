@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface ServiceExpenseDAO extends PagingAndSortingRepository<ServiceExpense, String> {
     List<ServiceExpense> findByJourneyDate(Date date);
+    List<ServiceExpense> findByJourneyDateBetween(Date start,Date end);
     ServiceExpense findByServiceReportId(String serviceReportId);
+
 
 }

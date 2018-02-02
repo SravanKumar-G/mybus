@@ -11,6 +11,7 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
         $scope.pendingPayments=[];
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
+        $scope.selectedPayments = [];
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
@@ -151,92 +152,26 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 }
             })
         }
-        $scope.approveOrRejectPayment = function(payment, status){
-            if(status == "Approve"){
-                payment.status ="Approved";
+        $scope.togglePaymentSelection = function(paymentId){
+            var idx = $scope.selectedPayments.indexOf(paymentId);
+            if (idx > -1) {
+                $scope.selectedPayments.splice(idx, 1);
             } else {
-                payment.status ="Rejected";
+                $scope.selectedPayments.push(paymentId);
             }
-            paymentManager.save(payment, function(data){
+        }
+        $scope.approveOrRejectPayment = function(status){
+            paymentManager.approveOrRejectPayments($scope.selectedPayments, status, function(data){
                 $rootScope.$broadcast('UpdateHeader');
+                $scope.selectedPayments = [];
                 swal("Great", "Payment is updated", "success");
             });
         }
+
+
         $scope.officeSelect = null;
         $scope.userSelect = null;
-        $scope.today = function () {
-            $scope.stDt = new Date();
-            $scope.endDt = new Date();
-            $scope.tomorrow = new Date($scope.stDt.getTime() + (24 * 60 * 60 * 1000));
-        };
-        $scope.today();
-        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
-        $scope.altInputFormats = ['M!/d!/yyyy'];
 
-        $scope.clear = function() {
-            $scope.stDt = null;
-            $scope.endDt = null;
-        };
-
-        $scope.inlineOptions = {
-            customClass: getDayClass,
-            minDate: new Date(),
-            showWeeks: true
-        };
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            minDate: new Date(),
-            startingDay: 1
-        };
-        $scope.dateChanged = function() {
-            if($scope.stDt >= $scope.tomorrow || $scope.endDt >= $scope.tomorrow){
-                swal("Oops...", "U've checked for future, Check Later", "error");
-            }
-            else{
-                //$scope.searchInit();
-            }
-        }
-        $scope.toggleMin = function() {
-            $scope.inlineOptions.minDate = $scope.inlineOptions.minDate ? null : new Date();
-            $scope.dateOptions.minDate = $scope.inlineOptions.minDate;
-        };
-        $scope.toggleMin();
-        $scope.open1 = function() {
-            $scope.popup1.opened = true;
-        };
-        $scope.setDate = function(year, month, day) {
-            $scope.stDt = new Date(year, month, day);
-            $scope.endDt = new Date(year, month, day);
-        };
-        $scope.monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        $scope.popup1= {
-            opened: false
-        };
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0,0,0,0);
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
-
-                    if (dayToCheck === currentDay) {
-                        return $scope.events[i].status;
-                    }
-                }
-            }
-            return '';
-        }
-        $scope.open2 = function() {
-            $scope.popup2.opened = true;
-        };
-
-        $scope.popup2 = {
-            opened: false
-        };
         $scope.query = {};
         var loadSearchPayments = function (tableParams) {
             $scope.loading = true;
@@ -504,6 +439,17 @@ angular.module('myBus.paymentModule', ['ngTable', 'ui.bootstrap'])
                 return _.first(_.select(expenses, function (value) {
                     return value.id === id;
                 }));
+            },
+            approveOrRejectPayments:function(paymentIds, approve, callback) {
+                $http.post('/api/v1/payment/approveOrReject/'+approve, paymentIds).then(function (response) {
+                    if (angular.isFunction(callback)) {
+                        callback(response.data);
+                        $rootScope.$broadcast('UpdateHeader');
+                        $rootScope.modalInstance.dismiss('success');
+                    }
+                }, function (err, status) {
+                    sweetAlert("Error", err.data.message, "error");
+                });
             }
         }
     });

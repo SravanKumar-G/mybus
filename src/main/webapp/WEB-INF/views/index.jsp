@@ -58,6 +58,7 @@
     <script src="js/modules/fillingStationsModule.js"></script>
     <script src="js/modules/tripReportsModule.js"></script>
     <script src="js/modules/cargoBookingModule.js"></script>
+    <script src="js/modules/collectionZoneModule.js"></script>
 
     <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -183,6 +184,7 @@
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
+                                <my-menu label="CollectionZones" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="GSTFilters" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="FillingStations" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>

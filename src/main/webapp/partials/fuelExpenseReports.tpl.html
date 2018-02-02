@@ -25,17 +25,16 @@
         </table>
 
         <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams">
-            <tr ng-repeat="service in currentPageOfFuelExpenseReports">
-                <!-- <td data-title="'Service#'"  sortable="'serviceNumber'" class="clickable-item">{{ service.serviceNumber }}</td> -->
-                <td data-title="'Vehicle'"  sortable="'vehicle'" class="clickable-item">{{ service.attributes.busType }}</td>
-                <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ service.vehicleNumber }}</td>
-                <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ service.attributes.from }}</td>
-                <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ service.attributes.to }}</td>
-                <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ service.journeyDate | date }}</td>
-                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2" ng-click="goToServiceReport(service)">{{service.fuelQuantity}}/{{service.fuelCost}}</td>
+            <tr ng-repeat="fuelExpense in currentPageOfFuelExpenseReports">
+                <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelExpense.vehicleNumber }}</td>
+                <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelExpense.attributes.from }}</td>
+                <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.attributes.to }}</td>
+                <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.journeyDate | date }}</td>
+                <td data-title="'Filling Station'"  class="clickable-item col-md-2" >{{fuelExpense.fillingStation}}</td>
+                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelExpense.fuelQuantity}}/{{fuelExpense.fuelCost}}</td>
                 <td data-title="'Edit'" class="clickable-item col-md-2">
                     <md-icon type="button" class="btn" ng-click="">
-                        <span class="glyphicon glyphicon-pencil" ng-click="updateFuelExpense(service.id)" ></span></md-icon>
+                        <span class="glyphicon glyphicon-pencil" ng-click="addOrUpdateFuelExpense(fuelExpense.id)" ></span></md-icon>
                 </td>
             </tr>
             <tr ng-if="!currentPageOfFuelExpenseReports || currentPageOfFuelExpenseReports.length === 0">
@@ -67,7 +66,7 @@
             <div class="row top-buffer-5">
                 <label class="col-xs-4 control-label" >Service  :</label>
                 <div class="col-xs-6">
-                    <select id="service" ng-options="service.serviceId as service.serviceName for service in serviceList" class="form-control" ng-model="serviceExpense.serviceId"></select>
+                    <select id="service" ng-options="service.id as service.serviceName for service in serviceList" class="form-control" ng-model="serviceExpense.serviceListingId"></select>
                 </div>
             </div>
 

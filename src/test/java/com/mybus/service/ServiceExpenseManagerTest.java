@@ -29,8 +29,8 @@ public class ServiceExpenseManagerTest extends AbstractControllerIntegrationTest
     @Test
     public void testSave() {
         ServiceExpense serviceExpense = new ServiceExpense();
-        serviceExpense.setServiceId("123");
-        serviceExpense.setJourneyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        serviceExpense.setServiceListingId("123");
+        serviceExpense.setJourneyDate(new Date());
         serviceExpense = serviceExpenseManager.save(serviceExpense);
         assertNotNull(serviceExpense);
     }

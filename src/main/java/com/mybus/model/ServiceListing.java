@@ -25,6 +25,7 @@ public class ServiceListing extends AbstractDocument  {
     /**
      * serviceId from Abhibus
      */
+    //ServiceListingId
     private String serviceId;
     private String serviceName;
     @Indexed

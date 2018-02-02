@@ -66,6 +66,11 @@ public class ServiceReportsManager {
     @Autowired
     private ServiceExpenseManager serviceExpenseManager;
 
+    @Autowired
+    private ServiceListingManager serviceListingManager;
+
+
+
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
         ServiceReportStatus status = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
@@ -87,7 +92,7 @@ public class ServiceReportsManager {
     }
     
     public JSONObject getServicesByDate(String date) throws Exception {
-        Iterable<ServiceListing> serviceListings = reportService.getActiveServicesByDate(date);
+        Iterable<ServiceListing> serviceListings = serviceListingManager.getServiceListings(date);
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("data", serviceListings);

@@ -41,6 +41,9 @@ public class Payment extends AbstractDocument {
     private String bookingId;
     private String cashTransferRef;
     private Date duePaidOn;
+    private String reviewedBy;
+    private Date reviewdOn;
+
     //for service reports we need to find out the user who submmitted it
     private String submittedBy;
     public Payment() {

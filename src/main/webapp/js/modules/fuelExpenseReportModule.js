@@ -102,11 +102,12 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             });
 
             $scope.addOrUpdateFuelExpense = function(id) {
+
                 $rootScope.modalInstance = $uibModal.open({
                     templateUrl: 'update-fuelExpense-modal.html',
                     controller: 'editFuelExpenseReportController',
                     resolve : {
-                        serviceId : function(){
+                        serviceExpenseId : function(){
                             return id;
                         },
                         date:function () {
@@ -115,25 +116,23 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                     }
                 })
             }
+
         })
-        .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, fuelExpensesServiceManager,serviceId, fillingStationsManager,serviceReportsManager ) {
+        .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, fuelExpensesServiceManager,serviceExpenseId, fillingStationsManager,serviceReportsManager ) {
             $scope.serviceExpense = {};
             $scope.serviceExpense.journeyDate = new Date();
             $scope.fillingStations = [];
-
+            console.log('expense id:'+serviceExpenseId);
             $scope.serviceList = [];
 
             serviceReportsManager.getServices(date, function(data){
                 $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
             });
 
-            if(serviceId) {
-                $scope.setFuelExpense = function (serviceId) {
-                    fuelExpensesServiceManager.getFuelExpense(serviceId, function (data) {
-                        $scope.serviceExpense = data;
-                    });
-                };
-                $scope.setFuelExpense(serviceId);
+            if(serviceExpenseId) {
+                fuelExpensesServiceManager.getFuelExpense(serviceExpenseId, function (data) {
+                    $scope.serviceExpense = data;
+                });
             }
             fillingStationsManager.getFillingStations(function(fillingStations){
                 $scope.fillingStations = fillingStations;
