@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -170,5 +171,29 @@ public class PaymentManager {
 
     public List<Payment> search(JSONObject query, Pageable pageable) throws ParseException {
         return paymentMongoDAO.search(query, pageable);
+    }
+
+    public List<Payment> approveOrRejectExpenses(List<String> ids, Boolean approve) {
+        List<Payment> payments = new ArrayList<>();
+        User currentUser = sessionManager.getCurrentUser();
+        ids.stream().forEach(id -> {
+            Payment payment = paymentDAO.findOne(id);
+            if(payment.getStatus() != null){
+                throw new BadRequestException("payment has invalid status");
+            }
+            if(approve){
+                payment.setStatus(Payment.STATUS_APPROVED);
+                payment.setReviewedBy(currentUser.getId());
+                payment.setReviewdOn(new Date());
+                payment = updatePayment(payment);
+            } else {
+                payment.setStatus(Payment.STATUS_REJECTED);
+                payment.setReviewedBy(currentUser.getId());
+                payment.setReviewdOn(new Date());
+                payment = updatePayment(payment);
+            }
+            payments.add(payment);
+        });
+        return payments;
     }
 }

@@ -31,7 +31,8 @@ var myBus = angular.module('myBus', [
     'myBus.gstFilters',
     'myBus.fillingStations',
     'myBus.tripReportsModule',
-    'myBus.cargoBooking'
+    'myBus.cargoBooking',
+    'myBus.colletionZoneModule'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -41,6 +42,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/cargobooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
+            }).state('collectionzones',{
+                url:'/collectionZones',
+                templateUrl: 'partials/collectionZones.tpl.html',
+                controller: 'CollectionZonesController'
             })
             .state('agents',{
                 url:'/agents',

@@ -1,10 +1,15 @@
 package com.mybus.service;
 
+import com.mybus.dao.FillingStationDAO;
 import com.mybus.dao.ServiceExpenseDAO;
+import com.mybus.dao.ServiceListingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
+import com.mybus.model.FillingStation;
 import com.mybus.model.ServiceExpense;
+import com.mybus.model.ServiceListing;
 import com.mybus.model.ServiceReport;
+import com.mybus.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,10 +30,14 @@ public class ServiceExpenseManager {
     @Autowired
     private ServiceReportDAO serviceReportDAO;
 
+    @Autowired
+    private FillingStationDAO fillingStationDAO;
+    @Autowired
+    private ServiceListingDAO serviceListingDAO;
+
 
     public ServiceExpense save(ServiceExpense serviceExpense) {
         serviceExpense.validate();
-        serviceExpense.setJourneyDate(serviceExpense.getJourneyDate());
         /*serviceExpense.setNetRealization(
                 - parseFloat($scope.serviceExpense.fuelCost)
                 + parseFloat($scope.serviceExpense.paidLuggage)
@@ -55,20 +65,27 @@ public class ServiceExpenseManager {
             return null;
         }
         serviceExpense.validate();
-        ServiceReport serviceReport = serviceReportDAO.findOne(serviceExpense.getServiceReportId());
-        if(serviceReport != null) {
-            serviceExpense.getAttributes().put("to", serviceReport.getDestination());
-            serviceExpense.getAttributes().put("from", serviceReport.getSource());
-            serviceExpense.getAttributes().put("busType", serviceReport.getBusType());
-            serviceExpense.getAttributes().put("VehicleNumber", serviceReport.getVehicleRegNumber());
+        ServiceListing serviceListing = serviceListingDAO.findOne(serviceExpense.getServiceListingId());
+        if(serviceListing != null) {
+            serviceExpense.getAttributes().put("to", serviceListing.getDestination());
+            serviceExpense.getAttributes().put("from", serviceListing.getSource());
+            serviceExpense.getAttributes().put("busType", serviceListing.getBusType());
+            serviceExpense.getAttributes().put("VehicleNumber", serviceListing.getVehicleRegNumber());
+        }
+        if(serviceExpense.getFillingStationId() != null) {
+            FillingStation fillingStation = fillingStationDAO.findOne(serviceExpense.getFillingStationId());
+            serviceExpense.getAttributes().put("fillingStation", fillingStation.getName());
         }
         return serviceExpense;
     }
 
+
     public List<ServiceExpense> getServiceExpenses(String journeyDate) {
         List<ServiceExpense> serviceExpenses = new ArrayList<>();
         try {
-            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDate(ServiceConstants.df.parse(journeyDate));
+            Date start = ServiceUtils.parseDate(journeyDate, false);
+            Date end = ServiceUtils.parseDate(journeyDate, true);
+            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDateBetween(start,end);
             if(!expenses.isEmpty()) {
                 for(ServiceExpense expense: expenses) {
                     serviceExpenses.add(loadServiceInfo(expense));

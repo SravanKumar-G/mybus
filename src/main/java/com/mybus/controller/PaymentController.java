@@ -107,4 +107,11 @@ public class PaymentController {
         return response;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "payment/approveOrReject/{approve}", method = RequestMethod.POST)
+    public List<Payment> approveOrRejectExpenses(HttpServletRequest request, @PathVariable(name = "approve")String approve,
+                                                       @RequestBody final List<String> ids)  {
+        return paymentManager.approveOrRejectExpenses(ids, Boolean.valueOf(approve));
+    }
+
 }

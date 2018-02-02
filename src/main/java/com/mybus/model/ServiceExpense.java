@@ -36,16 +36,16 @@ public class ServiceExpense extends AbstractDocument  {
 
     @RequiresValue
     @Indexed
-    private String serviceId;
+    private String serviceListingId;
 
     @Indexed
     private String serviceNumber;
 
     private String vehicleNumber;
+
     @RequiresValue
     @Indexed
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate journeyDate;
+    private Date journeyDate;
 
     private double estimatedFuelConsumption;
     private String fillingStationId;
@@ -68,7 +68,7 @@ public class ServiceExpense extends AbstractDocument  {
         }
         this.serviceReportId = serviceReport.getId();
         this.serviceReportId = serviceReport.getId();
-        this.journeyDate =  serviceReport.getJourneyDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        this.journeyDate =  serviceReport.getJourneyDate();
         this.vehicleNumber = serviceReport.getVehicleRegNumber();
     }
     public ServiceExpense(){

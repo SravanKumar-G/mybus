@@ -10,5 +10,6 @@ import java.util.Date;
 @Repository
 public interface ServiceListingDAO extends PagingAndSortingRepository<ServiceListing, String> {
     Iterable<ServiceListing> findByJourneyDate(Date date);
+
     ServiceListing findByJourneyDateAndServiceNumber(Date date, String serviceNUmber);
 }
