@@ -391,7 +391,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         },
 
         approveOrRejectExpenses:function(paymentIds, approve, callback) {
-            $http.post('/api/v1/payment/approveOrReject/'+approve, paymentIds).then(function (response) {
+            $http.post('/api/v1/officeExpenses/approveOrReject/'+approve, paymentIds).then(function (response) {
                 if (angular.isFunction(callback)) {
                     callback(response.data);
                     $rootScope.$broadcast('UpdateHeader');
