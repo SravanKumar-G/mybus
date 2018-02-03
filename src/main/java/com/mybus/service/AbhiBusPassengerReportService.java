@@ -159,7 +159,8 @@ public class AbhiBusPassengerReportService extends BaseService{
             mergeServiceCombos(serviceReportsMap);
 
             */
-            Iterable<ServiceListing> serviceListings = serviceListingDAO.findByJourneyDate(journeyDate);
+
+            Iterable<ServiceListing> serviceListings = getActiveServicesByDate(date);
             for(ServiceListing serviceListing:serviceListings){
                 List<ServiceReport> serviceReports = getServiceDetailsByNumberAndDate(serviceListing.getServiceId(), date);
                 //if no passenger report is found create an empty service report
