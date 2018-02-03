@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager,forUser, branchOfficeManager){
+    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager){
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
@@ -37,6 +37,9 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             for(var index=0;index<$scope.shipment.items.length; index++) {
                 $scope.shipment.items[index].index = index+1;
             }
+        }
+        $scope.cancelShipmentForm = function() {
+            $location.url();
         }
         $scope.dt = new Date();
 
