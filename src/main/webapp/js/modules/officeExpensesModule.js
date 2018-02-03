@@ -2,7 +2,8 @@
 /*global angular, _*/
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
-    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, NgTableParams, officeExpensesManager, userManager){
+    .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, branchOfficeManager,
+                                                    NgTableParams, officeExpensesManager, userManager){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
@@ -14,6 +15,10 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.selectedPayments = [];
         var user = userManager.getUser();
         $scope.currentUser = user.fullName;
+
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
 
         userManager.getUserNames(function (data) {
             $scope.members = data;

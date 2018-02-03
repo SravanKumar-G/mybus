@@ -161,9 +161,20 @@
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-secondary" ng-click="addItem()">
-                <span class="glyphicon glyphicon-plus"></span> Add Item
-            </button>
+            <div class="row">
+                <button type="button" class="btn btn btn-sm btn-info" ng-click="addItem()">
+                    <span class="glyphicon glyphicon-plus "></span> Add Item
+                </button>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn btn-sm btn-danger pull-right" ng-click="cancelShipmentForm()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn btn-sm btn-success pull-right" ng-click="submitShipment()">
+                   Submit
+                </button>
+            </div>
+
         </div>
     </form>
 </div>
