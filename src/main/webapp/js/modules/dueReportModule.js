@@ -148,9 +148,12 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
             $location.url('officeduereportbyagent/'+agentName);
         }
         $scope.dueBookings = [];
+        $scope.totalDue = 0;
+
         $scope.search = function(){
             dueReportManager.searchDues($scope.startDate, $scope.endDate, $scope.branchOfficeId,function(data){
                 $scope.dueBookings = data;
+                $scope.totalDue = _.reduce($scope.dueBookings, function(memo, booking) { return memo + booking.netAmt}, 0);
             });
         }
         $scope.exportToExcel = function (tableId, fileName) {

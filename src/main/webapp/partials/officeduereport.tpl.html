@@ -96,6 +96,10 @@
                 </div>
             </form>
             <br/>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr><td>Total Due:{{totalDue | number}}</td></tr>
+            </table>
+
             <table class="table table-bordered table-condensed table-hover" ng-table="searchBookingsParams" id="dueSearchResults">
                 <tr ng-repeat="booking in dueBookings ">
                     <td data-title="'BookedBy'" sortable="'bookedBy'" class="clickable-item col-md-1" >{{booking.bookedBy}}</td>
@@ -106,7 +110,7 @@
                     <td data-title="'Route'" sortable="'serviceNumber'" class="clickable-item col-md-2" >{{booking.source}} - {{booking.destination}} - {{booking.serviceName}})</td>
                     <td data-title="'Journey Date'"  sortable="'jdate'" class="clickable-item col-md-1" >{{booking.jdate }}</td>
                     <td data-title="'Booked On'" sortable="'bookedDate'" class="clickable-item col-md-1" >{{booking.bookedDate }}</td>
-                    <td data-title="'Due'"  sortable="'netAmt'" class="clickable-item col-md-1">{{ booking.netAmt }}</td>
+                    <td data-title="'Due'"  sortable="'netAmt'" class="clickable-item col-md-1">{{ booking.netAmt | number }}</td>
                     <td data-title="'Pay'"  class="clickable-item col-md-1">
                             <input
                             type="checkbox"
