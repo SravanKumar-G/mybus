@@ -61,17 +61,17 @@ public class CashTransferMongoDAO {
             if (query.containsKey("startDate")) {
                 String startDate = query.get("endDate").toString();
                 try {
-                    Date start = ServiceConstants.df.parse(startDate);
+                    Date start = ServiceUtils.parseDate(startDate, false); //ServiceConstants.df.parse(startDate);
                     q.addCriteria(Criteria.where("date").gte(start));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
             if (query.containsKey("endDate")) {
-                String startDate = query.get("endDate").toString();
+                String endDate = query.get("endDate").toString();
                 try {
-                    Date start = ServiceConstants.df.parse(startDate);
-                    q.addCriteria(Criteria.where("date").lte(start));
+                    Date end = ServiceUtils.parseDate(endDate, true); //ServiceConstants.df.parse(startDate);
+                    q.addCriteria(Criteria.where("date").lte(end));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

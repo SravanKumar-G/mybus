@@ -1,49 +1,112 @@
 <legend>Fuel Consumption</legend>
 <div ng-controller="fuelExpenseReportsCtrl">
-    <div class="row" ng-show="!loading">
-        <div class="col-sm-1">
-            <button type="button" class="btn btn-default" ng-click="previousDay()"><i class="glyphicon glyphicon-chevron-left"></i></button>
-        </div>
 
-        <div class="col-sm-3">
-            <p class="input-group">
-                <my-datepicker ng-model="dt"></my-datepicker>
-            </p>
-        </div>
-        <div class="col-sm-1">
-            <button type="button" class="btn btn-default" ng-click="nextDay()"><i class="glyphicon glyphicon-chevron-right"></i></button>
-        </div>
-        <button type="button" class="btn btn-sm btn-primary pull-right" ng-click="addOrUpdateFuelExpense()"><span class="glyphicon glyphicon-plus"></span> Add</button>
-     </div>
-    <div class="row" ng-show="loading">
-        loading reports data for {{date}}...
-    </div>
+    <div class="bpdp-tab" ng-init="tab=1">
+        <ul>
+            <li class="tab"  ng-class="{active:tab==1}">
+                <a href ng-click="tab = 1">Today</a>
+            </li>
 
-    <div class="row" style="margin-top:20px;">
-        <table class="table table-bordered table-condensed table-hover"  ng-show="downloaded">
-            <tr><td>Total:{{currentPageOfReports.length}}</td> <td>Submitted:{{submitted}}</td> <td>Verified:{{verified}}</td></tr>
-        </table>
+            <li class="tab" ng-class="{active:tab==2}">
+                <a href ng-click="tab = 2">Search</a>
+            </li>
+        </ul>
+        <div class="tab-content" ng-show="tab==1">
+            <div class="row" ng-show="!loading">
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-default" ng-click="previousDay()"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                </div>
 
-        <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams">
-            <tr ng-repeat="fuelExpense in currentPageOfFuelExpenseReports">
-                <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelExpense.vehicleNumber }}</td>
-                <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelExpense.attributes.from }}</td>
-                <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.attributes.to }}</td>
-                <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.journeyDate | date }}</td>
-                <td data-title="'Filling Station'"  class="clickable-item col-md-2" >{{fuelExpense.fillingStation}}</td>
-                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelExpense.fuelQuantity}}/{{fuelExpense.fuelCost}}</td>
-                <td data-title="'Edit'" class="clickable-item col-md-2">
-                    <md-icon type="button" class="btn" ng-click="">
-                        <span class="glyphicon glyphicon-pencil" ng-click="addOrUpdateFuelExpense(fuelExpense.id)" ></span></md-icon>
-                </td>
-            </tr>
-            <tr ng-if="!currentPageOfFuelExpenseReports || currentPageOfFuelExpenseReports.length === 0">
-                <td colspan="7">No reports exist. </td>
-            </tr>
-        </table>
+                <div class="col-sm-3">
+                    <p class="input-group">
+                        <my-datepicker ng-model="dt"></my-datepicker>
+                    </p>
+                </div>
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-default" ng-click="nextDay()"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                </div>
+                <button type="button" class="btn btn-sm btn-primary pull-right" ng-click="addOrUpdateFuelExpense()"><span class="glyphicon glyphicon-plus"></span> Add</button>
+             </div>
+            <div class="row" ng-show="loading">
+                loading reports data for {{date}}...
+            </div>
+
+            <div class="row" style="margin-top:20px;">
+                <div class="col-xs-12">
+                    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams">
+                        <tr ng-repeat="fuelExpense in currentPageOfFuelExpenseReports">
+                            <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelExpense.vehicleNumber }}</td>
+                            <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelExpense.attributes.from }}</td>
+                            <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.attributes.to }}</td>
+                            <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.journeyDate | date }}</td>
+                            <td data-title="'Filling Station'"  class="clickable-item col-md-2" >{{fuelExpense.attributes.fillingStationName}}</td>
+                            <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelExpense.fuelQuantity}}/{{fuelExpense.fuelCost}}</td>
+                            <td data-title="'Edit'" class="clickable-item col-md-2">
+                                <md-icon type="button" class="btn" ng-click="">
+                                    <span class="glyphicon glyphicon-pencil" ng-click="addOrUpdateFuelExpense(fuelExpense.id)" ></span></md-icon>
+                            </td>
+                        </tr>
+                        <tr ng-if="!currentPageOfFuelExpenseReports || currentPageOfFuelExpenseReports.length === 0">
+                            <td colspan="7">No reports exist. </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content" ng-show="tab==2">
+           <form name="searchFuelBills" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">Start Date</label>
+                    <div class="col-sm-3" >
+                        <my-datepicker ng-model="dt"></my-datepicker>
+                        <span class="input-group-btn">
+                    </span>
+
+                    </div>
+
+                    <label class="col-sm-2 control-label ">End Date</label>
+                    <div class="col-sm-3" >
+                        <my-datepicker ng-model="dt2"></my-datepicker>
+                        <span class="input-group-btn">
+                    </span>
+                    </div>
+                </div>
+                <div class=" form-group">
+                    <div class="col-sm-3">
+                        <select id="fillingStationId" ng-options="f.id as f.name for f in fillingStations" class="form-control" ng-model="fillingStationId">
+                            <option value="" selected="selected">Filling Station(Optional)</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="search()"> Search Expense </button></button>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="print('fuelBills')"> Print </button></button>
+
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-xs-12"> Total : {{totalBill}}</div>
+                <div class="col-xs-12">
+                    <div id="fuelBills">
+                        <table class="table table-bordered table-condensed table-hover"  ng-table="searchTableParams">
+                            <tr ng-repeat="fuelBill in fuelBills">
+                                <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelBill.vehicleNumber }}</td>
+                                <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelBill.attributes.from }}</td>
+                                <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelBill.attributes.to }}</td>
+                                <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ fuelBill.journeyDate | date }}</td>
+                                <td data-title="'Filling Station'"  class="clickable-item col-md-2" >{{fuelBill.attributes.fillingStationName}}</td>
+                                <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelBill.fuelQuantity}}/{{fuelBill.fuelCost}}</td>
+                            </tr>
+                            <tr ng-if="!fuelBills || fuelBills.length === 0">
+                                <td colspan="8">No Bills found for office. </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
-
 <!----------------------------- Update Fuel Expense --------------------------------------------------->
 
 <script type="text/ng-template" id="update-fuelExpense-modal.html">
@@ -90,6 +153,12 @@
                 </div>
             </div>
             <div class="row top-buffer-5">
+                <label class="col-xs-4 control-label" >Bill Paid<span class="data-required">*</span></label>
+                <div class="col-xs-6">
+                    <input type="checkbox" ng-model="serviceExpense.fuelBillPaid">
+                </div>
+            </div>
+            <div class="row top-buffer-5">
                 <label class="col-xs-4 control-label" >Fuel Quantity<span class="data-required">*</span></label>
                 <div class="col-xs-6">
                     <input type="number" class="form-control" ng-model="serviceExpense.fuelQuantity"
@@ -103,12 +172,14 @@
                            placeholder="Fuel Rate" required ng-change="getFuelCost()">
                 </div>
             </div>
+
             <div class="row top-buffer-5">
                 <label class="col-xs-4 control-label" >Fuel Cost<span class="data-required">*</span></label>
                 <div class="col-xs-6">
                     {{serviceExpense.fuelCost}}
                 </div>
             </div>
+
         </form>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok(serviceExpense.id)">Save</button>

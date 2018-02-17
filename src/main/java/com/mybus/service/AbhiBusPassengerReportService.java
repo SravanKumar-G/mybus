@@ -50,7 +50,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @throws Exception
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
-        logger.info("loading reports for date:" + date);
+        logger.info("loading service listings for date:" + date);
         init();
         Date journeyDate = ServiceConstants.df.parse(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();

@@ -2,10 +2,15 @@
 /*global angular, _*/
 
 angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
-        .controller("fuelExpenseReportsCtrl",function($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location,fuelExpensesServiceManager){
+        .controller("fuelExpenseReportsCtrl",function($scope,$rootScope,NgTableParams,$stateParams,$uibModal, $filter, $location,fillingStationsManager, fuelExpensesServiceManager){
             $scope.loading = false;
             $rootScope.urlDate = $stateParams.date;
             $scope.date = $stateParams.date;
+            $scope.fillingStations = [];
+            fillingStationsManager.getFillingStations(function(fillingStations){
+                $scope.fillingStations = fillingStations;
+            });
+
             $scope.parseDate = function(){
                 $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
             };
@@ -20,6 +25,7 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             }
             $scope.today = function() {
                 $scope.dt = new Date();
+                $scope.dt2 = new Date();
                 $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
                 $scope.parseDate();
                 $scope.reportsByDate($scope.dt)
@@ -29,19 +35,11 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $scope.today();
             } else {
                 $scope.dt = new Date($scope.urlDate);
+                $scope.dt2 = new Date($scope.urlDate);
                 $scope.todayDate = new Date();
                 $scope.tomorrow = new Date($scope.todayDate.getTime() + (24 * 60 * 60 * 1000));
             }
             $scope.currentPageOfFuelExpenseReports = [];
-
-            $scope.clear = function() {
-                $scope.dt = null;
-            };
-
-
-            $scope.$watch('dt', function(newValue, oldValue) {
-                $scope.reportsByDate($scope.dt);
-            });
 
 
             $scope.nextDay = function() {
@@ -102,7 +100,6 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             });
 
             $scope.addOrUpdateFuelExpense = function(id) {
-
                 $rootScope.modalInstance = $uibModal.open({
                     templateUrl: 'update-fuelExpense-modal.html',
                     controller: 'editFuelExpenseReportController',
@@ -116,6 +113,45 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                     }
                 })
             }
+
+            $scope.search = function(){
+                console.log('seaching...');
+                $scope.query = {
+                    "startDate" : $scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate(),
+                    "endDate" :  $scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate(),
+                    "fillingStationId" : $scope.fillingStationId
+                }
+                $scope.searchInit();
+            }
+
+            $scope.query = {};
+            $scope.totalBill = 0;
+            var searchFuelBills = function (tableParams) {
+                $scope.loading = true;
+                fuelExpensesServiceManager.search($scope.query, function(response){
+                    $scope.loading = false;
+                    $scope.fuelBills = response;
+                    tableParams.data = $scope.fuelBills;
+                    $scope.totalBill = _.reduce($scope.fuelBills, function(memo, bill) { return memo + bill.fuelCost}, 0);
+
+                });
+            };
+
+            $scope.searchInit = function (){
+                $scope.searchTableParams = new NgTableParams({
+                    page: 1, // show first page
+                    count:15,
+                    sorting: {
+                        date: 'asc'
+                    },
+                }, {
+                    counts:[],
+                    getData: function (params) {
+                        searchFuelBills(params);
+                    }
+                });
+            }
+
 
         })
         .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, fuelExpensesServiceManager,serviceExpenseId, fillingStationsManager,serviceReportsManager ) {
@@ -163,6 +199,15 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
         .factory('fuelExpensesServiceManager',function ($http,$log,$rootScope) {
 
             return{
+                search: function (query,callback) {
+                    $http.post('/api/v1/serviceExpense/search', query).then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                    }, function (err, status) {
+                        sweetAlert("Error searching expenses", err.message, "error");
+                    });
+                },
                 getFuelExpenseReports: function (date,callback) {
                     $http.get('/api/v1/serviceExpense/byDate?travelDate='+date)
                         .then(function (response) {

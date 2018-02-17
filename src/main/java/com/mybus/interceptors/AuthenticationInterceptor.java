@@ -8,6 +8,7 @@ import com.mybus.exception.InactiveUserException;
 import com.mybus.exception.NotLoggedInException;
 import com.mybus.model.User;
 import com.mybus.service.SessionManager;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             }else {
                 logger.debug("No user found in request");
             }
-            failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request);
+            failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request, response);
             
         }
         return true;
@@ -90,7 +91,8 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
     private void failIfUserRequiredButNotPresent(final HandlerMethod handlerMethod,
                                                  final User user,
-                                                 final HttpServletRequest request) {
+                                                 final HttpServletRequest request,
+                                                 final HttpServletResponse response) {
         if (logger.isTraceEnabled()) {
             logger.trace("failIfUserRequiredButNotPresent() called from " + this.getClass().toString());
         }
@@ -101,6 +103,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 && (requiresAuthorizedUser == null || requiresAuthorizedUser.active());
 
         if (isUserRequired && user == null) {
+            response.setStatus(HttpStatus.SC_FORBIDDEN);
             String detailedMsg = format("Access denied to '%s'.  No user is logged in.", handlerMethod.toString());
             throw new NotLoggedInException(detailedMsg, MESSAGE_MUST_BE_LOGGED_IN);
         }

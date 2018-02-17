@@ -567,7 +567,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         errorcallback();
                     });
             },getServices:function(date,callback) {
-                $http.get('api/v1/services/active?travelDate='+date)
+                $http.get('api/v1/serviceListings/active?travelDate='+date)
                 .then(function (response) {
                     callback(response.data);
                 },function (error) {

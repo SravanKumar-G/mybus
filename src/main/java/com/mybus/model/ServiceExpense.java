@@ -52,6 +52,7 @@ public class ServiceExpense extends AbstractDocument  {
     private double fuelQuantity;
     private double fuelRate;
     private double fuelCost;
+    private boolean fuelBillPaid;
     private double paidLuggage;
     private double toPayLuggage;
     private double driverSalary1;

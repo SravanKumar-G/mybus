@@ -192,6 +192,12 @@
                         <select id="expenseType" ng-options="e for e in expenseTypes" class="form-control" ng-model="expense.expenseType"></select>
                     </div>
                 </div>
+                <div class="form-group" ng-if="expense.expenseType === 'DIESEL'">
+                    <label class="col-sm-2 control-label" for="fillingStation">Filling Station</label>
+                    <div class="col-sm-6">
+                        <select id="fillingStation" ng-options="f.id as f.name for f in fillingStations" class="form-control" ng-model="expense.fillingStationId"/>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="branchOffice">Branch</label>
                     <div class="col-sm-6">
