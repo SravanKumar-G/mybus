@@ -23,9 +23,16 @@ public class ServiceListingManager {
     @Autowired
     private ServiceListingDAO serviceListingDAO;
 
-    public Iterable<ServiceListing> getServiceListings(String date) throws ParseException {
+    @Autowired
+    private AbhiBusPassengerReportService reportService;
+
+    public Iterable<ServiceListing> getServiceListings(String date) throws Exception {
         Date listingDate = ServiceUtils.parseDate(date, false);
-        return serviceListingDAO.findByJourneyDate(listingDate);
+        Iterable<ServiceListing> serviceListings = serviceListingDAO.findByJourneyDate(listingDate);
+        if(!serviceListings.iterator().hasNext()) {
+            serviceListings = reportService.getActiveServicesByDate(date);
+        }
+        return serviceListings;
     }
 
 }

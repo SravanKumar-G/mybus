@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.ServiceExpenseDAO;
+import com.mybus.model.OfficeExpense;
 import com.mybus.model.ServiceExpense;
 import com.mybus.service.ServiceExpenseManager;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +38,14 @@ public class ServiceExpenseController {
 	public List<ServiceExpense> getAll(HttpServletRequest request,
 									   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) throws ParseException {
 		return serviceExpenseManager.getServiceExpenses(travelDate);
+	}
+
+
+	@ResponseStatus(value = HttpStatus.OK)
+	@RequestMapping(value = "search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+	public List<ServiceExpense> search(HttpServletRequest request,
+									  @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+		return serviceExpenseManager.findServiceExpenses(query, pageable);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

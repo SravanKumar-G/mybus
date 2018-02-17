@@ -67,6 +67,9 @@ public class OfficeExpenseController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public OfficeExpense create(HttpServletRequest request, @RequestBody final OfficeExpense officeExpense) {
         logger.debug("post officeExpense called");
+        if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("diesel")) {
+            officeExpense.setFillingStationId(null);
+        }
         return officeExpenseManager.save(officeExpense);
     }
 

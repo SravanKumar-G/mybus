@@ -5,20 +5,19 @@ import com.mybus.dao.ServiceExpenseDAO;
 import com.mybus.dao.ServiceListingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
-import com.mybus.model.FillingStation;
-import com.mybus.model.ServiceExpense;
-import com.mybus.model.ServiceListing;
-import com.mybus.model.ServiceReport;
+import com.mybus.dao.impl.ServiceExpenseMongoDAO;
+import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ServiceExpenseManager {
@@ -28,13 +27,22 @@ public class ServiceExpenseManager {
     private ServiceExpenseDAO serviceExpenseDAO;
 
     @Autowired
-    private ServiceReportDAO serviceReportDAO;
+    private ServiceExpenseMongoDAO serviceExpenseMongoDAO;
 
     @Autowired
     private FillingStationDAO fillingStationDAO;
     @Autowired
     private ServiceListingDAO serviceListingDAO;
 
+    private Map<String, FillingStation> fillingStationMap = new HashMap<>();
+
+    @PostConstruct
+    public void init(){
+        Iterable<FillingStation> fillingStations = fillingStationDAO.findAll();
+        fillingStations.forEach(fillingStation -> {
+            fillingStationMap.put(fillingStation.getId(), fillingStation);
+        });
+    }
 
     public ServiceExpense save(ServiceExpense serviceExpense) {
         serviceExpense.validate();
@@ -88,7 +96,9 @@ public class ServiceExpenseManager {
             List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDateBetween(start,end);
             if(!expenses.isEmpty()) {
                 for(ServiceExpense expense: expenses) {
-                    serviceExpenses.add(loadServiceInfo(expense));
+                    ServiceExpense loadDataExpense = loadServiceInfo(expense);
+                    loadFillingStationInfo(loadDataExpense);
+                    serviceExpenses.add(loadDataExpense);
                 }
             }
         } catch (ParseException e) {
@@ -97,6 +107,11 @@ public class ServiceExpenseManager {
         return serviceExpenses;
     }
 
+
+    private void loadFillingStationInfo(ServiceExpense serviceExpense) {
+        serviceExpense.getAttributes().put("fillingStationName",
+                fillingStationMap.get(serviceExpense.getFillingStationId()).getName());
+    }
     /**
      * Update the data with
      * @param serviceExpense
@@ -116,5 +131,14 @@ public class ServiceExpenseManager {
             serviceExpenseDAO.save(savedExpense);
         }
 
+    }
+
+    public List<ServiceExpense> findServiceExpenses(JSONObject query, Pageable pageable) throws ParseException {
+        List<ServiceExpense>  serviceExpenses = serviceExpenseMongoDAO.searchServiceExpenses(query, pageable);
+        for(ServiceExpense expense: serviceExpenses) {
+            loadServiceInfo(expense);
+            loadFillingStationInfo(expense);
+        }
+        return serviceExpenses;
     }
 }

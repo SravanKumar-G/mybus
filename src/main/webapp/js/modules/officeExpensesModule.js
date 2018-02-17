@@ -146,7 +146,6 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 $scope.loading = false;
                 $scope.searchExpenses = response;
                 tableParams.data = $scope.searchExpenses;
-
             });
         };
         $scope.searchInit = function (){
@@ -196,7 +195,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         }
 
     })
-    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId) {
+    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId, fillingStationsManager) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
@@ -208,6 +207,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 $scope.type = false;
             }
         }
+        fillingStationsManager.getFillingStations(function(fillingStations){
+            $scope.fillingStations = fillingStations;
+        });
         $scope.user = userManager.getUser();
         $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
         $scope.today();

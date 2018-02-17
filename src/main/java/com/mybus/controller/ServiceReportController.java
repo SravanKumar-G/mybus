@@ -54,7 +54,7 @@ public class ServiceReportController {
 		}
 	}
 	
-	@RequestMapping(value = "services/active", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "serviceListings/active", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get active service list for a given date", response = JSONObject.class)
 	public JSONObject getServicesByDate(HttpServletRequest request,
 										@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
