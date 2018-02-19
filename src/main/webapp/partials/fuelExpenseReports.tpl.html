@@ -34,7 +34,7 @@
             <div class="row" style="margin-top:20px;">
                 <div class="col-xs-12">
                     <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams">
-                        <tr ng-repeat="fuelExpense in currentPageOfFuelExpenseReports">
+                        <tr ng-repeat="fuelExpense in allReports">
                             <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelExpense.vehicleNumber }}</td>
                             <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelExpense.attributes.from }}</td>
                             <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.attributes.to }}</td>
@@ -46,7 +46,7 @@
                                     <span class="glyphicon glyphicon-pencil" ng-click="addOrUpdateFuelExpense(fuelExpense.id)" ></span></md-icon>
                             </td>
                         </tr>
-                        <tr ng-if="!currentPageOfFuelExpenseReports || currentPageOfFuelExpenseReports.length === 0">
+                        <tr ng-if="!allReports || allReports.length === 0">
                             <td colspan="7">No reports exist. </td>
                         </tr>
                     </table>
@@ -129,14 +129,14 @@
             <div class="row top-buffer-5">
                 <label class="col-xs-4 control-label" >Service  :</label>
                 <div class="col-xs-6">
-                    <select id="service" ng-options="service.id as service.serviceName for service in serviceList" class="form-control" ng-model="serviceExpense.serviceListingId"></select>
+                    <select id="service" ng-options="service as service.serviceName for service in serviceList" class="form-control" ng-change="listingChanged()" ng-model="selectedListing"></select>
                 </div>
             </div>
 
             <div class="row top-buffer-5">
                 <label class="col-xs-4 control-label" >Journey Date :</label>
                 <div class="col-xs-6">
-                    <my-datepicker ng-model="serviceExpense.journeyDate"></my-datepicker>
+                    {{serviceExpense.journeyDate| date}}
                 </div>
             </div>
             <div class="row top-buffer-5">
