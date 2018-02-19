@@ -87,8 +87,8 @@ public class AbhiBusPassengerReportService extends BaseService{
                 if(busService.containsKey("Service_Destination")){
                     serviceListing.setDestination(busService.get("Service_Destination").toString());
                 }
-                if(busService.containsKey("Vehicle_No")){
-                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+                if(busService.containsKey("Vehicle_RegNo")){
+                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_RegNo").toString());
                 }
                 serviceListings.put(serviceListing.getServiceNumber(), serviceListing);
             }

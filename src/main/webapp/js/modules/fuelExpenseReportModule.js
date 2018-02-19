@@ -75,11 +75,6 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
 
                 fuelExpensesServiceManager.getFuelExpenseReports(newDate, function(response){
                     $scope.allReports = response;
-                    tableParams.total($scope.allReports.length);
-                    if (angular.isDefined($defer)) {
-                        $defer.resolve($scope.allReports);
-                    }
-                    $scope.currentPageOfFuelExpenseReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
                 })
             };
             $scope.init = function() {
@@ -109,13 +104,15 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                         },
                         date:function () {
                             return $scope.date;
+                        },
+                        addedServiceExpenseIds: function() {
+                            return $scope.allReports.map(a => a.serviceListingId);
                         }
                     }
                 })
             }
 
             $scope.search = function(){
-                console.log('seaching...');
                 $scope.query = {
                     "startDate" : $scope.dt.getFullYear()+"-"+[$scope.dt.getMonth()+1]+"-"+$scope.dt.getDate(),
                     "endDate" :  $scope.dt2.getFullYear()+"-"+[$scope.dt2.getMonth()+1]+"-"+$scope.dt2.getDate(),
@@ -154,28 +151,38 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
 
 
         })
-        .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, fuelExpensesServiceManager,serviceExpenseId, fillingStationsManager,serviceReportsManager ) {
+        .controller("editFuelExpenseReportController",function ($scope,$rootScope,date, addedServiceExpenseIds, fuelExpensesServiceManager,serviceExpenseId, fillingStationsManager,serviceReportsManager ) {
             $scope.serviceExpense = {};
-            $scope.serviceExpense.journeyDate = new Date();
+            $scope.serviceExpense.journeyDate = date;
             $scope.fillingStations = [];
-            console.log('expense id:'+serviceExpenseId);
+            $scope.selectedListing = {};
             $scope.serviceList = [];
-
             serviceReportsManager.getServices(date, function(data){
                 $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
+                //filter the services for which the expense has been already added.
+                $scope.serviceList = _.filter($scope.serviceList, function(listing) {
+                    return addedServiceExpenseIds.indexOf(listing.id) === -1;
+                });
+                if(serviceExpenseId) {
+                    fuelExpensesServiceManager.getFuelExpense(serviceExpenseId, function (data) {
+                        $scope.serviceExpense = data;
+                        $scope.selectedListing = _.find($scope.serviceList, function(listing) {
+                            return listing.id == $scope.serviceExpense.serviceListingId;
+                        });
+                        console.log('selected listing.. '+ $scope.selectedListing);
+                    });
+                }
             });
 
-            if(serviceExpenseId) {
-                fuelExpensesServiceManager.getFuelExpense(serviceExpenseId, function (data) {
-                    $scope.serviceExpense = data;
-                });
-            }
             fillingStationsManager.getFillingStations(function(fillingStations){
                 $scope.fillingStations = fillingStations;
             });
 
+            $scope.listingChanged = function() {
+                $scope.serviceExpense.serviceListingId =  $scope.selectedListing.id;
+                $scope.serviceExpense.vehicleNumber = $scope.selectedListing.vehicleRegNumber;
+            };
             $scope.ok = function () {
-
                 if ($scope.updateFuelExpenseForm.$invalid) {
                     swal("Error!", "Please fix the errors in the form", "error");
                     return;
@@ -183,7 +190,6 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 fuelExpensesServiceManager.saveFuelExpense($scope.serviceExpense, function (data) {
                     $rootScope.modalInstance.close(data);
                 });
-
             };
 
             $scope.getFuelCost = function() {
