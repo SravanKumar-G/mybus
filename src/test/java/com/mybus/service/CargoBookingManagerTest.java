@@ -1,11 +1,10 @@
 package com.mybus.service;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
-import com.mybus.dao.ShipmentDAO;
+import com.mybus.dao.CargoBookingDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.Shipment;
-import com.mybus.model.ShipmentType;
-import com.mybus.test.util.ShipmentTestService;
+import com.mybus.model.CargoBooking;
+import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,18 +17,18 @@ import java.util.List;
 /**
  * Created by srinikandula on 12/10/16.
  */
-public class ShipmentManagerTest extends AbstractControllerIntegrationTest {
+public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
 
     @Autowired
-    private ShipmentDAO shipmentDAO;
+    private CargoBookingDAO cargoBookingDAO;
 
     @Autowired
-    private ShipmentManager shipmentManager;
+    private CargoBookingManager shipmentManager;
 
     @Before
     @After
     public void cleanup() {
-        shipmentDAO.deleteAll();
+        cargoBookingDAO.deleteAll();
     }
 
     public void testSave() throws Exception {
@@ -38,21 +37,21 @@ public class ShipmentManagerTest extends AbstractControllerIntegrationTest {
 
     @Test(expected = BadRequestException.class)
     public void testSaveWithValidations() throws Exception {
-        Shipment shipment = new Shipment();
+        CargoBooking shipment = new CargoBooking();
         shipmentManager.saveWithValidations(shipment);
     }
 
     @Test
     public void testSaveWithValidationsNoError() throws Exception {
-        Shipment shipment = ShipmentTestService.createNew();
-        Shipment saved = shipmentManager.saveWithValidations(shipment);
-        List<Shipment> shipments = IteratorUtils.toList(shipmentDAO.findAll().iterator());
+        CargoBooking shipment = CargoBookingTestService.createNew();
+        CargoBooking saved = shipmentManager.saveWithValidations(shipment);
+        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         Assert.assertEquals(1, shipments.size());
     }
 
     @Test(expected = BadRequestException.class)
     public void testSaveWithNoDispatchDate() throws Exception {
-        Shipment shipment = ShipmentTestService.createNew();
+        CargoBooking shipment = CargoBookingTestService.createNew();
         shipment.setDispatchDate(null);
         shipmentManager.saveWithValidations(shipment);
     }

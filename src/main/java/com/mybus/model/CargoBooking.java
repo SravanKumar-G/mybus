@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
@@ -16,12 +17,13 @@ import java.util.Date;
  * Created by skandula on 3/31/15.
  */
 @ToString
-@ApiModel(value = Shipment.COLLECTION_NAME)
+@ApiModel(value = CargoBooking.COLLECTION_NAME)
 @NoArgsConstructor
 @Getter
 @Setter
-public class Shipment extends AbstractDocument implements AttributesDocument{
-    public static final String COLLECTION_NAME="shipment";
+public class CargoBooking extends AbstractDocument implements AttributesDocument{
+    public static final String COLLECTION_NAME="cargoBooking";
+    public static final String DISPATCH_DATE="dispatchDate";
 
     private String forUser;
 
@@ -72,6 +74,7 @@ public class Shipment extends AbstractDocument implements AttributesDocument{
     @RequiresValue
     private long totalCharge;
 
+    @Field(value = DISPATCH_DATE)
     @RequiresValue
     private Date dispatchDate;
 
@@ -79,8 +82,8 @@ public class Shipment extends AbstractDocument implements AttributesDocument{
     public boolean containsKey(String attributeName) {
         return false;
     }
-    public static Shipment fromJson(String json) {
-        return new Gson().fromJson(json, Shipment.class);
+    public static CargoBooking fromJson(String json) {
+        return new Gson().fromJson(json, CargoBooking.class);
     }
 
 }
