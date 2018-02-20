@@ -30,10 +30,11 @@
             <div class="row" ng-show="loading">
                 loading reports data for {{date}}...
             </div>
+            <div class="col-xs-12"> Total : {{dayTotalBill}}</div>
 
             <div class="row" style="margin-top:20px;">
                 <div class="col-xs-12">
-                    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportTableParams">
+                    <table class="table table-bordered table-condensed table-hover" ng-table="fuelExpensesParams">
                         <tr ng-repeat="fuelExpense in allReports">
                             <td data-title="'Registration#'"  sortable="'vehicle'" class="clickable-item">{{ fuelExpense.vehicleNumber }}</td>
                             <td data-title="'From'"  sortable="'source'" class="clickable-item">{{ fuelExpense.attributes.from }}</td>
