@@ -8,9 +8,6 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             $scope.date = $stateParams.date;
             $scope.fillingStations = [];
             $scope.dayTotalBill = 0;
-            fillingStationsManager.getFillingStations(function(fillingStations){
-                $scope.fillingStations = fillingStations;
-            });
 
             $scope.parseDate = function(){
                 $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getUTCMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
