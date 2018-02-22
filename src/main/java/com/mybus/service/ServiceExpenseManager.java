@@ -6,6 +6,7 @@ import com.mybus.dao.ServiceListingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dao.impl.ServiceExpenseMongoDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
@@ -109,8 +110,10 @@ public class ServiceExpenseManager {
 
 
     private void loadFillingStationInfo(ServiceExpense serviceExpense) {
-        serviceExpense.getAttributes().put("fillingStationName",
-                fillingStationMap.get(serviceExpense.getFillingStationId()).getName());
+        if(serviceExpense.getFillingStationId() != null) {
+            serviceExpense.getAttributes().put("fillingStationName",
+                    fillingStationMap.get(serviceExpense.getFillingStationId()).getName());
+        }
     }
     /**
      * Update the data with
@@ -140,5 +143,12 @@ public class ServiceExpenseManager {
             loadFillingStationInfo(expense);
         }
         return serviceExpenses;
+    }
+
+    public void deleteServiceExpense(String id) {
+        if(id == null){
+            throw new BadRequestException("Invalid id");
+        }
+        serviceExpenseDAO.delete(id);
     }
 }

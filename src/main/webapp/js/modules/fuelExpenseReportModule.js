@@ -22,7 +22,9 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $location.url('fuelexpensereports/' + newdate);
             }
             $scope.today = function() {
-                $scope.dt = new Date();
+                var yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() -1);
+                $scope.dt = yesterday;
                 $scope.dt2 = new Date();
                 $scope.tomorrow = new Date($scope.dt.getTime() + (24 * 60 * 60 * 1000));
                 $scope.parseDate();
@@ -97,7 +99,7 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
             };
             $scope.init();
 
-            $scope.$on('reloadFuelExpenses',function(e,value){
+            $scope.$watch('dt', function(newValue, oldValue) {
                 $scope.init();
             });
 
@@ -117,6 +119,11 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                         }
                     }
                 })
+            }
+            $scope.deleteFuelExpense = function (expenseId) {
+                fuelExpensesServiceManager.deleteFuelExpense(expenseId,function(){
+                    $scope.init();
+                });
             }
 
             $scope.search = function(){
@@ -248,6 +255,14 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                             callback(response.data);
                         },function (error) {
                             $log.debug("error retrieving Fuel Expense reports");
+                        });
+                },
+                deleteFuelExpense: function (id,callback) {
+                    $http.delete('/api/v1/serviceExpense/'+id)
+                        .then(function (response) {
+                            callback(response.data);
+                        },function (error) {
+                            $log.debug("error deleting Fuel Expense");
                         });
                 },
                 saveFuelExpense: function (serviceExpense) {
