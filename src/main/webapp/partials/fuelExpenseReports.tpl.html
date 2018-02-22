@@ -30,7 +30,7 @@
             <div class="row" ng-show="loading">
                 loading reports data for {{date}}...
             </div>
-            <div class="col-xs-12"> Total : {{dayTotalBill}}</div>
+            <div class="col-xs-12"> Total : {{dayTotalBill | number}}</div>
 
             <div class="row" style="margin-top:20px;">
                 <div class="col-xs-12">
@@ -41,10 +41,12 @@
                             <td data-title="'To'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.attributes.to }}</td>
                             <td data-title="'Journey Date'"  sortable="'destination'" class="clickable-item">{{ fuelExpense.journeyDate | date }}</td>
                             <td data-title="'Filling Station'" sortable="'fillingStationId'"  class="clickable-item col-md-2" >{{fuelExpense.attributes.fillingStationName}}</td>
-                            <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelExpense.fuelQuantity}}/{{fuelExpense.fuelCost}}</td>
+                            <td data-title="'Fuel Consumption'"  class="clickable-item col-md-2">{{fuelExpense.fuelQuantity| number}}/{{fuelExpense.fuelCost| number}}</td>
                             <td data-title="'Edit'" class="clickable-item col-md-2">
                                 <md-icon type="button" class="btn" ng-click="">
                                     <span class="glyphicon glyphicon-pencil" ng-click="addOrUpdateFuelExpense(fuelExpense.id)" ></span></md-icon>
+                                <md-icon type="button" class="btn" ng-click="deleteFuelExpense(fuelExpense.id)">
+                                    <span class="glyphicon glyphicon-remove"></span></md-icon>
                             </td>
                         </tr>
                         <tr ng-if="!allReports || allReports.length === 0">

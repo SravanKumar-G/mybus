@@ -51,10 +51,20 @@ public class ServiceExpenseController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public ServiceExpense get(HttpServletRequest request,
-									   @ApiParam(value = "Date of travel") @PathVariable final String id) throws ParseException {
+									   @ApiParam(value = "Expense id") @PathVariable final String id) throws ParseException {
 		return serviceExpenseManager.getServiceExpense(id);
 	}
 
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Delete expense", response = JSONObject.class)
+	public JSONObject delete(HttpServletRequest request,
+							  @ApiParam(value = "Expense id") @PathVariable final String id) throws ParseException {
+		serviceExpenseManager.deleteServiceExpense(id);
+		JSONObject result = new JSONObject();
+		result.put("result", "done");
+		return result;
+	}
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public ServiceExpense getAll(HttpServletRequest request,
