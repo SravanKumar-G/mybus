@@ -41,6 +41,9 @@ public class CashTransferManager {
 
     @Autowired
     private ServiceUtils serviceUtils;
+
+    @Autowired
+    private SessionManager sessionManager;
     /**
      *
      * @param cashTransfer
@@ -49,6 +52,7 @@ public class CashTransferManager {
     public CashTransfer updateCashTransfer(CashTransfer cashTransfer){
         if(cashTransfer.getStatus() != null && cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
             Payment income = new Payment();
+            income.setOperatorId(sessionManager.getOperatorId());
             income.setBranchOfficeId(userDAO.findOne(cashTransfer.getToUserId()).getBranchOfficeId());
             income.setAmount(cashTransfer.getAmount());
             income.setType(PaymentType.INCOME);
@@ -72,6 +76,7 @@ public class CashTransferManager {
     public CashTransfer save(CashTransfer cashTransfer){
         cashTransfer = cashTransferDAO.save(cashTransfer);
         Payment expense = new Payment();
+        expense.setOperatorId(sessionManager.getOperatorId());
         expense.setAmount(cashTransfer.getAmount());
         expense.setType(PaymentType.EXPENSE);
         expense.setStatus(Payment.STATUS_PENDING);
@@ -89,7 +94,7 @@ public class CashTransferManager {
     }
 
     public CashTransfer findOne(String id) {
-        return cashTransferDAO.findOne(id);
+        return cashTransferDAO.findByIdAndOperatorId(id, sessionManager.getOperatorId());
     }
 
     public List<CashTransfer> search(JSONObject query, Pageable pageable) throws ParseException {

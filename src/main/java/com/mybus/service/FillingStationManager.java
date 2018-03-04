@@ -3,14 +3,18 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mybus.dao.AmenityDAO;
 import com.mybus.dao.FillingStationDAO;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.Amenity;
 import com.mybus.model.FillingStation;
+import org.apache.commons.collections.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -20,13 +24,22 @@ public class FillingStationManager {
 	
 	@Autowired
 	private FillingStationDAO fillingStationDAO;
-	
+
+	@Autowired
+	private SessionManager sessionManager;
+
 	public Iterable<FillingStation> findAll(){
-		return fillingStationDAO.findAll();
+		List<FillingStation> fillingStations;
+		if(sessionManager.getOperatorId() == null){
+			throw new BadRequestException("No operator found in session");
+		}
+		return fillingStationDAO.findByOperatorId(sessionManager.getOperatorId());
+
 	}
 	
 	public FillingStation save(FillingStation fillingStation){
 		fillingStation.validate();
+		fillingStation.setOperatorId(sessionManager.getOperatorId());
 		return fillingStationDAO.save(fillingStation);
 	}
 	
@@ -44,7 +57,6 @@ public class FillingStationManager {
 		return a;
 	}
 
-	
 	public boolean delete(String id){
 		Preconditions.checkNotNull(id, "The FillingStation id can not be null");
 		fillingStationDAO.delete(id);

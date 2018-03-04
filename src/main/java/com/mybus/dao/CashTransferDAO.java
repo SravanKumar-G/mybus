@@ -9,7 +9,7 @@ import java.util.List;
  * Created by srinikandula on 3/19/17.
  */
 public interface CashTransferDAO extends PagingAndSortingRepository<CashTransfer, String> {
-
+    CashTransfer findByIdAndOperatorId(String id, String operatorId);
     List<CashTransfer> findByCreatedByAndStatus(String userId, String status);
 
 }

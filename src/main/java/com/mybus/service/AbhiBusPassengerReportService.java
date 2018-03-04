@@ -51,7 +51,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading service listings for date:" + date);
-        init();
+        initAbhibus();
         Date journeyDate = ServiceConstants.df.parse(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -117,7 +117,7 @@ public class AbhiBusPassengerReportService extends BaseService{
 
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceIds, String date) throws Exception{
         logger.info("downloading service details for date:" + date +" serviceIds "+ serviceIds);
-        init();
+        initAbhibus();
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         inputParam.put("serviceids", serviceIds.trim());
@@ -361,25 +361,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             });
         }
         return serviceReports;
-    }
-
-    private void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
-        if(bookingTypeManager.isRedbusBooking(booking)){
-            serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.REDBUS);
-            booking.setHasValidAgent(true);
-        } else if(bookingTypeManager.isOnlineBooking(booking)) {
-            serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.ONLINE);
-            booking.setHasValidAgent(true);
-        } else {
-            Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
-            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
-            serviceReport.setInvalid(bookingAgent == null);
-            adjustAgentBookingCommission(booking, bookingAgent);
-            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.CASH);
-        }
     }
 
     /**

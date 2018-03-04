@@ -35,6 +35,9 @@ public abstract class AbstractDocument {
     @ApiModelProperty(value = "ID of the Object")
     private String id;
 
+    @ApiModelProperty(value = "OperatorId")
+    private String operatorId;
+
     @CreatedDate
     @Field(KEY_CREATED_AT)
     @ApiModelProperty(value = "Time at which Object Was Created")

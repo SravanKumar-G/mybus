@@ -92,6 +92,7 @@ public class PaymentManager {
     public Payment createPayment(Booking booking) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(booking.getNetAmt());
         payment.setDate(booking.getJourneyDate());
@@ -108,6 +109,7 @@ public class PaymentManager {
     public Payment createPayment(ServiceForm serviceForm, boolean deleteForm) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
         payment.setAmount(serviceForm.getNetCashIncome());
         payment.setServiceFormId(serviceForm.getId());
 

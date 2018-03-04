@@ -2,6 +2,7 @@ package com.mybus.dao.impl;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
+import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,11 +24,11 @@ public class AgentMongoDAO {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private AgentDAO agentDAO;
+    private SessionManager sessionManager;
 
     public List<String> findAgentNamesByOfficeId(String officeId) {
         final Query query = new Query();
-        //query.fields().include("username");
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(officeId != null) {
             query.addCriteria(where("branchOfficeId").is(officeId));
         }
@@ -41,6 +42,7 @@ public class AgentMongoDAO {
     public List<Agent> findAgents(String nameQuery, boolean showInvalid) {
         List<Agent> agents = null;
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(nameQuery != null) {
             query.addCriteria(Criteria.where("username").regex(nameQuery));
         }
@@ -56,6 +58,8 @@ public class AgentMongoDAO {
     public Iterable<Agent> findAgents(String key, boolean showInvalid, Pageable pageable) {
         Iterable<Agent> agents = null;
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
+
         if(key != null) {
             query.addCriteria(Criteria.where("username").regex(key));
         }
@@ -70,6 +74,8 @@ public class AgentMongoDAO {
     }
     public long countAgents(String key, boolean showInvalid) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
+
         if(key != null) {
             query.addCriteria(Criteria.where("username").regex(key));
         }

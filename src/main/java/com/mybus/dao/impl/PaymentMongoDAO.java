@@ -75,6 +75,7 @@ public class PaymentMongoDAO {
         Criteria criteria = new Criteria();
         //filter the form expenses from the report
         match.add(Criteria.where("formId").exists(false));
+        match.add(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         try{
             //filter the payments by office if the user is not admin
             if(!sessionManager.getCurrentUser().isAdmin()) {

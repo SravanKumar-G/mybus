@@ -52,6 +52,7 @@ public class CityManager {
     public City findCityByName(String name) {
         return cityDAO.findOneByName(name);
     }
+
     public boolean deleteCity(String id) {
         Preconditions.checkNotNull(id, "The city id can not be null");
         if (logger.isDebugEnabled()) {

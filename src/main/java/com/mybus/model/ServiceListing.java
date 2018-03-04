@@ -2,9 +2,7 @@ package com.mybus.model;
 
 import com.mybus.service.ServiceConstants;
 import io.swagger.annotations.ApiModel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -18,6 +16,7 @@ import java.util.*;
 @ApiModel(value = "ServiceListing")
 @Getter
 @Setter
+
 @CompoundIndex(name = "sr_jdate_srvnum", def = "{'serviceNumber' : 1, 'journeyDate' : 1}", unique = true)
 public class ServiceListing extends AbstractDocument  {
 
@@ -34,8 +33,21 @@ public class ServiceListing extends AbstractDocument  {
     private String destination;
     private String busType;
     private String vehicleRegNumber;
+    private boolean status;
     @Field(JOURNEY_DATE)
     @Indexed
     private Date journeyDate;
+    public ServiceListing(){
 
+    }
+
+    public ServiceListing(ServiceReport serviceReport){
+        this.setServiceId(serviceReport.getServiceId()); //??
+        this.setSource(serviceReport.getSource());
+        this.setDestination(serviceReport.getDestination());
+        this.setServiceNumber(serviceReport.getServiceNumber());
+        this.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
+        this.setBusType(serviceReport.getBusType());
+        this.setJourneyDate(serviceReport.getJourneyDate());
+    }
 }

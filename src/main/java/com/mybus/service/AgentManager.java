@@ -41,6 +41,9 @@ public class AgentManager {
     @Autowired
     private BookingManager bookingManager;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public Agent getAgent(String agentId) {
         Agent agent = agentDAO.findOne(agentId);
         if(agent.getBranchOfficeId() != null) {
@@ -60,17 +63,9 @@ public class AgentManager {
      * @return
      */
     public Agent save(Agent agent) {
+        agent.setOperatorId(sessionManager.getOperatorId());
         bookingManager.validateAgentBookings(agent);
         return agentDAO.save(agent);
-    }
-
-    public Iterable<Agent> findAgents(String query, boolean showInvalid) {
-        List<Agent> agents = IteratorUtils.toList(agentMongoDAO.findAgents(query, showInvalid).iterator());
-        Map<String, String> namesMap = branchOfficeManager.getNamesMap();
-        agents.stream().forEach(agent -> {
-            agent.getAttributes().put(BranchOffice.KEY_NAME, namesMap.get(agent.getBranchOfficeId()));
-        });
-        return agents;
     }
 
     /**

@@ -7,14 +7,9 @@ import lombok.ToString;
 
 import java.util.Date;
 
-/**
- * 
- * @author yks-Srinivas
- *
- */
 
 @ToString
-@ApiModel(value = "TripReport")
+@ApiModel(value = "FuelLoadEntry")
 @Getter
 @Setter
 public class FuelLoadEntry extends AbstractDocument {

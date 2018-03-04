@@ -59,9 +59,6 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     @Autowired
     private PaymentDAO paymentDAO;
 
-    @Autowired
-    private ServiceExpenseManager serviceExpenseManager;
-
     @Before
     @After
     public void cleanup() {
