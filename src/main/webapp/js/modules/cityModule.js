@@ -23,11 +23,11 @@ angular.module('myBus.cityModule', ['ngTable', 'ui.bootstrap'])
             $scope.loading = true;
             cityManager.getCities(pageable, function(response){
                 $scope.invalidCount = 0;
-                if(angular.isArray(response.content)) {
+                if(angular.isArray(response)) {
                     $scope.loading = false;
-                    $scope.cities = response.content;
-                    tableParams.total(response.totalElements);
-                    $scope.count = response.totalElements;
+                    $scope.cities = response;
+                    tableParams.total(response.length);
+                    $scope.count = response.length;
                     tableParams.data = $scope.cities;
                     $scope.currentPageOfCities =  $scope.cities;
                 }

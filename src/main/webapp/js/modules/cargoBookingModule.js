@@ -6,7 +6,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
-        $scope.shipment = {};
+        $scope.shipment = {'shipmentType':'Paid'};
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
@@ -17,8 +17,17 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         cargoBookingManager.getShipmentTypes(function (types) {
             $scope.shipmentTypes = types;
+            //Set the shipment type to paid by default
+            var paidType = _.find($scope.shipmentTypes, function(type){
+                if(type.shipmentCode === 'P'){
+                    return type.id;
+                }
+            });
+            $scope.shipment.shipmentType = paidType.id;
         });
 
+        //set the user to current user
+        $scope.shipment.forUser = userManager.getUser().id;
 
         $scope.copyDetails = function () {
             $scope.shipment.receiverName = $scope.shipment.senderName;
@@ -43,10 +52,31 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
         $scope.dt = new Date();
 
+        $scope.copySenderDetails = function(){
+            if($scope.shipment.copySenderDetails){
+                $scope.shipment.toContact = $scope.shipment.fromContact;
+                $scope.shipment.toName = $scope.shipment.fromName;
+                $scope.shipment.toEmail = $scope.shipment.fromEmail;
+            }
+        }
+
+        $scope.createCargoBooking = function(){
+            cargoBookingManager.createShipment($scope.shipment, function (response) {
+                console.log('created');
+            });
+        }
+
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
         return {
             getShipmentTypes: function ( callback) {
                 $http.get("/api/v1/shipment/types")
+                    .then(function (response) {
+                        callback(response.data)
+                    }, function (error) {
+                        swal("oops", error, "error");
+                    })
+            },createShipment: function(cargoBooking, callback){
+                $http.post("/api/v1/shipment", cargoBooking)
                     .then(function (response) {
                         callback(response.data)
                     }, function (error) {

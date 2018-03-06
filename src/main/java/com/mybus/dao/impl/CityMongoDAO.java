@@ -6,6 +6,8 @@ import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -66,4 +68,16 @@ public class CityMongoDAO {
         }
     }
 
+    public List<City> findByOperatorId(String operatorId, Pageable pageable) {
+        final Query query = new Query();
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        query.with(pageable);
+        return mongoTemplate.find(query, City.class);
+    }
+
+    public long count() {
+        final Query query = new Query();
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        return mongoTemplate.count(query, City.class);
+    }
 }

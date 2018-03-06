@@ -7,6 +7,7 @@ import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.cargo.ShipmentSequence;
+import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,11 @@ public class CargoBookingManager {
     @Autowired
     private ShipmentSequenceManager shipmentSequenceManager;
 
-
+    @Autowired
+    private SessionManager sessionManager;
     public CargoBooking findOne(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "shipmentId is required");
-        CargoBooking shipment = cargoBookingDAO.findOne(shipmentId);
+        CargoBooking shipment = cargoBookingDAO.findByIdAndOperatorId(shipmentId, sessionManager.getOperatorId());
         Preconditions.checkNotNull(shipment, "No CargoBooking found with id");
         return shipment;
     }
@@ -46,6 +48,7 @@ public class CargoBookingManager {
         }
         String shipmentNumber = shipmentSequenceManager.createLRNumber(shipment.getShipmentType());
         shipment.setShipmentNumber(shipmentNumber);
+        shipment.setOperatorId(sessionManager.getOperatorId());
         List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
         if(errors.isEmpty()) {
             return cargoBookingDAO.save(shipment);
@@ -69,6 +72,7 @@ public class CargoBookingManager {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         return cargoBookingMongoDAO.findShipments(query, pageable);
     }
 

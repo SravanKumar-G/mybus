@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
 import com.mybus.SystemProperties.SysProps;
 import com.mybus.interceptors.AuthenticationInterceptor;
+import com.mybus.interceptors.DomainFilterInterceptor;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.slf4j.Logger;
@@ -260,6 +261,8 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(domainFilterInterceptor())
+                .addPathPatterns("/**");
         registry.addInterceptor(authenticationInterceptor())
                 .addPathPatterns("/api/**");
     }
@@ -269,6 +272,11 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         
     }
 
+    @Bean
+    public DomainFilterInterceptor domainFilterInterceptor(){
+        return new DomainFilterInterceptor();
+
+    }
     @Bean
 	public VelocityEngine velocityEngine() throws VelocityException, IOException{
 		VelocityEngineFactoryBean factory = new VelocityEngineFactoryBean();

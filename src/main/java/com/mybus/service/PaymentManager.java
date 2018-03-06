@@ -92,6 +92,7 @@ public class PaymentManager {
     public Payment createPayment(Booking booking) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(booking.getNetAmt());
         payment.setDate(booking.getJourneyDate());
@@ -108,6 +109,7 @@ public class PaymentManager {
     public Payment createPayment(ServiceForm serviceForm, boolean deleteForm) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
         payment.setAmount(serviceForm.getNetCashIncome());
         payment.setServiceFormId(serviceForm.getId());
 
@@ -155,7 +157,7 @@ public class PaymentManager {
 
 
     public Payment findOne(String id) {
-        Payment payment = paymentDAO.findOne(id);
+        Payment payment = paymentDAO.findByIdAndOperatorId(id, sessionManager.getOperatorId());
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }
@@ -170,6 +172,7 @@ public class PaymentManager {
     }
 
     public List<Payment> search(JSONObject query, Pageable pageable) throws ParseException {
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         return paymentMongoDAO.search(query, pageable);
     }
 
@@ -195,5 +198,14 @@ public class PaymentManager {
             payments.add(payment);
         });
         return payments;
+    }
+
+    public Payment save(Payment paymnet) {
+        paymnet.setOperatorId(sessionManager.getOperatorId());
+        return paymentMongoDAO.save(paymnet);
+    }
+
+    public long getPaymentsCount(boolean pendingPayments) {
+        return paymentMongoDAO.getPaymentsCount(pendingPayments);
     }
 }

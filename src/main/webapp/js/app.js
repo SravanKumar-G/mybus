@@ -32,7 +32,9 @@ var myBus = angular.module('myBus', [
     'myBus.fillingStations',
     'myBus.tripReportsModule',
     'myBus.cargoBooking',
-    'myBus.colletionZoneModule'
+    'myBus.colletionZoneModule',
+    'myBus.operatorAccountsModule'
+
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -51,6 +53,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/agents',
                 templateUrl: 'partials/agents.tpl.html',
                 controller: 'AgentController'
+            }).state('operatoraccounts',{
+                url:'/operatoraccounts',
+                templateUrl: 'partials/operatoraccounts.tpl.html',
+                controller: 'OperatorAccountsController'
             })
             .state('invoices',{
             url:'/inovices',

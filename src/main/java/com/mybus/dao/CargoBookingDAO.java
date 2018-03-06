@@ -11,6 +11,7 @@ import java.util.List;
  */
 @Repository
 public interface CargoBookingDAO extends PagingAndSortingRepository<CargoBooking, String> {
+    CargoBooking findByIdAndOperatorId(String id, String operatorId);
     List<CargoBooking> findByFromBranchId(String fromBranchId);
     List<CargoBooking> findByToBranchId(String toBranchId);
 }

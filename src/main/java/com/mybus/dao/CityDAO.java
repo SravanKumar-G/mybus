@@ -1,6 +1,8 @@
 package com.mybus.dao;
 
 import com.mybus.model.City;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,10 +11,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CityDAO extends PagingAndSortingRepository<City, String> {
+    City findByIdAndOperatorId(String id, String operatorId);
     City findOneByName(String name);
     City findOneByNameAndState(String name, String state);
     Iterable<City> findByName(String name);
     Iterable<City> findByActive(boolean active);
     void delete(String s);
-
+    City findOneByNameAndOperatorId(String name, String operatorId);
 }

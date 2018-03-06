@@ -21,8 +21,6 @@ public class BookingPaymentManagerTest extends AbstractControllerIntegrationTest
 	@Autowired
 	private BookingPaymentManager paymentManager;
 
-	@Autowired
-	private SystemProperties systemProperties;
 
 	@Test
 	public void addAmount(){

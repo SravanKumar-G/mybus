@@ -32,9 +32,12 @@ public class ServiceExpenseManager {
 
     @Autowired
     private FillingStationDAO fillingStationDAO;
+
     @Autowired
     private ServiceListingDAO serviceListingDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
     private Map<String, FillingStation> fillingStationMap = new HashMap<>();
 
     @PostConstruct
@@ -55,12 +58,10 @@ public class ServiceExpenseManager {
                 - parseFloat($scope.serviceExpense.driverSalary2)
                 - parseFloat($scope.serviceExpense.cleanerSalary);
                 */
+        serviceExpense.setOperatorId(sessionManager.getOperatorId());
         return serviceExpenseDAO.save(serviceExpense);
     }
 
-    public ServiceExpense getServiceExpenseByServiceReportId(String serviceReportId) {
-        return loadServiceInfo(serviceExpenseDAO.findByServiceReportId(serviceReportId));
-    }
     public ServiceExpense getServiceExpense(String id) {
         return loadServiceInfo(serviceExpenseDAO.findOne(id));
     }
@@ -74,7 +75,8 @@ public class ServiceExpenseManager {
             return null;
         }
         serviceExpense.validate();
-        ServiceListing serviceListing = serviceListingDAO.findOne(serviceExpense.getServiceListingId());
+        ServiceListing serviceListing = serviceListingDAO.findByIdAndOperatorId
+                (serviceExpense.getServiceListingId(), sessionManager.getOperatorId());
         if(serviceListing != null) {
             serviceExpense.getAttributes().put("to", serviceListing.getDestination());
             serviceExpense.getAttributes().put("from", serviceListing.getSource());
@@ -94,7 +96,8 @@ public class ServiceExpenseManager {
         try {
             Date start = ServiceUtils.parseDate(journeyDate, false);
             Date end = ServiceUtils.parseDate(journeyDate, true);
-            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDateBetween(start,end);
+            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDateBetweenAndOperatorId
+                    (start,end, sessionManager.getOperatorId());
             if(!expenses.isEmpty()) {
                 for(ServiceExpense expense: expenses) {
                     ServiceExpense loadDataExpense = loadServiceInfo(expense);
@@ -137,6 +140,7 @@ public class ServiceExpenseManager {
     }
 
     public List<ServiceExpense> findServiceExpenses(JSONObject query, Pageable pageable) throws ParseException {
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         List<ServiceExpense>  serviceExpenses = serviceExpenseMongoDAO.searchServiceExpenses(query, pageable);
         for(ServiceExpense expense: serviceExpenses) {
             loadServiceInfo(expense);

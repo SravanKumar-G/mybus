@@ -9,6 +9,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -39,12 +40,13 @@ public class BranchOfficeManager {
     private UserManager userManager;
 
     @Autowired
-    private AgentDAO agentDAO;
+    private SessionManager sessionManager;
 
 
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
     public BranchOffice save(BranchOffice branchOffice) {
+        branchOffice.setOperatorId(sessionManager.getOperatorId());
         List<String> errors = RequiredFieldValidator.validateModel(branchOffice, BranchOffice.class);
         if(errors.isEmpty()) {
             return branchOfficeDAO.save(branchOffice);
@@ -54,7 +56,7 @@ public class BranchOfficeManager {
     }
     public BranchOffice findOne(String branchOfficeId) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId is required");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
+        BranchOffice branchOffice = branchOfficeDAO.findByIdAndOperatorId(branchOfficeId, sessionManager.getOperatorId());
         Preconditions.checkNotNull(branchOffice, "No BranchOffice found with id");
         if(branchOffice.getCityId() != null) {
             City city = cityManager.findOne(branchOffice.getCityId());
@@ -87,6 +89,7 @@ public class BranchOfficeManager {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         List<BranchOffice> branchOffices = IteratorUtils.toList(mongoQueryDAO.
                 getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query, pageable).iterator());
         Map<String, String> cityNames = cityManager.getCityNamesMap();
@@ -99,7 +102,10 @@ public class BranchOfficeManager {
         return page;
     }
 
+
+
     public long count(JSONObject query) {
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         return mongoQueryDAO.count(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query);
     }
     public void delete(String branchOfficeId) {
@@ -111,8 +117,9 @@ public class BranchOfficeManager {
 
     public List<BranchOffice> getNames() {
         String[] fields = {"name"};
+        JSONObject query = ServiceUtils.addOperatorId(null, sessionManager);
         List<BranchOffice> offices = IteratorUtils.toList(mongoQueryDAO
-                .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, null, null).iterator());
+                .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, query, null).iterator());
         return offices;
     }
     public Map<String, String> getNamesMap() {

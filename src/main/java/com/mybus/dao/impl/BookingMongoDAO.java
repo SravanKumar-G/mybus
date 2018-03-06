@@ -68,6 +68,7 @@ public class BookingMongoDAO {
         if(JDate != null) {
             query.addCriteria(where("jDate").is(JDate));
         }
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         addIsBookingDueConditions(query);
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
@@ -82,10 +83,12 @@ public class BookingMongoDAO {
     public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
         long start = System.currentTimeMillis();
         Preconditions.checkNotNull(agent, "Agent not found");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+        BranchOffice branchOffice = branchOfficeDAO.findByIdAndOperatorId(agent.getBranchOfficeId(), sessionManager.getOperatorId());
         Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
         final Query query = new Query();
         query.addCriteria(where("bookedBy").is(agent.getUsername()));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+
         addIsBookingDueConditions(query);
         query.addCriteria(where("source").ne(branchOffice.getName()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
@@ -108,6 +111,7 @@ public class BookingMongoDAO {
         final Query query = new Query();
         //query.fields().include("name");
         query.addCriteria(where("bookedBy").is(agentName));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         addIsBookingDueConditions(query);
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
@@ -121,6 +125,7 @@ public class BookingMongoDAO {
         updateOp.set(Booking.PAID_ON, new Date());
         final Query query = new Query();
         query.addCriteria(where("_id").is(bookingId));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
         if(writeResult.getN() != 1) {
             return false;
@@ -143,6 +148,7 @@ public class BookingMongoDAO {
                 match.add(where("bookedBy").in(agentNames));
             }
         }
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         match.add(where("due").is(true));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         Aggregation agg = newAggregation(
@@ -198,6 +204,7 @@ public class BookingMongoDAO {
             }
         }
         match.add(where("due").is(true));
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         Aggregation agg = newAggregation(
                 match(criteria),
@@ -220,6 +227,7 @@ public class BookingMongoDAO {
         }
         addIsBookingDueConditions(query);
         query.addCriteria(where("serviceNumber").is(serviceNumber));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }
@@ -239,6 +247,8 @@ public class BookingMongoDAO {
             match.add(where("bookedBy").in(channels));
         }
         match.add(where("journeyDate").gte(start).lte(end));
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         query.addCriteria(criteria);
         invoice.setBookings(mongoTemplate.find(query, Booking.class));
@@ -262,6 +272,7 @@ public class BookingMongoDAO {
         if(bookedBy != null && bookedBy.size() != 0){
             query.addCriteria(where("bookedBy").in(bookedBy));
         }
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         query.addCriteria(where("due").is(true));
         query.addCriteria(where("journeyDate").gte(start).lte(end));
         query.addCriteria(where("formId").exists(true));
@@ -279,6 +290,7 @@ public class BookingMongoDAO {
         if(ticketNumber == null ){
             throw new BadRequestException("ticketNumber is required");
         }
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         query.addCriteria(where("ticketNo").is(ticketNumber));
         query.addCriteria(where("formId").exists(true));
         Booking booking = mongoTemplate.findOne(query, Booking.class);
@@ -293,6 +305,7 @@ public class BookingMongoDAO {
     public List<Booking> findBookingsByIds(List<String> ids) {
         final Query query = new Query();
         query.addCriteria(where("_id").in(ids));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;
     }

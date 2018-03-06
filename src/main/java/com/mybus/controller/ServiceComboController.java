@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RestController
@@ -26,18 +27,14 @@ public class ServiceComboController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceComboController.class);
 
 	@Autowired
-	private ServiceComboDAO serviceComboDAO;
-
-
-	@Autowired
 	private ServiceComboManager serviceComboManager;
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombos", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get all the ServicCombos available", response = Page.class)
-	public Page<ServiceCombo> getAll(final Pageable pageable) {
+	public List<ServiceCombo> getAll(final Pageable pageable) {
 		LOGGER.debug("Get all the ServicCombos available");
-		return serviceComboDAO.findAll(pageable);
+		return serviceComboManager.findAll(pageable);
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -45,14 +42,14 @@ public class ServiceComboController {
 	@ApiOperation(value = "Get count")
 	public long count() {
 		LOGGER.debug("Get all the ServicCombos available");
-		return serviceComboDAO.count();
+		return serviceComboManager.count();
 	}
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombo", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add serviceCombo")
 	public ServiceCombo addServiceCombo(HttpServletRequest request,@RequestBody ServiceCombo serviceCombo) {
 		LOGGER.debug("add serviceCombo");
-		return serviceComboDAO.save(serviceCombo);
+		return serviceComboManager.save(serviceCombo);
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -69,7 +66,7 @@ public class ServiceComboController {
 	public ServiceCombo getServiceComboID(HttpServletRequest request,
 			@ApiParam(value = "Id of the serviceCombo") @PathVariable final String id) {
 		LOGGER.debug("get serviceCombo by id");
-		return serviceComboDAO.findOne(id);
+		return serviceComboManager.findOne(id);
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -78,6 +75,6 @@ public class ServiceComboController {
 	public void deleteAmenity(HttpServletRequest request,
 			@ApiParam(value = "Id of the serviceCombo to be deleted") @PathVariable final String id) {
 		LOGGER.debug("delete serviceCombo called");
-		serviceComboDAO.delete(id);
+		serviceComboManager.delete(id);
 	}
 }

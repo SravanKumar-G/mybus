@@ -1,6 +1,8 @@
 package com.mybus.service;
 
 import com.mybus.model.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 public class SessionManager {
 
     public static final String USER_SESSION_ATTR = "currentUser";
+    public static final String OPERATOR_ID = "operatorId";
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
+
+    @Getter
+    @Setter
+    private String operatorId = null;
 
     public User getCurrentUser() {
         return getCurrentUser(getRequest());

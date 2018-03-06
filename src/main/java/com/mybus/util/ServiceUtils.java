@@ -6,6 +6,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.AbstractDocument;
 import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
+import com.mybus.service.SessionManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.Tika;
 import org.json.simple.JSONObject;
@@ -142,6 +143,9 @@ public class ServiceUtils {
         if(query.get("userId") != null) {
             match.add(Criteria.where("createdBy").is(query.get("userId").toString()));
         }
+        if(query.get("operatorId") != null) {
+            match.add(Criteria.where("operatorId").is(query.get("operatorId").toString()));
+        }
         if(match.size() > 0) {
             criteria.andOperator(match.toArray(new Criteria[match.size()]));
             q.addCriteria(criteria);
@@ -149,4 +153,11 @@ public class ServiceUtils {
         return q;
     }
 
+    public static JSONObject addOperatorId(JSONObject query, SessionManager sessionManager) {
+        if(query == null){
+            query = new JSONObject();
+        }
+        query.put("operatorId", sessionManager.getOperatorId());
+        return query;
+    }
 }

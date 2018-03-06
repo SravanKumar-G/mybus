@@ -2,6 +2,7 @@ package com.mybus.dao.impl;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
+import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,14 +24,16 @@ public class AgentMongoDAO {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private AgentDAO agentDAO;
+    private SessionManager sessionManager;
 
     public List<String> findAgentNamesByOfficeId(String officeId) {
         final Query query = new Query();
-        //query.fields().include("username");
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(officeId != null) {
             query.addCriteria(where("branchOfficeId").is(officeId));
         }
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+
         List<Agent> agents = mongoTemplate.find(query, Agent.class);
         List<String> namesList = agents.stream()
                 .map(Agent::getUsername)
@@ -41,12 +44,14 @@ public class AgentMongoDAO {
     public List<Agent> findAgents(String nameQuery, boolean showInvalid) {
         List<Agent> agents = null;
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(nameQuery != null) {
             query.addCriteria(Criteria.where("username").regex(nameQuery));
         }
         if(showInvalid){
             query.addCriteria(Criteria.where("branchOfficeId").exists(false));
         }
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         query.fields().include("username");
         query.fields().include("branchOfficeId");
         agents = mongoTemplate.find(query, Agent.class);
@@ -56,6 +61,7 @@ public class AgentMongoDAO {
     public Iterable<Agent> findAgents(String key, boolean showInvalid, Pageable pageable) {
         Iterable<Agent> agents = null;
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(key != null) {
             query.addCriteria(Criteria.where("username").regex(key));
         }
@@ -70,6 +76,7 @@ public class AgentMongoDAO {
     }
     public long countAgents(String key, boolean showInvalid) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         if(key != null) {
             query.addCriteria(Criteria.where("username").regex(key));
         }

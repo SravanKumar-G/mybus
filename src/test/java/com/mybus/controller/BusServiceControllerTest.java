@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.dao.LayoutDAO;
+import com.mybus.dao.RouteDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.*;
 import com.mybus.service.*;
@@ -59,6 +60,8 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
     @Autowired
     private AmenitiesManager amenitiesManager;
 
+    @Autowired
+    private RouteDAO routeDAO;
 
     private MockMvc mockMvc;
     private User currentUser;
@@ -80,7 +83,7 @@ public class BusServiceControllerTest extends AbstractControllerIntegrationTest{
         busServiceDAO.deleteAll();
         cityManager.deleteAll();
         amenitiesManager.deleteAll();
-        routeManager.deleteAll();
+        routeDAO.deleteAll();
     }
     
     public Layout saveLayout(){

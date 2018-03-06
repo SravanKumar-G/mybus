@@ -75,6 +75,7 @@ public class PaymentMongoDAO {
         Criteria criteria = new Criteria();
         //filter the form expenses from the report
         match.add(Criteria.where("formId").exists(false));
+        match.add(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
         try{
             //filter the payments by office if the user is not admin
             if(!sessionManager.getCurrentUser().isAdmin()) {
@@ -171,6 +172,7 @@ public class PaymentMongoDAO {
         if(sessionManager != null && sessionManager.getCurrentUser() != null && !sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
         }
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         match.add(Criteria.where("formId").exists(false));
         match.add(Criteria.where("serviceReportId").exists(false));
         match.add(where("vehicleId").exists(false));
@@ -220,7 +222,7 @@ public class PaymentMongoDAO {
         //show the submitted form payments as well
         //match.add(Criteria.where("date").gte(startDate).lt(endDate));
         match.add(Criteria.where("submittedBy").is(sessionManager.getCurrentUser().getId()));
-
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         match.add(Criteria.where("createdAt").gte(startDate).lt(endDate));
         //skip form expenses
         match.add(Criteria.where("formId").exists(false));

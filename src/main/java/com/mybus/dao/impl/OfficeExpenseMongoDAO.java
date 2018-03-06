@@ -51,6 +51,7 @@ public class OfficeExpenseMongoDAO {
         if(officeExpense.getDescription() == null || officeExpense.getDescription().trim().length() == 0) {
             throw new BadRequestException("Description is required");
         }
+        officeExpense.setOperatorId(sessionManager.getOperatorId());
         return officeExpenseDAO.save(officeExpense);
     }
 
@@ -87,6 +88,7 @@ public class OfficeExpenseMongoDAO {
     private Query getOfficeExpensesQuery(boolean pending) {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         Criteria criteria = new Criteria();
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
@@ -115,7 +117,7 @@ public class OfficeExpenseMongoDAO {
         	throw new BadRequestException("Exception preparing OfficeExpenses query", e);
         }
         List<Criteria> match = new ArrayList<>();
-
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         Criteria criteria = new Criteria();
         if(!sessionManager.getCurrentUser().isAdmin()) {
             match.add(Criteria.where(Payment.BRANCHOFFICEID).is(sessionManager.getCurrentUser().getBranchOfficeId()));
@@ -127,6 +129,7 @@ public class OfficeExpenseMongoDAO {
     }
 
     public List<OfficeExpense> searchOfficeExpenses(JSONObject query, Pageable pageable) throws ParseException {
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         Query q = serviceUtils.createSearchQuery(query, pageable);
         List<OfficeExpense> expenses = mongoTemplate.find(q, OfficeExpense.class);
         return expenses;

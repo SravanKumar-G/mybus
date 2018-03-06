@@ -52,6 +52,8 @@ public class CashTransferMongoDAO {
                 Criteria.where(CashTransfer.FROM_OFFICE_ID).is(sessionManager.getCurrentUser().getBranchOfficeId()),
                 Criteria.where(CashTransfer.TO_USER_ID).is(sessionManager.getCurrentUser().getId()),
                 Criteria.where(CashTransfer.FROM_USER_ID).is(sessionManager.getCurrentUser().getId()));
+
+        criteria.andOperator(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         q.addCriteria(criteria);
 
         if(query != null) {
@@ -121,6 +123,7 @@ public class CashTransferMongoDAO {
     }
 
     public List<CashTransfer> search(JSONObject query, Pageable pageable) throws ParseException {
+        query = ServiceUtils.addOperatorId(query, sessionManager);
         Query q = serviceUtils.createSearchQuery(query, pageable);
         List<CashTransfer> cashTransfers = mongoTemplate.find(q, CashTransfer.class);
         return cashTransfers;

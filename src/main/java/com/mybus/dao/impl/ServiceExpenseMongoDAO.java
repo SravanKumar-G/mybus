@@ -4,6 +4,7 @@ import com.mybus.model.OfficeExpense;
 import com.mybus.model.ServiceExpense;
 import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
+import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 @Repository
 public class ServiceExpenseMongoDAO{
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public Query createSearchQuery(JSONObject query, Pageable pageable) throws ParseException {
+    @Autowired
+    private SessionManager sessionManager;
+
+    private Query createSearchQuery(JSONObject query, Pageable pageable) throws ParseException {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
@@ -43,6 +49,7 @@ public class ServiceExpenseMongoDAO{
             criteria.andOperator(match.toArray(new Criteria[match.size()]));
             q.addCriteria(criteria);
         }
+        q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         return q;
     }
 

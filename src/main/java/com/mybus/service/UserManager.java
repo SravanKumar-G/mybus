@@ -33,6 +33,9 @@ public class UserManager {
     @Autowired
     private BranchOfficeManager branchOfficeManager;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public User findOne(String userId) {
         return userDAO.findOne(userId);
     }
@@ -120,7 +123,12 @@ public class UserManager {
     }
 
     public List<User> findAll() {
-        List<User> users = IteratorUtils.toList(userDAO.findAll().iterator());
+        List<User> users = null;
+        if(sessionManager.getOperatorId() != null){
+            users = userDAO.findByOperatorId(sessionManager.getOperatorId());
+        } else {
+            users = IteratorUtils.toList(userDAO.findAll().iterator());
+        }
         return users;
     }
 

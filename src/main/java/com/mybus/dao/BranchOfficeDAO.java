@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BranchOfficeDAO extends PagingAndSortingRepository<BranchOffice, String> {
-
+    BranchOffice findByIdAndOperatorId(String id, String operatorId);
 }

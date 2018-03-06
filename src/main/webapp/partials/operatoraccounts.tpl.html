@@ -1,0 +1,85 @@
+<legend>{{ headline }}</legend>
+
+<span class="small-text">Total: {{ count }}</span>
+<div class="toolbar-button-div pull-right">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="addAccount()"><span class="glyphicon glyphicon-plus"></span> Add Acconut</button>
+</div>
+
+
+<table class="table table-bordered table-condensed table-hover table-striped" ng-table="accountTableParams">
+    <tr ng-repeat="account in accounts">
+        <td data-title="'Name'" class="col-sm-2" sortable="'name'">{{ account.name }}</td>
+        <td data-title="'City'" class="col-sm-2" sortable="'attributes.cityName'">{{ account.domainName }}</td>
+        <td data-title="'Manager'" class="col-sm-2" >{{ account.apiURL }}</td>
+        <td data-title="'Contact'" class="col-sm-1" sortable="'contact'">{{ account.providerType }}</td>
+        <td class="col-sm-1">
+            <md-button>
+                <md-icon type="button" class="btn" ng-click="editAccount(account.id)">
+                    <span class="glyphicon glyphicon-pencil"></span></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</table>
+
+
+<script type="text/ng-template" id="edit-account-modal.html">
+
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-sm-11">
+                <h3 class="modal-title">Add Amenity</h3>
+            </div>
+            <div class="col-sm-1">
+                <md-button>
+                    <md-icon type="button" class="btn-sm" ng-click="cancel()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </md-icon>
+                </md-button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+
+        <!-- ---------------------------------------------------------------------------- -->
+        <form name="amenityForm" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="accountName" class="form-control" ng-model="account.name" placeholder="Account Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="accountDomain" class="form-control" ng-model="account.domainName" placeholder="Domain Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="apiURL" class="form-control" ng-model="account.apiURL" placeholder="apiURL">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <select ng-model="account.providerType" class="form-control">
+                        <option value="Abhibus">Abhibus</option>
+                        <option value="Bitla">Bitla</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="userName" class="form-control" ng-model="account.userName" placeholder="User Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-7 col-xs-offset-2">
+                    <input type="text" id="password" class="form-control" ng-model="account.password" placeholder="password">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="saveAccount()" >Save</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

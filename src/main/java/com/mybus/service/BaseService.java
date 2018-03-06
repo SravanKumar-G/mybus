@@ -1,6 +1,12 @@
 package com.mybus.service;
 
+
+import com.mashape.unirest.http.Unirest;
 import com.mybus.SystemProperties;
+import com.mybus.model.Agent;
+import com.mybus.model.Booking;
+import com.mybus.model.BookingType;
+import com.mybus.model.ServiceReport;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
@@ -15,12 +21,15 @@ import java.net.URL;
 public class BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
+    @Autowired
+    private BookingTypeManager bookingTypeManager;
+
     public static XmlRpcClient xmlRpcClient;
 
     @Autowired
     private SystemProperties systemProperties;
 
-    public void init() {
+    public void initAbhibus() {
         try {
             if(xmlRpcClient == null) {
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
@@ -36,4 +45,50 @@ public class BaseService {
         }
     }
 
+    public String initBitlabus(String hostName) {
+        try {
+            org.json.JSONObject jsonObject  = Unirest.post("http://jagan.jagantravels.com/api/login.json")
+                    .field("login", "jagan.srini")
+                    .field("password", "1234qweR")
+                    .asJson().getBody().getObject();
+            return jsonObject.getString("key");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    protected void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
+        if(bookingTypeManager.isRedbusBooking(booking)){
+            serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.REDBUS);
+            booking.setHasValidAgent(true);
+        } else if(bookingTypeManager.isOnlineBooking(booking)) {
+            serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.ONLINE);
+            booking.setHasValidAgent(true);
+        } else {
+            Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
+            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+            serviceReport.setInvalid(bookingAgent == null);
+            adjustAgentBookingCommission(booking, bookingAgent);
+            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.CASH);
+        }
+    }
+
+    /**
+     * Adjust the net income of booking based on agent commission
+     * @param booking
+     * @param bookingAgent
+     */
+
+    private void adjustAgentBookingCommission(Booking booking, Agent bookingAgent) {
+        if(bookingAgent != null) {
+            if(bookingAgent.getCommission() > 0) {
+                double netShare = (double)(100 - bookingAgent.getCommission()) / 100;
+                booking.setNetAmt(booking.getNetAmt() * netShare);
+            }
+        }
+    }
 }

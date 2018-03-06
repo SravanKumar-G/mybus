@@ -40,15 +40,13 @@ public class OfficeExpenseManager {
     private UserMongoDAO userMongoDAO;
 
     @Autowired
-    private UserManager userManager;
-
-    @Autowired
     private SessionManager sessionManager;
 
     @Autowired
     private ServiceUtils serviceUtils;
 
     public OfficeExpense save(OfficeExpense officeExpense) {
+        officeExpense.setOperatorId(sessionManager.getOperatorId());
         return officeExpenseMongoDAO.save(officeExpense);
     }
 
@@ -102,6 +100,10 @@ public class OfficeExpenseManager {
         officeExpenseDAO.delete(officeExpense);
     }
 
+    /**
+     * Load office expenses with user names
+     * @param officeExpenses
+     */
     private void loadUserNames(List<OfficeExpense> officeExpenses) {
         officeExpenses.forEach(officeExpense -> {
             serviceUtils.fillInUserNames(officeExpense);
