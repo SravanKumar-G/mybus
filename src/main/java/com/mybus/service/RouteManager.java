@@ -3,13 +3,20 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mybus.dao.CityDAO;
 import com.mybus.dao.RouteDAO;
+import com.mybus.dao.impl.RouteMongoDAO;
 import com.mybus.model.Route;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.*;
 /**
  * Created by skandula on 12/30/15.
  */
@@ -23,10 +30,14 @@ public class RouteManager {
     @Autowired
     private CityDAO cityDAO;
 
-    public void deleteAll() {
-        routeDAO.deleteAll();
-    }
+    @Autowired
+    private RouteMongoDAO routeMongoDAO;
+
+    @Autowired
+    private SessionManager sessionManager;
+
     public Route saveRoute(Route route) {
+        route.setOperatorId(sessionManager.getOperatorId());
         validateRoute(route);
         return routeDAO.save(route);
     }
@@ -80,5 +91,17 @@ public class RouteManager {
                 throw new RuntimeException("invalid via city is found in via cities");
             }
         });
+    }
+
+    public long count() {
+        return routeMongoDAO.count();
+    }
+
+    public Route findOne(String id) {
+        return routeDAO.findByIdAndOperatorId(id, sessionManager.getOperatorId());
+    }
+
+    public List<Route> findAll(Pageable pageable) {
+        return routeDAO.findByOperatorId(sessionManager.getOperatorId());
     }
 }

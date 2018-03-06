@@ -27,9 +27,6 @@ public class PaymentController {
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
-    private PaymentMongoDAO paymentMongoDAO;
-
-    @Autowired
     private PaymentManager paymentManager;
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -60,7 +57,7 @@ public class PaymentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/count", method = RequestMethod.GET)
     public long getCount(HttpServletRequest request,@RequestParam(value = "pending", required = true) boolean pendingPayments) {
-        return paymentMongoDAO.getPaymentsCount(pendingPayments);
+        return paymentManager.getPaymentsCount(pendingPayments);
     }
     
     @ResponseStatus(value = HttpStatus.OK)
@@ -77,7 +74,7 @@ public class PaymentController {
     public Payment create(HttpServletRequest request, @RequestBody final Payment paymnet) {
         logger.debug("post payment called");
 
-        return paymentMongoDAO.save(paymnet);
+        return paymentManager.save(paymnet);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

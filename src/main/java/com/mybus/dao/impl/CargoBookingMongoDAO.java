@@ -4,6 +4,7 @@ package com.mybus.dao.impl;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.CashTransfer;
 import com.mybus.service.BookingTypeManager;
+import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class CargoBookingMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public Iterable<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
         final Query q = new Query();
         if(query != null) {
@@ -38,6 +42,8 @@ public class CargoBookingMongoDAO {
                 q.addCriteria(where(CargoBooking.DISPATCH_DATE).gte(start).lte(end));
             }
         }
+        q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+
         List<CargoBooking> cargoBookings = mongoTemplate.find(q, CargoBooking.class);
         return cargoBookings;
     }

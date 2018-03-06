@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mybus.model.Vehicle;
+import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,6 +20,9 @@ public class VehicleMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public Iterable<Vehicle> findExpiring(Date date) {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
@@ -27,6 +31,7 @@ public class VehicleMongoDAO {
         match.add(where("insuranceExpiry").lte(date));
         match.add(where("pollutionExpiry").lte(date));
         match.add(where("authExpiry").lte(date));
+        match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.orOperator(match.toArray(new Criteria[match.size()]));
         q.addCriteria(criteria);
         return mongoTemplate.find(q, Vehicle.class);

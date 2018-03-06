@@ -16,6 +16,10 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @Setter
 public class OperatorAccount extends AbstractDocument {
 
+    public static String ABHIBUS = "Abhibus";
+    public static String Bitlabus = "Bitlabus";
+
+
     @RequiresValue
     @Indexed(unique = true)
     private String name;

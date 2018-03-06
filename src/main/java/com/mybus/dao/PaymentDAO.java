@@ -17,4 +17,5 @@ public interface PaymentDAO extends PagingAndSortingRepository<Payment, String> 
     Payment findByCashTransferRef(String cashTransferId);
     Iterable<Payment> findByFormId(String serviceId);
     List<Payment> findByServiceReportId(String id);
+    Payment findByIdAndOperatorId(String id, String operatorId);
 }

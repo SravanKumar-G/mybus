@@ -14,4 +14,5 @@ public interface ServiceExpenseDAO extends PagingAndSortingRepository<ServiceExp
     ServiceExpense findByServiceReportId(String serviceReportId);
 
 
+    List<ServiceExpense> findByJourneyDateBetweenAndOperatorId(Date start, Date end, String operatorId);
 }

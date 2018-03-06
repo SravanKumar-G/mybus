@@ -30,9 +30,6 @@ public class ServiceExpenseController {
 	@Autowired
 	private ServiceExpenseManager serviceExpenseManager;
 
-	@Autowired
-	private ServiceExpenseDAO serviceExpenseDAO;
-
 	@RequestMapping(value = "byDate", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public List<ServiceExpense> getAll(HttpServletRequest request,

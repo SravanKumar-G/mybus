@@ -1,6 +1,7 @@
 package com.mybus.model;
 
 import com.mybus.service.ServiceConstants;
+import com.mybus.service.SessionManager;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -41,7 +42,7 @@ public class ServiceListing extends AbstractDocument  {
 
     }
 
-    public ServiceListing(ServiceReport serviceReport){
+    public ServiceListing(ServiceReport serviceReport, SessionManager sessionManager){
         this.setServiceId(serviceReport.getServiceId()); //??
         this.setSource(serviceReport.getSource());
         this.setDestination(serviceReport.getDestination());
@@ -49,5 +50,6 @@ public class ServiceListing extends AbstractDocument  {
         this.setVehicleRegNumber(serviceReport.getVehicleRegNumber());
         this.setBusType(serviceReport.getBusType());
         this.setJourneyDate(serviceReport.getJourneyDate());
+        this.setOperatorId(sessionManager.getOperatorId());
     }
 }

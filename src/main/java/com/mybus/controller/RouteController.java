@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by skandula on 1/18/16.
@@ -31,22 +32,19 @@ public class RouteController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private RouteDAO routeDAO;
-
-    @Autowired
     private RouteManager routeManager;
 
     @RequestMapping(value = "routes/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get routes count", response = Long.class)
     public long getCount(HttpServletRequest request) {
-        return routeDAO.count();
+        return routeManager.count();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "routes", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the routes available", response = Route.class, responseContainer = "List")
-    public Page<Route> getAll(HttpServletRequest request, Pageable pageable) {
-        return routeDAO.findAll(pageable);
+    public List<Route> getAll(HttpServletRequest request, Pageable pageable) {
+        return routeManager.findAll(pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -64,7 +62,7 @@ public class RouteController extends MyBusBaseController{
     public Route get(HttpServletRequest request,
                         @ApiParam(value = "Id of the Route to be found") @PathVariable final String id) {
         logger.debug("get city called");
-        return routeDAO.findOne(id);
+        return routeManager.findOne(id);
     }
 
     @RequestMapping(value = "route/{id}", method = RequestMethod.PUT)

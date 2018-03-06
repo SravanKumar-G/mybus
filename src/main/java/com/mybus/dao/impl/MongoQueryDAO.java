@@ -2,6 +2,7 @@ package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mybus.service.ServiceConstants;
+import com.mybus.service.SessionManager;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class MongoQueryDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     public long count(final Class className, String collectionName, final String[] fields,
                       final JSONObject queryInfo) {
@@ -55,6 +59,9 @@ public class MongoQueryDAO {
             for(String field :fields){
                 query.fields().include(field);
             }
+        }
+        if(queryInfo.get(SessionManager.OPERATOR_ID) == null) {
+            query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         }
         if (queryInfo != null) {
             for(Object key:queryInfo.keySet()) {

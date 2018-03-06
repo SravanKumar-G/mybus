@@ -37,11 +37,10 @@ public class BitlaPassengerReportService extends BaseService{
     private BookingDAO bookingDAO;
 
     @Autowired
-    private BookingTypeManager bookingTypeManager;
-
-    @Autowired
     private ServiceListingDAO serviceListingDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
     /**
      * Module that downloads the passenger report creates service reports and bookings
      * @param date
@@ -53,7 +52,7 @@ public class BitlaPassengerReportService extends BaseService{
         ServiceReportStatus serviceReportStatus = null;
         try{
             Date journeyDate = ServiceConstants.df.parse(date);
-            serviceReportStatus = serviceReportStatusDAO.findByReportDate(journeyDate);
+            serviceReportStatus = serviceReportStatusDAO.findByReportDateAndOperatorId(journeyDate, sessionManager.getOperatorId());
             if(serviceReportStatus != null) {
                 logger.info("The reports are being downloaded for " + date);
                 return null;
@@ -83,9 +82,9 @@ public class BitlaPassengerReportService extends BaseService{
                 if(serviceInfo.has("route_id")){
                     serviceReport.setServiceId(serviceInfo.get("route_id").toString());
                 }
-
+                serviceReport.setOperatorId(sessionManager.getOperatorId());
                 serviceReport = serviceReportDAO.save(serviceReport);
-                serviceListingDAO.save(new ServiceListing(serviceReport));
+                serviceListingDAO.save(new ServiceListing(serviceReport, sessionManager));
                 createServiceReports(date, serviceReport, serviceInfo.getJSONArray("passenger_details"));
             }
             serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);

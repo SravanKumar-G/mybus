@@ -34,7 +34,10 @@ public class ServiceReportsManager {
     private ServiceReportStatusDAO serviceReportStatusDAO;
 
     @Autowired
-    private AbhiBusPassengerReportService reportService;
+    private AbhiBusPassengerReportService abhiBusPassengerReportService;
+
+    @Autowired
+    private BitlaPassengerReportService bitlaPassengerReportService;
 
     @Autowired
     private ServiceReportMongoDAO serviceReportMongoDAO;
@@ -69,11 +72,16 @@ public class ServiceReportsManager {
     @Autowired
     private ServiceListingManager serviceListingManager;
 
+    @Autowired
+    private SessionManager sessionManager;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
-        ServiceReportStatus status = serviceReportStatusDAO.findByReportDate(ServiceConstants.df.parse(date));
+        ServiceReportStatus status = serviceReportStatusDAO.findByReportDateAndOperatorId(ServiceConstants.df.parse(date),
+                sessionManager.getOperatorId());
         if(status != null) {
             response.put("downloaded", true);
             response.put("downloadedOn", dtf.print(status.getCreatedAt()));
@@ -83,8 +91,17 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public JSONObject downloadReports(String date) throws Exception {
-        ServiceReportStatus status = reportService.downloadReports(date);
+    public JSONObject downloadReports(String date) {
+        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        if(operatorAccount == null){
+            throw new BadRequestException("No Operator found");
+        }
+        ServiceReportStatus status = null;
+        if(operatorAccount.getProviderType().equalsIgnoreCase(OperatorAccount.ABHIBUS)){
+            status = abhiBusPassengerReportService.downloadReports(date);
+        } else {
+            status = bitlaPassengerReportService.downloadReports(date);
+        }
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("downloadedOn", dtf.print(status.getCreatedAt()));
@@ -100,7 +117,14 @@ public class ServiceReportsManager {
     }
     
     public JSONObject downloadServiceDetailsByNumberAndDate(String serviceNumber, String date) throws Exception {
-    	List<ServiceReport> serviceReports = reportService.getServiceDetailsByNumberAndDate(serviceNumber, date);
+        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        if(operatorAccount == null){
+            throw new BadRequestException("No Operator found");
+        }
+        List<ServiceReport> serviceReports = null;
+        if(operatorAccount.getProviderType().equalsIgnoreCase(OperatorAccount.ABHIBUS)){
+            serviceReports = abhiBusPassengerReportService.getServiceDetailsByNumberAndDate(serviceNumber, date);
+        }
         JSONObject response = new JSONObject();
         response.put("downloaded", true);
         response.put("data", serviceReports);
@@ -166,6 +190,7 @@ public class ServiceReportsManager {
     public ServiceForm submitReport(ServiceReport serviceReport) {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
+        serviceForm.setOperatorId(sessionManager.getOperatorId());
         serviceReport.setNetCashIncome(0);
         //need to set this for update balance of the submitted user but not the verified user
         serviceForm.setSubmittedBy(serviceReport.getSubmittedBy());
@@ -334,9 +359,12 @@ public class ServiceReportsManager {
         return serviceForm;
     }
 
-    public void clearServiceReports(Date date) {
+    public void clearServiceReports(Date date, OperatorAccount operatorAccount) {
         JSONObject query = new JSONObject();
         query.put(ServiceReport.JOURNEY_DATE, date);
+        if(operatorAccount != null) {
+            query.put(SessionManager.OPERATOR_ID, operatorAccount.getOperatorId());
+        }
         Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(query, null);
         serviceReports.forEach(serviceReport -> {
             if (serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
@@ -354,9 +382,18 @@ public class ServiceReportsManager {
     }
 
     public Iterable<ServiceReport> refreshReport(Date date) {
-        clearServiceReports(date);
+        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        if(operatorAccount == null){
+            throw new BadRequestException("No Operator found");
+        }
+
+        clearServiceReports(date, operatorAccount);
         try {
-            reportService.downloadReports(ServiceConstants.df.format(date));
+            if(operatorAccount.getProviderType().equalsIgnoreCase(OperatorAccount.ABHIBUS)){
+                abhiBusPassengerReportService.downloadReports(ServiceConstants.df.format(date));
+            } else {
+                bitlaPassengerReportService.downloadReports(ServiceConstants.df.format(date));
+            }
         } catch (Exception e) {
             throw new BadRequestException("Failed to download reports", e);
         }

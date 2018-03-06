@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,15 +31,12 @@ public class CityController extends MyBusBaseController{
     private static final Logger logger = LoggerFactory.getLogger(CityController.class);
 
     @Autowired
-    private CityDAO cityDAO;
-
-    @Autowired
     private CityManager cityManager;
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "cities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the cities available", response = City.class, responseContainer = "List")
-    public Page<City> getCities(HttpServletRequest request, final Pageable pageable) {
+    public List<City> getCities(HttpServletRequest request, final Pageable pageable) {
         return cityManager.findAll(pageable);
     }
 
@@ -79,7 +77,7 @@ public class CityController extends MyBusBaseController{
     public City getCity(HttpServletRequest request,
                         @ApiParam(value = "Id of the City to be found") @PathVariable final String id) {
         logger.debug("get city called");
-        return cityDAO.findOne(id);
+        return cityManager.findOne(id);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

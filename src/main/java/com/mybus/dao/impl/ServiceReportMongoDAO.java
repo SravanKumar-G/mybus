@@ -4,6 +4,7 @@ import com.mybus.SystemProperties;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.ServiceReportStatus;
 import com.mybus.service.ServiceConstants;
+import com.mybus.service.SessionManager;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**
@@ -34,11 +37,24 @@ public class ServiceReportMongoDAO {
     @Autowired
     private SystemProperties systemProperties;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public Iterable<ServiceReport> findReports(JSONObject query, final Pageable pageable) {
         String[] fields = {"serviceNumber", "serviceName", "busType", "status", "vehicleRegNumber", "netIncome", "netCashIncome",
                 "source", "destination", "attrs"};
-        Iterable<ServiceReport> reports = mongoQueryDAO.getDocuments(ServiceReport.class, ServiceReport.COLLECTION_NAME,
-                fields, query, pageable);
+
+        Query q = new Query();
+        q.with(new Sort(Sort.Direction.DESC,"journeyDate"));
+        for(String field :fields){
+            q.fields().include(field);
+        }
+        q.fields().exclude("expenses");
+        q.fields().exclude("bookings");
+        q.fields().exclude("serviceExpense");
+        q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(q, ServiceReport.class).iterator());
+
         return reports;
     }
 

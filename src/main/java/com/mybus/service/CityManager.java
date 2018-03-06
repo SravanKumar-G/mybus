@@ -7,6 +7,7 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -38,19 +39,22 @@ public class CityManager {
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
 
-    public Page<City> findAll(Pageable pageable) {
-        return  cityDAO.findAll(pageable);
+    @Autowired
+    private SessionManager sessionManager;
+
+    public List<City> findAll(Pageable pageable) {
+        return  cityMongoDAO.findByOperatorId(sessionManager.getOperatorId(), pageable);
     }
 
     public long count() {
-        return cityDAO.count();
+        return cityMongoDAO.count();
     }
     public City findOne(String cityId){
-        return cityDAO.findOne(cityId);
+        return cityDAO.findByIdAndOperatorId(cityId,sessionManager.getOperatorId());
     }
 
     public City findCityByName(String name) {
-        return cityDAO.findOneByName(name);
+        return cityDAO.findOneByNameAndOperatorId(name, sessionManager.getOperatorId());
     }
 
     public boolean deleteCity(String id) {
@@ -76,7 +80,7 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Saving city:[{}]" + city);
         }
-
+        city.setOperatorId(sessionManager.getOperatorId());
         return cityDAO.save(city);
     }
 
@@ -165,7 +169,7 @@ public class CityManager {
      */
     public Iterable<City> getCityNames(boolean allCities) {
         String fields[] = {City.KEY_NAME};
-        JSONObject query = new JSONObject();
+        JSONObject query = ServiceUtils.addOperatorId(null, sessionManager);
         if(!allCities) {
             query.put("active", true);
         }

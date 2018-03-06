@@ -1,11 +1,9 @@
 package com.mybus.service;
 
-import com.mybus.SystemProperties;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +41,8 @@ public class AbhiBusPassengerReportService extends BaseService{
     @Autowired
     private ServiceListingDAO serviceListingDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
     /**
      * Find active services for a given date
      * @param date
@@ -67,6 +67,7 @@ public class AbhiBusPassengerReportService extends BaseService{
             busList = (Object[]) pair.getValue();
             for (Object busServ: busList) {
                 ServiceListing serviceListing = new ServiceListing();
+                serviceListing.setOperatorId(sessionManager.getOperatorId());
                 serviceListing.setJourneyDate(journeyDate);
                 Map busService = (HashMap) busServ;
                 if(busService.containsKey("ServiceId")){
@@ -141,7 +142,7 @@ public class AbhiBusPassengerReportService extends BaseService{
         ServiceReportStatus serviceReportStatus = null;
         try{
             Date journeyDate = ServiceConstants.df.parse(date);
-            serviceReportStatus = serviceReportStatusDAO.findByReportDate(journeyDate);
+            serviceReportStatus = serviceReportStatusDAO.findByReportDateAndOperatorId(journeyDate, sessionManager.getOperatorId());
             if(serviceReportStatus != null) {
                 logger.info("The reports are being downloaded for " + date);
                 return null;
@@ -171,6 +172,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     serviceReport.setDestination(serviceListing.getDestination());
                     serviceReport.setServiceNumber(serviceListing.getServiceNumber());
                     serviceReport.setServiceId(serviceListing.getServiceId());
+                    serviceReport.setOperatorId(sessionManager.getOperatorId());
                     serviceReportDAO.save(serviceReport);
                 }
             }

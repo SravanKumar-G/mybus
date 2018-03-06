@@ -212,7 +212,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         user = userDAO.findOne(user.getId());
         assertEquals(1200, user.getAmountToBePaid(), 0.0);
-        serviceReportsManager.clearServiceReports(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())));
+        serviceReportsManager.clearServiceReports(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())), null);
         user = userDAO.findOne(user.getId());
         assertEquals(800, user.getAmountToBePaid(), 0.0);
         List<ServiceReport> reports = IteratorUtils.toList(serviceReportDAO.findAll().iterator());

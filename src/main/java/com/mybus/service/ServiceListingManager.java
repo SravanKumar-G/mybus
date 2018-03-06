@@ -24,11 +24,14 @@ public class ServiceListingManager {
     private ServiceListingDAO serviceListingDAO;
 
     @Autowired
+    private SessionManager sessionManager;
+    @Autowired
     private AbhiBusPassengerReportService reportService;
 
     public Iterable<ServiceListing> getServiceListings(String date) throws Exception {
         Date listingDate = ServiceUtils.parseDate(date, false);
-        Iterable<ServiceListing> serviceListings = serviceListingDAO.findByJourneyDate(listingDate);
+        Iterable<ServiceListing> serviceListings = serviceListingDAO.findByJourneyDateAndOperatorId
+                (listingDate, sessionManager.getOperatorId());
         if(!serviceListings.iterator().hasNext()) {
             serviceListings = reportService.getActiveServicesByDate(date);
         }
