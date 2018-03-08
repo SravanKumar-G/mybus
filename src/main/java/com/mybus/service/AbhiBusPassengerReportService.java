@@ -1,9 +1,11 @@
 package com.mybus.service;
 
+import com.mybus.SystemProperties;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,8 @@ public class AbhiBusPassengerReportService extends BaseService{
 
     @Autowired
     private ServiceReportDAO serviceReportDAO;
-    
-    @Autowired    
+
+    @Autowired
     private ServiceComboMongoDAO serviceComboMongoDAO;
 
     @Autowired
@@ -43,6 +45,7 @@ public class AbhiBusPassengerReportService extends BaseService{
 
     @Autowired
     private SessionManager sessionManager;
+
     /**
      * Find active services for a given date
      * @param date
@@ -50,7 +53,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @throws Exception
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
-        logger.info("loading service listings for date:" + date);
+        logger.info("loading reports for date:" + date);
         initAbhibus();
         Date journeyDate = ServiceConstants.df.parse(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
@@ -71,30 +74,30 @@ public class AbhiBusPassengerReportService extends BaseService{
                 serviceListing.setJourneyDate(journeyDate);
                 Map busService = (HashMap) busServ;
                 if(busService.containsKey("ServiceId")){
-                      serviceListing.setServiceId(busService.get("ServiceId").toString());
+                    serviceListing.setServiceId(busService.get("ServiceId").toString());
                 }
                 if(busService.containsKey("ServiceName")){
-                     serviceListing.setServiceName(busService.get("ServiceName").toString());
+                    serviceListing.setServiceName(busService.get("ServiceName").toString());
                 }
                 if(busService.containsKey("ServiceNumber")){
                     serviceListing.setServiceNumber(busService.get("ServiceNumber").toString());
                 }
                 if(busService.containsKey("BusType")){
-                     serviceListing.setBusType(busService.get("BusType").toString());
+                    serviceListing.setBusType(busService.get("BusType").toString());
                 }
                 if(busService.containsKey("Service_Source")){
-                     serviceListing.setSource(busService.get("Service_Source").toString());
+                    serviceListing.setSource(busService.get("Service_Source").toString());
                 }
                 if(busService.containsKey("Service_Destination")){
                     serviceListing.setDestination(busService.get("Service_Destination").toString());
                 }
-                if(busService.containsKey("Vehicle_RegNo")){
-                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_RegNo").toString());
+                if(busService.containsKey("Vehicle_No")){
+                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_No").toString());
                 }
                 serviceListings.put(serviceListing.getServiceNumber(), serviceListing);
             }
         }
-         Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
+        Map<String, String[]> serviceComboMappings = serviceComboManager.getServiceComboMappings();
         for(Map.Entry<String, String[]> serviceCombo: serviceComboMappings.entrySet()){
             ServiceListing serviceListing = serviceListings.get(serviceCombo.getKey());
             if(serviceListing != null){
@@ -147,20 +150,9 @@ public class AbhiBusPassengerReportService extends BaseService{
                 logger.info("The reports are being downloaded for " + date);
                 return null;
             }
-            serviceReportStatus = serviceReportStatusDAO.save
-                    (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
-            /*
-            init();
-            HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
-            inputParam.put("jdate", date);
-            Vector params = new Vector();
-            params.add(inputParam);
-            Object busList[] = (Object[]) xmlRpcClient.execute("index.passengerreport", params);
-            Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
-            mergeServiceCombos(serviceReportsMap);
-
-            */
-
+            serviceReportStatus = new ServiceReportStatus(journeyDate, ReportDownloadStatus.DOWNLOADING);
+            serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
+            serviceReportStatusDAO.save(serviceReportStatus);
             Iterable<ServiceListing> serviceListings = getActiveServicesByDate(date);
             for(ServiceListing serviceListing:serviceListings){
                 List<ServiceReport> serviceReports = getServiceDetailsByNumberAndDate(serviceListing.getServiceId(), date);
@@ -194,11 +186,12 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @throws ParseException
      */
     private  Map<String, ServiceReport> createServiceReports(String date,
-                                      Object[] busList) throws ParseException {
+                                                             Object[] busList) throws ParseException {
         Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
+            serviceReport.setOperatorId(sessionManager.getOperatorId());
             Date journeyDate = ServiceConstants.df.parse(date);
             serviceReport.setJourneyDate(journeyDate);
             if(busService.containsKey("ServiceId")){
@@ -222,7 +215,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             if(busService.containsKey("Vehicle_No")){
                 serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
             }
-
             if(busService.containsKey("Conductor_Name") && busService.get("Conductor_Name") != null){
                 String conductorInfo = busService.get("Conductor_Name").toString();
                 if(busService.containsKey("Conductor_Phone")
@@ -232,27 +224,16 @@ public class AbhiBusPassengerReportService extends BaseService{
                 }
                 serviceReport.setConductorInfo(conductorInfo);
             }
-            /*ServiceReport savedReport = getByJourneyDateAndServiceNumber(serviceReport.getServiceNumber(), journeyDate);
-            
-            if(savedReport != null) {
-                if(savedReport.getStatus() != null) {
-                    continue;
-                    //throw new BadRequestException("The report have been already submitted and can not redownloaded");
-                }
-                serviceReport = savedReport;
-            }*/
             Object[] passengerInfos = (Object[]) busService.get("PassengerInfo");
             for (Object info: passengerInfos) {
                 Map passengerInfo = (HashMap) info;
                 Booking booking = new Booking();
                 try {
-                    //booking.setServiceId(serviceReport.getId());
                     booking.setServiceName(serviceReport.getServiceName());
                     booking.setServiceNumber(serviceReport.getServiceNumber());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
                     booking.setJDate(passengerInfo.get("JourneyDate").toString());
                     booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
-                    //passenger.put("StartTime", passengerInfo.get("StartTime"));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString().replace(",", ", "));
                     booking.setName(passengerInfo.get("PassengerName").toString());
@@ -268,9 +249,10 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setBoardingTime(passengerInfo.get("BoardingTime").toString());
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
+                    booking.setOperatorId(sessionManager.getOperatorId());
                     //copy the cost to for verifying the difference
                     booking.setOriginalCost(booking.getNetAmt());
-                    Booking savedBooking = bookingDAO.findByTicketNo(booking.getTicketNo().trim());
+                    Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo().trim(),sessionManager.getOperatorId());
                     if(savedBooking == null) {
                         calculateServiceReportIncome(serviceReport, booking);
                         serviceReport.getBookings().add(booking);
@@ -289,7 +271,24 @@ public class AbhiBusPassengerReportService extends BaseService{
         }
         return serviceReportsMap;
     }
-
+    private void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
+        if(bookingTypeManager.isRedbusBooking(booking)){
+            serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.REDBUS);
+            booking.setHasValidAgent(true);
+        } else if(bookingTypeManager.isOnlineBooking(booking)) {
+            serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.ONLINE);
+            booking.setHasValidAgent(true);
+        } else {
+            Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
+            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+            serviceReport.setInvalid(bookingAgent == null);
+            adjustAgentBookingCommission(booking, bookingAgent);
+            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.CASH);
+        }
+    }
     private ServiceReport getByJourneyDateAndServiceNumber(String serviceNumber, Date journeyDate) {
         //check if there is service combo for that service number
         ServiceCombo serviceCombo = serviceComboMongoDAO.findServiceCombo(serviceNumber);
@@ -307,7 +306,7 @@ public class AbhiBusPassengerReportService extends BaseService{
         return report;
     }
 
-	private double roundUp(double value) {
+    private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
     }
 
@@ -364,6 +363,7 @@ public class AbhiBusPassengerReportService extends BaseService{
         }
         return serviceReports;
     }
+
 
     /**
      * Adjust the net income of booking based on agent commission

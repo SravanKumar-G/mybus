@@ -93,7 +93,8 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return !$scope.isNotOnlineBooking(booking);
         }
         $scope.isNotOnlineBooking = function(booking) {
-            return booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
+            return booking.bookedBy !='Ticket' && booking.bookedBy !='Red Bus' &&
+                booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
                 && booking.bookedBy !='PAYTM-API'
                 && booking.bookedBy !='YATRA-API'
                 && booking.bookedBy !='abhibus-mantis'

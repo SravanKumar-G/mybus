@@ -19,7 +19,4 @@ public class ServiceReportStatus extends AbstractDocument  {
     @Indexed(unique = true)
     private Date reportDate;
     private ReportDownloadStatus status;
-    public ServiceReportStatus(Date reportDate) {
-        this.reportDate = reportDate;
-    }
 }

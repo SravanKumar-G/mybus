@@ -60,7 +60,7 @@ public class MongoQueryDAO {
                 query.fields().include(field);
             }
         }
-        if(queryInfo.get(SessionManager.OPERATOR_ID) == null) {
+        if(queryInfo != null && queryInfo.get(SessionManager.OPERATOR_ID) == null) {
             query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         }
         if (queryInfo != null) {

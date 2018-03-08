@@ -58,24 +58,6 @@ public class BaseService {
         return null;
     }
 
-    protected void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
-        if(bookingTypeManager.isRedbusBooking(booking)){
-            serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.REDBUS);
-            booking.setHasValidAgent(true);
-        } else if(bookingTypeManager.isOnlineBooking(booking)) {
-            serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.ONLINE);
-            booking.setHasValidAgent(true);
-        } else {
-            Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
-            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
-            serviceReport.setInvalid(bookingAgent == null);
-            adjustAgentBookingCommission(booking, bookingAgent);
-            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
-            booking.setPaymentType(BookingType.CASH);
-        }
-    }
 
     /**
      * Adjust the net income of booking based on agent commission
