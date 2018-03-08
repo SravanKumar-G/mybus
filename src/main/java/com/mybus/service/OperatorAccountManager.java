@@ -38,7 +38,6 @@ public class OperatorAccountManager {
            }
        }
        if(errors.isEmpty()) {
-
            return operatorAccountDAO.save(operatorAccount);
        } else {
            throw new BadRequestException("Required data missing : "+  StringUtils.join(errors.toArray()));

@@ -59,6 +59,7 @@ public class BitlaPassengerReportService extends BaseService{
             }
             serviceReportStatus = serviceReportStatusDAO.save
                     (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
+            serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             String key = loginBitlaBus();
             //GET http://jagan.jagantravels.com/api/get_passenger_details/2018-02-16.json?api_key=84FEZH5KE3KWAKIQDIZ6R7Q3KWZZT7RW
             String url = String.format("http://jagan.jagantravels.com/api/get_passenger_details/%s.json?api_key=%s", date, key);
@@ -82,6 +83,7 @@ public class BitlaPassengerReportService extends BaseService{
                 if(serviceInfo.has("route_id")){
                     serviceReport.setServiceId(serviceInfo.get("route_id").toString());
                 }
+                serviceReport.setJourneyDate(journeyDate);
                 serviceReport.setOperatorId(sessionManager.getOperatorId());
                 serviceReport = serviceReportDAO.save(serviceReport);
                 serviceListingDAO.save(new ServiceListing(serviceReport, sessionManager));
@@ -155,5 +157,25 @@ public class BitlaPassengerReportService extends BaseService{
         }
     }
 
+    /*
+    protected void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
+        if(bookingTypeManager.isRedbusBooking(booking)){
+            serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.REDBUS);
+            booking.setHasValidAgent(true);
+        } else if(bookingTypeManager.isOnlineBooking(booking)) {
+            serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.ONLINE);
+            booking.setHasValidAgent(true);
+        } else {
+            Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
+            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+            serviceReport.setInvalid(bookingAgent == null);
+            adjustAgentBookingCommission(booking, bookingAgent);
+            serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
+            booking.setPaymentType(BookingType.CASH);
+        }
+    }
 
+*/
 }

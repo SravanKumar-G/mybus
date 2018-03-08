@@ -49,9 +49,6 @@ public class ServiceReportMongoDAO {
         for(String field :fields){
             q.fields().include(field);
         }
-        q.fields().exclude("expenses");
-        q.fields().exclude("bookings");
-        q.fields().exclude("serviceExpense");
         q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(q, ServiceReport.class).iterator());
 
