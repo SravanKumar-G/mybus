@@ -18,7 +18,7 @@
                 pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
             });
             routesManager.load(pageable).then(function(response){
-                let routes = response[0].data.content;
+                let routes = response[0].data;
                 if (angular.isArray(routes)) {
                     $scope.allRoutes = routes;
                     $scope.cities = response[1].data;

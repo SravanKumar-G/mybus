@@ -13,9 +13,10 @@ angular.module('myBus.serviceComboModule', ['ngTable', 'ui.bootstrap'])
             pageable = {page:tableParams.page(), size:tableParams.count(), sort:response};
         });
         serviceComboManager.getAll(pageable, function (response) {
-            if (angular.isArray(response.content)) {
+        	console.log(response);
+            if (angular.isArray(response)) {
                 $scope.loading = false;
-                $scope.serviceCombos = response.content;
+                $scope.serviceCombos = response;
                 tableParams.total(response.totalElemets);
                 $scope.count = response.totalElements;
                 tableParams.data = $scope.serviceCombos;
