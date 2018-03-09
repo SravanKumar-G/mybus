@@ -89,7 +89,6 @@ public class BranchOfficeManager {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
-        query = ServiceUtils.addOperatorId(query, sessionManager);
         List<BranchOffice> branchOffices = IteratorUtils.toList(mongoQueryDAO.
                 getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query, pageable).iterator());
         Map<String, String> cityNames = cityManager.getCityNamesMap();
@@ -102,10 +101,7 @@ public class BranchOfficeManager {
         return page;
     }
 
-
-
     public long count(JSONObject query) {
-        query = ServiceUtils.addOperatorId(query, sessionManager);
         return mongoQueryDAO.count(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query);
     }
     public void delete(String branchOfficeId) {
@@ -117,7 +113,7 @@ public class BranchOfficeManager {
 
     public List<BranchOffice> getNames() {
         String[] fields = {"name"};
-        JSONObject query = ServiceUtils.addOperatorId(null, sessionManager);
+        JSONObject query = new JSONObject();
         List<BranchOffice> offices = IteratorUtils.toList(mongoQueryDAO
                 .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, query, null).iterator());
         return offices;

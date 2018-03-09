@@ -86,9 +86,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         }
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/cities?page=3&size=5&sort=name"), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.totalElements").value(40));
-        actions.andExpect(jsonPath("$.content").isArray());
-        actions.andExpect(jsonPath("$.content", Matchers.hasSize(5)));
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
     }
     @Test
     public void testGetAllCityNames() throws Exception {

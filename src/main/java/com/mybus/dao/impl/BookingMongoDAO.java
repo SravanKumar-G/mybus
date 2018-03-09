@@ -83,11 +83,10 @@ public class BookingMongoDAO {
     public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
         long start = System.currentTimeMillis();
         Preconditions.checkNotNull(agent, "Agent not found");
-        BranchOffice branchOffice = branchOfficeDAO.findByIdAndOperatorId(agent.getBranchOfficeId(), sessionManager.getOperatorId());
+        BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
         Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
         final Query query = new Query();
         query.addCriteria(where("bookedBy").is(agent.getUsername()));
-        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
 
         addIsBookingDueConditions(query);
         query.addCriteria(where("source").ne(branchOffice.getName()));

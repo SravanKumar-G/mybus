@@ -169,7 +169,7 @@ public class CityManager {
      */
     public Iterable<City> getCityNames(boolean allCities) {
         String fields[] = {City.KEY_NAME};
-        JSONObject query = ServiceUtils.addOperatorId(null, sessionManager);
+        JSONObject query = new JSONObject();
         if(!allCities) {
             query.put("active", true);
         }

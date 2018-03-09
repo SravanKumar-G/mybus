@@ -32,8 +32,6 @@ public class AgentMongoDAO {
         if(officeId != null) {
             query.addCriteria(where("branchOfficeId").is(officeId));
         }
-        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-
         List<Agent> agents = mongoTemplate.find(query, Agent.class);
         List<String> namesList = agents.stream()
                 .map(Agent::getUsername)
@@ -51,7 +49,6 @@ public class AgentMongoDAO {
         if(showInvalid){
             query.addCriteria(Criteria.where("branchOfficeId").exists(false));
         }
-        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         query.fields().include("username");
         query.fields().include("branchOfficeId");
         agents = mongoTemplate.find(query, Agent.class);
