@@ -91,8 +91,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
         }
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/routes"), currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.content").isArray());
-        actions.andExpect(jsonPath("$.content", Matchers.hasSize(3)));
+        actions.andExpect(jsonPath("$").isArray());
+        actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
     }
 
     @Test
