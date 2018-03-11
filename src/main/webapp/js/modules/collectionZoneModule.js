@@ -9,7 +9,7 @@ angular.module('myBus.colletionZoneModule', ['ngTable', 'ui.bootstrap'])
 	var loadTableData = function (tableParams) {
 		$scope.loading = true;
         collectionZonesManager.getAll(function(response){
-        	console.log(response);
+        	console.log(response.content);
 			if(angular.isArray(response.content)){
 				$scope.loading = false;
 				$scope.collectionZones = response.content;
