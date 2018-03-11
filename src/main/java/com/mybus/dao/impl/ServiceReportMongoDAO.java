@@ -51,7 +51,6 @@ public class ServiceReportMongoDAO {
         }
         q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(q, ServiceReport.class).iterator());
-
         return reports;
     }
 
