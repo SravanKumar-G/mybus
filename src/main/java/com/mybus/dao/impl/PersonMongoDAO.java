@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mybus.model.Person;
 import com.mybus.service.SessionManager;

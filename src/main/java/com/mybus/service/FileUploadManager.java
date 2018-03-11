@@ -1,11 +1,6 @@
 package com.mybus.service;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
 import com.mybus.SystemProperties;
-import com.mybus.util.AmazonAWSHelper;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Service
 public class FileUploadManager {

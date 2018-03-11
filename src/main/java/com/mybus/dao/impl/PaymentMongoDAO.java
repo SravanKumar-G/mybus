@@ -2,7 +2,6 @@ package com.mybus.dao.impl;
 
 import com.mybus.dao.PaymentDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;

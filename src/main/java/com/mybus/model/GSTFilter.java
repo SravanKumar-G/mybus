@@ -6,9 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * Created by skandula on 5/7/16.
  */

@@ -1,14 +1,15 @@
 package com.mybus.model;
 
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * Created by skandula on 2/13/16.

@@ -1,13 +1,11 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;

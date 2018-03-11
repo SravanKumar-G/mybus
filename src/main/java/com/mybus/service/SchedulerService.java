@@ -2,7 +2,6 @@ package com.mybus.service;
 
 import com.mybus.SystemProperties;
 import com.mybus.dao.OperatorAccountDAO;
-import com.mybus.dao.VehicleDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.dao.impl.VehicleMongoDAO;
 import com.mybus.model.OperatorAccount;
@@ -16,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

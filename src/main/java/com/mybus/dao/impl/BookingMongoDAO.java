@@ -1,10 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
-import com.mybus.dao.AgentDAO;
-import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;

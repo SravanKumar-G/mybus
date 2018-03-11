@@ -50,7 +50,7 @@ public class BusServiceManager {
 			logger.debug("Deleting Service :[{}]" + id);
 		}
 		if (busServiceDAO.findById(id).isPresent()) {
-			busServiceDAO.delete(id);
+			busServiceDAO.deleteById(id);
 		} else {
 			throw new RuntimeException("Unknown service id");
 		}

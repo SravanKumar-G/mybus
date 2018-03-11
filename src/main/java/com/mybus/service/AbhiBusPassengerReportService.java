@@ -1,12 +1,10 @@
 package com.mybus.service;
 
-import com.mybus.SystemProperties;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

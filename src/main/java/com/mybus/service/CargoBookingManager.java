@@ -3,6 +3,8 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.*;
+import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.dto.*;
 import com.mybus.exception.BadRequestException;

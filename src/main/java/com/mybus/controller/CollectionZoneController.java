@@ -1,9 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Amenity;
 import com.mybus.model.CollectionZone;
-import com.mybus.service.AmenitiesManager;
 import com.mybus.service.CollectionZoneManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

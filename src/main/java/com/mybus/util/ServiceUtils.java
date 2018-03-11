@@ -1,6 +1,5 @@
 package com.mybus.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.AbstractDocument;
@@ -8,7 +7,6 @@ import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.Tika;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

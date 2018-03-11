@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.AgentDAO;
 import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.service.ABAgentService;

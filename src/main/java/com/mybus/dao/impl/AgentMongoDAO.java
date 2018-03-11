@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import com.mybus.dao.AgentDAO;
 import com.mybus.model.Agent;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;

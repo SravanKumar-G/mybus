@@ -5,8 +5,6 @@ import com.mybus.SystemProperties;
 import com.mybus.SystemProperties.SysProps;
 import com.mybus.interceptors.AuthenticationInterceptor;
 import com.mybus.interceptors.DomainFilterInterceptor;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.VelocityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -32,9 +30,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+<<<<<<< HEAD
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import org.springframework.web.context.request.RequestContextListener;
+=======
+>>>>>>> Changes for Spring upgrade
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -59,7 +60,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.xml.transform.Source;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -283,6 +283,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
         return new DomainFilterInterceptor();
 
     }
+    /*
     @Bean
 	public VelocityEngine velocityEngine() throws VelocityException, IOException{
 		VelocityEngineFactoryBean factory = new VelocityEngineFactoryBean();
@@ -292,6 +293,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
 		factory.setVelocityProperties(props);
 		return factory.createVelocityEngine();
 	}
+	*/
     @Bean
     public JavaMailSenderImpl getJavaMailSenderImpl(){
 		JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();

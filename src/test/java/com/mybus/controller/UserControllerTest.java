@@ -2,31 +2,27 @@ package com.mybus.controller;
 
 import com.google.gson.Gson;
 import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.dao.PlanTypeDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.*;
+import com.mybus.model.BranchOffice;
+import com.mybus.model.User;
+import com.mybus.model.UserType;
 import com.mybus.service.UserManager;
 import org.apache.commons.collections.IteratorUtils;
 import org.bson.types.ObjectId;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.*;
-import static org.junit.Assert.*;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.portlet.MockActionResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

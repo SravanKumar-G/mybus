@@ -9,8 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BusServiceDAO extends PagingAndSortingRepository<BusService, String> {
-	
 	BusService findOneByServiceName(String name);
-
-	void delete(String s);
 }

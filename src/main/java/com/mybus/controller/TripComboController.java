@@ -1,11 +1,8 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.ServiceComboDAO;
 import com.mybus.dao.TripComboDAO;
-import com.mybus.model.ServiceCombo;
 import com.mybus.model.TripCombo;
-import com.mybus.service.ServiceComboManager;
 import com.mybus.service.TripComboManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

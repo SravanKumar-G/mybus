@@ -1,16 +1,12 @@
 package com.mybus.service;
 
-import com.mybus.dao.ServiceComboDAO;
 import com.mybus.dao.TripComboDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.ServiceCombo;
 import com.mybus.model.TripCombo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * Created by srinikandula on 3/10/17.

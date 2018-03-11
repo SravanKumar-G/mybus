@@ -5,7 +5,6 @@ import com.mybus.dao.RoleDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dao.impl.UserMongoDAO;
-import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Role;
 import com.mybus.model.User;

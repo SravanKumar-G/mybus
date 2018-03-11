@@ -1,6 +1,5 @@
 package com.mybus.service;
 
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.exception.BadRequestException;

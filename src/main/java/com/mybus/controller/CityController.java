@@ -2,7 +2,6 @@ package com.mybus.controller;
 
 import com.google.common.base.Preconditions;
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.CityDAO;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
 import com.mybus.service.CityManager;
@@ -13,7 +12,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

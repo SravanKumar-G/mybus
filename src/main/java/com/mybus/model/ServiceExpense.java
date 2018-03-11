@@ -7,10 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 

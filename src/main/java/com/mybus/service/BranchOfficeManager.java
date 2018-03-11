@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
@@ -9,7 +8,6 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
-import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;

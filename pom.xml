@@ -25,7 +25,7 @@
         <!-- <hibernate.version>4.0.0.CR1</hibernate.version> -->
 
         <!-- For the Maven Jetty plugin (mvn jetty:run) -->
-        <spring.version>4.3.3.RELEASE</spring.version>
+        <spring.version>5.0.4.RELEASE</spring.version>
         <spring.security.version>3.2.3.RELEASE</spring.security.version>
 
         <cglib.version>2.2</cglib.version>
