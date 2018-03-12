@@ -86,10 +86,10 @@ public class PaymentMongoDAO {
                 Object end = query.get("endDate");
                 Date s = null,e = null;
                 if(start != null) {
-                    s = ServiceConstants.df.parse(start.toString());
+                    s = ServiceConstants.parseDate(start.toString());
                 }
                 if(end != null) {
-                    e = ServiceConstants.df.parse(end.toString());
+                    e = ServiceConstants.parseDate(end.toString());
                 }
                 MongoQueryDAO.createTimeFrameQuery("date", s, e, match);
                 for(Object key:query.keySet()) {

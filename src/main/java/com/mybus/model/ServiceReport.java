@@ -9,11 +9,10 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.text.ParseException;
 import java.util.*;
 
-/**
- * Created by skandula on 2/13/16.
- */
+
 @ToString
 @ApiModel(value = "ServiceReport")
 @Getter
@@ -79,14 +78,6 @@ public class ServiceReport extends AbstractDocument  {
         this.staff = new HashSet<>();
         this.expenses = new ArrayList<>();
         this.bookings = new ArrayList<>();
-    }
-    public String getJDate(){
-        if(this.journeyDate != null) {
-            return ServiceConstants.df.format(this.getJourneyDate());
-        } else {
-            return null;
-        }
-
     }
 
 

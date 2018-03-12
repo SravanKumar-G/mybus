@@ -54,12 +54,12 @@ public class OfficeExpenseMongoDAOTest  extends AbstractControllerIntegrationTes
             officeExpenseDAO.save(officeExpense);
         }
         JSONObject query = new JSONObject();
-        query.put("startDate", ServiceConstants.df.format(new Date()));
+        query.put("startDate", ServiceConstants.formatDate(new Date()));
         List<OfficeExpense> expenses = officeExpenseMongoDAO.searchOfficeExpenses(query, null);
         assertEquals(1, expenses.size());
         calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, (0-3));
-        query.put("startDate", ServiceConstants.df.format(calendar.getTime()));
+        query.put("startDate", ServiceConstants.formatDate(calendar.getTime()));
         expenses = officeExpenseMongoDAO.searchOfficeExpenses(query, null);
         assertEquals(3, expenses.size());
         query.put("officeId", "123");

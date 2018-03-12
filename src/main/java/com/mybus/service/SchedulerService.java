@@ -91,6 +91,6 @@ public class SchedulerService {
     public void downloadServiceReports () throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)-1);
-        serviceReportsManager.downloadReports(ServiceConstants.df.format(calendar.getTime()));
+        serviceReportsManager.downloadReports(ServiceConstants.formatDate(calendar.getTime()));
     }
 }
