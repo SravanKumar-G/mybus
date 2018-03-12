@@ -83,7 +83,7 @@ public class ServiceReportController {
 	public Iterable<ServiceReport> loadReports(HttpServletRequest request,
 									  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
-			return serviceReportsManager.getReports(ServiceConstants.df.parse(travelDate));
+			return serviceReportsManager.getReports(travelDate);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new BadRequestException("Error loading reports", e);
