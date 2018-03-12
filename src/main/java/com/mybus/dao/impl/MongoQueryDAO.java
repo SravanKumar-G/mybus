@@ -70,9 +70,9 @@ public class MongoQueryDAO {
                     Date start = null;
                     Date end = null;
                     try {
-                        start = ServiceConstants.df.parse(dateValues[0]);
+                        start = ServiceConstants.parseDate(dateValues[0]);
                         if(dateValues.length == 2) {
-                            end = ServiceConstants.df.parse(dateValues[1]);
+                            end = ServiceConstants.parseDate(dateValues[1]);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();

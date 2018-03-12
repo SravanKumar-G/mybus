@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class ServiceUtils {
         if (StringUtils.isEmpty(dateString)) {
             return null;
         }
-        DateFormat df = ServiceConstants.df;
+        DateFormat df = new SimpleDateFormat(ServiceConstants.df);
         if (!endOfTheDay) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(df.parse(dateString));
@@ -127,10 +128,10 @@ public class ServiceUtils {
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
         if(query.get("startDate") != null) {
-            match.add(Criteria.where("date").gte(ServiceConstants.df.parse(query.get("startDate").toString())));
+            match.add(Criteria.where("date").gte(ServiceConstants.parseDate(query.get("startDate").toString())));
         }
         if(query.get("endDate") != null) {
-            match.add(Criteria.where("date").lte(ServiceConstants.df.parse(query.get("endDate").toString())));
+            match.add(Criteria.where("date").lte(ServiceConstants.parseDate(query.get("endDate").toString())));
         }
         if(query.get("officeId") != null) {
             List<User> officeUsers = userDAO.findByBranchOfficeId(query.get("officeId").toString());

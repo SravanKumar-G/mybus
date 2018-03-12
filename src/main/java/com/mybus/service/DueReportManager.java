@@ -244,7 +244,7 @@ public class DueReportManager {
         if(branchOfficeId != null) {
             namesList = agentMongoDAO.findAgentNamesByOfficeId(branchOfficeId);
         }
-        List<Booking> dues = bookingMongoDAO.findDueBookings(ServiceConstants.df.parse(start), ServiceConstants.df.parse(end),
+        List<Booking> dues = bookingMongoDAO.findDueBookings(ServiceConstants.parseDate(start), ServiceConstants.parseDate(end),
                 namesList);
         return dues;
     }

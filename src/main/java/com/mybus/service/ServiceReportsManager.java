@@ -187,7 +187,7 @@ public class ServiceReportsManager {
      * @param serviceReport
      * @return
      */
-    public ServiceForm submitReport(ServiceReport serviceReport) {
+    public ServiceForm submitReport(ServiceReport serviceReport) throws ParseException {
         logger.info("submitting the report");
         ServiceForm serviceForm = new ServiceForm();
         serviceForm.setOperatorId(sessionManager.getOperatorId());
@@ -215,7 +215,7 @@ public class ServiceReportsManager {
                 //Need to set journey date for service bookings
                 if (booking.getJourneyDate() == null) {
                     booking.setJourneyDate(serviceReport.getJourneyDate());
-                    booking.setJDate(ServiceConstants.df.format(serviceReport.getJourneyDate()));
+                    booking.setJDate(ServiceConstants.formatDate(serviceReport.getJourneyDate()));
                     booking.setDestination(serviceReport.getDestination());
                     booking.setSource(serviceReport.getSource());
                     booking.setServiceName(serviceReport.getServiceName());
@@ -365,7 +365,7 @@ public class ServiceReportsManager {
         if(operatorAccount != null) {
             query.put(SessionManager.OPERATOR_ID, operatorAccount.getOperatorId());
         }
-        Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(ServiceConstants.df.format(date), null);
+        Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(ServiceConstants.formatDate(date), null);
         serviceReports.forEach(serviceReport -> {
             if (serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
                 String formId = serviceReport.getAttributes().get(ServiceReport.SUBMITTED_ID);
@@ -390,9 +390,9 @@ public class ServiceReportsManager {
         clearServiceReports(date, operatorAccount);
         try {
             if(operatorAccount.getProviderType().equalsIgnoreCase(OperatorAccount.ABHIBUS)){
-                abhiBusPassengerReportService.downloadReports(ServiceConstants.df.format(date));
+                abhiBusPassengerReportService.downloadReports(ServiceConstants.formatDate(date));
             } else {
-                bitlaPassengerReportService.downloadReports(ServiceConstants.df.format(date));
+                bitlaPassengerReportService.downloadReports(ServiceConstants.formatDate(date));
             }
         } catch (Exception e) {
             throw new BadRequestException("Failed to download reports", e);

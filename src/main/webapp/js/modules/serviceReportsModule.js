@@ -244,7 +244,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
     .controller('DatepickerPopupCtrl', function ($scope,$stateParams,NgTableParams,$rootScope, $filter,serviceReportsManager, $location ,userManager) {
         $scope.headline = "Service Reports";
         $scope.urlDate = $stateParams.date;
-
         $scope.parseDate = function(){
             $scope.date = $scope.dt.getFullYear()+"-"+('0' + (parseInt($scope.dt.getMonth()+1))).slice(-2)+"-"+('0' + $scope.dt.getDate()).slice(-2);
         }
@@ -279,7 +278,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.currentPageOfReports = [];
         $scope.submitted = 0;
         $scope.verified = 0;
-        $scope.loading = true;
 
         $scope.$watch('dt', function(newValue, oldValue) {
             $scope.serviceReportByDate($scope.dt);
@@ -288,15 +286,32 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.checkStatus = function() {
             $scope.parseDate();
             loadServicesData();
-            serviceReportsManager.getServiceReportStatus($scope.date, function(data){
-                $scope.downloaded = data.downloaded;
-                $scope.loading = false;
-                $scope.downloadedOn=data.downloadedOn;
-                if($scope.downloaded) {
-                    loadTableData($scope.serviceReportTableParams);
-                }
-            });
+            loadTableData($scope.serviceReportTableParams);
         }
+
+        var loadTableData = function (tableParams, $defer) {
+            $scope.loading = true;
+
+            serviceReportsManager.loadReports($scope.date, function(data){
+                $scope.loading = false;
+
+                $scope.allReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                tableParams.total($scope.allReports.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve($scope.allReports);
+                }
+                $scope.currentPageOfReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
+                if( $scope.submitted == 0) {
+                    angular.forEach($scope.currentPageOfReports, function (service) {
+                        if (service.status == "SUBMITTED") {
+                            $scope.submitted = $scope.submitted + 1;
+                        }
+                    });
+                }
+            },function() {
+                $scope.loading = false;
+            })
+        };
 
         $scope.downloadReports = function() {
             if($scope.dt >= $scope.tomorrow){
@@ -344,23 +359,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.serviceReportByDate(dt);
         }
 
-        var loadTableData = function (tableParams, $defer) {
-            serviceReportsManager.loadReports($scope.date, function(data){
-                $scope.allReports = tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
-                tableParams.total($scope.allReports.length);
-                if (angular.isDefined($defer)) {
-                    $defer.resolve($scope.allReports);
-                }
-                $scope.currentPageOfReports = $scope.allReports.slice((tableParams.page() - 1) * tableParams.count(), tableParams.page() * tableParams.count());
-                if( $scope.submitted == 0) {
-                    angular.forEach($scope.currentPageOfReports, function (service) {
-                        if (service.status == "SUBMITTED") {
-                            $scope.submitted = $scope.submitted + 1;
-                        }
-                    });
-                }
-            })
-        };
         var loadServicesData = function (tableParams, $defer) {
             serviceReportsManager.getServices($scope.date, function(data){
                 $scope.serviceList = _.sortBy(data.data, function(o) { return o.serviceName; });
@@ -510,12 +508,12 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         $log.debug("error refreshing service reports");
                     });
             },
-            loadReports:function(date,callback) {
-                $http.get('/api/v1/serviceReport/load?travelDate='+date)
+            loadReports:function(date,callback, errorcallback) {
+                $http.get('/api/v1/serviceReport/loadReports?travelDate='+date)
                     .then(function (response) {
                         callback(response.data);
                     },function (error) {
-                        $log.debug("error loading service reports");
+                        errorcallback();
                     });
             },
             pendingReports:function(callback) {
@@ -568,7 +566,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         errorcallback();
                     });
             },getServices:function(date,callback) {
-                $http.get('api/v1/serviceListings/active?travelDate='+date)
+                $http.get('api/v1/serviceListings/activeListings?travelDate='+date)
                 .then(function (response) {
                     callback(response.data);
                 },function (error) {

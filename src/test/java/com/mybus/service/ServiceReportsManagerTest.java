@@ -94,7 +94,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     }
 
     @Test
-    public void testUpdateOfficeBalances() {
+    public void testUpdateOfficeBalances() throws ParseException {
         User user = new User();
         BranchOffice office1 = new BranchOffice();
         office1.setName("Office1");
@@ -191,7 +191,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         for(int i=0; i<3; i++) {
             ServiceReport report = new ServiceReport();
             calendar.add(Calendar.DAY_OF_MONTH, i);
-            report.setJourneyDate(ServiceConstants.df.parse(ServiceConstants.df.format(calendar.getTime())));
+            report.setJourneyDate(ServiceConstants.parseDate(ServiceConstants.formatDate(calendar.getTime())));
             report.setServiceNumber("Service"+i);
             report = serviceReportDAO.save(report);
             for(int b=0;b<5;b++) {
@@ -218,7 +218,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         user = userDAO.findOne(user.getId());
         assertEquals(1200, user.getAmountToBePaid(), 0.0);
-        serviceReportsManager.clearServiceReports(ServiceConstants.df.parse(ServiceConstants.df.format(new Date())), null);
+        serviceReportsManager.clearServiceReports(ServiceConstants.parseDate(ServiceConstants.formatDate(new Date())), null);
         user = userDAO.findOne(user.getId());
         assertEquals(800, user.getAmountToBePaid(), 0.0);
         List<ServiceReport> reports = IteratorUtils.toList(serviceReportDAO.findAll().iterator());
@@ -238,7 +238,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
 
     @Test
-    public void testFormSubmit(){
+    public void testFormSubmit() throws ParseException {
         ServiceReport serviceReport = new ServiceReport();
         serviceReport.setJourneyDate(new Date());
         for(int i=0; i<3; i++) {
@@ -264,7 +264,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
 
     @Test
-    public void testFormVerification(){
+    public void testFormVerification() throws ParseException {
         ServiceReport serviceReport = new ServiceReport();
         serviceReport.setJourneyDate(new Date());
         for(int i=0; i<3; i++) {

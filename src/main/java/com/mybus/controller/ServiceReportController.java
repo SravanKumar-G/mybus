@@ -54,7 +54,7 @@ public class ServiceReportController {
 		}
 	}
 	
-	@RequestMapping(value = "serviceListings/active", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "serviceListings/activeListings", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get active service list for a given date", response = JSONObject.class)
 	public JSONObject getServicesByDate(HttpServletRequest request,
 										@ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
@@ -78,7 +78,7 @@ public class ServiceReportController {
 		}
 	}
 
-	@RequestMapping(value = "serviceReport/load", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@RequestMapping(value = "serviceReport/loadReports", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)
 	public Iterable<ServiceReport> loadReports(HttpServletRequest request,
 									  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
@@ -95,7 +95,7 @@ public class ServiceReportController {
 	public Iterable<ServiceReport> refreshReports(HttpServletRequest request,
 											   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
-			return serviceReportsManager.refreshReport(ServiceConstants.df.parse(travelDate));
+			return serviceReportsManager.refreshReport(ServiceConstants.parseDate(travelDate));
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new BadRequestException("Error refreshing reports", e);
@@ -158,7 +158,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Submit service report", response = JSONObject.class)
 	public void submitReport(HttpServletRequest request,
-				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) {
+				@ApiParam(value = "JSON for ServiceReort to be submmitted") @RequestBody final ServiceReport serviceReport) throws ParseException {
 		User currentUser = sessionManager.getCurrentUser();
 		if(serviceReport.isRequiresVerification()) {
 			if(currentUser.isCanVerifyRates()){

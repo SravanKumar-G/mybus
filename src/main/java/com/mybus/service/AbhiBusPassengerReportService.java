@@ -56,7 +56,7 @@ public class AbhiBusPassengerReportService extends BaseService{
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading reports for date:" + date);
         initAbhibus();
-        Date journeyDate = ServiceConstants.df.parse(date);
+        Date journeyDate = ServiceConstants.parseDate(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         Vector params = new Vector();
@@ -151,7 +151,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                 logger.info("The reports are being downloaded for " + date);
                 return null;
             }
-            serviceReportStatus = new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING);
+            serviceReportStatus = new ServiceReportStatus(ServiceConstants.parseDate(date), ReportDownloadStatus.DOWNLOADING);
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             serviceReportStatusDAO.save(serviceReportStatus);
             Iterable<ServiceListing> serviceListings = getActiveServicesByDate(date);
@@ -193,7 +193,7 @@ public class AbhiBusPassengerReportService extends BaseService{
             Map busService = (HashMap) busServ;
             ServiceReport serviceReport = new ServiceReport();
             serviceReport.setOperatorId(sessionManager.getOperatorId());
-            Date journeyDate = ServiceConstants.df.parse(date);
+            Date journeyDate = ServiceConstants.parseDate(date);
             serviceReport.setJourneyDate(journeyDate);
             if(busService.containsKey("ServiceId")){
                 serviceReport.setServiceId(busService.get("ServiceId").toString());
@@ -234,7 +234,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setServiceNumber(serviceReport.getServiceNumber());
                     booking.setTicketNo(passengerInfo.get("TicketNo").toString());
                     booking.setJDate(passengerInfo.get("JourneyDate").toString());
-                    booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
+                    booking.setJourneyDate(ServiceConstants.parseDate(booking.getJDate()));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString().replace(",", ", "));
                     booking.setName(passengerInfo.get("PassengerName").toString());

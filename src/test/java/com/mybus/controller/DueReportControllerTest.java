@@ -115,18 +115,18 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
         createTestAgents(branchOffice1, branchOffice2);
         createdTestBookings();
         Calendar calendar = Calendar.getInstance();
-        String endDate = ServiceConstants.df.format(calendar.getTime());
+        String endDate = ServiceConstants.formatDate(calendar.getTime());
         calendar.add(Calendar.DATE, -2);
-        String startDate = ServiceConstants.df.format(calendar.getTime());
+        String startDate = ServiceConstants.formatDate(calendar.getTime());
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/dueReport/search?startDate="+startDate+"&endDate="+endDate), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(6)));
 
 
-        endDate = ServiceConstants.df.format(calendar.getTime());
+        endDate = ServiceConstants.formatDate(calendar.getTime());
         calendar.add(Calendar.DATE, -6);
-        startDate = ServiceConstants.df.format(calendar.getTime());
+        startDate = ServiceConstants.formatDate(calendar.getTime());
 
         actions = mockMvc.perform(asUser(get("/api/v1/dueReport/search?startDate="+startDate+"&endDate="+endDate+"&branchOfficeId="+branchOffice2.getId()), currentUser));
         actions.andExpect(status().isOk());

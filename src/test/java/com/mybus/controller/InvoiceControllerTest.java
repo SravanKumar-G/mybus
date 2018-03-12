@@ -48,9 +48,9 @@ public class InvoiceControllerTest extends AbstractControllerIntegrationTest  {
     public void testFindBookings() throws Exception {
         createdTestBookings();
         Calendar calendar = Calendar.getInstance();
-        String endDate = ServiceConstants.df.format(calendar.getTime());
+        String endDate = ServiceConstants.formatDate(calendar.getTime());
         calendar.add(Calendar.DATE, -2);
-        String startDate = ServiceConstants.df.format(calendar.getTime());
+        String startDate = ServiceConstants.formatDate(calendar.getTime());
 
         JSONObject query = new JSONObject();
         query.put("startDate", startDate);

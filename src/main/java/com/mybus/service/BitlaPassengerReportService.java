@@ -60,7 +60,7 @@ public class BitlaPassengerReportService extends BaseService{
                 return null;
             }
             serviceReportStatus = serviceReportStatusDAO.save
-                    (new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING));
+                    (new ServiceReportStatus(ServiceConstants.parseDate(date), ReportDownloadStatus.DOWNLOADING));
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             String key = loginBitlaBus();
             //GET http://jagan.jagantravels.com/api/get_passenger_details/2018-02-16.json?api_key=84FEZH5KE3KWAKIQDIZ6R7Q3KWZZT7RW
@@ -77,7 +77,7 @@ public class BitlaPassengerReportService extends BaseService{
                     serviceReport.setDestination(serviceInfo.getString("destination"));
                 }
                 if(serviceInfo.has("travel_date")){
-                    serviceReport.setJourneyDate(ServiceConstants.df.parse(serviceInfo.getString("travel_date")));
+                    serviceReport.setJourneyDate(ServiceConstants.parseDate(serviceInfo.getString("travel_date")));
                 }
                 if(serviceInfo.has("route_num")){
                     serviceReport.setServiceNumber(serviceInfo.getString("route_num"));
@@ -85,7 +85,7 @@ public class BitlaPassengerReportService extends BaseService{
                 if(serviceInfo.has("route_id")){
                     serviceReport.setServiceId(serviceInfo.get("route_id").toString());
                 }
-                serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
+                serviceReport.setJourneyDate(ServiceConstants.parseDate(date));
                 serviceReport.setOperatorId(sessionManager.getOperatorId());
                 serviceReport = serviceReportDAO.save(serviceReport);
                 serviceListingDAO.save(new ServiceListing(serviceReport, sessionManager));
@@ -123,7 +123,7 @@ public class BitlaPassengerReportService extends BaseService{
                 booking.setServiceNumber(serviceReport.getServiceNumber());
                 booking.setTicketNo(passengerInfo.getString("pnr_number"));
                 booking.setJDate(date);
-                booking.setJourneyDate(ServiceConstants.df.parse(booking.getJDate()));
+                booking.setJourneyDate(ServiceConstants.parseDate(booking.getJDate()));
                 booking.setPhoneNo(passengerInfo.getString("mobile"));
                 booking.setSeats(passengerInfo.getString("seat_number").replace(",", ", "));
                 booking.setName(passengerInfo.getString("name"));

@@ -98,7 +98,7 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         Calendar calender = Calendar.getInstance();
         for(int i=1; i<=50; i++) {
             Payment payment = new Payment();
-            payment.setDate(ServiceConstants.df.parse(ServiceConstants.df.format(calender.getTime())));
+            payment.setDate(ServiceConstants.parseDate(ServiceConstants.formatDate(calender.getTime())));
             paymentDAO.save(payment);
             if(i%5 == 0) {
                 calender.add(Calendar.DAY_OF_MONTH, 1);
@@ -106,11 +106,11 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         }
         calender = Calendar.getInstance();
         JSONObject query = new JSONObject();
-        query.put("startDate", ServiceConstants.df.format(calender.getTime()));
+        query.put("startDate", ServiceConstants.formatDate(calender.getTime()));
         Page<Payment> page  = paymentManager.findPayments(query, null);
         assertEquals(50, page.getTotalElements());
         calender.add(Calendar.DAY_OF_MONTH, 1);
-        query.put("endDate", ServiceConstants.df.format(calender.getTime()));
+        query.put("endDate", ServiceConstants.formatDate(calender.getTime()));
         page = paymentManager.findPayments(query, null);
         assertEquals(10, page.getTotalElements());
     }

@@ -2,12 +2,10 @@ package com.mybus.dao.impl;
 
 import com.mybus.SystemProperties;
 import com.mybus.model.ServiceReport;
-import com.mybus.model.ServiceReportStatus;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -64,7 +62,7 @@ public class ServiceReportMongoDAO {
     }
 
     private Iterable<ServiceReport> getServiceReports(String status, Date date) throws ParseException {
-        Date startDate = ServiceConstants.df.parse(systemProperties.getStringProperty("service.startDate", "2017-06-01"));
+        Date startDate = ServiceConstants.parseDate(systemProperties.getStringProperty("service.startDate", "2017-06-01"));
         if(date != null) {
             startDate = date;
         }

@@ -114,7 +114,7 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(jsonPath("$", Matchers.hasSize(10)));
         date = new Date();
         date.setDate(date.getDate() -5);
-        query.put("startDate",  ServiceConstants.df.format(date));
+        query.put("startDate",  ServiceConstants.formatDate(date));
         actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/search")
                 .content(getObjectMapper().writeValueAsBytes(query)), currentUser)
                 .contentType(MediaType.APPLICATION_JSON));

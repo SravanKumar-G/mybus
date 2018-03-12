@@ -56,7 +56,7 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
     private ServiceReport createTestData() throws Exception{
         ServiceReport report = new ServiceReport();
         report.setBusType("Sleeper");
-        report.setJourneyDate(ServiceConstants.df.parse("2016-02-22"));
+        report.setJourneyDate(ServiceConstants.parseDate("2016-02-22"));
         report = serviceReportDAO.save(report);
         for(int i=0;i<10;i++) {
             Booking booking = new Booking();
@@ -108,7 +108,7 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
     @Test
     public void testPendingServiceReports() throws Exception {
         ServiceReport report = createTestData();
-        report.setJourneyDate(ServiceConstants.df.parse("2017-06-02"));
+        report.setJourneyDate(ServiceConstants.parseDate("2017-06-02"));
         serviceReportDAO.save(report);
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/serviceReport/pending/"),
                 currentUser));
