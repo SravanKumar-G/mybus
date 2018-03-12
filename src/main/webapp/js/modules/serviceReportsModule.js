@@ -395,7 +395,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
         }
         $scope.getPassengerReport = function(serviceId){
-            serviceReportsManager.getPassengerReport($scope.dt, serviceId, function () {
+            serviceReportsManager.getPassengerReport($scope.date, serviceId, function () {
                 console.log("Downloaded the report");
             });
         };
@@ -573,7 +573,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     $log.debug("error loading services for date");
                 });
             },getPassengerReport:function(date, serviceIds,callback) {
-
                 $http.get('api/v1/serviceReport/downloadServices?travelDate='+date+'&serviceNum='+serviceIds)
                 .then(function (response) {
                     callback(response.data);
