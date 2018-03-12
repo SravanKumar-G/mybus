@@ -1,4 +1,4 @@
-db.fillingStation.updateMany({},{$set:{"operatorId" : "5a9aacf68d6a3e33f693e2b1"}})
+db.fillingStation.updateMany({},{$set:{"operatorId" : "5aa54d91e4b0abaceba4a022"}})
 db.agent.updateMany({},{$set:{"operatorId" : "5a9aacf68d6a3e33f693e2b1"}})
 db.booking.updateMany({},{$set:{"operatorId" : "5a9aacf68d6a3e33f693e2b1"}})
 db.branchOffice.updateMany({},{$set:{"operatorId" : "5a9aacf68d6a3e33f693e2b1"}})

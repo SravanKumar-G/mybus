@@ -80,8 +80,9 @@ public class ServiceReportsManager {
 
     public JSONObject getDownloadStatus(String date) throws ParseException {
         JSONObject response = new JSONObject();
-        ServiceReportStatus status = serviceReportStatusDAO.findByReportDateAndOperatorId(ServiceConstants.df.parse(date),
-                sessionManager.getOperatorId());
+        ServiceReportStatus status = serviceReportStatusDAO.findByReportDateBetweenAndOperatorId(
+                ServiceUtils.parseDate(date, false),
+                ServiceUtils.parseDate(date, true), sessionManager.getOperatorId());
         if(status != null) {
             response.put("downloaded", true);
             response.put("downloadedOn", dtf.print(status.getCreatedAt()));
@@ -132,11 +133,10 @@ public class ServiceReportsManager {
         return response;
     }
 
-    public List<ServiceReport> getReports(Date date) throws IOException {
-        JSONObject query = new JSONObject();
-        query.put(ServiceReport.JOURNEY_DATE, date);
+    public List<ServiceReport> getReports(String date) throws IOException, ParseException {
+
         List<ServiceReport> reports = IteratorUtils.toList(
-                serviceReportMongoDAO.findReports(query, null).iterator());
+                serviceReportMongoDAO.findReports(date, null).iterator());
         serviceUtils.fillInUserNames(reports, ServiceReport.SUBMITTED_BY);
         return reports;
     }
@@ -359,13 +359,13 @@ public class ServiceReportsManager {
         return serviceForm;
     }
 
-    public void clearServiceReports(Date date, OperatorAccount operatorAccount) {
+    public void clearServiceReports(Date date, OperatorAccount operatorAccount) throws ParseException {
         JSONObject query = new JSONObject();
         query.put(ServiceReport.JOURNEY_DATE, date);
         if(operatorAccount != null) {
             query.put(SessionManager.OPERATOR_ID, operatorAccount.getOperatorId());
         }
-        Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(query, null);
+        Iterable<ServiceReport> serviceReports = serviceReportMongoDAO.findReports(ServiceConstants.df.format(date), null);
         serviceReports.forEach(serviceReport -> {
             if (serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
                 String formId = serviceReport.getAttributes().get(ServiceReport.SUBMITTED_ID);
@@ -381,7 +381,7 @@ public class ServiceReportsManager {
         //serviceReportStatusDAO.save(new ServiceReportStatus(date, ReportDownloadStatus.DOWNLOADING));
     }
 
-    public Iterable<ServiceReport> refreshReport(Date date) {
+    public Iterable<ServiceReport> refreshReport(Date date) throws ParseException {
         OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");

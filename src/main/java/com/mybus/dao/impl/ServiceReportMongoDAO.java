@@ -5,6 +5,7 @@ import com.mybus.model.ServiceReport;
 import com.mybus.model.ServiceReportStatus;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,12 @@ public class ServiceReportMongoDAO {
     @Autowired
     private SessionManager sessionManager;
 
-    public Iterable<ServiceReport> findReports(JSONObject query, final Pageable pageable) {
+    public Iterable<ServiceReport> findReports(String date, final Pageable pageable) throws ParseException {
         String[] fields = {"serviceNumber", "serviceName", "busType", "status", "vehicleRegNumber", "netIncome", "netCashIncome",
                 "source", "destination", "attrs"};
-
         Query q = new Query();
         q.with(new Sort(Sort.Direction.DESC,"journeyDate"));
-        for(String field :fields){
-            q.fields().include(field);
-        }
+        q.addCriteria(where(ServiceReport.JOURNEY_DATE).gte(ServiceUtils.parseDate(date, false)).lte(ServiceUtils.parseDate(date, true)));
         q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(q, ServiceReport.class).iterator());
         return reports;

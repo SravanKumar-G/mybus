@@ -10,6 +10,7 @@ import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.ServiceReportStatusDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -51,8 +52,9 @@ public class BitlaPassengerReportService extends BaseService{
         logger.info("downloading reports for date:" + date);
         ServiceReportStatus serviceReportStatus = null;
         try{
-            Date journeyDate = ServiceConstants.df.parse(date);
-            serviceReportStatus = serviceReportStatusDAO.findByReportDateAndOperatorId(journeyDate, sessionManager.getOperatorId());
+            serviceReportStatus = serviceReportStatusDAO.findByReportDateBetweenAndOperatorId(
+                    ServiceUtils.parseDate(date, false),
+                    ServiceUtils.parseDate(date, true), sessionManager.getOperatorId());
             if(serviceReportStatus != null) {
                 logger.info("The reports are being downloaded for " + date);
                 return null;
@@ -83,7 +85,7 @@ public class BitlaPassengerReportService extends BaseService{
                 if(serviceInfo.has("route_id")){
                     serviceReport.setServiceId(serviceInfo.get("route_id").toString());
                 }
-                serviceReport.setJourneyDate(journeyDate);
+                serviceReport.setJourneyDate(ServiceConstants.df.parse(date));
                 serviceReport.setOperatorId(sessionManager.getOperatorId());
                 serviceReport = serviceReportDAO.save(serviceReport);
                 serviceListingDAO.save(new ServiceListing(serviceReport, sessionManager));

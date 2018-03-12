@@ -5,6 +5,7 @@ import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,13 +145,13 @@ public class AbhiBusPassengerReportService extends BaseService{
         logger.info("downloading reports for date:" + date);
         ServiceReportStatus serviceReportStatus = null;
         try{
-            Date journeyDate = ServiceConstants.df.parse(date);
-            serviceReportStatus = serviceReportStatusDAO.findByReportDateAndOperatorId(journeyDate, sessionManager.getOperatorId());
+            serviceReportStatus = serviceReportStatusDAO.findByReportDateBetweenAndOperatorId( ServiceUtils.parseDate(date, false),
+                    ServiceUtils.parseDate(date, true), sessionManager.getOperatorId());
             if(serviceReportStatus != null) {
                 logger.info("The reports are being downloaded for " + date);
                 return null;
             }
-            serviceReportStatus = new ServiceReportStatus(journeyDate, ReportDownloadStatus.DOWNLOADING);
+            serviceReportStatus = new ServiceReportStatus(ServiceConstants.df.parse(date), ReportDownloadStatus.DOWNLOADING);
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             serviceReportStatusDAO.save(serviceReportStatus);
             Iterable<ServiceListing> serviceListings = getActiveServicesByDate(date);
