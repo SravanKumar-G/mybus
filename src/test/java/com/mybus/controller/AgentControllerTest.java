@@ -96,7 +96,7 @@ public class AgentControllerTest extends AbstractControllerIntegrationTest{
         for(int i=0;i<10;i++) {
             Booking booking = new Booking();
             booking.setBookedBy(agents.get(i%2).getUsername());
-            booking.setServiceId(serviceReports.get(i%5).getId());
+            booking.setServiceReportId(serviceReports.get(i%5).getId());
             if(i%2 == 0){
                 booking.setHasValidAgent(false);
             }

@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Repository
 public interface BookingDAO extends PagingAndSortingRepository<Booking, String> {
-    Iterable<Booking> findByServiceId(String serviceId);
+    Iterable<Booking> findByServiceReportId(String serviceId);
     Iterable<Booking> findByIdAndHasValidAgent(String id, boolean hasValidAgent);
     Iterable<Booking> findByFormId(String formId);
     Iterable<Booking> findByDue(boolean due);
@@ -20,7 +20,7 @@ public interface BookingDAO extends PagingAndSortingRepository<Booking, String> 
     Iterable<Booking> findByBookedByAndHasValidAgent(String bookedBy, boolean hasValidAgent);
     Booking findByTicketNoAndOperatorId(String ticketNo, String operatorId);
     Booking findByTicketNoAndDue(String ticketNo, boolean due);
-    void deleteByServiceId(String serviceId);
+    void deleteByServiceReportId(String serviceId);
     void deleteByFormId(String formId);
 
 }

@@ -61,7 +61,7 @@ public class ServiceReportControllerTest extends AbstractControllerIntegrationTe
         for(int i=0;i<10;i++) {
             Booking booking = new Booking();
             booking.setName("testname"+i);
-            booking.setServiceId(report.getId());
+            booking.setServiceReportId(report.getId());
             booking.setBookedBy("skt-nlr");
             booking.setNetAmt(i+1);
             bookingDAO.save(booking);

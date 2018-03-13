@@ -11,5 +11,7 @@ public interface ServiceReportDAO extends PagingAndSortingRepository<ServiceRepo
     Iterable<ServiceReport> findByJourneyDate(Date date);
     ServiceReport findByJourneyDateAndServiceNumber(Date date, String serviceNUmber);
     ServiceReport findByJourneyDateAndServiceId(Date date, String serviceId);
+    ServiceReport findByJDateAndServiceIdAndOperatorId(String date, String serviceId, String operatorId);
 
+    ServiceReport findByJDateAndServiceNumber(String journeyDate, String comboNumber);
 }

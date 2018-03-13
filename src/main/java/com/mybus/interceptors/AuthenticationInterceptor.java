@@ -62,7 +62,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 logger.debug("No user found in request");
             }
             failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request, response);
-            
         }
         return true;
     }

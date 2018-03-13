@@ -129,7 +129,9 @@ public class AbhiBusPassengerReportService extends BaseService{
         Vector params = new Vector();
         params.add(inputParam);
         Object busList[] = (Object[])  xmlRpcClient.execute("index.passengerreport", params);
-        Map<String, ServiceReport> serviceReportsMap = createServiceReports(date, busList);
+        logger.info("downloaded data from Abhibus");
+        Map<String, ServiceReport> serviceReportsMap = createServiceReports(serviceIds, date, busList);
+        logger.info("Done: createServiceReports");
         List<ServiceReport> serviceReports = mergeServiceCombos(serviceReportsMap);
         logger.info("Done: downloading service details for date:" + date+" serviceIds "+ serviceIds);
         return serviceReports;
@@ -159,14 +161,19 @@ public class AbhiBusPassengerReportService extends BaseService{
                 List<ServiceReport> serviceReports = getServiceDetailsByNumberAndDate(serviceListing.getServiceId(), date);
                 //if no passenger report is found create an empty service report
                 if(serviceReports == null || serviceReports.size() == 0){
-                    ServiceReport serviceReport = new ServiceReport();
-                    serviceReport.setJourneyDate(serviceListing.getJourneyDate());
-                    serviceReport.setSource(serviceListing.getSource());
-                    serviceReport.setDestination(serviceListing.getDestination());
-                    serviceReport.setServiceNumber(serviceListing.getServiceNumber());
-                    serviceReport.setServiceId(serviceListing.getServiceId());
-                    serviceReport.setOperatorId(sessionManager.getOperatorId());
-                    serviceReportDAO.save(serviceReport);
+                    // check the service report is created for today
+                    if(serviceReportDAO.findByJDateAndServiceIdAndOperatorId(
+                            date,serviceListing.getServiceId(),sessionManager.getOperatorId()) == null){
+                        ServiceReport serviceReport = new ServiceReport();
+                        serviceReport.setJourneyDate(serviceListing.getJourneyDate());
+                        serviceReport.setJDate(date);// this is important for search
+                        serviceReport.setSource(serviceListing.getSource());
+                        serviceReport.setDestination(serviceListing.getDestination());
+                        serviceReport.setServiceNumber(serviceListing.getServiceNumber());
+                        serviceReport.setServiceId(serviceListing.getServiceId());
+                        serviceReport.setOperatorId(sessionManager.getOperatorId());
+                        serviceReportDAO.save(serviceReport);
+                    }
                 }
             }
             serviceReportStatus.setStatus(ReportDownloadStatus.DOWNLOADED);
@@ -186,45 +193,55 @@ public class AbhiBusPassengerReportService extends BaseService{
      * @return
      * @throws ParseException
      */
-    private  Map<String, ServiceReport> createServiceReports(String date,
+    private  Map<String, ServiceReport> createServiceReports(String serviceIds, String date,
                                                              Object[] busList) throws ParseException {
+        serviceIds =  serviceIds.replace(',','_');
         Map<String, ServiceReport> serviceReportsMap = new HashMap<>();
         for (Object busServ: busList) {
             Map busService = (HashMap) busServ;
-            ServiceReport serviceReport = new ServiceReport();
-            serviceReport.setOperatorId(sessionManager.getOperatorId());
-            Date journeyDate = ServiceConstants.parseDate(date);
-            serviceReport.setJourneyDate(journeyDate);
-            if(busService.containsKey("ServiceId")){
-                serviceReport.setServiceId(busService.get("ServiceId").toString());
-            }
-            if(busService.containsKey("ServiceName")){
-                serviceReport.setServiceName(busService.get("ServiceName").toString());
-            }
-            if(busService.containsKey("ServiceNumber")){
-                serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
-            }
-            if(busService.containsKey("BusType")){
-                serviceReport.setBusType(busService.get("BusType").toString());
-            }
-            if(busService.containsKey("Service_Source")){
-                serviceReport.setSource(busService.get("Service_Source").toString());
-            }
-            if(busService.containsKey("Service_Destination")){
-                serviceReport.setDestination(busService.get("Service_Destination").toString());
-            }
-            if(busService.containsKey("Vehicle_No")){
-                serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
-            }
-            if(busService.containsKey("Conductor_Name") && busService.get("Conductor_Name") != null){
-                String conductorInfo = busService.get("Conductor_Name").toString();
-                if(busService.containsKey("Conductor_Phone")
-                        && busService.get("Conductor_Phone") != null
-                        && busService.get("Conductor_Phone").toString().trim().length() > 0) {
-                    conductorInfo += (" " + Long.parseLong(busService.get("Conductor_Phone").toString()));
+            ServiceReport serviceReport = serviceReportDAO.findByJDateAndServiceIdAndOperatorId
+                    (date,serviceIds, sessionManager.getOperatorId());
+            if(serviceReport == null) {
+                serviceReport = new ServiceReport();
+                serviceReport.setOperatorId(sessionManager.getOperatorId());
+                serviceReport.setServiceId(serviceIds);
+                serviceReport.setJDate(date);// this is required for search
+                Date journeyDate = ServiceConstants.parseDate(date);
+                serviceReport.setJourneyDate(journeyDate);
+                /*if(busService.containsKey("ServiceId")){
+                    serviceReport.setServiceId(busService.get("ServiceId").toString());
+                }*/
+                if(busService.containsKey("ServiceName")){
+                    serviceReport.setServiceName(busService.get("ServiceName").toString());
                 }
-                serviceReport.setConductorInfo(conductorInfo);
+                if(busService.containsKey("ServiceNumber")){
+                    serviceReport.setServiceNumber(busService.get("ServiceNumber").toString());
+                }
+                if(busService.containsKey("BusType")){
+                    serviceReport.setBusType(busService.get("BusType").toString());
+                }
+                if(busService.containsKey("Service_Source")){
+                    serviceReport.setSource(busService.get("Service_Source").toString());
+                }
+                if(busService.containsKey("Service_Destination")){
+                    serviceReport.setDestination(busService.get("Service_Destination").toString());
+                }
+                if(busService.containsKey("Vehicle_No")){
+                    serviceReport.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+                }
+                if(busService.containsKey("Conductor_Name") && busService.get("Conductor_Name") != null){
+                    String conductorInfo = busService.get("Conductor_Name").toString();
+                    if(busService.containsKey("Conductor_Phone")
+                            && busService.get("Conductor_Phone") != null
+                            && busService.get("Conductor_Phone").toString().trim().length() > 0) {
+                        conductorInfo += (" " + Long.parseLong(busService.get("Conductor_Phone").toString()));
+                    }
+                    serviceReport.setConductorInfo(conductorInfo);
+                }
+            } else {
+                logger.info("Found the serviceReport in the database ");
             }
+
             Object[] passengerInfos = (Object[]) busService.get("PassengerInfo");
             for (Object info: passengerInfos) {
                 Map passengerInfo = (HashMap) info;
@@ -253,7 +270,9 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setOperatorId(sessionManager.getOperatorId());
                     //copy the cost to for verifying the difference
                     booking.setOriginalCost(booking.getNetAmt());
-                    Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo().trim(),sessionManager.getOperatorId());
+                    Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo().trim(),
+                            sessionManager.getOperatorId());
+                    //if booking is not found add it to the servicereport and calculate
                     if(savedBooking == null) {
                         calculateServiceReportIncome(serviceReport, booking);
                         serviceReport.getBookings().add(booking);
@@ -290,22 +309,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             booking.setPaymentType(BookingType.CASH);
         }
     }
-    private ServiceReport getByJourneyDateAndServiceNumber(String serviceNumber, Date journeyDate) {
-        //check if there is service combo for that service number
-        ServiceCombo serviceCombo = serviceComboMongoDAO.findServiceCombo(serviceNumber);
-        ServiceReport report = null;
-        if(serviceCombo != null) {
-            //check for the service report with either of the numbers from combo
-            report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceCombo.getServiceNumber());
-            if(report == null) {
-                report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate,
-                        serviceCombo.getComboNumbers());
-            }
-        } else {
-            report = serviceReportDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceNumber);
-        }
-        return report;
-    }
 
     private double roundUp(double value) {
         return (double) Math.round(value * 100) / 100;
@@ -325,12 +328,6 @@ public class AbhiBusPassengerReportService extends BaseService{
             ServiceReport serviceReport = serviceReportMap.remove(comboEntry.getKey());
             if(serviceReport != null) {
                 for(String comboNumber: comboEntry.getValue()) {
-                    //mark the combo report as HALT
-                    ServiceReport emptyComboReport = serviceReportDAO.findByJourneyDateAndServiceNumber(serviceReport.getJourneyDate(), comboNumber);
-                    if(emptyComboReport != null){
-                        emptyComboReport.setStatus(ServiceStatus.HALT);
-                        serviceReportDAO.save(emptyComboReport);
-                    }
                     ServiceReport comboReport = serviceReportMap.remove(comboNumber);
                     if(comboReport != null) {
                         serviceReport.setBusType(serviceReport.getBusType() + " " + comboReport.getBusType());
@@ -340,6 +337,13 @@ public class AbhiBusPassengerReportService extends BaseService{
                         serviceReport.setNetCashIncome(roundUp(serviceReport.getNetCashIncome()+ comboReport.getNetCashIncome()));
                         serviceReport.setNetIncome(roundUp(serviceReport.getNetCashIncome() +
                                 serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
+                    }
+                    //mark the combo report as HALT
+                    ServiceReport emptyComboReport = serviceReportDAO.findByJDateAndServiceNumber(serviceReport.getJDate(), comboNumber);
+                    if(emptyComboReport != null){
+                        emptyComboReport.setStatus(ServiceStatus.HALT);
+                        emptyComboReport.setBookings(null);
+                        serviceReportDAO.save(emptyComboReport);
                     }
                     serviceReports.add(serviceReport);
                 }
@@ -358,7 +362,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     serviceReport.getNetOnlineIncome() + serviceReport.getNetRedbusIncome()));
             final ServiceReport savedReport = serviceReportDAO.save(serviceReport);
             bookings.stream().forEach(booking -> {
-                booking.setServiceId(savedReport.getId());
+                booking.setServiceReportId(savedReport.getId());
                 bookingDAO.save(booking);
             });
         }

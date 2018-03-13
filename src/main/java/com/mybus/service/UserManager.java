@@ -47,6 +47,7 @@ public class UserManager {
         }
         BranchOffice office = branchOfficeManager.findOne(user.getBranchOfficeId());
         user.getAttributes().put(BranchOffice.KEY_NAME, office.getName());
+        user.setOperatorId(sessionManager.getOperatorId());
         //validateAgent(user);
         if(logger.isDebugEnabled()) {
             logger.debug("Saving user: [{}]", user);

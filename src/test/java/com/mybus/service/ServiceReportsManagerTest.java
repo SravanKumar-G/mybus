@@ -196,7 +196,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             report = serviceReportDAO.save(report);
             for(int b=0;b<5;b++) {
                 Booking booking = new Booking();
-                booking.setServiceId(report.getId());
+                booking.setServiceReportId(report.getId());
                 booking.setNetAmt(100);
                 if(b == 3){
                     booking.setDue(true);

@@ -78,9 +78,13 @@ public class PaymentManager {
             currentUser = userManager.findOne(payment.getCreatedBy());
         }
         if(payment.getType().equals(PaymentType.EXPENSE)){
-            userMongoDAO.updateCashBalance(currentUser.getId(), (0-payment.getAmount()));
+            if(!userMongoDAO.updateCashBalance(currentUser.getId(), (0-payment.getAmount()))){
+                throw new BadRequestException("Update balance failed");
+            }
         } else if(payment.getType().equals(PaymentType.INCOME)){
-            userMongoDAO.updateCashBalance(currentUser.getId(), payment.getAmount());
+            if(!userMongoDAO.updateCashBalance(currentUser.getId(), payment.getAmount())){
+                throw new BadRequestException("Update balance failed");
+            }
         }
     }
 

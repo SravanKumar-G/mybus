@@ -19,15 +19,11 @@ public class UserMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private SessionManager sessionManager;
     public boolean updateCashBalance(String userId, double cashBalance) {
         Update updateOp = new Update();
         updateOp.inc("amountToBePaid", cashBalance);
         final Query query = new Query();
         query.addCriteria(where("_id").is(userId));
-        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-
         WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
         return writeResult.getN() == 1;
     }
