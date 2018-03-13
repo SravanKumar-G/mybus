@@ -94,10 +94,10 @@ public class ServiceExpenseManager {
     public List<ServiceExpense> getServiceExpenses(String journeyDate) {
         List<ServiceExpense> serviceExpenses = new ArrayList<>();
         try {
-            Date start = ServiceUtils.parseDate(journeyDate, false);
-            Date end = ServiceUtils.parseDate(journeyDate, true);
-            List<ServiceExpense> expenses = serviceExpenseDAO.findByJourneyDateBetweenAndOperatorId
-                    (start,end, sessionManager.getOperatorId());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("startDate", journeyDate);
+            jsonObject.put("endDate", journeyDate);
+            List<ServiceExpense> expenses = serviceExpenseMongoDAO.searchServiceExpenses(jsonObject, null);
             if(!expenses.isEmpty()) {
                 for(ServiceExpense expense: expenses) {
                     ServiceExpense loadDataExpense = loadServiceInfo(expense);
