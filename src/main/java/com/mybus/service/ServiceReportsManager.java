@@ -143,7 +143,7 @@ public class ServiceReportsManager {
 
     public ServiceReport getReport(String id) {
         ServiceReport report = serviceReportDAO.findOne(id);
-        List<Booking> bookings = IteratorUtils.toList(bookingDAO.findByServiceId(report.getId()).iterator());
+        List<Booking> bookings = IteratorUtils.toList(bookingDAO.findByServiceReportId(report.getId()).iterator());
         //set the original cost for the old bookings
         if(report.getStatus() == null) {
             bookings.stream().forEach(booking ->
@@ -234,23 +234,7 @@ public class ServiceReportsManager {
                         //adjustAgentBookingCommission(booking, bookingAgent);
                         serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
                     }
-                /*
-                if(!booking.isDue()){
-                    if(!booking.isHasValidAgent()) {
-                        throw new BadRequestException("Invalid Agent found "+ booking.getBookedBy());
-                    }
-                    Agent agent = agentDAO.findByUsername(booking.getBookedBy());
-                    if(agent != null){
-                        //TODO add check
-                        transactionManager.createBookingTransaction(booking, agent);
-                        boolean updated = branchOfficeMongoDAO.updateCashBalance(agent.getBranchOfficeId(), booking.getNetAmt());
-                        if(!updated) {
-                            throw new BadRequestException("Updating cash balanace failed for agent "+ booking.getBookedBy());
-                        }
-                    }
-                }
-                */
-                    booking.setServiceId(null);
+                    booking.setServiceReportId(null);
                     serviceForm.getBookings().add(booking);
                     if (booking.getSeats() != null) {
                         String[] seats = booking.getSeats().split(",");
@@ -308,7 +292,7 @@ public class ServiceReportsManager {
     public ServiceReport saveServiceReportForVerification(ServiceReport serviceReport) {
         serviceReport.setStatus(ServiceStatus.REQUIRE_VERIFICATION);
         //incase if any service booking added in the frontend
-        serviceReport.getBookings().stream().forEach(booking -> booking.setServiceId(serviceReport.getId()));
+        serviceReport.getBookings().stream().forEach(booking -> booking.setServiceReportId(serviceReport.getId()));
         bookingDAO.save(serviceReport.getBookings());
         //save the expenses, reload them when the service report is re-loaded
         serviceReport.getExpenses().stream().forEach(expense -> {
@@ -375,7 +359,7 @@ public class ServiceReportsManager {
                 bookingDAO.deleteByFormId(formId);
             }
             serviceReportDAO.delete(serviceReport);
-            bookingDAO.deleteByServiceId(serviceReport.getId());
+            bookingDAO.deleteByServiceReportId(serviceReport.getId());
         });
         serviceReportStatusDAO.deleteByReportDate(date);
         //serviceReportStatusDAO.save(new ServiceReportStatus(date, ReportDownloadStatus.DOWNLOADING));

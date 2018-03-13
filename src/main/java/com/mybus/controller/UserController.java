@@ -3,6 +3,7 @@ package com.mybus.controller;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.User;
+import com.mybus.service.SessionManager;
 import com.mybus.service.UserManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,6 +29,9 @@ public class UserController extends MyBusBaseController{
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/me", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)

@@ -26,7 +26,7 @@ public class Booking extends AbstractDocument{
 
     //this is serviceReportId
     @Indexed
-    private String serviceId;
+    private String serviceReportId;
     private int index;
     //this is serviceFormId
     private String formId;

@@ -1,6 +1,7 @@
 package com.mybus.config;
 
 import com.mybus.dao.UserDAO;
+import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

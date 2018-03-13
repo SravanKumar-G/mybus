@@ -89,7 +89,7 @@ public class BookingManager {
         Iterable<Booking> bookings = bookingDAO.findByBookedByAndHasValidAgent(agent.getUsername(), false);
         Set<String> serviceNumbers = new HashSet<>();
         for(Booking booking: bookings) {
-            serviceNumbers.add(booking.getServiceId());
+            serviceNumbers.add(booking.getServiceReportId());
             booking.setHasValidAgent(true);
             bookingDAO.save(booking);
         }

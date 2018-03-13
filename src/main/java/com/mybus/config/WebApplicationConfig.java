@@ -34,6 +34,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
+import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -270,6 +271,11 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
     public AuthenticationInterceptor authenticationInterceptor(){
         return new AuthenticationInterceptor();
         
+    }
+
+    @Bean
+    public RequestContextListener requestContextListener(){
+        return new RequestContextListener();
     }
 
     @Bean

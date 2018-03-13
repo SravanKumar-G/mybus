@@ -118,7 +118,7 @@ public class BitlaPassengerReportService extends BaseService{
             JSONObject passengerInfo = (JSONObject) info;
             Booking booking = new Booking();
             try {
-                booking.setServiceId(serviceReport.getId());
+                booking.setServiceReportId(serviceReport.getId());
                 booking.setServiceName(serviceReport.getServiceName());
                 booking.setServiceNumber(serviceReport.getServiceNumber());
                 booking.setTicketNo(passengerInfo.getString("pnr_number"));
