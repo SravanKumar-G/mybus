@@ -103,6 +103,10 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 $scope.init();
             });
 
+            $scope.$on('reloadFuelExpenses', function (e, value) {
+                $scope.init();
+            });
+
             $scope.addOrUpdateFuelExpense = function(id) {
                 $rootScope.modalInstance = $uibModal.open({
                     templateUrl: 'update-fuelExpense-modal.html',
@@ -268,9 +272,9 @@ angular.module('myBus.fuelExpenseReportModule', ['ngTable','ui.bootstrap'])
                 saveFuelExpense: function (serviceExpense) {
                     $http.put('/api/v1/serviceExpense/',serviceExpense)
                         .then(function (response) {
+                            $rootScope.$broadcast('reloadFuelExpenses');
                             $rootScope.modalInstance.close();
                             sweetAlert("Great","Your Fuel Consumption successfully updated", "success");
-                            $rootScope.$broadcast('reloadFuelExpenses');
                         },function (err,status) {
                             sweetAlert("Error",err.message,"error");
                         });
