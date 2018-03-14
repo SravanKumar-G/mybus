@@ -74,6 +74,7 @@ public class CashTransferManager {
     }
 
     public CashTransfer save(CashTransfer cashTransfer){
+        cashTransfer.setOperatorId(sessionManager.getOperatorId());
         cashTransfer = cashTransferDAO.save(cashTransfer);
         Payment expense = new Payment();
         expense.setOperatorId(sessionManager.getOperatorId());
