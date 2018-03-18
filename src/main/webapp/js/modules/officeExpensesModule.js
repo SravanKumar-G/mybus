@@ -3,7 +3,7 @@
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
     .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, branchOfficeManager,
-                                                    NgTableParams, officeExpensesManager, userManager){
+                                                    NgTableParams, officeExpensesManager, userManager, paginationService){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
@@ -176,6 +176,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 "userId" : $scope.userSelect
             }
             $scope.searchInit();
+        }
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
         }
 
         $scope.togglePaymentSelection = function(paymentId){
