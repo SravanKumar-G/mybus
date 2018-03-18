@@ -120,12 +120,13 @@
                         </select>
                     </div>
                     <button type="button" class="btn btn-sm btn-success " ng-click="search()"> Search Expense </button></button>
+                    <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('officeExpensesTable','OfficeExpenses')"> Export To Excel </button></button>
                     <button type="button" class="btn btn-sm btn-success " ng-click="print('officeExpenses')"> Print </button></button>
 
                 </div>
             </form>
             <div id="officeExpenses">
-                <table class="table table-bordered table-condensed table-hover"  ng-table="searchTableParams">
+                <table class="table table-bordered table-condensed table-hover"  ng-table="searchTableParams" id="officeExpensesTable">
                     <tr ng-repeat="expense in searchExpenses" ng-style="!expense.status && {'color':'red'}">
                         <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                         <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
@@ -164,12 +165,7 @@
                     <label class="col-sm-2 control-label" for="expenseDate">Date</label>
                     <div class="col-sm-6">
                         <p class="input-group">
-                            <input type="text" id="expenseDate" class="form-control" uib-datepicker-popup="{{format}}"
-                                   ng-model="dt" is-open="popup1.opened" datepicker-options="dateOptions"
-                                   ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
-                            <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
-                                    </span>
+                            <my-datepicker id ="expenseDate" ng-model="dt"></my-datepicker>
                         </p>
                     </div>
                 </div>
