@@ -31,6 +31,8 @@
                     <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item" >{{expense.createdAt| date}}</td>
                     <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
                     <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
+                    <td data-title="'From Date'" sortable="'expenseType'" class="clickable-item" >{{expense.fromDate | date}}</td>
+                    <td data-title="'To Date'" sortable="'expenseType'" class="clickable-item" >{{expense.toDate | date}}</td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                     <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin">
@@ -68,6 +70,8 @@
                     <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                     <td width="300px" data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
                     <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
+                    <td data-title="'From Date'" sortable="'expenseType'" class="clickable-item" >{{expense.fromDate | date}}</td>
+                    <td data-title="'To Date'" sortable="'expenseType'" class="clickable-item" >{{expense.toDate | date}}</td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                     <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
                     <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
@@ -131,6 +135,8 @@
                         <td data-title="'Date'" sortable="'date'" class="clickable-item" >{{expense.date | date}}</td>
                         <td data-title="'Description'" sortable="'description'" class="clickable-item" >{{expense.description}}</td>
                         <td data-title="'Type'" sortable="'expenseType'" class="clickable-item" >{{expense.expenseType}}</td>
+                        <td data-title="'From Date'" sortable="'expenseType'" class="clickable-item" >{{expense.fromDate | date}}</td>
+                        <td data-title="'To Date'" sortable="'expenseType'" class="clickable-item" >{{expense.toDate | date}}</td>
                         <td data-title="'Amount'" sortable="'amount'" class="clickable-item" >{{expense.amount|number:2}}</span></td>
                         <td data-title="'CreatedBy'" class="clickable-item">{{expense.attributes.createdBy}}</td>
                         <td data-title="'ApprovedBy'" class="clickable-item"><span ng-if="expense.status != 'Auto'">{{expense.attributes.updatedBy}}</span></td>
