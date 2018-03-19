@@ -188,6 +188,19 @@
                         <select id="expenseType" ng-options="e for e in expenseTypes" class="form-control" ng-model="expense.expenseType"></select>
                     </div>
                 </div>
+                <div class="form-group" ng-show="expense.expenseType == 'SALARY'">
+                    <label class="col-sm-2 control-label" for="branchOffice">From Date</label>
+                    <div class="col-sm-6">
+                        <my-datepicker id ="fromDate" ng-model="expense.fromDate"></my-datepicker>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="expense.expenseType == 'SALARY'">
+                    <label class="col-sm-2 control-label" for="branchOffice">To Date</label>
+                    <div class="col-sm-6">
+                        <my-datepicker id ="toDate" ng-model="expense.toDate"></my-datepicker>
+                    </div>
+                </div>
+
                 <div class="form-group" ng-if="expense.expenseType === 'DIESEL'">
                     <label class="col-sm-2 control-label" for="fillingStation">Filling Station</label>
                     <div class="col-sm-6">

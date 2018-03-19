@@ -1,6 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.OfficeExpense;
 import com.mybus.service.OfficeExpenseManager;
@@ -70,6 +71,12 @@ public class OfficeExpenseController {
         if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("diesel")) {
             officeExpense.setFillingStationId(null);
         }
+        if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("salary")) {
+            if(officeExpense.getFromDate() == null || officeExpense.getToDate() == null){
+                throw new BadRequestException("Salary requires from and to dates");
+            }
+        }
+
         return officeExpenseManager.save(officeExpense);
     }
 
