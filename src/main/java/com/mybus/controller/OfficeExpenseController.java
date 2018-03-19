@@ -71,7 +71,7 @@ public class OfficeExpenseController {
         if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("diesel")) {
             officeExpense.setFillingStationId(null);
         }
-        if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("salary")) {
+        if(officeExpense.getExpenseType() != null && officeExpense.getExpenseType().equalsIgnoreCase("salary")) {
             if(officeExpense.getFromDate() == null || officeExpense.getToDate() == null){
                 throw new BadRequestException("Salary requires from and to dates");
             }
