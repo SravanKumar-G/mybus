@@ -19,6 +19,9 @@ public class ABAgentService extends BaseService{
     @Autowired
     private AgentDAO agentDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     public void downloadAgents() throws Exception{
         logger.info("downloading agents data:" );
         initAbhibus();
@@ -60,6 +63,7 @@ public class ABAgentService extends BaseService{
                     agent.setBranchName(info.get("branchname").toString());
                 }
                 agent.setActive(true);
+                agent.setOperatorId(sessionManager.getOperatorId());
                 agents.add(agent);
             }
         }
