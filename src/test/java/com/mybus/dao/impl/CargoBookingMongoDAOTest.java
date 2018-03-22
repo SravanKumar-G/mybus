@@ -2,7 +2,9 @@ package com.mybus.dao.impl;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.CargoBooking;
+import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
@@ -24,6 +26,8 @@ public class CargoBookingMongoDAOTest extends AbstractControllerIntegrationTest 
     @Autowired
     private CargoBookingDAO cargoBookingDAO;
 
+    @Autowired
+    private ShipmentSequenceDAO shipmentSequenceDAO;
     @Before
     @After
     public void cleanup() {
@@ -32,8 +36,9 @@ public class CargoBookingMongoDAOTest extends AbstractControllerIntegrationTest 
 
     @Test
     public void testFindShipments() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            CargoBooking shipment = CargoBookingTestService.createNew();
+            CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
             shipment = cargoBookingDAO.save(shipment);
             System.out.println(shipment.getId());
         }

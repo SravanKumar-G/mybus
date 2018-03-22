@@ -7,6 +7,7 @@ import com.mybus.dao.ServiceReportStatusDAO;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +33,7 @@ public class BitlaPassengerReportServiceTest  extends AbstractControllerIntegrat
         bookingDAO.deleteAll();
     }
 
+    @Ignore
     @Test
     public void testDownloadReports() {
         bitlaPassengerReportService.downloadReports("2018-02-16");

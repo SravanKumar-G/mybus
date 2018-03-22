@@ -2,11 +2,17 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager){
+    .controller("CargoBookingsController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager){
+        $scope.headline = "Cargo Bookings";
+
+    })
+
+    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
         $scope.shipment = {'shipmentType':'Paid'};
+        $scope.shipment.dispatchDate = new Date();
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
@@ -41,7 +47,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
         $scope.addItem();
 
-        $scope.deleteCargo = function(item){
+        $scope.deleteItem = function(item){
             $scope.shipment.items.splice(item.index-1,1);
             for(var index=0;index<$scope.shipment.items.length; index++) {
                 $scope.shipment.items[index].index = index+1;
@@ -60,9 +66,9 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             }
         }
 
-        $scope.createCargoBooking = function(){
+        $scope.saveCargoBooking = function(){
             cargoBookingManager.createShipment($scope.shipment, function (response) {
-                console.log('created');
+                $location.url('cargobookings');
             });
         }
 

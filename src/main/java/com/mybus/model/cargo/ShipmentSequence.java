@@ -19,9 +19,9 @@ public class ShipmentSequence extends AbstractDocument{
     public String shipmentType;
     public long startNumber;
     public long nextNumber;
-    public ShipmentSequence(ShipmentType shipmentType){
-        this.shipmentCode = shipmentType.getKey();
-        this.shipmentType = shipmentType.toString();
+    public ShipmentSequence(String code, String description){
+        this.shipmentCode = code;
+        this.shipmentType = description;
         this.startNumber = this.nextNumber = 10000;
     }
 }

@@ -44,6 +44,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/cargobooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
+            }).state('cargobookings',{
+                url:'/cargobookings',
+                templateUrl: 'partials/cargoBookings.tpl.html',
+                controller: 'CargoBookingsController'
             }).state('collectionzones',{
                 url:'/collectionZones',
                 templateUrl: 'partials/collectionZones.tpl.html',
@@ -59,9 +63,9 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'OperatorAccountsController'
             })
             .state('invoices',{
-            url:'/inovices',
-            templateUrl: 'partials/invoice.tpl.html',
-            controller: 'InvoiceController'
+                url:'/inovices',
+                templateUrl: 'partials/invoice.tpl.html',
+                controller: 'InvoiceController'
             })
             .state('amenities',{
                 url:'/amenities',
