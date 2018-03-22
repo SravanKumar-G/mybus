@@ -2,7 +2,9 @@ package com.mybus.controller;
 
 import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
+import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.BranchOfficeManager;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
@@ -45,12 +47,16 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     private MockMvc mockMvc;
 
     @Autowired
+    private ShipmentSequenceDAO shipmentSequenceDAO;
+
+    @Autowired
     private BranchOfficeManager branchOfficeManager;
 
     @Before
     @After
     public void cleanup() {
         cargoBookingDAO.deleteAll();
+        shipmentSequenceDAO.deleteAll();
         userDAO.deleteAll();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
         currentUser = new User("test", "test", "test", "test", true, true);
@@ -59,8 +65,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testGetAll() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            cargoBookingDAO.save(CargoBookingTestService.createNew());
+            cargoBookingDAO.save(CargoBookingTestService.createNew(shipmentSequence));
         }
         ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")), currentUser));
         actions.andExpect(jsonPath("$").isArray());
@@ -69,8 +76,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testGetAllFromCityId() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            cargoBookingDAO.save(CargoBookingTestService.createNew());
+            cargoBookingDAO.save(CargoBookingTestService.createNew(shipmentSequence));
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("fromBranchId", "1234");
@@ -82,8 +90,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testGetAllByDispathDate() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            CargoBooking shipment = CargoBookingTestService.createNew();
+            CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.DATE, cal.get(Calendar.DATE) -1);
@@ -102,8 +111,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testGetAllByDispathDateRange() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            CargoBooking shipment = CargoBookingTestService.createNew();
+            CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.DATE, cal.get(Calendar.DATE) -1);
@@ -122,8 +132,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testGetAllByBookingDate() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         for(int i=0; i<5; i++) {
-            CargoBooking shipment = CargoBookingTestService.createNew();
+            CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
                 Calendar cal = Calendar.getInstance();
                 cal.set(Calendar.DATE, cal.get(Calendar.DATE)-3);
@@ -141,15 +152,15 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     }
     @Test
     public void testCreateShipment() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
         BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
         fromBranch = branchOfficeManager.save(fromBranch);
         toBranch = branchOfficeManager.save(toBranch);
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment.setFromBranchId(fromBranch.getId());
         shipment.setToBranchId(toBranch.getId());
-        shipment.setShipmentType(ShipmentType.FREE);
-
+        shipment.setShipmentType(shipmentSequence.getId());
 
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
                 .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
@@ -163,7 +174,8 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testUpdateShipment() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment = cargoBookingDAO.save(shipment);
         shipment.setFromEmail("newemail@email.com");
         ResultActions actions = mockMvc.perform(asUser(put("/api/v1/shipment/"+shipment.getId())
@@ -178,7 +190,8 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Test
     public void testUpdateShipmentUnSetFields() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment = cargoBookingDAO.save(shipment);
         shipment.setContents(null);
         ResultActions actions = mockMvc.perform(asUser(put("/api/v1/shipment/"+shipment.getId())
@@ -191,7 +204,8 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     }
     @Test
     public void testGetShipment() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment = cargoBookingDAO.save(shipment);
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/shipment/" + shipment.getId()), currentUser));
         actions.andExpect(status().isOk());
@@ -199,7 +213,8 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     }
     @Test
     public void testDeleteShipment() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment = cargoBookingDAO.save(shipment);
         ResultActions actions = mockMvc.perform(asUser(delete("/api/v1/shipment/" + shipment.getId()), currentUser));
         actions.andExpect(status().isOk());

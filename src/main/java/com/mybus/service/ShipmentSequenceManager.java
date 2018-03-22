@@ -25,18 +25,17 @@ public class ShipmentSequenceManager {
     @Autowired
     private ShipmentSequenceDAO shipmentSequenceDAO;
 
-    private ShipmentSequence nextSequeceNumber(ShipmentType shipmentType) {
-        ShipmentSequence shipmentSequence = null;
-        if(shipmentSequenceDAO.findByShipmentCode(shipmentType.getKey()) == null){
-            shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence(shipmentType));
+    private ShipmentSequence nextSequeceNumber(ShipmentSequence shipmentSequence) {
+        if(shipmentSequence == null){
+            shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("P", "PAID"));
         } else {
             Update updateOp = new Update();
             updateOp.inc("nextNumber", 1);
             final Query query = new Query();
-            query.addCriteria(where("shipmentCode").is(shipmentType.getKey()));
+            query.addCriteria(where("shipmentCode").is(shipmentSequence.getShipmentCode()));
             WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
             if(writeResult.getN() == 1){
-                shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentType.getKey());
+                shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentSequence.getShipmentCode());
             } else {
                 throw new IllegalStateException("next number failed");
             }
@@ -44,9 +43,10 @@ public class ShipmentSequenceManager {
         return shipmentSequence;
     }
 
-    public String createLRNumber(ShipmentType shipmentType) {
-        ShipmentSequence shipmentSequence = nextSequeceNumber(shipmentType);
-        return shipmentType.getKey()+ shipmentSequence.nextNumber;
+    public String createLRNumber(String shipmentType) {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipmentType);
+        shipmentSequence = nextSequeceNumber(shipmentSequence);
+        return shipmentSequence.getShipmentCode()+ shipmentSequence.nextNumber;
     }
     public Iterable<ShipmentSequence> getShipmentTypes(){
         return shipmentSequenceDAO.findAll(new Sort(Sort.Direction.DESC,"shipmentType"));

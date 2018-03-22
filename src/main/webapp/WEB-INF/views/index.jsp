@@ -147,10 +147,6 @@
                                 Logout&nbsp; &nbsp;&nbsp;&nbsp;
                             </a>
                         </li>
-
-                        <!--tooltip="{{'Counter'|translate}} : {{counterToolTip.counterName}} {{'Shift'|translate}} : {{counterToolTip.shiftName}}"-->
-
-                        <!-- ngIf: isCounterLogoutShow -->
                     </div>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -159,8 +155,6 @@
         </nav>
 
         <div id="wrapper" class="toggled">
-
-        <!-- Sidebar -->
       
         <div  id="sidebar-wrapper" class="nav-side-menu" >
                     <div class="menu-list">
@@ -169,7 +163,8 @@
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="cargo">
-                                <my-menu url="cargoBooking" label="CargoBooking" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu url="cargoBooking" label="CargoBooking" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>

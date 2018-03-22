@@ -35,6 +35,9 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">WayBill No:</label>
             <div class="col-sm-4"><input type="text" class="form-control" ng-model="shipment.wayBillNo"></div>
+
+            <label class="col-sm-2 control-label">Dispatch Date:</label>
+            <div class="col-sm-4"><my-datepicker ng-model="shipment.dispatchDate"></my-datepicker></div>
         </div>
 
 
@@ -153,7 +156,7 @@
                         <td><input type="number" placeholder="weight" ng-model="item.weight"></td>
                         <td><input type="number" placeholder="CDM" ng-model="item.cdm"></td>
                         <td><input type="number" placeholder="charge" ng-model="item.charge">
-                            <span class="glyphicon glyphicon-remove-sign" ng-show="item.index" ng-click="deleteCargo(item)"></span>
+                            <span class="glyphicon glyphicon-remove-sign" ng-show="item.index" ng-click="deleteItem(item)"></span>
                         </td>
                     </tr>
                     <tr>
@@ -170,7 +173,7 @@
                 <button type="button" class="btn btn btn-sm btn-danger pull-right" ng-click="cancelShipmentForm()">
                     Cancel
                 </button>
-                <button type="button" class="btn btn btn-sm btn-success pull-right" ng-click="submitShipment()">
+                <button type="button" class="btn btn btn-sm btn-success pull-right" ng-click="saveCargoBooking()">
                    Submit
                 </button>
             </div>

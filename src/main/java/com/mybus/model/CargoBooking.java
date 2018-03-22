@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -39,11 +40,13 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @Indexed(unique = true)
     private String toBranchId;
 
-    @RequiresValue
-    private ShipmentStatus shipmentStatus;
+    private boolean copySenderDetails;
 
     @RequiresValue
-    private ShipmentType shipmentType;
+    private ShipmentStatus shipmentStatus = ShipmentStatus.READYFORSHIPMENT;
+
+    @RequiresValue
+    private String shipmentType;
 
 
     @RequiresValue
@@ -78,6 +81,8 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private Date dispatchDate;
 
+    private List<CargoBookingItem> items;
+
     @Override
     public boolean containsKey(String attributeName) {
         return false;
@@ -85,5 +90,5 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     public static CargoBooking fromJson(String json) {
         return new Gson().fromJson(json, CargoBooking.class);
     }
-
 }
+

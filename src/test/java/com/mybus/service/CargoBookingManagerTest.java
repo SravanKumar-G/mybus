@@ -2,8 +2,10 @@ package com.mybus.service;
 
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
+import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
@@ -25,10 +27,13 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
     @Autowired
     private CargoBookingManager shipmentManager;
 
+    @Autowired
+    private ShipmentSequenceDAO shipmentSequenceDAO;
     @Before
     @After
     public void cleanup() {
         cargoBookingDAO.deleteAll();
+        shipmentSequenceDAO.deleteAll();
     }
 
     public void testSave() throws Exception {
@@ -43,7 +48,8 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testSaveWithValidationsNoError() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         CargoBooking saved = shipmentManager.saveWithValidations(shipment);
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         Assert.assertEquals(1, shipments.size());
@@ -51,7 +57,8 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
 
     @Test(expected = BadRequestException.class)
     public void testSaveWithNoDispatchDate() throws Exception {
-        CargoBooking shipment = CargoBookingTestService.createNew();
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment.setDispatchDate(null);
         shipmentManager.saveWithValidations(shipment);
     }
