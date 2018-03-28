@@ -7,7 +7,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
     })
 
-    .controller("CargoBookingController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
+    .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
@@ -17,6 +17,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $scope.offices = data;
         });
 
+
+        $scope.printArea = function() {
+            var w=window.open();
+            w.document.write(document.getElementsByClassName('report_left_inner')[0].innerHTML);
+            w.print();
+            w.close();
+        }
+        if($stateParams.id) {
+            cargoBookingManager.getCargoBooking($stateParams.id,function (cargoBooking) {
+                $scope.shipment =cargoBooking;
+            });
+        }
         userManager.getUserNames(function(users){
             $scope.users =users;
         });
@@ -68,12 +80,20 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         $scope.saveCargoBooking = function(){
             cargoBookingManager.createShipment($scope.shipment, function (response) {
-                $location.url('cargobookings');
+                $location.url('cargobooking/'+response.id);
             });
         }
 
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
         return {
+            getCargoBooking: function (id, callback) {
+                $http.get("/api/v1/shipment/"+id)
+                    .then(function (response) {
+                        callback(response.data)
+                    }, function (error) {
+                        swal("oops", error, "error");
+                    })
+            },
             getShipmentTypes: function ( callback) {
                 $http.get("/api/v1/shipment/types")
                     .then(function (response) {

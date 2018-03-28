@@ -173,8 +173,7 @@ public class CityManager {
         if(!allCities) {
             query.put("active", true);
         }
-        List<City> cities = IteratorUtils.toList(mongoQueryDAO
-                .getDocuments(City.class, City.COLLECTION_NAME, fields, query, null).iterator());
+        List<City> cities = IteratorUtils.toList(cityDAO.findAll().iterator());
         return cities;
     }
 

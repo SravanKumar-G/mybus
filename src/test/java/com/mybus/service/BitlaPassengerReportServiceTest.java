@@ -33,7 +33,7 @@ public class BitlaPassengerReportServiceTest  extends AbstractControllerIntegrat
         bookingDAO.deleteAll();
     }
 
-    @Ignore
+
     @Test
     public void testDownloadReports() {
         bitlaPassengerReportService.downloadReports("2018-02-16");

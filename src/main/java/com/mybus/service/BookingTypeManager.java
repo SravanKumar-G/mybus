@@ -22,6 +22,9 @@ public class BookingTypeManager {
     public static final String REDBUS_CHANNEL = "REDBUS-API";
     public static final String ONLINE_CHANNEL = "ONLINE";
     public static final String CASH_CHANNEL = "CASH";
+    public static final String BITLA_BUS = "Bitla";
+    public static final String Abhi_BUS = "Abhibus";
+
     public static final List<String> ABHIBUS_BOOKING_CHANNELS = Arrays.asList("ONLINE", "YATRAGENIE-API", "PAYTM-API", "ABHIBUS");
 
     @Autowired
@@ -36,6 +39,18 @@ public class BookingTypeManager {
         }
         return booking.getBookedBy().equalsIgnoreCase(REDBUS_CHANNEL);
     }
+
+    public boolean isRedbusBooking(Booking booking, String providerType) {
+        if(booking.getBookedBy() == null) {
+            return false;
+        }
+        if(providerType.equalsIgnoreCase(BITLA_BUS)){
+            return booking.getBookedBy().equalsIgnoreCase("Red Bus");
+        } else {
+            return booking.getBookedBy().equalsIgnoreCase(REDBUS_CHANNEL);
+        }
+
+    }
     public boolean isOnlineBooking(Booking booking) {
         if(booking.getBookedBy() == null) {
             return false;
@@ -47,6 +62,21 @@ public class BookingTypeManager {
         }
     }
 
+    public boolean isOnlineBooking(Booking booking, String providerType) {
+        if(booking.getBookingType() == null) {
+            return false;
+        }
+        if(providerType.equalsIgnoreCase(BITLA_BUS)){
+            return booking.getBookingType().equalsIgnoreCase("2");
+        } else {
+            if(ABHIBUS_BOOKING_CHANNELS.contains(booking.getBookedBy())){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }
     public boolean hasValidAgent(Booking booking) {
         if(isOnlineBooking(booking)) {
             return true;

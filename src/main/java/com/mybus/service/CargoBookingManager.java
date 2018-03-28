@@ -1,10 +1,12 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
+import com.mybus.model.BranchOffice;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.util.ServiceUtils;
@@ -15,8 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by srinikandula on 12/10/16.
@@ -35,11 +40,22 @@ public class CargoBookingManager {
     private ShipmentSequenceManager shipmentSequenceManager;
 
     @Autowired
+    private BranchOfficeManager branchOfficeManager;
+
+    @Autowired
+    private UserManager userManager;
+
+    private Map<String, String> lrTypes;
+
+
+    @Autowired
     private SessionManager sessionManager;
+
     public CargoBooking findOne(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "shipmentId is required");
         CargoBooking shipment = cargoBookingDAO.findByIdAndOperatorId(shipmentId, sessionManager.getOperatorId());
         Preconditions.checkNotNull(shipment, "No CargoBooking found with id");
+        loadShipmentDetails(shipment);
         return shipment;
     }
     public CargoBooking saveWithValidations(CargoBooking shipment) {
@@ -49,6 +65,7 @@ public class CargoBookingManager {
         String shipmentNumber = shipmentSequenceManager.createLRNumber(shipment.getShipmentType());
         shipment.setShipmentNumber(shipmentNumber);
         shipment.setOperatorId(sessionManager.getOperatorId());
+        shipment.setActive(true);
         List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
         if(errors.isEmpty()) {
             return cargoBookingDAO.save(shipment);
@@ -85,5 +102,26 @@ public class CargoBookingManager {
 
     public Iterable<ShipmentSequence> getShipmentTypes() {
         return shipmentSequenceManager.getShipmentTypes();
+    }
+
+    /**
+     * Module to populate details in to Cargo Shipment. The details would be like branchOfficeNames, createdBy etc..
+     */
+    private void loadShipmentDetails(CargoBooking cargoBooking){
+        BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
+        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
+        if(lrTypes == null){
+            lrTypes = shipmentSequenceManager.getShipmentNamesMap();
+        }
+        cargoBooking.getAttributes().put("fromBranchOfficeAddress",String.format("%s, %s",fromBranchOffice.getAddress() , fromBranchOffice.getContact()));
+        cargoBooking.getAttributes().put("toBranchOfficeAddress",String.format("%s, %s",toBranchOffice.getAddress() , toBranchOffice.getContact()));
+        cargoBooking.getAttributes().put("fromBranchOfficeName",fromBranchOffice.getName());
+        cargoBooking.getAttributes().put("toBranchOfficeName",toBranchOffice.getName());
+
+        cargoBooking.getAttributes().put("LRType",lrTypes.get(cargoBooking.getShipmentType()));
+        cargoBooking.getAttributes().put("bookedBy",userManager.getUser(cargoBooking.getCreatedBy()).getFullName());
+        if(cargoBooking.getForUser() != null) {
+            cargoBooking.getAttributes().put("forUser",userManager.getUser(cargoBooking.getForUser()).getFullName());
+        }
     }
 }

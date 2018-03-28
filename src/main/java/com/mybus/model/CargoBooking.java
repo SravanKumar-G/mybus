@@ -83,6 +83,8 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     private List<CargoBookingItem> items;
 
+    private String remarks;
+
     @Override
     public boolean containsKey(String attributeName) {
         return false;

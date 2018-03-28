@@ -47,7 +47,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         });
 
     })
-    .controller('ServiceReportController', function($scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager) {
+    .controller('ServiceReportController', function($rootScope, $scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
@@ -55,6 +55,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
         $scope.agents = [];
+
         agentManager.getNames(function(names){
             $scope.agents = names;
         });
@@ -204,6 +205,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         }
 
         $scope.canSubmit = function() {
+            if($rootScope.operatorAccount.name ==='jagantravels'){
+                $scope.service.invalid = false;
+                return true;
+            }
             if($scope.service.status==='REQUIRE_VERIFICATION') {
                 if($scope.currentUser.canVerifyRates){
                     return true;

@@ -44,6 +44,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/cargobooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
+            }) .state('cargobooking/:id',{
+                url:'/cargobooking/:id',
+                templateUrl: 'partials/cargoBookingDetails.tpl.html',
+                controller: 'CargoBookingController'
             }).state('cargobookings',{
                 url:'/cargobookings',
                 templateUrl: 'partials/cargoBookings.tpl.html',
@@ -446,7 +450,7 @@ var busServiceEditResolver = {
 };
 
 
-myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager) {
+myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager, opratingAccountsManager) {
     $rootScope.menus=[];
     appConfigManager.fetchAppSettings(function (err, cfg) {
         $rootScope.appConfigManager = appConfigManager;
@@ -456,10 +460,12 @@ myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager)
             userManager.getGroupsForCurrentUser();
             myBus.constant('currentuser', data);
             $rootScope.currentuser = data;
+            opratingAccountsManager.getAccount($rootScope.currentuser.operatorId, function (operatorAccount) {
+                $rootScope.operatorAccount = operatorAccount;
+                console.log("operator account " + $rootScope.operatorAccount);
+            });
         }
     });
 
-    $rootScope.$on('$stateChangeSuccess', function() {
-        console.log('Current state name: ' + $state.$current.name);
-    });
+
 });
