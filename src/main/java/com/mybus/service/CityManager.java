@@ -168,12 +168,7 @@ public class CityManager {
      * @return
      */
     public Iterable<City> getCityNames(boolean allCities) {
-        String fields[] = {City.KEY_NAME};
-        JSONObject query = new JSONObject();
-        if(!allCities) {
-            query.put("active", true);
-        }
-        List<City> cities = IteratorUtils.toList(cityDAO.findAll().iterator());
+        List<City> cities = IteratorUtils.toList(cityDAO.findByActive(allCities).iterator());
         return cities;
     }
 

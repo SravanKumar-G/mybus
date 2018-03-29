@@ -1,11 +1,13 @@
 package com.mybus.controller;
 
+import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.BranchOfficeManager;
+import com.mybus.service.SessionManager;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.hamcrest.Matchers;
@@ -42,6 +44,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
     private User currentUser;
 
     private MockMvc mockMvc;
@@ -52,6 +57,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Autowired
     private BranchOfficeManager branchOfficeManager;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     @Before
     @After
     public void cleanup() {
@@ -61,6 +69,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
         currentUser = new User("test", "test", "test", "test", true, true);
         currentUser = userDAO.save(currentUser);
+        sessionManager.setCurrentUser(currentUser);
     }
 
     @Test
@@ -205,8 +214,13 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Test
     public void testGetShipment() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        BranchOffice b1 = branchOfficeDAO.save(new BranchOffice());
+        BranchOffice b2 = branchOfficeDAO.save(new BranchOffice());
         CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
+        shipment.setFromBranchId(b1.getId());
+        shipment.setToBranchId(b2.getId());
         shipment = cargoBookingDAO.save(shipment);
+        shipment.setCreatedBy(currentUser.getId());
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/shipment/" + shipment.getId()), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.fromEmail").value(shipment.getFromEmail()));

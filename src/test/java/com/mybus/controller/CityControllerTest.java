@@ -95,6 +95,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         for(int i=1; i<=4; i++ ) {
         	City city = new City("Name"+i, "state", i%2==0, new ArrayList<BoardingPoint>());
         	city.setId(ids[i-1]);
+        	city.setActive(true);
             cityDAO.save(city);
         }
 

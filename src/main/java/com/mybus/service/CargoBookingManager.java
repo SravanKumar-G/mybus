@@ -119,7 +119,9 @@ public class CargoBookingManager {
         cargoBooking.getAttributes().put("toBranchOfficeName",toBranchOffice.getName());
 
         cargoBooking.getAttributes().put("LRType",lrTypes.get(cargoBooking.getShipmentType()));
-        cargoBooking.getAttributes().put("bookedBy",userManager.getUser(cargoBooking.getCreatedBy()).getFullName());
+        if(cargoBooking.getCreatedBy() != null){
+            cargoBooking.getAttributes().put("bookedBy",userManager.getUser(cargoBooking.getCreatedBy()).getFullName());
+        }
         if(cargoBooking.getForUser() != null) {
             cargoBooking.getAttributes().put("forUser",userManager.getUser(cargoBooking.getForUser()).getFullName());
         }

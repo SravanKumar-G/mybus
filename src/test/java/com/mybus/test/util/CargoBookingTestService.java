@@ -1,5 +1,6 @@
 package com.mybus.test.util;
 
+import com.mybus.model.BranchOffice;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.ShipmentStatus;
 import com.mybus.model.ShipmentType;
