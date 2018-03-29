@@ -184,7 +184,7 @@
                                 <my-menu label="CollectionZones" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="GSTFilters" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="FillingStations" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="OperatorAccounts" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="OperatorAccounts" class="nav navbar-nav col-md-12" ng-if="currentuser.admin"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>

@@ -54,6 +54,8 @@ public class Booking extends AbstractDocument{
     private String destination;
     @Indexed
     private String bookedBy;
+    private String bookingType;
+
     private String bookedDate;
     private double basicAmount;
     private double serviceTax;

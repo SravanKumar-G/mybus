@@ -1,0 +1,168 @@
+<div class="container" style="width: 95%">
+    <div ng-include="'partials/cargoLookup.tpl.html'"></div>
+
+    <div class=" col-sm-6 pull-left p_l_0">
+        <div class="btn btn-success" ng-click="printArea()">
+            <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Print"></i>
+            <span class="p_font_size13 ng-binding">Print</span>
+        </div>
+    </div>
+    <br/> <br/>
+    <div class="panel panel-default m_b_0">
+        <div class="panel-heading panel_heading_background">
+            <h3 class="panel-title panel_title_color"> Cargo Details &nbsp; &nbsp;
+            </h3>
+        </div>
+        <div class="panel-body no-padding">
+            <table class="table table-cargo-border1 bor_st_solid">
+                <tbody>
+                    <tr>
+                        <td><label class="control-label">LR Number:</label>&nbsp; {{shipment.shipmentNumber}}</td>
+                        <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOffice}}</td>
+                        <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOffice}}</td>
+                        <td><label class="control-label">Date:</label>&nbsp; {{shipment.dispatchDate | date}}</td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label">LR Type:</label>&nbsp; {{shipment.attributes.LRType}}</td>
+                        <td colspan="3"><label class="control-label">WayBill No.:</label>&nbsp; {{shipment.wayBillNo}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> <!--line panel body -->
+        <div class="row">
+            <div class="col-sm-6 col-xs-12 marginless p_r_0">
+                <div class="panel panel-default m_b_0">
+                    <div class="panel-heading clr_l_brown bold ng-binding">
+                        Sender Details
+                    </div>
+                    <div class="panel-body p_rl_0">
+                        <div class="form-group m_b_8">
+                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">Mobile No<span class="mandatory_symbol ng-scope">&nbsp;</span></label>
+                            {{shipment.fromContact}}
+                        </div>
+                        <div class="form-group m_b_8">
+                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
+                                Sender Name &nbsp;</span>
+                            </label> {{shipment.fromName}}
+                        </div>
+                        <div class="form-group m_b_8">
+                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
+                                Sender Email
+                            </label> {{shipment.fromEmail}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 marginless p_l_5">
+                <div class="panel panel-default m_b_0">
+                    <div class="panel-heading clr_l_brown bold ng-binding">
+                        Receiver Details
+                    </div>
+                    <div class="panel-body p_rl_0">
+                        <label class="col-sm-4 col-xs-4 control-label LabelForm">
+                                <span class="ng-binding">Mobile No
+                                    <span class="mandatory_symbol ng-scope">&nbsp;</span>
+                                </span>
+                        </label>{{shipment.toContact}}
+                    </div>
+                    <div class="form-group m_b_8">
+                        <label class="col-sm-4 col-xs-4 control-label">
+                                <span class="ng-binding">
+                                    Receiver Name
+                                    <span class="mandatory_symbol">&nbsp;*</span>
+                                </span>
+                        </label>
+                        {{shipment.toName}}
+                    </div>
+                    <div class="form-group m_b_8">
+                        <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
+                            To Email
+                        </label>{{shipment.toEmail}}
+
+                    </div>
+                </div>
+            </div> <!--Close the 3rd line of code-->
+        </div>
+
+        <div class="row">
+            <table class="table table-bordered table-condensed table-hover" style="width: 95%;margin-left: 25px;">
+                <thead>
+                <th>Item Description</th>
+                <th>Value of Goods</th>
+                <th>Quantity</th>
+                <th>Kg's</th>
+               <th>Freight Charge</th>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in shipment.items">
+                    <td>{{item.description}}</td>
+                    <td>{{item.value}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>{{item.weight}}</td>
+                    <td>{{item.charge}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="col-sm-4 col-xs-4 control-label LabelForm"> Remarks: </label>
+                {{shipment.remarks}}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-sm-4 col-xs-4 control-label LabelForm"> Booked By: </label>
+                {{shipment.remarks}}
+            </div>
+            <div class="col-sm-6" ng-if="shipment.attributes.forUser">
+                <label class="col-sm-4 col-xs-4 control-label LabelForm"> For User: </label>
+                {{shipment.attributes.forUser}}
+            </div>
+        </div>
+        <div class="col-sm-12 printhide ng-scope">
+            <div class="pull-left">
+                <strong class="ng-binding">Terms &amp; Conditions &nbsp;:&nbsp;</strong></div><br><div>
+                <span class="ng-binding">
+                <p>1.<em> Parcel, Luggage are carried at owner's risk.</em></p>
+
+                <p><em>2. Incase the Parcels are lost or damaged in transit the company will not be liable Though every care shall be taken by the company for safe Transportation of Parcels.</em></p>
+
+                <p><em>3. Contraband articles are not permitted to carry in the vehicle. The parcels owner will bear soleon checkup by Octrol, Excise and other authorities.</em></p>
+
+                <p><em>4. We do not hold any other responsibility on the late arrival of Parcel/Luggage.</em></p>
+
+                <p><em>5. Luggage/Parcel should be collected within 24 hours of its arrival, falling which the Management is not responsible for the delivery.</em></p>
+
+                <p><strong><em>6. Dema Charge per day Rs.10/­ per parcel after 7&nbsp;days of receipt of the parcel. &nbsp;Consignment are not taken delivery within 30 days it will be auctioned without any intimation to the Consignor or Consignee.</em></strong></p>
+
+                <p><em>8. Don't Book Cash, Glass Liquor, Jewels, Lottery, Explosive materials and other restricted items. If booked we are not responsible. Company is not responsible for any breakable items. It will be booked only on the Owner's risk.</em></p>
+
+                <p><em>10. All Disputes are subject to the jurisdiction of Ongole courts only. &nbsp;&nbsp;the consignor has the right to file a suit against the Company.&nbsp;</em></p>
+                </span>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div>
+        From Office:
+    </div>
+    <div class="panel-body no-padding">
+        <table class="table table-cargo-border1 bor_st_solid">
+            <tbody>
+            <tr>
+                <td><label class="control-label">LR Number:</label>&nbsp; {{shipment.shipmentNumber}}</td>
+                <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOffice}}</td>
+                <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOffice}}</td>
+                <td><label class="control-label">Date:</label>&nbsp; {{shipment.dispatchDate | date}}</td>
+            </tr>
+            <tr>
+                <td><label class="control-label">LR Type:</label>&nbsp; {{shipment.attributes.LRType}}</td>
+                <td colspan="3"><label class="control-label">WayBill No.:</label>&nbsp; {{shipment.wayBillNo}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div> <!--line panel body -->
+
+</div>

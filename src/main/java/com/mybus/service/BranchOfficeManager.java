@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -89,6 +90,9 @@ public class BranchOfficeManager {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
+        if(query == null) {
+            query = new JSONObject();
+        }
         List<BranchOffice> branchOffices = IteratorUtils.toList(mongoQueryDAO.
                 getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, null, query, pageable).iterator());
         Map<String, String> cityNames = cityManager.getCityNamesMap();
@@ -118,13 +122,16 @@ public class BranchOfficeManager {
                 .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, query, null).iterator());
         return offices;
     }
+
+    /**
+     * Get names Map
+     * @return
+     */
     public Map<String, String> getNamesMap() {
         List<BranchOffice> offices = getNames();
-        Map<String, String> namesMap = new HashMap<>();
-        for(BranchOffice office: offices) {
-            namesMap.put(office.getId(), office.getName());
-        }
-        return namesMap;
+        return offices.stream().collect(
+                Collectors.toMap(BranchOffice::getId, BranchOffice::getName));
+
     }
 
 }

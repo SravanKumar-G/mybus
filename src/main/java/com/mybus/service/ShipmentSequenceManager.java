@@ -2,14 +2,21 @@ package com.mybus.service;
 
 import com.mongodb.WriteResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
+import com.mybus.model.BranchOffice;
+import com.mybus.model.CargoBooking;
 import com.mybus.model.ShipmentType;
 import com.mybus.model.cargo.ShipmentSequence;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -50,5 +57,15 @@ public class ShipmentSequenceManager {
     }
     public Iterable<ShipmentSequence> getShipmentTypes(){
         return shipmentSequenceDAO.findAll(new Sort(Sort.Direction.DESC,"shipmentType"));
+    }
+
+    /**
+     * Get shipment names as Map<ID,NAME>
+     * @return
+     */
+    public Map<String, String> getShipmentNamesMap(){
+        List<ShipmentSequence> shipmentSequences =  IteratorUtils.toList(getShipmentTypes().iterator());
+        return shipmentSequences.stream().collect(Collectors.toMap(ShipmentSequence::getId,
+                ShipmentSequence::getShipmentType));
     }
 }
