@@ -51,7 +51,7 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "activeCityNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get names of the active cities as key value pair", response = Map.class, responseContainer = "Map")
     public Iterable<City> getActiveCityNames(HttpServletRequest request) {
-        return cityManager.getCityNames(false);
+        return cityManager.getCityNames(true);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
