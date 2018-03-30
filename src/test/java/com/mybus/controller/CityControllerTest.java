@@ -147,7 +147,6 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 .content(str).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isBadRequest());
         actions.andExpect(jsonPath("$.message").value("The city State can not be null"));
-
         //send only state
         city = new JSONObject();
         city.put("state", "city");
