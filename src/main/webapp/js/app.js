@@ -462,7 +462,6 @@ myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager,
             $rootScope.currentuser = data;
             opratingAccountsManager.getAccount($rootScope.currentuser.operatorId, function (operatorAccount) {
                 $rootScope.operatorAccount = operatorAccount;
-                console.log("operator account " + $rootScope.operatorAccount);
             });
         }
     });
