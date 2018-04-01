@@ -32,12 +32,12 @@ public class OperatorAccountManagerTest extends AbstractControllerIntegrationTes
     @Test
     public void testSave(){
         OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount("jagan", "jagantravels.com",
-                "jagan.com","bitla","srini","passwro",true));
+                "jagan.com","bitla","srini","passwro",true, true));
         operatorAccountManager.saveAccount(operatorAccount);
         operatorAccount.setName("New");
         expectedEx.expect(BadRequestException.class);
         operatorAccountManager.saveAccount(new OperatorAccount("jagan", "jagantravels.com",
-                "jagan.com","bitla","srini","passwro",true));
+                "jagan.com","bitla","srini","passwro",true, true));
 
     }
 
