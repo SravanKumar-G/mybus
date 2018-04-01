@@ -43,4 +43,6 @@ public class OperatorAccount extends AbstractDocument {
 
     private boolean active;
 
+    private boolean skipAgentValidity;
+
 }

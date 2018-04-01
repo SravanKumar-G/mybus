@@ -205,7 +205,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         }
 
         $scope.canSubmit = function() {
-            if($rootScope.operatorAccount.name ==='jagantravels' || $rootScope.operatorAccount.name ==='jaganreports'){
+            if($rootScope.operatorAccount.skipAgentValidity === true){
                 $scope.service.invalid = false;
                 return true;
             }
