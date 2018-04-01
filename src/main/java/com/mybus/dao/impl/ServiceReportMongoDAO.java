@@ -74,6 +74,7 @@ public class ServiceReportMongoDAO {
             criteria.andOperator(Criteria.where("status").is(status),
                     Criteria.where("journeyDate").gte(startDate));
         }
+        criteria.and(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId());
         Query query = new Query(criteria);
         query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
         query.fields().exclude("bookings");
