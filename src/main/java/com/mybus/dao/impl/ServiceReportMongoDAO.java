@@ -69,14 +69,13 @@ public class ServiceReportMongoDAO {
         Criteria criteria = new Criteria();
         if(status == null){
             criteria.andOperator(Criteria.where("status").exists(false),
-                    Criteria.where("journeyDate").gte(startDate));
+                    Criteria.where("journeyDate").gte(startDate),Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         } else {
             criteria.andOperator(Criteria.where("status").is(status),
-                    Criteria.where("journeyDate").gte(startDate));
+                    Criteria.where("journeyDate").gte(startDate),Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         }
-        criteria.and(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId());
         Query query = new Query(criteria);
-        query.with(new Sort(Sort.Direction.DESC,"journeyDate"));
+        query.with(new Sort(Sort.Direction.DESC,"createdAt"));
         query.fields().exclude("bookings");
         query.fields().exclude("expenses");
         query.fields().exclude("serviceExpense");
