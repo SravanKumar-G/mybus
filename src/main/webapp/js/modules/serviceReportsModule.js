@@ -137,7 +137,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
-                if (booking.paymentType == "CASH" && booking.netAmt && booking.netAmt != "") {
+                if ($scope.isNotOnlineBooking(booking) && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
                 }
             }
