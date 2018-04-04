@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="node_modules/ng-table/bundles/ng-table.css">
 
     <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="js/s-chat/s-chat-support.css" rel="stylesheet">
+    <script src="js/s-chat/s-chat-support.js"></script>
     <script src="lib/underscore-min-1.5.2.js"></script>
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="lib/jquery.table2excel.js"></script>
@@ -74,6 +76,17 @@
 
     <link rel="stylesheet" href="css/app.css">
 
+    <script>
+        sChat.init('ZTmyJTKcxMoHTTshK', {
+            ssl: true,
+            welcomeMessage: 'Hi, how can I help you?',
+            hostName: 'www.simplechat.support',
+            labels: {
+                sendPlaceholder: 'Send the message...',
+                headerTitle: 'Welcome to Srikrishna Travels!'
+            }
+        });
+    </script>
 </head>
 <body>
 

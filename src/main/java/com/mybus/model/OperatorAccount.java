@@ -45,4 +45,6 @@ public class OperatorAccount extends AbstractDocument {
 
     private boolean skipAgentValidity;
 
+    private String onlineBookingTypes;
+
 }
