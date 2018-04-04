@@ -55,6 +55,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
         $scope.agents = [];
+        $scope.onlineBookingTypes = $rootScope.operatorAccount && $rootScope.operatorAccount.onlineBookingTypes?$rootScope.operatorAccount.onlineBookingTypes.split(","):[];
 
         agentManager.getNames(function(names){
             $scope.agents = names;
@@ -94,12 +95,26 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return !$scope.isNotOnlineBooking(booking);
         }
         $scope.isNotOnlineBooking = function(booking) {
-            return booking.bookedBy !='Ticket' && booking.bookedBy !='Red Bus' &&
-                booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
-                && booking.bookedBy !='PAYTM-API'
-                && booking.bookedBy !='YATRA-API'
-                && booking.bookedBy !='abhibus-mantis'
-                && booking.bookedBy !='ABHIBUS';
+
+            if(booking.bookingType){
+                if($scope.onlineBookingTypes.indexOf(booking.bookingType) != -1){
+                    return false;
+                } else{
+                    return true;
+                }
+            } else {
+                if($scope.onlineBookingTypes.indexOf(booking.bookedBy) != -1){
+                    return false;
+                } else{
+                    return true;
+                }
+                /*
+                return booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
+                    && booking.bookedBy !='PAYTM-API'
+                    && booking.bookedBy !='YATRA-API'
+                    && booking.bookedBy !='abhibus-mantis'
+                    && booking.bookedBy !='ABHIBUS'; */
+            }
         }
         $scope.rateToBeVerified=function(booking) {
             return booking.requireVerification || (booking.netAmt < (booking.originalCost*85/100));
@@ -122,7 +137,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
-                if (booking.paymentType == "CASH" && booking.netAmt && booking.netAmt != "") {
+                if ($scope.isNotOnlineBooking(booking) && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
                 }
             }

@@ -2,13 +2,16 @@ package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.dao.OperatorAccountDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
+import com.mybus.model.OperatorAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
  * Created by srinikandula on 12/12/16.
  */
 @Service
+@SessionScope
 public class BookingTypeManager {
     private static final Logger logger = LoggerFactory.getLogger(BookingTypeManager.class);
     public static final String REDBUS_CHANNEL = "REDBUS-API";
@@ -33,7 +37,18 @@ public class BookingTypeManager {
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
+
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+
+    private OperatorAccount operatorAccount;
+
     public boolean isRedbusBooking(Booking booking) {
+        if(operatorAccount == null) {
+            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        }
         if(booking.getBookedBy() == null) {
             return false;
         }
@@ -41,17 +56,23 @@ public class BookingTypeManager {
     }
 
     public boolean isRedbusBooking(Booking booking, String providerType) {
+        if(operatorAccount == null) {
+            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        }
         if(booking.getBookedBy() == null) {
             return false;
         }
         if(providerType.equalsIgnoreCase(BITLA_BUS)){
-            return booking.getBookedBy().equalsIgnoreCase("Red Bus");
+            return booking.getBookingType().equalsIgnoreCase("4");
         } else {
             return booking.getBookedBy().equalsIgnoreCase(REDBUS_CHANNEL);
         }
 
     }
     public boolean isOnlineBooking(Booking booking) {
+        if(operatorAccount == null) {
+            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        }
         if(booking.getBookedBy() == null) {
             return false;
         }
@@ -63,11 +84,14 @@ public class BookingTypeManager {
     }
 
     public boolean isOnlineBooking(Booking booking, String providerType) {
+        if(operatorAccount == null) {
+            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        }
         if(booking.getBookingType() == null) {
             return false;
         }
         if(providerType.equalsIgnoreCase(BITLA_BUS)){
-            return booking.getBookingType().equalsIgnoreCase("2");
+            return operatorAccount.getOnlineBookingTypes().indexOf(booking.getBookingType()) != -1;
         } else {
             if(ABHIBUS_BOOKING_CHANNELS.contains(booking.getBookedBy())){
                 return true;

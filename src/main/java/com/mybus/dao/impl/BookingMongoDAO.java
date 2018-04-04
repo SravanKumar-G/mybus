@@ -180,6 +180,7 @@ public class BookingMongoDAO {
 
         long total = getTotalDistinctPhoneNumbers();
         Aggregation agg = newAggregation(
+                match(where("operatorId").is(sessionManager.getOperatorId())),
                 group("phoneNo").count().as("totalBookings"),
                 sort(Sort.Direction.DESC, "totalBookings"),
                 skip((long)pageable.getPageNumber() * pageable.getPageSize()),
@@ -203,6 +204,7 @@ public class BookingMongoDAO {
             }
         }
         match.add(where("due").is(true));
+        match.add(where("operatorId").is(sessionManager.getOperatorId()));
         match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         Aggregation agg = newAggregation(
@@ -226,6 +228,7 @@ public class BookingMongoDAO {
         }
         addIsBookingDueConditions(query);
         query.addCriteria(where("serviceNumber").is(serviceNumber));
+        query.addCriteria(where("operatorId").is(sessionManager.getOperatorId()));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;

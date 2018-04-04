@@ -73,6 +73,20 @@ public class BitlaPassengerReportService extends BaseService{
             for(Object serviceListing : serviceListings){
                 JSONObject serviceInfo = (JSONObject) serviceListing;
                 ServiceReport serviceReport = new ServiceReport();
+                if(serviceInfo.has("travel_date")){
+                    serviceReport.setJDate(serviceInfo.get("travel_date").toString());
+                }
+                if(serviceInfo.has("route_num")){
+                    serviceReport.setServiceNumber(serviceInfo.get("route_num").toString());
+                }
+                if(serviceInfo.has("route_id")){
+                    serviceReport.setServiceId(serviceInfo.get("route_id").toString());
+                }
+                //reload the service report if found
+                ServiceReport savedReport = serviceReportDAO.findByJDateAndServiceIdAndOperatorId(serviceReport.getJDate(), serviceReport.getServiceId(), sessionManager.getOperatorId());
+                if(savedReport != null) {
+                    serviceReport = savedReport;
+                }
                 if(serviceInfo.has("origin")){
                     serviceReport.setSource(serviceInfo.getString("origin"));
                 }
@@ -82,20 +96,11 @@ public class BitlaPassengerReportService extends BaseService{
                 if(serviceInfo.has("travel_date")){
                     serviceReport.setJourneyDate(ServiceConstants.parseDate(serviceInfo.getString("travel_date")));
                 }
-                if(serviceInfo.has("route_num")){
-                    serviceReport.setServiceNumber(serviceInfo.getString("route_num"));
-                }
-                if(serviceInfo.has("route_id")){
-                    serviceReport.setServiceId(serviceInfo.get("route_id").toString());
-                }
-                if(serviceInfo.has("route_num")){
-                    serviceReport.setServiceNumber(serviceInfo.get("route_num").toString());
-                }
                 if(serviceInfo.has("bus_type")){
                     serviceReport.setBusType(serviceInfo.get("bus_type").toString());
                 }
-                if(serviceInfo.has("travel_date")){
-                    serviceReport.setJDate(serviceInfo.get("travel_date").toString());
+                if(serviceInfo.has("coach_num")){
+                    serviceReport.setVehicleRegNumber(serviceInfo.get("coach_num").toString());
                 }
                 serviceReport.setJourneyDate(ServiceConstants.parseDate(date));
                 serviceReport.setOperatorId(sessionManager.getOperatorId());
@@ -131,10 +136,14 @@ public class BitlaPassengerReportService extends BaseService{
             JSONObject passengerInfo = (JSONObject) info;
             Booking booking = new Booking();
             try {
+                booking.setTicketNo(passengerInfo.getString("pnr_number"));
+                Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo(), sessionManager.getOperatorId());
+                if(savedBooking != null) {
+                    booking = savedBooking;
+                }
                 booking.setServiceReportId(serviceReport.getId());
                 booking.setServiceName(serviceReport.getServiceName());
                 booking.setServiceNumber(serviceReport.getServiceNumber());
-                booking.setTicketNo(passengerInfo.getString("pnr_number"));
                 booking.setJDate(date);
                 booking.setJourneyDate(ServiceConstants.parseDate(booking.getJDate()));
                 booking.setPhoneNo(passengerInfo.getString("mobile"));
@@ -143,6 +152,7 @@ public class BitlaPassengerReportService extends BaseService{
                 booking.setSource(serviceReport.getSource());
                 booking.setDestination(serviceReport.getDestination());
                 booking.setBookedBy(passengerInfo.getString("booked_by"));
+                booking.setBookingType(String.valueOf(passengerInfo.getInt("booking_type_id")));
                 //booking.setBookedDate(passengerInfo.get("BookedDate").toString());
                 booking.setBasicAmount(Double.valueOf(String.valueOf(passengerInfo.get("basic_amount"))));
                 booking.setServiceTax(Double.parseDouble(String.valueOf(passengerInfo.get("service_tax_amount"))));
@@ -153,6 +163,7 @@ public class BitlaPassengerReportService extends BaseService{
                 booking.setLandmark(passengerInfo.getString("boarding_address"));
                 booking.setBoardingTime(passengerInfo.getString("bording_date_time"));
                 booking.setOriginalCost(booking.getNetAmt());
+                booking.setOperatorId(sessionManager.getOperatorId());
                 calculateServiceReportIncome(serviceReport, booking);
                 bookingDAO.save(booking);
             }catch (Exception e) {

@@ -38,6 +38,8 @@ public class DomainFilterInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private UserDAO userDAO;
     @Override
     public boolean preHandle(final HttpServletRequest request,
                              final HttpServletResponse response,
@@ -45,7 +47,13 @@ public class DomainFilterInterceptor extends HandlerInterceptorAdapter {
         logger.info("hostname is "+ request.getServerName());
         String serverName = request.getServerName();
         OperatorAccount operatorAccount = operatorAccountManager.findByServerName(serverName);
-        if(operatorAccount != null) {
+        if(operatorAccount != null && request.getUserPrincipal() != null) {
+            User user = userDAO.findOneByUserName(request.getUserPrincipal().getName());
+            if(!user.isAdmin()){
+                if(!user.getOperatorId().equals(operatorAccount.getId())){
+                    return false;
+                }
+            }
             sessionManager.setOperatorId(operatorAccount.getId());
         }
         return true;

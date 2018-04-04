@@ -23,4 +23,5 @@ public interface BookingDAO extends PagingAndSortingRepository<Booking, String> 
     void deleteByServiceReportId(String serviceId);
     void deleteByFormId(String formId);
 
+    List<Booking> findByPhoneNoAndOperatorId(String phoneNumber, String operatorId);
 }
