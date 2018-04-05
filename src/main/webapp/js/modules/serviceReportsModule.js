@@ -95,7 +95,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return !$scope.isNotOnlineBooking(booking);
         }
         $scope.isNotOnlineBooking = function(booking) {
-
             if(booking.bookingType){
                 if($scope.onlineBookingTypes.indexOf(booking.bookingType) != -1){
                     return false;
