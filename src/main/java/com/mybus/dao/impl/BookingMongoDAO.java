@@ -228,7 +228,6 @@ public class BookingMongoDAO {
         }
         addIsBookingDueConditions(query);
         query.addCriteria(where("serviceNumber").is(serviceNumber));
-        query.addCriteria(where("operatorId").is(sessionManager.getOperatorId()));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         List<Booking> bookings = mongoTemplate.find(query, Booking.class);
         return bookings;

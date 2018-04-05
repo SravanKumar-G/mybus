@@ -46,7 +46,7 @@ public class BookingTypeManager {
     private OperatorAccount operatorAccount;
 
     public boolean isRedbusBooking(Booking booking) {
-        if(operatorAccount == null) {
+        if(operatorAccount == null && sessionManager.getOperatorId() != null) {
             operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         }
         if(booking.getBookedBy() == null) {
@@ -56,7 +56,7 @@ public class BookingTypeManager {
     }
 
     public boolean isRedbusBooking(Booking booking, String providerType) {
-        if(operatorAccount == null) {
+        if(operatorAccount == null && sessionManager.getOperatorId() != null) {
             operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         }
         if(booking.getBookedBy() == null) {
@@ -70,7 +70,7 @@ public class BookingTypeManager {
 
     }
     public boolean isOnlineBooking(Booking booking) {
-        if(operatorAccount == null) {
+        if(operatorAccount == null && sessionManager.getOperatorId() != null) {
             operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         }
         if(booking.getBookedBy() == null) {
@@ -84,13 +84,16 @@ public class BookingTypeManager {
     }
 
     public boolean isOnlineBooking(Booking booking, String providerType) {
-        if(operatorAccount == null) {
+        if(operatorAccount == null && sessionManager.getOperatorId() != null) {
             operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         }
         if(booking.getBookingType() == null) {
             return false;
         }
         if(providerType.equalsIgnoreCase(BITLA_BUS)){
+            if(operatorAccount == null){
+                return false;
+            }
             return operatorAccount.getOnlineBookingTypes().indexOf(booking.getBookingType()) != -1;
         } else {
             if(ABHIBUS_BOOKING_CHANNELS.contains(booking.getBookedBy())){
