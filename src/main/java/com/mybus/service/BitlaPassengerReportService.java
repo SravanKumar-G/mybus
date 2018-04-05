@@ -167,6 +167,7 @@ public class BitlaPassengerReportService extends BaseService{
                 calculateServiceReportIncome(serviceReport, booking);
                 bookingDAO.save(booking);
             }catch (Exception e) {
+                e.printStackTrace();
                 throw new BadRequestException("Failed downloading reports");
             }
         }
