@@ -1,13 +1,11 @@
 package com.mybus.service;
 
+import com.google.common.collect.Lists;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mybus.dao.BookingDAO;
-import com.mybus.dao.ServiceListingDAO;
-import com.mybus.dao.ServiceReportDAO;
-import com.mybus.dao.ServiceReportStatusDAO;
+import com.mybus.dao.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
@@ -19,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by srinikandula on 2/18/17.
@@ -45,6 +45,9 @@ public class BitlaPassengerReportService extends BaseService{
 
     @Autowired
     private BookingTypeManager bookingTypeManager;
+
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
     /**
      * Module that downloads the passenger report creates service reports and bookings
      * @param date
@@ -120,15 +123,18 @@ public class BitlaPassengerReportService extends BaseService{
     }
 
     private String loginBitlaBus() throws UnirestException {
-        HttpResponse<JsonNode> postResponse = Unirest.post("http://jagan.jagantravels.com/api/login.json").field("login","jagan.srini")
-                .field("password","1234qweR").asJson();
+        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+
+        /*HttpResponse<JsonNode> postResponse = Unirest.post("http://jagan.jagantravels.com/api/login.json").field("login","jagan.srini")
+                .field("password","1234qwer").asJson(); */
+        HttpResponse<JsonNode> postResponse = Unirest.post(operatorAccount.getApiURL()).field("login",operatorAccount.getUserName())
+                .field("password",operatorAccount.getPassword()).asJson();
         String key = postResponse.getBody().getObject().getString("key");
         if(key == null){
             throw new BadRequestException("Login failed");
         }
         return key;
     }
-
 
     private  void createServiceReports(String date,
                                       ServiceReport serviceReport, JSONArray passengers) throws ParseException {
@@ -138,9 +144,23 @@ public class BitlaPassengerReportService extends BaseService{
             try {
                 booking.setTicketNo(passengerInfo.getString("pnr_number"));
                 Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo(), sessionManager.getOperatorId());
+                //Bitla software returns individual seats for every PNR. For example a PNR with 2 seats would result in 2 passenger info entries.
+                //Merge them here
                 if(savedBooking != null) {
+                    List<String> bookedSeats = Arrays.asList(savedBooking.getSeats().split(","));
+                    if(!bookedSeats.contains(passengerInfo.getString("seat_number"))){
+                        savedBooking.setSeats(savedBooking.getSeats() +", "+ passengerInfo.getString("seat_number").replace(",", ", "));
+                        savedBooking.setBasicAmount(savedBooking.getBasicAmount() + Double.valueOf(String.valueOf(passengerInfo.get("basic_amount"))));
+                        savedBooking.setServiceTax(savedBooking.getServiceTax() + Double.parseDouble(String.valueOf(passengerInfo.get("service_tax_amount"))));
+                        savedBooking.setCommission(savedBooking.getCommission() + Double.parseDouble(String.valueOf(passengerInfo.get("commission_amount"))));
+                        savedBooking.setNetAmt(savedBooking.getNetAmt() + Double.parseDouble(passengerInfo.get("net_amount").toString()));
+                        calculateServiceReportIncome(serviceReport, savedBooking);
+                        bookingDAO.save(savedBooking);
+                        continue;
+                    }
                     booking = savedBooking;
                 }
+                booking.setOperatorId(sessionManager.getOperatorId());
                 booking.setServiceReportId(serviceReport.getId());
                 booking.setServiceName(serviceReport.getServiceName());
                 booking.setServiceNumber(serviceReport.getServiceNumber());
@@ -163,7 +183,6 @@ public class BitlaPassengerReportService extends BaseService{
                 booking.setLandmark(passengerInfo.getString("boarding_address"));
                 booking.setBoardingTime(passengerInfo.getString("bording_date_time"));
                 booking.setOriginalCost(booking.getNetAmt());
-                booking.setOperatorId(sessionManager.getOperatorId());
                 calculateServiceReportIncome(serviceReport, booking);
                 bookingDAO.save(booking);
             }catch (Exception e) {
