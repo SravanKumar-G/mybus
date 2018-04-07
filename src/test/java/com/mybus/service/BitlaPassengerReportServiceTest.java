@@ -35,6 +35,7 @@ public class BitlaPassengerReportServiceTest  extends AbstractControllerIntegrat
 
 
     @Test
+    @Ignore
     public void testDownloadReports() {
         bitlaPassengerReportService.downloadReports("2018-02-16");
     }
