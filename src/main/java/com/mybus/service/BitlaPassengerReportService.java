@@ -69,8 +69,10 @@ public class BitlaPassengerReportService extends BaseService{
                     (new ServiceReportStatus(ServiceConstants.parseDate(date), ReportDownloadStatus.DOWNLOADING));
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             String key = loginBitlaBus();
+            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+
             //GET http://jagan.jagantravels.com/api/get_passenger_details/2018-02-16.json?api_key=84FEZH5KE3KWAKIQDIZ6R7Q3KWZZT7RW
-            String url = String.format("http://jagan.jagantravels.com/api/get_passenger_details/%s.json?api_key=%s", date, key);
+            String url = String.format(operatorAccount.getApiURL()+"/api/get_passenger_details/%s.json?api_key=%s", date, key);
             HttpResponse<JsonNode> response = Unirest.get(url).asJson();
             JSONArray serviceListings = response.getBody().getArray();
             for(Object serviceListing : serviceListings){
@@ -127,7 +129,7 @@ public class BitlaPassengerReportService extends BaseService{
 
         /*HttpResponse<JsonNode> postResponse = Unirest.post("http://jagan.jagantravels.com/api/login.json").field("login","jagan.srini")
                 .field("password","1234qwer").asJson(); */
-        HttpResponse<JsonNode> postResponse = Unirest.post(operatorAccount.getApiURL()).field("login",operatorAccount.getUserName())
+        HttpResponse<JsonNode> postResponse = Unirest.post(operatorAccount.getApiURL()+"/api/login.json").field("login",operatorAccount.getUserName())
                 .field("password",operatorAccount.getPassword()).asJson();
         String key = postResponse.getBody().getObject().getString("key");
         if(key == null){
@@ -154,6 +156,7 @@ public class BitlaPassengerReportService extends BaseService{
                         savedBooking.setServiceTax(savedBooking.getServiceTax() + Double.parseDouble(String.valueOf(passengerInfo.get("service_tax_amount"))));
                         savedBooking.setCommission(savedBooking.getCommission() + Double.parseDouble(String.valueOf(passengerInfo.get("commission_amount"))));
                         savedBooking.setNetAmt(savedBooking.getNetAmt() + Double.parseDouble(passengerInfo.get("net_amount").toString()));
+                        savedBooking.setOriginalCost(savedBooking.getOriginalCost() + Double.parseDouble(passengerInfo.get("net_amount").toString()));
                         calculateServiceReportIncome(serviceReport, savedBooking);
                         bookingDAO.save(savedBooking);
                         continue;
