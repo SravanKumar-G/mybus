@@ -92,28 +92,11 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         });
         //loadTableData($scope.bookingsTableParams);
         $scope.isOnlineBooking = function(booking) {
-            return !$scope.isNotOnlineBooking(booking);
+            return booking.paymentType === 'ONLINE' ||  booking.paymentType === 'REDBUS';
         }
-        $scope.isNotOnlineBooking = function(booking) {
-            if(booking.bookingType){
-                if($scope.onlineBookingTypes.indexOf(booking.bookingType) != -1){
-                    return false;
-                } else{
-                    return true;
-                }
-            } else {
-                if($scope.onlineBookingTypes.indexOf(booking.bookedBy) != -1){
-                    return false;
-                } else{
-                    return true;
-                }
-                /*
-                return booking.bookedBy !='ONLINE' && booking.bookedBy !='REDBUS-API'
-                    && booking.bookedBy !='PAYTM-API'
-                    && booking.bookedBy !='YATRA-API'
-                    && booking.bookedBy !='abhibus-mantis'
-                    && booking.bookedBy !='ABHIBUS'; */
-            }
+
+        $scope.isCashBooking = function(booking) {
+            return booking.paymentType === 'CASH';
         }
         $scope.rateToBeVerified=function(booking) {
             return booking.requireVerification || (booking.netAmt < (booking.originalCost*85/100));
@@ -136,7 +119,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
 
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
-                if ($scope.isNotOnlineBooking(booking) && booking.netAmt && booking.netAmt != "") {
+                if ($scope.isCashBooking(booking) && booking.netAmt && booking.netAmt != "") {
                     netCashIncome += parseFloat(booking.netAmt);
                 }
             }

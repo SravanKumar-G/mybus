@@ -47,4 +47,9 @@ public class OperatorAccount extends AbstractDocument {
 
     private String onlineBookingTypes;
 
+    public OperatorAccount(String providerType){
+        this.providerType = providerType;
+    }
+
+
 }

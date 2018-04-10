@@ -43,6 +43,7 @@ public class ServiceListing extends AbstractDocument  {
     }
 
     public ServiceListing(ServiceReport serviceReport, SessionManager sessionManager){
+        this.setServiceName(serviceReport.getServiceName());
         this.setServiceId(serviceReport.getServiceId()); //??
         this.setSource(serviceReport.getSource());
         this.setDestination(serviceReport.getDestination());
