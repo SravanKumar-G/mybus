@@ -33,13 +33,6 @@ public class ServiceListingMongoDAO {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Autowired
-    private SystemProperties systemProperties;
-
-    @Autowired
-    private SessionManager sessionManager;
-
-
     public Iterable<ServiceListing> getServiceListing(String date, String operatorId) throws ParseException {
         Date startDate = ServiceUtils.parseDate(date, false);
         Date endDate = ServiceUtils.parseDate(date, true);

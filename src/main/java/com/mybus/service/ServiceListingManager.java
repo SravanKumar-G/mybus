@@ -36,6 +36,8 @@ public class ServiceListingManager {
     @Autowired
     private OperatorAccountDAO operatorAccountDAO;
 
+    @Autowired
+    private ServiceListingDAO serviceListingDAO;
     /**
      * If the listing are not found and if the operator is Abhibus download them now
      * @param date
@@ -43,18 +45,25 @@ public class ServiceListingManager {
      * @throws Exception
      */
     public Iterable<ServiceListing> getServiceListings(String date) throws Exception {
-        Iterable<ServiceListing> serviceListings = serviceListingMongoDAO
-                .getServiceListing(date, sessionManager.getOperatorId());
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+         OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");
         }
+        Iterable<ServiceListing> serviceListings = serviceListingMongoDAO
+                .getServiceListing(date, sessionManager.getOperatorId());
+
         if(!serviceListings.iterator().hasNext()) {
             if (operatorAccount.getProviderType().equalsIgnoreCase(OperatorAccount.ABHIBUS)) {
-                abhiBusPassengerReportService.getActiveServicesByDate(date);
+                serviceListings = abhiBusPassengerReportService.getActiveServicesByDate(date);
             }
         }
         return serviceListings;
+    }
+    public ServiceListing saveServiceListing(ServiceListing serviceListing) {
+        if(serviceListingDAO.findByJDateAndServiceNumberAndOperatorId(serviceListing.getJDate(), serviceListing.getServiceNumber(), serviceListing.getOperatorId()) == null){
+            return serviceListingDAO.save(serviceListing);
+        }
+        return null;
     }
 
 }

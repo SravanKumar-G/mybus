@@ -42,7 +42,7 @@ public class AbhiBusPassengerReportService extends BaseService{
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
-    private ServiceListingDAO serviceListingDAO;
+    private ServiceListingManager serviceListingManager;
 
     @Autowired
     private SessionManager sessionManager;
@@ -73,6 +73,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                 ServiceListing serviceListing = new ServiceListing();
                 serviceListing.setOperatorId(sessionManager.getOperatorId());
                 serviceListing.setJourneyDate(journeyDate);
+                serviceListing.setJDate(date);
                 Map busService = (HashMap) busServ;
                 if(busService.containsKey("ServiceId")){
                     serviceListing.setServiceId(busService.get("ServiceId").toString());
@@ -92,8 +93,8 @@ public class AbhiBusPassengerReportService extends BaseService{
                 if(busService.containsKey("Service_Destination")){
                     serviceListing.setDestination(busService.get("Service_Destination").toString());
                 }
-                if(busService.containsKey("Vehicle_No")){
-                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+                if(busService.containsKey("Vehicle_RegNo")){
+                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_RegNo").toString());
                 }
                 serviceListings.put(serviceListing.getServiceNumber(), serviceListing);
             }
@@ -111,11 +112,8 @@ public class AbhiBusPassengerReportService extends BaseService{
                 }
             }
         }
-        //save only if
-        serviceListings.values().stream().forEach(serviceListing -> {
-            if(serviceListingDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceListing.getServiceNumber()) == null){
-                serviceListingDAO.save(serviceListing);
-            }
+        serviceListings.values().stream().forEach(serviceListing ->  {
+                serviceListingManager.saveServiceListing(serviceListing);
         });
         return serviceListings.values();
     }
