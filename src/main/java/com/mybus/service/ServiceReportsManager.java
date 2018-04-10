@@ -192,6 +192,8 @@ public class ServiceReportsManager {
         ServiceForm serviceForm = new ServiceForm();
         serviceForm.setOperatorId(sessionManager.getOperatorId());
         serviceReport.setNetCashIncome(0);
+        OperatorAccount operatorAccount = operatorAccountDAO.findOne(serviceReport.getOperatorId());
+        String providerType = operatorAccount.getProviderType();
         //need to set this for update balance of the submitted user but not the verified user
         serviceForm.setSubmittedBy(serviceReport.getSubmittedBy());
         serviceForm.setServiceReportId(serviceReport.getId());
@@ -207,9 +209,11 @@ public class ServiceReportsManager {
         if(serviceReport.getStatus() != null && serviceReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
             Map<String, List<String>> seatBookings = new HashMap<>();
             Booking redbusBooking = new Booking();
+            redbusBooking.setOperatorId(serviceReport.getOperatorId());
             redbusBooking.setBookedBy(BookingTypeManager.REDBUS_CHANNEL);
             Booking onlineBooking = new Booking();
             onlineBooking.setBookedBy(BookingTypeManager.ONLINE_CHANNEL);
+            onlineBooking.setOperatorId(serviceReport.getOperatorId());
             double cashIncome = 0;
             for (Booking booking : serviceReport.getBookings()) {
                 //Need to set journey date for service bookings
@@ -221,10 +225,10 @@ public class ServiceReportsManager {
                     booking.setServiceName(serviceReport.getServiceName());
                     booking.setServiceNumber(serviceReport.getServiceNumber());
                 }
-                if (bookingTypeManager.isRedbusBooking(booking)) {
-                    processBooking(seatBookings, redbusBooking, booking);
-                } else if (bookingTypeManager.isOnlineBooking(booking)) {
-                    processBooking(seatBookings, onlineBooking, booking);
+                if (booking.getPaymentType().equals(BookingType.REDBUS)) {
+                    processBooking(seatBookings, redbusBooking, booking, providerType);
+                } else if (booking.getPaymentType().equals(BookingType.ONLINE)) {
+                    processBooking(seatBookings, onlineBooking, booking, providerType);
                 } else {
                     //add dues based on agent
                     booking.setId(null);
@@ -301,12 +305,13 @@ public class ServiceReportsManager {
         paymentDAO.save(serviceReport.getExpenses());
         return serviceReportDAO.save(serviceReport);
     }
-    private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking) {
-        if(bookingTypeManager.isRedbusBooking(booking)) {
+    private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking,
+                                String providerType) {
+        if(bookingTypeManager.isRedbusBooking(booking, providerType)) {
             if (seatBookings.get(BookingTypeManager.REDBUS_CHANNEL) == null) {
                 seatBookings.put(BookingTypeManager.REDBUS_CHANNEL, new ArrayList<>());
             }
-        } else  if(bookingTypeManager.isOnlineBooking(booking)){
+        } else  if(bookingTypeManager.isOnlineBooking(booking, providerType)){
             if (seatBookings.get(BookingTypeManager.ONLINE_CHANNEL) == null) {
                 seatBookings.put(BookingTypeManager.ONLINE_CHANNEL, new ArrayList<>());
             }

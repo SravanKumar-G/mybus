@@ -46,7 +46,8 @@
                     </td>
                     <td data-title="'NetAmt'"  class="clickable-item col-md-2" >
                         <span ng-show="isOnlineBooking(booking)">{{booking.netAmt}} </span>
-                        <span ng-show="isNotOnlineBooking(booking)">
+                        <span ng-show="isCashBooking(booking)">
+                            cash
                             <div class="row">
                                 <div class="col-sm-5"><input type="number" ng-model="booking.netAmt" ng-change="calculateNet(booking)" style="width:70px;">
                                 </div>

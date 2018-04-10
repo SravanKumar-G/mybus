@@ -61,6 +61,8 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
     @Autowired
     private PaymentDAO paymentDAO;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
     @Before
     @After
     public void cleanup() {
@@ -95,6 +97,8 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
     @Test
     public void testUpdateOfficeBalances() throws ParseException {
+        OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount(OperatorAccount.ABHIBUS));
+
         User user = new User();
         BranchOffice office1 = new BranchOffice();
         office1.setName("Office1");
@@ -125,6 +129,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             booking.setBookedBy(agent2.getUsername());
             booking.setSeats("D"+i+",E"+i);
             booking.setNetAmt(2500);
+            booking.setPaymentType(BookingType.CASH);
             if(i ==2){
                 booking.setDue(true);
             } else {
@@ -135,6 +140,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         }
         serviceReport = serviceReportDAO.save(serviceReport);
         serviceReport.setStatus(ServiceStatus.SUBMITTED);
+        serviceReport.setOperatorId(operatorAccount.getId());
         serviceReportsManager.submitReport(serviceReport);
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findAll().iterator());
         assertEquals(6, bookings.size());
@@ -245,6 +251,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             Booking booking = new Booking();
             booking.setSeats("D"+i+",E"+i);
             booking.setNetAmt(2500);
+            booking.setPaymentType(BookingType.CASH);
             if(i ==2){
                 booking.setDue(true);
             } else {
@@ -253,9 +260,11 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             serviceReport.getBookings().add(bookingDAO.save(booking));
         }
         serviceReport = serviceReportDAO.save(serviceReport);
+        OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount(OperatorAccount.ABHIBUS));
         User user = userDAO.save(UserTestService.createNew());
         sessionManager.setCurrentUser(user);
         serviceReport.setStatus(ServiceStatus.SUBMITTED);
+        serviceReport.setOperatorId(operatorAccount.getId());
         serviceReportsManager.submitReport(serviceReport);
         user = userDAO.findOne(user.getId());
         assertEquals(5000, user.getAmountToBePaid(), 0.0);
@@ -265,12 +274,14 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
 
     @Test
     public void testFormVerification() throws ParseException {
+        OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount(OperatorAccount.ABHIBUS));
         ServiceReport serviceReport = new ServiceReport();
         serviceReport.setJourneyDate(new Date());
         for(int i=0; i<3; i++) {
             Booking booking = new Booking();
             booking.setSeats("D"+i+",E"+i);
             booking.setNetAmt(2500);
+            booking.setPaymentType(BookingType.CASH);
             if(i ==2){
                 booking.setDue(true);
             } else {
@@ -284,10 +295,10 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
         serviceReport.setSubmittedBy(user.getId());
         User verifyingUser = userDAO.save(UserTestService.createNew());
         sessionManager.setCurrentUser(verifyingUser);
+        serviceReport.setOperatorId(operatorAccount.getId());
         serviceReportsManager.submitReport(serviceReport);
         user = userDAO.findOne(user.getId());
         verifyingUser = userDAO.findOne(verifyingUser.getId());
-
         assertEquals(5000, user.getAmountToBePaid(), 0.0);
         assertEquals(0, verifyingUser.getAmountToBePaid(), 0.0);
     }

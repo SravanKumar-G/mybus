@@ -279,7 +279,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     } else {
                         //refreshing the booking status
                         if(!savedBooking.isHasValidAgent()) {
-                            savedBooking.setHasValidAgent(bookingTypeManager.hasValidAgent(savedBooking));
+                            savedBooking.setHasValidAgent(bookingTypeManager.hasValidAgent(savedBooking, OperatorAccount.ABHIBUS));
                             bookingDAO.save(savedBooking);
                         }
                     }
@@ -292,17 +292,17 @@ public class AbhiBusPassengerReportService extends BaseService{
         return serviceReportsMap;
     }
     private void calculateServiceReportIncome(ServiceReport serviceReport, Booking booking) {
-        if(bookingTypeManager.isRedbusBooking(booking)){
+        if(bookingTypeManager.isRedbusBooking(booking, OperatorAccount.ABHIBUS)){
             serviceReport.setNetRedbusIncome(serviceReport.getNetRedbusIncome() + booking.getNetAmt());
             booking.setPaymentType(BookingType.REDBUS);
             booking.setHasValidAgent(true);
-        } else if(bookingTypeManager.isOnlineBooking(booking)) {
+        } else if(bookingTypeManager.isOnlineBooking(booking, OperatorAccount.ABHIBUS)) {
             serviceReport.setNetOnlineIncome(serviceReport.getNetOnlineIncome() + booking.getNetAmt());
             booking.setPaymentType(BookingType.ONLINE);
             booking.setHasValidAgent(true);
         } else {
             Agent bookingAgent = bookingTypeManager.getBookingAgent(booking);
-            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking));
+            booking.setHasValidAgent(bookingTypeManager.hasValidAgent(booking,OperatorAccount.ABHIBUS));
             serviceReport.setInvalid(bookingAgent == null);
             adjustAgentBookingCommission(booking, bookingAgent);
             serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() + booking.getNetAmt());
