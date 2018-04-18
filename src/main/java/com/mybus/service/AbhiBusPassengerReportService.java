@@ -42,11 +42,13 @@ public class AbhiBusPassengerReportService extends BaseService{
     private BookingTypeManager bookingTypeManager;
 
     @Autowired
-    private ServiceListingDAO serviceListingDAO;
+    private ServiceListingManager serviceListingManager;
 
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
     /**
      * Find active services for a given date
      * @param date
@@ -55,7 +57,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading reports for date:" + date);
-        initAbhibus();
+        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
         Date journeyDate = ServiceConstants.parseDate(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -73,6 +75,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                 ServiceListing serviceListing = new ServiceListing();
                 serviceListing.setOperatorId(sessionManager.getOperatorId());
                 serviceListing.setJourneyDate(journeyDate);
+                serviceListing.setJDate(date);
                 Map busService = (HashMap) busServ;
                 if(busService.containsKey("ServiceId")){
                     serviceListing.setServiceId(busService.get("ServiceId").toString());
@@ -92,8 +95,8 @@ public class AbhiBusPassengerReportService extends BaseService{
                 if(busService.containsKey("Service_Destination")){
                     serviceListing.setDestination(busService.get("Service_Destination").toString());
                 }
-                if(busService.containsKey("Vehicle_No")){
-                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_No").toString());
+                if(busService.containsKey("Vehicle_RegNo")){
+                    serviceListing.setVehicleRegNumber(busService.get("Vehicle_RegNo").toString());
                 }
                 serviceListings.put(serviceListing.getServiceNumber(), serviceListing);
             }
@@ -111,18 +114,15 @@ public class AbhiBusPassengerReportService extends BaseService{
                 }
             }
         }
-        //save only if
-        serviceListings.values().stream().forEach(serviceListing -> {
-            if(serviceListingDAO.findByJourneyDateAndServiceNumber(journeyDate, serviceListing.getServiceNumber()) == null){
-                serviceListingDAO.save(serviceListing);
-            }
+        serviceListings.values().stream().forEach(serviceListing ->  {
+                serviceListingManager.saveServiceListing(serviceListing);
         });
         return serviceListings.values();
     }
 
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceIds, String date) throws Exception{
         logger.info("downloading service details for date:" + date +" serviceIds "+ serviceIds);
-        initAbhibus();
+        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         inputParam.put("serviceids", serviceIds.trim());

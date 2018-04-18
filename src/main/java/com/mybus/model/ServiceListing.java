@@ -38,6 +38,9 @@ public class ServiceListing extends AbstractDocument  {
     @Field(JOURNEY_DATE)
     @Indexed
     private Date journeyDate;
+
+    private String jDate;
+
     public ServiceListing(){
 
     }
