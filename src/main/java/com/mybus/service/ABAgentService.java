@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mybus.dao.AgentDAO;
+import com.mybus.dao.OperatorAccountDAO;
 import com.mybus.model.Agent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,12 @@ public class ABAgentService extends BaseService{
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+
     public void downloadAgents() throws Exception{
         logger.info("downloading agents data:" );
-        initAbhibus();
+        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
         Collection<Agent> agents = new ArrayList<>();
         Vector params = new Vector();
         Object infos[] = (Object[]) xmlRpcClient.execute("index.agentdetails", params);

@@ -3,10 +3,7 @@ package com.mybus.service;
 
 import com.mashape.unirest.http.Unirest;
 import com.mybus.SystemProperties;
-import com.mybus.model.Agent;
-import com.mybus.model.Booking;
-import com.mybus.model.BookingType;
-import com.mybus.model.ServiceReport;
+import com.mybus.model.*;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
@@ -21,21 +18,16 @@ import java.net.URL;
 public class BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
-    @Autowired
-    private BookingTypeManager bookingTypeManager;
-
     public static XmlRpcClient xmlRpcClient;
 
-    @Autowired
-    private SystemProperties systemProperties;
-
-    public void initAbhibus() {
+    public void initAbhibus(OperatorAccount operatorAccount) {
+        if(operatorAccount.getApiURL() == null){
+            new RuntimeException("Invalid API URL");
+        }
         try {
             if(xmlRpcClient == null) {
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-                String url = systemProperties.getProperty(SystemProperties.SysProps.ABHIBUS_API_URL);
-                //logger.info("Using the URL " + url);
-                config.setServerURL(new URL(url));
+                config.setServerURL(new URL(operatorAccount.getApiURL()));
                 xmlRpcClient = new XmlRpcClient();
                 xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
                 xmlRpcClient.setConfig(config);
@@ -43,19 +35,6 @@ public class BaseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public String initBitlabus(String hostName) {
-        try {
-            org.json.JSONObject jsonObject  = Unirest.post("http://jagan.jagantravels.com/api/login.json")
-                    .field("login", "jagan.srini")
-                    .field("password", "1234qweR")
-                    .asJson().getBody().getObject();
-            return jsonObject.getString("key");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 
