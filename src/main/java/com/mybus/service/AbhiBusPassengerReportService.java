@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.text.ParseException;
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.*;
  * Created by srinikandula on 2/18/17.
  */
 @Service
+@SessionScope
 public class AbhiBusPassengerReportService extends BaseService{
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
 

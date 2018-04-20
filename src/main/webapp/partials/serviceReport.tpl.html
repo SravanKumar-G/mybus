@@ -15,7 +15,7 @@
         <div class="col-sm-7" style="overflow-y: auto;height: 60%;">
             <h4>Bookings</h4>
             <table class="table table-bordered table-condensed table-hover" ng-table="bookingsTableParams">
-                <tr ng-repeat="booking in currentPageOfBookings" ng-s ng-class="{changedRate: rateToBeVerified(booking)}">
+                <tr ng-repeat="booking in currentPageOfBookings" ng-class="{changedRate: rateToBeVerified(booking)}">
                     <td data-title="'Seats'"  sortable="'seats'" class="clickable-item col-md-1">
                         <span ng-show="booking.id != null" title="{{booking.seats}}">
                              {{ booking.seats | cut:true:10:' ...'}}
@@ -28,8 +28,8 @@
                         {{ booking.ticketNo }}
                     </td>
                     <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2"
-                        ng-style="isNotOnlineBooking(booking) && !booking.hasValidAgent && {'background-color':'red'}">
-                        <span ng-show="booking.id != null" >
+                        ng-style="isCashBooking(booking) && !booking.hasValidAgent && {'background-color':'red'}">
+                       <span ng-show="booking.id != null" >
                              {{ booking.bookedBy}}
                         </span>
                         <span ng-show="booking.id == null">

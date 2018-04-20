@@ -61,6 +61,7 @@ public class ServiceReportController {
 		try{
 			return serviceReportsManager.getServicesByDate(travelDate);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new BadRequestException("Error downloading services");
 		}
 	}
