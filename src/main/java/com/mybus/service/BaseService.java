@@ -11,10 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.net.URL;
 
 @Service
+@SessionScope
 public class BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
@@ -25,13 +27,11 @@ public class BaseService {
             new RuntimeException("Invalid API URL");
         }
         try {
-            if(xmlRpcClient == null) {
-                XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-                config.setServerURL(new URL(operatorAccount.getApiURL()));
-                xmlRpcClient = new XmlRpcClient();
-                xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
-                xmlRpcClient.setConfig(config);
-            }
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            config.setServerURL(new URL(operatorAccount.getApiURL()));
+            xmlRpcClient = new XmlRpcClient();
+            xmlRpcClient.setTransportFactory(new XmlRpcCommonsTransportFactory(xmlRpcClient));
+            xmlRpcClient.setConfig(config);
         } catch (Exception e) {
             e.printStackTrace();
         }

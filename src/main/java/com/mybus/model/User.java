@@ -44,6 +44,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     private String lastName;
     private boolean canVerifyRates;
     private boolean admin;
+    private boolean superAdmin;
     private boolean active;
     @RequiresValue
     private String email;
