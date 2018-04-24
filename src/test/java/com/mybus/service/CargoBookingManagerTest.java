@@ -29,6 +29,9 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
 
     @Autowired
     private ShipmentSequenceDAO shipmentSequenceDAO;
+    @Autowired
+    private CargoBookingTestService cargoBookingTestService;
+
     @Before
     @After
     public void cleanup() {
@@ -49,7 +52,7 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
     @Test
     public void testSaveWithValidationsNoError() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
-        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
         CargoBooking saved = shipmentManager.saveWithValidations(shipment);
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         Assert.assertEquals(1, shipments.size());
@@ -58,7 +61,7 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
     @Test(expected = BadRequestException.class)
     public void testSaveWithNoDispatchDate() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
-        CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
         shipment.setDispatchDate(null);
         shipmentManager.saveWithValidations(shipment);
     }

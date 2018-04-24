@@ -34,30 +34,38 @@ public class CargoBookingMongoDAOTest extends AbstractControllerIntegrationTest 
         cargoBookingDAO.deleteAll();
     }
 
+    @Autowired
+    private CargoBookingTestService cargoBookingTestService;
+
     @Test
     public void testFindShipments() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        String fromBranchId = null;
+        String toBranchId = null;
+
         for(int i=0; i<5; i++) {
-            CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
+            CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+            fromBranchId = shipment.getFromBranchId();
+            toBranchId = shipment.getToBranchId();
             shipment = cargoBookingDAO.save(shipment);
             System.out.println(shipment.getId());
         }
         JSONObject query = new JSONObject();
-        query.put("fromBranchId", "1234");
+        query.put("fromBranchId", fromBranchId);
         List<CargoBooking> shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(CargoBooking.class, CargoBooking.COLLECTION_NAME, null, query, null).iterator());
-        assertEquals(5, shipments.size());
-        query.put("fromBranchId", "12345");
+        assertEquals(1, shipments.size());
+        query.put("fromBranchId", 1234);
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(CargoBooking.class, CargoBooking.COLLECTION_NAME, null, query, null).iterator());
         assertEquals(0, shipments.size());
 
         //test with toCityId
         query.remove("fromBranchId");
-        query.put("toBranchId", "1234");
+        query.put("toBranchId", toBranchId);
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(CargoBooking.class, CargoBooking.COLLECTION_NAME, null, query, null).iterator());
-        assertEquals(5, shipments.size());
+        assertEquals(1, shipments.size());
         query.put("toBranchId", "12345");
         shipments = IteratorUtils.toList(
                 mongoQueryDAO.getDocuments(CargoBooking.class, CargoBooking.COLLECTION_NAME, null, query, null).iterator());
