@@ -133,15 +133,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
         return {
             findCargoBookings: function (id, callback) {
-                $http({
-                    url: "/api/v1/shipments/",
-                    method: "GET",
-                    params: {"filter": id}
-                }).then(function (response) {
-                    callback(response.data)
-                }, function (error) {
-                    swal("oops", error.data.message, "error");
-                });
+                $http.post('/api/v1/shipments/', {"filter": id})
+                    .then(function (response) {
+                        callback(response.data)
+                    }, function (error) {
+                        swal("oops", error.data.message, "error");
+                    });
             },
             getCargoBooking: function (id, callback) {
                 $http.get("/api/v1/shipment/"+id)
