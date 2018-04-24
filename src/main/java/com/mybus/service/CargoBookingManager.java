@@ -71,9 +71,11 @@ public class CargoBookingManager {
         shipment.setShipmentNumber(shipmentNumber);
         shipment.setOperatorId(sessionManager.getOperatorId());
         List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
-        for(CargoBookingItem cargoBookingItem: shipment.getItems()){
-            if(cargoBookingItem.getDescription() == null){
-                errors.add("Missing description for item ");
+        if( shipment.getItems() != null) {
+            for(CargoBookingItem cargoBookingItem: shipment.getItems()){
+                if(cargoBookingItem.getDescription() == null){
+                    errors.add("Missing description for item ");
+                }
             }
         }
         if(errors.isEmpty()) {
