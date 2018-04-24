@@ -78,6 +78,10 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private Date dispatchDate;
 
+    private String bookedBy;
+    private String deliveredBy;
+    private String loadedBy;
+
     private List<CargoBookingItem> items;
 
     private String remarks;

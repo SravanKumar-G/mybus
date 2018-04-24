@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.controller.SearchParams;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.CargoBookingDAO;

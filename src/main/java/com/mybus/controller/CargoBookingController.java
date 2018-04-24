@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -33,13 +34,12 @@ public class CargoBookingController extends MyBusBaseController{
     private CargoBookingManager cargoBookingManager;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "shipments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @RequestMapping(value = "shipments", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the shipments available", response = CargoBooking.class, responseContainer = "List")
     public Iterable<CargoBooking> getAll(HttpServletRequest request,
-                                         @ApiParam(value = "JSON Query") @RequestBody(required = false) final JSONObject filter,
+                                         @ApiParam(value = "Name") @RequestBody(required = false) final JSONObject query,
                                          final Pageable pageable) throws ParseException {
-
-        return cargoBookingManager.findShipments(filter, pageable);
+        return cargoBookingManager.findShipments(query, pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

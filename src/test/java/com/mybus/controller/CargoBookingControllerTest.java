@@ -7,8 +7,10 @@ import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.BranchOfficeManager;
+import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.test.util.CargoBookingTestService;
+import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -81,7 +84,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         for(int i=0; i<5; i++) {
             cargoBookingDAO.save(cargoBookingTestService.createNew(shipmentSequence));
         }
-        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")), currentUser));
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/shipments")), currentUser));
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
     }
@@ -89,15 +92,16 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Test
     public void testGetAllFromCityId() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        String fromBranchId = null;
         for(int i=0; i<5; i++) {
-            cargoBookingDAO.save(cargoBookingTestService.createNew(shipmentSequence));
+            fromBranchId = cargoBookingDAO.save(cargoBookingTestService.createNew(shipmentSequence)).getFromBranchId();
         }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("fromBranchId", "1234");
-        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")).content(getObjectMapper()
+        jsonObject.put("fromBranchId", fromBranchId);
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/shipments")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(jsonPath("$").isArray());
-        actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
+        actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
     }
 
     @Test
@@ -107,15 +111,15 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
             CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
                 Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DATE, cal.get(Calendar.DATE) -1);
+                cal.set(Calendar.DATE, cal.get(Calendar.DATE) -2);
                 shipment.setDispatchDate(cal.getTime());
             }
             cargoBookingDAO.save(shipment);
         }
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dispatchDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")).content(getObjectMapper()
+        jsonObject.put("startDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/shipments")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
@@ -124,19 +128,20 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Test
     public void testGetAllByDispathDateRange() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE) -2);
         for(int i=0; i<5; i++) {
             CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DATE, cal.get(Calendar.DATE) -1);
                 shipment.setDispatchDate(cal.getTime());
             }
             cargoBookingDAO.save(shipment);
         }
-
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE) +1);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dispatchDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")).content(getObjectMapper()
+        jsonObject.put("startDate", ServiceConstants.formatDate(cal.getTime()));
+        jsonObject.put("endDate", ServiceConstants.formatDate(new Date()));
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/shipments")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
@@ -145,19 +150,19 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     @Test
     public void testGetAllByBookingDate() throws Exception {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE)-3);
         for(int i=0; i<5; i++) {
             CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
             if(i == 1) {
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.DATE, cal.get(Calendar.DATE)-3);
                 shipment.setDispatchDate(cal.getTime());
             }
             cargoBookingDAO.save(shipment);
         }
-
+        cal.set(Calendar.DATE, cal.get(Calendar.DATE) +1);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dispatchDate", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-        ResultActions actions = mockMvc.perform(asUser(get(format("/api/v1/shipments")).content(getObjectMapper()
+        jsonObject.put("startDate", ServiceConstants.formatDate(cal.getTime()));
+        ResultActions actions = mockMvc.perform(asUser(post(format("/api/v1/shipments")).content(getObjectMapper()
                 .writeValueAsBytes(jsonObject)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
