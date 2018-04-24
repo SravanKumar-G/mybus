@@ -18,8 +18,8 @@
                 <tbody>
                 <tr>
                     <td><label class="control-label">LR Number:</label>&nbsp; {{shipment.shipmentNumber}}</td>
-                    <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOffice}}</td>
-                    <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOffice}}</td>
+                    <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOfficeName}}</td>
+                    <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOfficeName}}</td>
                     <td><label class="control-label">Date:</label>&nbsp; {{shipment.dispatchDate | date}}</td>
                 </tr>
                 <tr>
@@ -152,7 +152,7 @@
 
 <div class="report_left_inner" style="display: none;">
     <div>
-        <p style="font-size: 14px;">Hyderabad :- Sri Krishna Travels,<br> Opp : METRO Traffic Police Station, <br>Near
+        <p style="font-size: 16px;color:#218cff;">Hyderabad :- Sri Krishna Travels,<br> Opp : METRO Traffic Police Station, <br>Near
         HUDA Truck Parking, <br> Kukatpally, Hyderabad. <br> pin code:500072., Ph.No:00-
             7207432999</p>
     </div>
@@ -163,8 +163,9 @@
             <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Number:</label>&nbsp;
                 <b>{{shipment.shipmentNumber}}</b></td>
             <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
-                <b>{{shipment.attributes.fromBranchOffice}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp; <b>{{shipment.attributes.toBranchOffice}}</b>
+                <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
+            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
+                <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
             </td>
             <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
                 <b>{{shipment.dispatchDate | date}}</b></td>
@@ -215,38 +216,48 @@
                 {{item.charge}}
             </td>
         </tr>
-        <tr>
+     <!--   <tr>
             <td style="border: 1px solid #000;padding-left: 5px;color: red;">Totals</td>
             <td style="border: 1px solid #000;color: red;"></td>
-            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.quantity}}
-            </td>
+            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.quantity}}</td>
             <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.weight}}</td>
-            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.charge}}</td>
+            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{shipment.totalCharge}}</td>
+        </tr>-->
+        <tr>
+            <td style="border: 1px solid #000;"></td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)
+            </td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.loadingCharge}}</td>
         </tr>
         <tr>
             <td style="border: 1px solid #000;"></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">( Handling
-                Charges:0.00 Unhandling Charges:0.00 ) Other Charges (₹)
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading Charges (₹)
             </td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">0.00</td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.unloadingCharge}}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #000;"></td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges (₹)
+            </td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}</td>
         </tr>
         <tr>
             <td style="border: 1px solid #000;">Condition Of the Goods</td>
             <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
             <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt Payable
                 (₹)</b></td>
-            <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;">1500.00</td>
+            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"><b>{{shipment.totalCharge}}</b></td>
         </tr>
         <tr>
             <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
                 Number</b></td>
-            <td style="border: 1px solid #000;padding-left: 5px;"><b>SRKT123456</b></td>
+            <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
         </tr>
         <tr>
             <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
             <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
             <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number</td>
-            <td style="border: 1px solid #000;padding-left: 5px;"><b>AP36AA3194</b></td>
+            <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
         </tr>
         <tr>
             <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">Receivers
@@ -256,7 +267,7 @@
                 colspan="2">Signature
             </td>
             <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">Booked
-                by Sravan at {{shipment.createdAt | date: 'medium'}}
+                by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
             </td>
 
         </tr>
@@ -297,7 +308,9 @@
     <div style="width:800px;padding-left: 15px;"><span style="font-size: 35px;">✂</span><small style="position:relative;top: -2px;font-size: 35px;left:-10px;"> -------------------------------------------------------------</small></div>
     <!--line panel body -->
     <div>
-        From Office:
+        <p style="font-size: 16px;color:#218cff;">Hyderabad :- Sri Krishna Travels,<br> Opp : METRO Traffic Police Station, <br>Near
+            HUDA Truck Parking, <br> Kukatpally, Hyderabad. <br> pin code:500072., Ph.No:00-
+            7207432999</p>
     </div>
     <div class="panel-body no-padding">
         <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
@@ -306,8 +319,9 @@
                 <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Number:</label>&nbsp;
                     <b>{{shipment.shipmentNumber}}</b></td>
                 <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
-                    <b>{{shipment.attributes.fromBranchOffice}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp; <b>{{shipment.attributes.toBranchOffice}}</b>
+                    <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
+                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
+                    <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
                 </td>
                 <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
                     <b>{{shipment.dispatchDate | date}}</b></td>
@@ -358,38 +372,49 @@
                     {{item.charge}}
                 </td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td style="border: 1px solid #000;padding-left: 5px;color: red;">Totals</td>
                 <td style="border: 1px solid #000;color: red;"></td>
                 <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.quantity}}
                 </td>
                 <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.weight}}</td>
                 <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.charge}}</td>
+            </tr>-->
+            <tr>
+                <td style="border: 1px solid #000;"></td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)
+                </td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.loadingCharge}}</td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000;"></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">( Handling
-                    Charges:0.00 Unhandling Charges:0.00 ) Other Charges (₹)
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading Charges (₹)
                 </td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">0.00</td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.unloadingCharge}}</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000;"></td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges (₹)
+                </td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}</td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000;">Condition Of the Goods</td>
                 <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
                 <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt Payable
                     (₹)</b></td>
-                <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;">1500.00</td>
+                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"><b>{{shipment.totalCharge}}</b></td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
                     Number</b></td>
-                <td style="border: 1px solid #000;padding-left: 5px;"><b>SRKT123456</b></td>
+                <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
                 <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
                 <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number</td>
-                <td style="border: 1px solid #000;padding-left: 5px;"><b>AP36AA3194</b></td>
+                <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">Sender
@@ -399,7 +424,7 @@
                     colspan="2">Signature
                 </td>
                 <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">Booked
-                    by Sravan at {{shipment.createdAt | date: 'medium'}}
+                    by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
                 </td>
 
             </tr>
