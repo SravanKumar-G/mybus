@@ -2,9 +2,15 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingsController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, branchOfficeManager){
+    .controller("CargoBookingsController",function($rootScope, $scope){
         $scope.headline = "Cargo Bookings";
 
+    }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
+        $scope.headline = "Cargo Bookings";
+        $scope.bookings = bookings;
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
     })
 
     .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
@@ -13,11 +19,29 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.users = [];
         $scope.shipment = {'shipmentType':'Paid'};
         $scope.shipment.dispatchDate = new Date();
+        $scope.filter;
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
         });
 
-
+        $scope.getTotalPrice = function () {
+            $scope.shipment.totalCharge = 0;
+            for(var index=0;index<$scope.shipment.items.length; index++) {
+                if($scope.shipment.items[index].charge){
+                    $scope.shipment.totalCharge +=  parseFloat($scope.shipment.items[index].charge);
+                }
+            }
+            if($scope.shipment.loadingCharge) {
+                $scope.shipment.totalCharge +=  parseFloat($scope.shipment.loadingCharge);
+            }
+            if($scope.shipment.unloadingCharge) {
+                $scope.shipment.totalCharge +=  parseFloat($scope.shipment.unloadingCharge);
+            }
+            if($scope.shipment.otherCharge) {
+                $scope.shipment.totalCharge +=  parseFloat($scope.shipment.otherCharge);
+            }
+            return $scope.shipment.totalCharge;
+        }
         $scope.printArea = function() {
             var w=window.open();
             w.document.write(document.getElementsByClassName('report_left_inner')[0].innerHTML);
@@ -84,8 +108,41 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             });
         }
 
+        $scope.lookUpCargoBooking = function(){
+            if(!this.filter) {
+                swal("Error", "Search text is missing", "error");
+            } else{
+                cargoBookingManager.findCargoBookings(this.filter, function (response) {
+                    if(response.length == 0) {
+                        swal("oops", "Nothing found!!", "error");
+                    } else {
+                        $rootScope.modalInstance = $uibModal.open({
+                            templateUrl : 'cargobookings-modal.html',
+                            controller : 'CargoBookingLookupController',
+                            resolve : {
+                                bookings : function(){
+                                    return response;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
         return {
+            findCargoBookings: function (id, callback) {
+                $http({
+                    url: "/api/v1/shipments/",
+                    method: "GET",
+                    params: {"filter": id}
+                }).then(function (response) {
+                    callback(response.data)
+                }, function (error) {
+                    swal("oops", error.data.message, "error");
+                });
+            },
             getCargoBooking: function (id, callback) {
                 $http.get("/api/v1/shipment/"+id)
                     .then(function (response) {
@@ -101,12 +158,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     }, function (error) {
                         swal("oops", error, "error");
                     })
-            },createShipment: function(cargoBooking, callback){
+            },createShipment: function(cargoBooking, successcallback){
                 $http.post("/api/v1/shipment", cargoBooking)
                     .then(function (response) {
-                        callback(response.data)
+                        successcallback(response.data)
                     }, function (error) {
-                        swal("oops", error, "error");
+                        swal("oops", error.data.message, "error");
                     })
             }
         }

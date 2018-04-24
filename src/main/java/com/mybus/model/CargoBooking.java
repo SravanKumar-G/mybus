@@ -25,10 +25,12 @@ import java.util.List;
 public class CargoBooking extends AbstractDocument implements AttributesDocument{
     public static final String COLLECTION_NAME="cargoBooking";
     public static final String DISPATCH_DATE="dispatchDate";
+    public static final String SHIPMENT_NUMBER="shipmentNumber";
 
     private String forUser;
 
     @RequiresValue
+    @Field(SHIPMENT_NUMBER)
     @Indexed(unique = true)
     private String shipmentNumber;
 
@@ -48,31 +50,26 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private String shipmentType;
 
-
-    @RequiresValue
-    private int noOfPackages;
-    private boolean active;
-
     private String fromEmail;
-    @RequiresValue
+
     @Indexed
-    private long fromContact;
+    @RequiresValue
+    private Long fromContact;
     private String fromName;
 
     private String wayBillNo;
     private String tinNumber;
     private String toEmail;
 
-    @RequiresValue
     @Indexed
-    private long toContact;
+    @RequiresValue
+    private Long toContact;
     private String toName;
 
-    private long weight;
-    private String contents;
-    private long frightCharges;
-    private long deliveryCharges;
-    private long otherCharges;
+    private long loadingCharge = 0;
+    private long unloadingCharge = 0;
+    private long otherCharge = 0;
+
 
     @RequiresValue
     private long totalCharge;

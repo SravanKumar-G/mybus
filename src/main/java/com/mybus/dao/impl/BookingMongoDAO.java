@@ -180,7 +180,7 @@ public class BookingMongoDAO {
 
         long total = getTotalDistinctPhoneNumbers();
         Aggregation agg = newAggregation(
-                match(where("operatorId").is(sessionManager.getOperatorId())),
+                match(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId())),
                 group("phoneNo").count().as("totalBookings"),
                 sort(Sort.Direction.DESC, "totalBookings"),
                 skip((long)pageable.getPageNumber() * pageable.getPageSize()),

@@ -1,6 +1,6 @@
 <div class="container" style="width: 95%">
 
-    <div ng-include="'partials/clargoLookup.tpl.htm'"></div>
+    <div ng-include="'partials/cargoLookup.tpl.html'"></div>
     <form name="cargoDetails" class="form-horizontal" autocomplete="off" role="form" unsaved-warning-form >
         <div class="form-group">
             <label class="col-sm-2 control-label">From Branch Office<span class="data-required">*</span></label>
@@ -143,16 +143,26 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="item in shipment.items">
-                        <td><input type="text" placeholder="Item Description" ng-model="item.description"></td>
-                        <td><input type="number" placeholder="value" ng-model="item.value"></td>
-                        <td><input type="number" placeholder="quantity" ng-model="item.quantity"></td>
-                        <td><input type="number" placeholder="weight" ng-model="item.weight"></td>
-                        <td><input type="number" placeholder="charge" ng-model="item.charge" ng-change="calculateTotal()">
+                        <td><input type="text" class="form-control" placeholder="Item Description" ng-model="item.description"></td>
+                        <td><input type="number" class="form-control" placeholder="value" ng-model="item.value"></td>
+                        <td><input type="number" class="form-control" placeholder="quantity" ng-model="item.quantity"></td>
+                        <td><input type="number" class="form-control" placeholder="weight" ng-model="item.weight"></td>
+                        <td><input type="number" class="form-control" placeholder="charge" ng-model="item.charge" ng-change="calculateTotal()">
                             <span class="glyphicon glyphicon-remove-sign" ng-show="item.index" ng-click="deleteItem(item)"></span>
                         </td>
                     </tr>
+
                     <tr>
-                        <td>TOTALS</td><td></td><td></td><td></td><td></td><td>{{shipment.totalPrice}}</td>
+                        <td colspan="4">Loading charges</td><td><input type="number" class="form-control" placeholder="Loading charge" ng-model="shipment.loadingCharge" ng-change="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Unloading charges</td><td><input type="number" class="form-control" placeholder="Unloading charge" ng-model="shipment.unloadingCharge" ng-change="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Other charges</td><td><input type="number" class="form-control" placeholder="Other charge" ng-model="shipment.otherCharge" ng-change="calculateTotal()"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">TOTALS</td><td>{{getTotalPrice()}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -20,14 +20,12 @@ public class CargoBookingTestService {
         shipment.setToBranchId("1234");
         shipment.setShipmentStatus(ShipmentStatus.ARRIVED);
         shipment.setShipmentType(shipmentSequence.getId());
-        shipment.setFromContact(1234);
-        shipment.setToContact(1234);
-        shipment.setNoOfPackages(2);
+        shipment.setFromContact(new Long(1234));
+        shipment.setToContact(new Long(1234));
         shipment.setFromName("from");
         shipment.setToName("to");
         shipment.setTotalCharge(100);
         shipment.setDispatchDate(new Date());
-        shipment.setContents("Something");
         return shipment;
     }
 }

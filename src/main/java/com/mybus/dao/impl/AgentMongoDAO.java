@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class AgentMongoDAO {
 
     public List<String> findAgentNamesByOfficeId(String officeId) {
         final Query query = new Query();
-        query.addCriteria(Criteria.where("operatorId").is(sessionManager.getOperatorId()));
+        query.addCriteria(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         if(officeId != null) {
             query.addCriteria(where("branchOfficeId").is(officeId));
         }

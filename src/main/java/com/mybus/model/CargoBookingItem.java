@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-class CargoBookingItem {
+public class CargoBookingItem {
     private String description;
     private String value;
     private String charge;

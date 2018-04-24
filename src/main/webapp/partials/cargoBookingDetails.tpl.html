@@ -18,8 +18,8 @@
                 <tbody>
                     <tr>
                         <td><label class="control-label">LR Number:</label>&nbsp; {{shipment.shipmentNumber}}</td>
-                        <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOffice}}</td>
-                        <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOffice}}</td>
+                        <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOfficeName}}</td>
+                        <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOfficeName}}</td>
                         <td><label class="control-label">Date:</label>&nbsp; {{shipment.dispatchDate | date}}</td>
                     </tr>
                     <tr>
@@ -36,16 +36,16 @@
                         Sender Details
                     </div>
                     <div class="panel-body p_rl_0">
-                        <div class="form-group m_b_8">
+                        <div class="form-group row">
                             <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">Mobile No<span class="mandatory_symbol ng-scope">&nbsp;</span></label>
                             {{shipment.fromContact}}
                         </div>
-                        <div class="form-group m_b_8">
+                        <div class="form-group row">
                             <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
                                 Sender Name &nbsp;</span>
                             </label> {{shipment.fromName}}
                         </div>
-                        <div class="form-group m_b_8">
+                        <div class="form-group row">
                             <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
                                 Sender Email
                             </label> {{shipment.fromEmail}}
@@ -58,23 +58,23 @@
                     <div class="panel-heading clr_l_brown bold ng-binding">
                         Receiver Details
                     </div>
-                    <div class="panel-body p_rl_0">
+                    <div class="panel-body row">
                         <label class="col-sm-4 col-xs-4 control-label LabelForm">
                                 <span class="ng-binding">Mobile No
                                     <span class="mandatory_symbol ng-scope">&nbsp;</span>
                                 </span>
                         </label>{{shipment.toContact}}
                     </div>
-                    <div class="form-group m_b_8">
+                    <div class="form-group row">
                         <label class="col-sm-4 col-xs-4 control-label">
                                 <span class="ng-binding">
                                     Receiver Name
-                                    <span class="mandatory_symbol">&nbsp;*</span>
+                                    <span class="mandatory_symbol">&nbsp;</span>
                                 </span>
                         </label>
                         {{shipment.toName}}
                     </div>
-                    <div class="form-group m_b_8">
+                    <div class="form-group row">
                         <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
                             To Email
                         </label>{{shipment.toEmail}}
@@ -101,6 +101,10 @@
                     <td>{{item.weight}}</td>
                     <td>{{item.charge}}</td>
                 </tr>
+                <tr><td colspan="4">Loading Charge</td><td>{{shipment.loadingCharge}}</td></tr>
+                <tr><td colspan="4">Unloading Charge</td><td>{{shipment.unloadingCharge}}</td></tr>
+                <tr><td colspan="4">Other Charge</td><td>{{shipment.otherCharge}}</td></tr>
+                <tr><td colspan="4">Total Charge</td><td>{{shipment.totalCharge}}</td></tr>
                 </tbody>
             </table>
         </div>
@@ -112,7 +116,7 @@
             </div>
             <div class="col-sm-6">
                 <label class="col-sm-4 col-xs-4 control-label LabelForm"> Booked By: </label>
-                {{shipment.remarks}}
+                {{shipment.attributes.bookedBy}}
             </div>
             <div class="col-sm-6" ng-if="shipment.attributes.forUser">
                 <label class="col-sm-4 col-xs-4 control-label LabelForm"> For User: </label>
