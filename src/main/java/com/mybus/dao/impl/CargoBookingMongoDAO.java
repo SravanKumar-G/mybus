@@ -68,7 +68,7 @@ public class CargoBookingMongoDAO {
             if(query.get("deliveredBy") != null) {
                 match.add(Criteria.where("deliveredBy").is(query.get("deliveredBy").toString()));
             }
-            //match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+            match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
 
             if(match.size() > 0) {
                 criteria.andOperator(match.toArray(new Criteria[match.size()]));
