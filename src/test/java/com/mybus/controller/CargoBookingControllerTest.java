@@ -202,14 +202,12 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         CargoBooking shipment = CargoBookingTestService.createNew(shipmentSequence);
         shipment = cargoBookingDAO.save(shipment);
-        shipment.setContents(null);
         ResultActions actions = mockMvc.perform(asUser(put("/api/v1/shipment/"+shipment.getId())
                 .content(getObjectMapper().writeValueAsBytes(shipment))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        assertEquals(shipment.getContents(), null);
     }
     @Test
     public void testGetShipment() throws Exception {

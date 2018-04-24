@@ -8,6 +8,8 @@ import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.CargoBooking;
+import com.mybus.model.CargoBookingItem;
+import com.mybus.model.Payment;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
@@ -45,6 +47,9 @@ public class CargoBookingManager {
     @Autowired
     private UserManager userManager;
 
+    @Autowired
+    private PaymentManager paymentManager;
+
     private Map<String, String> lrTypes;
 
 
@@ -65,12 +70,35 @@ public class CargoBookingManager {
         String shipmentNumber = shipmentSequenceManager.createLRNumber(shipment.getShipmentType());
         shipment.setShipmentNumber(shipmentNumber);
         shipment.setOperatorId(sessionManager.getOperatorId());
-        shipment.setActive(true);
         List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
+        for(CargoBookingItem cargoBookingItem: shipment.getItems()){
+            if(cargoBookingItem.getDescription() == null){
+                errors.add("Missing description for item ");
+            }
+        }
         if(errors.isEmpty()) {
-            return cargoBookingDAO.save(shipment);
+            shipment = cargoBookingDAO.save(shipment);
+            if(shipment.getId() != null) {
+                updateUserCashBalance(shipment);
+            } else {
+                throw new BadRequestException("Failed creating shipment");
+            }
         } else {
-            throw new BadRequestException("Required data missing ");
+            throw new BadRequestException("Required data missing "+ String.join("<br> ", errors));
+        }
+        return shipment;
+    }
+
+    /**
+     * Update user cash balance for cargo booking
+     * @param cargoBooking
+     */
+    private void updateUserCashBalance(CargoBooking cargoBooking) {
+        if(cargoBooking.getShipmentNumber().startsWith(ShipmentSequence.PAID_TYPE)){
+            Payment payment = paymentManager.createPayment(cargoBooking);
+            if(payment == null){
+                throw new BadRequestException("Failed to create payment for Cargo Booking");
+            }
         }
     }
 
@@ -89,8 +117,11 @@ public class CargoBookingManager {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
         }
-        query = ServiceUtils.addOperatorId(query, sessionManager);
-        return cargoBookingMongoDAO.findShipments(query, pageable);
+        List<CargoBooking> shipments = cargoBookingMongoDAO.findShipments(query, pageable);
+        shipments.stream().forEach(shipment -> {
+            loadShipmentDetails(shipment);
+        });
+        return shipments;
     }
 
     public void delete(String shipmentId) {

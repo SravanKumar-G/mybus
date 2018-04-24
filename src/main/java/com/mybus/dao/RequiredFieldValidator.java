@@ -29,7 +29,6 @@ public class RequiredFieldValidator {
             e.printStackTrace();
         }
         for(Field field : className.getDeclaredFields()){
-            Class type = field.getType();
             String name = field.getName();
             Annotation annotation = field.getAnnotation(RequiresValue.class);
             if(annotation != null) {

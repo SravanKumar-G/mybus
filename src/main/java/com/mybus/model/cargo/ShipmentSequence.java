@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @Setter
 @NoArgsConstructor
 public class ShipmentSequence extends AbstractDocument{
+    public static String PAID_TYPE = "P";
+    public static String TOPAY_TYPE = "TP";
+
     @Indexed(unique = true)
     public String shipmentCode;
     public String shipmentType;

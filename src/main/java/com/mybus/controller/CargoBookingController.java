@@ -36,9 +36,11 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipments", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the shipments available", response = CargoBooking.class, responseContainer = "List")
     public Iterable<CargoBooking> getAll(HttpServletRequest request,
-                                         @ApiParam(value = "JSON Query") @RequestBody(required = false) final JSONObject query,
+                                         @ApiParam(value = "JSON Query") @RequestParam(name = "filter", required = false) final String filter,
                                          final Pageable pageable) throws ParseException {
-        return cargoBookingManager.findShipments(query, pageable);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("filter", filter);
+        return cargoBookingManager.findShipments(jsonObject, pageable);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

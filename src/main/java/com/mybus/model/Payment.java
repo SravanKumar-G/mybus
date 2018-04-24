@@ -23,6 +23,7 @@ public class Payment extends AbstractDocument {
     public static final String STATUS_REJECTED = "Rejected";
     public static final String SERVIVE_FROM_PAYMENT = "Service Form";
     public static final String BOOKING_DUE_PAYMENT = "Booking Due";
+    public static final String CARGO_BOOKING = "Cargo Booking";
     public static final String CASH_TRANSFER = "Cash Transfer";
     public static final String BRANCHOFFICEID = "branchOfficeId";
 

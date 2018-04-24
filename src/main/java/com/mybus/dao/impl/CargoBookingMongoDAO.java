@@ -33,7 +33,7 @@ public class CargoBookingMongoDAO {
     @Autowired
     private SessionManager sessionManager;
 
-    public Iterable<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
+    public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
         final Query q = new Query();
         if(query != null) {
             if(query.get(CargoBooking.DISPATCH_DATE) != null ){
@@ -41,10 +41,14 @@ public class CargoBookingMongoDAO {
                 Date end = ServiceUtils.parseDate(query.get(CargoBooking.DISPATCH_DATE).toString(), true);
                 q.addCriteria(where(CargoBooking.DISPATCH_DATE).gte(start).lte(end));
             }
+            if(query.get("filter") != null) {
+                q.addCriteria(where(CargoBooking.SHIPMENT_NUMBER).regex(query.get("filter").toString(), "i"));
+            }
         }
         q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
 
         List<CargoBooking> cargoBookings = mongoTemplate.find(q, CargoBooking.class);
         return cargoBookings;
     }
+
 }

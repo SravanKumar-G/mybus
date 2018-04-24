@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,7 +55,9 @@ public class ShipmentSequenceManager {
     public String createLRNumber(String shipmentType) {
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipmentType);
         shipmentSequence = nextSequeceNumber(shipmentSequence);
-        return shipmentSequence.getShipmentCode()+ shipmentSequence.nextNumber;
+        Calendar currentDate = Calendar.getInstance();
+        return String.format("%s-%d-%d-%d",shipmentSequence.getShipmentCode()+shipmentSequence.nextNumber,
+                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),currentDate.get(Calendar.DATE));
     }
     public Iterable<ShipmentSequence> getShipmentTypes(){
         return shipmentSequenceDAO.findAll(new Sort(Sort.Direction.DESC,"shipmentType"));
