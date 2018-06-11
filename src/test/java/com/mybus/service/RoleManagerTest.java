@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by CrazyNaveen on 4/27/16.
  */
@@ -122,7 +120,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
     	menus.add("persons");
     	menus.add("config");
     	role.setMenus(menus);
-    	Role roleTest = roleManager.updateManagingRoles(role);
+    	Role roleTest = roleManager.updateRole(role);
     	assertNotNull(roleTest);
     	assertNotNull(roleTest.getMenus());
     	assertEquals(4, roleTest.getMenus().size());

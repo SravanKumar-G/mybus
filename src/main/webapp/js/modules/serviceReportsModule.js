@@ -55,6 +55,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
         $scope.agents = [];
+        $scope.differenceAmountRatio = 99;
         $scope.onlineBookingTypes = $rootScope.operatorAccount && $rootScope.operatorAccount.onlineBookingTypes?$rootScope.operatorAccount.onlineBookingTypes.split(","):[];
 
         agentManager.getNames(function(names){
@@ -99,14 +100,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return booking.paymentType === 'CASH';
         }
         $scope.rateToBeVerified=function(booking) {
-            return booking.requireVerification || (booking.netAmt < (booking.originalCost*85/100));
+            return booking.requireVerification || (booking.netAmt < (booking.originalCost*$scope.differenceAmountRatio/100));
         }
         $scope.calculateNet = function(changedBooking) {
             var netCashIncome = 0;
             var expenseTotal = 0;
             //if the net amount is 13% less than original cost
             if(changedBooking){
-                if( Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
+                if( Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*$scope.differenceAmountRatio/100)) {
                     changedBooking.requireVerification = true;
                 } else {
                     changedBooking.requireVerification = false;

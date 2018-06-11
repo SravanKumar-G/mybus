@@ -66,6 +66,8 @@ public class Booking extends AbstractDocument{
     private String orderId;
 
     private double netAmt;
+    private double grossCollection;
+
     //capture the actual cost
     private double originalCost;
     @Field(value = DUE)

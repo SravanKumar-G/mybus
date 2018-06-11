@@ -41,12 +41,10 @@ public class RoleManager {
         Role duplicateRole = roleDAO.findOneByName(role.getName());
         //duplicateRole =123, name=test
 
-        if (duplicateRole != null && !duplicateRole.getId().equals(role.getId())) {
+        if (duplicateRole != null && !duplicateRole.getId().equals(role.getId()) && duplicateRole.getName().equals(role.getName())) {
             throw new RuntimeException("Role already exists with the same name");
         }
-        if (duplicateRole != null && duplicateRole.getName().equals(role.getName())) {
-            throw new RuntimeException("Role already exists with the same name in DB");
-        }
+
         if(logger.isDebugEnabled()) {
             logger.debug("Saving role: [{}]", role);
         }
@@ -58,7 +56,7 @@ public class RoleManager {
         Preconditions.checkNotNull(role, "The role can not be null");
         Preconditions.checkNotNull(role.getId(), "Unknown role for update");
         Role loadedRole = roleDAO.findOneByName(role.getName());
-        if((loadedRole != null) && (loadedRole.getName().equals(role.getName()))){
+        if((loadedRole != null) && (loadedRole.getName().equals(role.getName()) && !loadedRole.getId().equals(role.getId()))){
             throw new RuntimeException("cannot update role with the same name");
         }else {
             try {
@@ -92,23 +90,6 @@ public class RoleManager {
         Role role =  roleDAO.findOne(roleId);
         return role;
     }
-    
-    public Role updateManagingRoles(Role role){
-    	Preconditions.checkNotNull(role, "The role can not be null");
-    	Preconditions.checkNotNull(role.getId(), "The role id not be null");
-    	Preconditions.checkNotNull(role.getName(), "The role can not be null");
-    	Role roleFromDB = roleDAO.findOne(role.getId());
-    	if(roleFromDB.getName().equalsIgnoreCase(role.getName())) {
-    		try {
-				roleFromDB.merge(role);
-			} catch (Exception e) {
-				 throw new BadRequestException("Error merging role info",e);
-			}
-    		
-    	}else {
-    		 throw new BadRequestException(" role info is invalid");
-    	}
-    	return roleDAO.save(roleFromDB);
-    }
+
 
 }

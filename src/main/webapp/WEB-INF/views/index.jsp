@@ -61,7 +61,7 @@
     <script src="js/modules/operatorAccountsModule.js"></script>
 
 
-    <script src="js/controllers/headerNavBarhomeCtrl.js"></script>
+    <script src="js/modules/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
     <script src="js/directives/pwCheck.js"></script>
     <script src="js/directives/stateOptions.js"></script>
@@ -166,13 +166,13 @@
 
         <div id="wrapper" class="toggled">
       
-        <div  id="sidebar-wrapper" class="nav-side-menu" >
+        <div  id="sidebar-wrapper" class="nav-side-menu" ng-controller="MenuBarController">
                     <div class="menu-list">
                         <ul id="menu-content" class="menu-content ">
-                            <li data-toggle="collapse" data-target="#cargo" class="collapsed">
+                            <li data-toggle="collapse" data-target="#cargo" class="collapsed" ng-if="currentuser.canAccessCargoModule">
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
-                            <ul class="sub-menu collapse" id="cargo">
+                            <ul class="sub-menu collapse" id="cargo" >
                                 <my-menu url="cargoBooking" label="CargoBooking" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
@@ -193,9 +193,10 @@
                                 <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="CollectionZones" class="nav navbar-nav col-md-12 " ></my-menu>
                                 <my-menu label="GSTFilters" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="FillingStations" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Suppliers" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="OperatorAccounts" class="nav navbar-nav col-md-12" ng-if="currentuser.superAdmin"></my-menu>
-                                <my-menu label="Roles" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Roles" class="nav navbar-nav col-md-12" ng-if="currentuser.admin"></my-menu>
+                                <my-menu label="ManageRoles" class="nav navbar-nav col-md-12" ng-if="currentuser.admin"></my-menu>
                                 <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class UserManager {
     private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
+
     @Autowired
     private UserDAO userDAO;
 
@@ -70,6 +71,7 @@ public class UserManager {
         loadedUser.setAddress1(user.getAddress1());
         loadedUser.setActive(user.isActive());
         loadedUser.setRole(user.getRole());
+        loadedUser.setAccessibleModules(user.getAccessibleModules());
         return saveUser(loadedUser);
     }
 
