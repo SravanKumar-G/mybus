@@ -270,7 +270,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setOrderId(passengerInfo.get("OrderId").toString());
                     booking.setOperatorId(sessionManager.getOperatorId());
                     //copy the cost to for verifying the difference
-                    booking.setNetAmt(booking.getNetAmt());
+                    booking.setNetAmt(Double.parseDouble(passengerInfo.get("NetAmt").toString()));
                     booking.setGrossCollection(booking.getBasicAmount() + booking.getServiceTax());
                     booking.setOriginalCost(booking.getNetAmt());
                     Booking savedBooking = bookingDAO.findByTicketNoAndOperatorId(booking.getTicketNo().trim(),

@@ -189,6 +189,17 @@ public class ServiceReportsManager {
      */
     public ServiceForm submitReport(ServiceReport serviceReport) throws ParseException {
         logger.info("submitting the report");
+
+        //Check if all the bookings has agent set on them
+        serviceReport.getBookings().stream().forEach(booking -> {
+            if(booking.getBookedBy() == null){
+                throw new RuntimeException("Please select agent for seat:"+ booking.getSeats());
+            }
+            //for servie bookings the operatorId is not set, so set it here
+            if(booking.getOperatorId() == null) {
+                booking.setOperatorId(sessionManager.getOperatorId());
+            }
+        });
         ServiceForm serviceForm = new ServiceForm();
         serviceForm.setOperatorId(sessionManager.getOperatorId());
         serviceReport.setNetCashIncome(0);
