@@ -57,12 +57,16 @@
                             </div>
                         </span>
                     </td>
-                    <td data-title="'Cost'"  class="clickable-item col-md-2" >
-                        {{booking.originalCost}}
+                    <td data-title="'Basic'"  class="clickable-item col-md-2" >
+                        {{booking.basicAmount}}
                     </td>
                     <td data-title="'Service Tax'"  class="clickable-item col-md-2" >
                         {{booking.serviceTax}}
                     </td>
+                    <td data-title="'Commission'"  class="clickable-item col-md-2" >
+                        {{booking.commission}}
+                    </td>
+
                 </tr>
                 <tr><td>Total Seats:{{service.totalSeats}}</td></tr>
                 <tr ng-if="!currentPageOfBookings || currentPageOfBookings.length === 0">

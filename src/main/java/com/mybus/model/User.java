@@ -10,6 +10,8 @@ import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 /**
  * Created by skandula on 3/31/15.
  */
@@ -28,7 +30,6 @@ public class User extends AbstractDocument implements AttributesDocument{
     public static final String USER_NAME = "userName";
     public static final String BRANCH_USER = "branchUser";
     public static final String AMOUNT_TO_BE_PAID = "amountToBePaid";
-
 
     @Field(USER_NAME)
     @RequiresValue
@@ -64,6 +65,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     private double amountToBePaid;
     private double amountToBeCollected;
 
+    private List<String> accessibleModules;
 
     public User(JSONObject json){
         if(json.containsKey("id")) {
@@ -108,6 +110,10 @@ public class User extends AbstractDocument implements AttributesDocument{
         if(json.containsKey("branchOfficeId")){
             this.branchOfficeId = json.get("branchOfficeId").toString();
         }
+        if(json.containsKey("accessibleModules")){
+            this.accessibleModules = (List<String>)json.get("accessibleModules");
+        }
+
     }
 
     @Override

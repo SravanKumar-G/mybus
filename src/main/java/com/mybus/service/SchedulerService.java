@@ -41,7 +41,7 @@ public class SchedulerService {
     @Autowired
     private ServiceReportsManager serviceReportsManager;
 
-    @Scheduled(cron = "0 0 5 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void checkExpiryDates () {
         logger.info("checking expiry date..." + systemProperties.getProperty(SystemProperties.SysProps.EXPIRATION_BUFFER));

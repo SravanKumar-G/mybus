@@ -143,19 +143,23 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     //
   // ======================== Edit User =====================================
   //
-  .controller('UpdateUserController', function ($scope,$stateParams, $location, $http, $log,userManager,cityManager,roleManager,cancelManager, branchOfficeManager) {
+  .controller('UpdateUserController', function ($scope,$stateParams, $location, $rootScope, $http, $log,userManager,cityManager,roleManager,cancelManager, branchOfficeManager) {
         $scope.headline = "Edit User";
         $scope.id=$stateParams.id;
         $scope.user={};
         $scope.roles =[];
         $scope.cities =[];
+        $scope.allModules =[];
+        $scope.currentUser    = null;
         var pageable;
 
-      $scope.rolesInit = function(){
+        $scope.rolesInit = function(){
         	roleManager.getAllRoles(pageable,function(data){
         		$scope.roles = data.content;
         	});
         }
+
+
         $scope.offices = [];
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
@@ -168,8 +172,22 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                 userManager.getUserWithId($scope.id, function (data) {
                     $scope.user = data;
                     $scope.confirmPassword = $scope.user.password;
+                    $scope.currentUser = $rootScope.currentuser;
+                    $scope.allModules = $scope.user.attributes.allModules.split(",");
                 });
             });
+        };
+
+        $scope.toggleSelection = function(module) {
+            if(!$scope.user.accessibleModules){
+                $scope.user.accessibleModules = [];
+            }
+            var idx = $scope.user.accessibleModules.indexOf(module);
+            if (idx > -1) {
+                $scope.user.accessibleModules.splice(idx, 1);
+            } else {
+                $scope.user.accessibleModules.push(module);
+            }
         };
         $scope.loadUserWithId();
         $scope.save = function(){

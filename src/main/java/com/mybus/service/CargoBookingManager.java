@@ -1,9 +1,8 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
@@ -11,7 +10,6 @@ import com.mybus.model.CargoBooking;
 import com.mybus.model.CargoBookingItem;
 import com.mybus.model.Payment;
 import com.mybus.model.cargo.ShipmentSequence;
-import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by srinikandula on 12/10/16.

@@ -66,5 +66,20 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
         $scope.$on('UpdateHeader', function(){
             $scope.updateHeader();
         });
+    }).controller('MenuBarController', function($scope,$rootScope, $location, $stateParams,userManager ) {
+        $scope.currentUser = null;
+        $scope.$on('currentuserLoaded', function(){
+            $scope.currentUser = $rootScope.currentuser;
+            if($scope.currentUser.accessibleModules){
+                var accessibleModules = $scope.currentUser.accessibleModules;
+                var allModules = $scope.currentUser.attributes.allModules.split(",");
+                for(var a=0;a<allModules.length;a++){
+                    if(accessibleModules.indexOf(allModules[a]) > -1){
+                        $scope.currentUser['canAccess'+allModules[a]]  = true;
+                    }
+                }
+            }
+            console.log($scope.currentUser);
+        });
     });
 

@@ -84,6 +84,20 @@
             <input type="checkbox" id="editActiveInput" class="form-control form-check-input" ng-model="user.active">
         </div>
     </div>
+    <div class="form-group" ng-if="currentUser.admin">
+        <div class="col-sm-2"></div>
+        <div class="col-xs-8">
+            <label style="padding-left: 10px;" ng-repeat="module in allModules">
+                <input
+                        type="checkbox"
+                        name="selectedModules[]"
+                        value="{{module}}"
+                        ng-checked="user.accessibleModules.indexOf(module) > -1"
+                        ng-click="toggleSelection(module)"
+                > {{module}}
+            </label>
+        </div>
+    </div>
 
     <div class="form-group">
         <div class="col-xs-4"> </div>

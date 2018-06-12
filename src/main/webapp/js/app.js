@@ -41,6 +41,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('cargobooking',{
+                level:1,
                 url:'/cargobooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
@@ -130,25 +131,25 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'fuelExpenseReportsCtrl'
             })
             .state('officeduereport/:id', {
-                level:1,
+                level:2,
                 url:'/officeduereport/:id',
                 templateUrl: 'partials/officeduereport.tpl.html',
                 controller: 'OfficeDueReportController'
             })
             .state('officeduereport/:id/:date', {
-                level:1,
+                level:2,
                 url:'/officeduereport/:id/:date',
                 templateUrl: 'partials/officeduereportByDate.tpl.html',
                 controller: 'OfficeDueByDateReportController'
             })
             .state('officeduereportbyservice/:serviceNumber', {
-                level:1,
+                level:2,
                 url:'/officeduereportbyservice/:serviceNumber',
                 templateUrl: 'partials/officeDueReportByService.tpl.html',
                 controller: 'OfficeDueByServiceController'
             })
             .state('officeduereportbyagent/:agentName', {
-                level:1,
+                level:2,
                 url:'/officeduereportbyagent/:agentName',
                 templateUrl: 'partials/officeDueReportByAgent.tpl.html',
                 controller: 'OfficeDueByAgentController'
@@ -355,7 +356,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'AddAgentPlanTypeController'
             })
             .state('docs', {
-                level:1,
+                level:2,
                 url:'/docs',
                 templateUrl: 'partials/api-docs.tpl.html',
                 controller: 'APIDocsController'
@@ -372,9 +373,9 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/trip.tpl.html',
                 controller: 'TripController as tripCtrl'
             })
-            .state('managingroles',{
+            .state('manageroles',{
                 level:2,
-                url:'/managingRoles',
+                url:'/manageroles',
                 templateUrl: 'partials/managing-roles.tpl.html',
                 controller: 'ManagingRolesController'
             })
@@ -418,9 +419,9 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/gstFilters.tpl.html',
                 controller: 'GSTFiltersController'
             })
-            .state('fillingstations',{
-                url:'/fillingstations',
-                templateUrl: 'partials/fillingStations.tpl.html',
+            .state('suppliers',{
+                url:'/suppliers',
+                templateUrl: 'partials/suppliers.tpl.html',
                 controller: 'FillingStationsController'
             })
             .state('tripreports',{
@@ -460,6 +461,7 @@ myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager,
             userManager.getGroupsForCurrentUser();
             myBus.constant('currentuser', data);
             $rootScope.currentuser = data;
+            $rootScope.$broadcast("currentuserLoaded");
             opratingAccountsManager.getAccount($rootScope.currentuser.operatorId, function (operatorAccount) {
                 $rootScope.operatorAccount = operatorAccount;
             });

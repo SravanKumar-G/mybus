@@ -152,9 +152,7 @@
 
 <div class="report_left_inner" style="display: none;">
     <div>
-        <p style="font-size: 16px;color:#218cff;">Hyderabad :- Sri Krishna Travels,<br> Opp : METRO Traffic Police Station, <br>Near
-        HUDA Truck Parking, <br> Kukatpally, Hyderabad. <br> pin code:500072., Ph.No:00-
-            7207432999</p>
+        <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.fromBranchOfficeAddress}}</p>
     </div>
     <div class="panel-body no-padding">
     <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
@@ -216,13 +214,6 @@
                 {{item.charge}}
             </td>
         </tr>
-     <!--   <tr>
-            <td style="border: 1px solid #000;padding-left: 5px;color: red;">Totals</td>
-            <td style="border: 1px solid #000;color: red;"></td>
-            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.quantity}}</td>
-            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.weight}}</td>
-            <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{shipment.totalCharge}}</td>
-        </tr>-->
         <tr>
             <td style="border: 1px solid #000;"></td>
             <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)
@@ -308,9 +299,7 @@
     <div style="width:800px;padding-left: 15px;"><span style="font-size: 35px;">✂</span><small style="position:relative;top: -2px;font-size: 35px;left:-10px;"> -------------------------------------------------------------</small></div>
     <!--line panel body -->
     <div>
-        <p style="font-size: 16px;color:#218cff;">Hyderabad :- Sri Krishna Travels,<br> Opp : METRO Traffic Police Station, <br>Near
-            HUDA Truck Parking, <br> Kukatpally, Hyderabad. <br> pin code:500072., Ph.No:00-
-            7207432999</p>
+        <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.toBranchOfficeAddress}}</p>
     </div>
     <div class="panel-body no-padding">
         <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
@@ -372,14 +361,6 @@
                     {{item.charge}}
                 </td>
             </tr>
-            <!--<tr>
-                <td style="border: 1px solid #000;padding-left: 5px;color: red;">Totals</td>
-                <td style="border: 1px solid #000;color: red;"></td>
-                <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.quantity}}
-                </td>
-                <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.weight}}</td>
-                <td style="border: 1px solid #000;color: red;text-align: right;padding-right: 5px;">{{item.charge}}</td>
-            </tr>-->
             <tr>
                 <td style="border: 1px solid #000;"></td>
                 <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)

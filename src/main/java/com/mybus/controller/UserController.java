@@ -33,10 +33,16 @@ public class UserController extends MyBusBaseController{
     @Autowired
     private SessionManager sessionManager;
 
+    private String modules = "CargoModule,AnalyticsModule,AgentsModule,OperatorAccountsModule,UsersModule,VehicleModule," +
+            "ServiceReportsModule,DueReportModule,CashTransfersModule,PaymentsModule,OfficeExpensesModule," +
+            "ExpensesIncomesModule,CashBalancesModule,InvoicesModule,PendingReportsModule";
+
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "user/me", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public User getUserInfo(HttpServletRequest request) {
         User account = (User)userDAO.findOneByUserName(request.getUserPrincipal().getName());
+        account.getAttributes().put("allModules", modules);
         return account;
     }
 

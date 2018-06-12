@@ -55,6 +55,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.currentPageOfBookings = [];
         $scope.allBookings = [];
         $scope.agents = [];
+        $scope.differenceAmountRatio = 99;
         $scope.onlineBookingTypes = $rootScope.operatorAccount && $rootScope.operatorAccount.onlineBookingTypes?$rootScope.operatorAccount.onlineBookingTypes.split(","):[];
 
         agentManager.getNames(function(names){
@@ -99,14 +100,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return booking.paymentType === 'CASH';
         }
         $scope.rateToBeVerified=function(booking) {
-            return booking.requireVerification || (booking.netAmt < (booking.originalCost*85/100));
+            return booking.requireVerification || (booking.netAmt < (booking.originalCost*$scope.differenceAmountRatio/100));
         }
         $scope.calculateNet = function(changedBooking) {
             var netCashIncome = 0;
             var expenseTotal = 0;
             //if the net amount is 13% less than original cost
             if(changedBooking){
-                if( Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*85/100)) {
+                if( Math.abs(changedBooking.netAmt) < (changedBooking.originalCost*$scope.differenceAmountRatio/100)) {
                     changedBooking.requireVerification = true;
                 } else {
                     changedBooking.requireVerification = false;
@@ -174,7 +175,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.service.totalSeats = seatsCount;
         }
         $scope.addBooking= function() {
-            $scope.currentPageOfBookings.push({'index':$scope.currentPageOfBookings.length, 'paymentType':"CASH"});
+            $scope.currentPageOfBookings.push({'index':$scope.currentPageOfBookings.length, 'paymentType':"CASH","ticketNo":"SERVICE"});
             $scope.service.bookings = $scope.currentPageOfBookings;
         }
         $scope.deleteBooking= function(booking) {
@@ -197,7 +198,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.calculateNet();
         }
         $scope.submit = function() {
-            $scope.service.status = "SUBMITTED";
             $scope.submitReport();
         }
 
@@ -219,12 +219,14 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return !$scope.service.invalid && $scope.service.requiresVerification && $scope.service.status !== "SUBMITTED";
         }
         $scope.submitReport = function() {
+            $scope.service.status = "SUBMITTED";
             serviceReportsManager.submitReport($scope.service, function (response) {
                 sweetAlert("Great", "The report successfully submitted", "success");
                 window.history.back();
                 //$scope.goToServiceForm($scope.service);
-            },function (error) {
-                swal("Oops...", "Error submitting the report", "error");
+            },function (error, message) {
+                $scope.service.status = null;
+                swal("Oops...", "Error submitting the report :"+ error.data.message, "error");
             });
 
         }
@@ -565,7 +567,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                         successcallback(response.data);
                     },function (error) {
                         $log.debug("error loading service reports");
-                        errorcallback();
+                        errorcallback(error);
                     });
             },getServices:function(date,callback) {
                 $http.get('api/v1/serviceListings/activeListings?travelDate='+date)

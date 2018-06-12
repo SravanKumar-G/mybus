@@ -94,9 +94,9 @@ public class RoleController extends MyBusBaseController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @RequestMapping(value = "manageingrole/{id}", method = RequestMethod.PUT)
-    public boolean updateManagingRoles(HttpServletRequest request,@ApiParam(value = "JSON for Role to be created") @RequestBody final Role role){
-    	roleManager.updateManagingRoles(role);
+    @RequestMapping(value = "manageRole", method = RequestMethod.PUT)
+    public boolean updateManagingRoles(HttpServletRequest request,@ApiParam(value = "JSON for Role to be created") @RequestBody Role role){
+    	roleManager.updateRole(role);
     	return true;
     }
 

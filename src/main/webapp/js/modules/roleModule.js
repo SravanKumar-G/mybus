@@ -275,7 +275,7 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 				});
 		},
 		updateManageingRole : function (roleID,role,callback) {
-			$http.put('/api/v1/manageingrole/'+roleID,role)
+			$http.put('/api/v1/manageRole', role)
 				.then(function (response) {
 					callback(response.data);
 					swal("Great", "Roles has been updated successfully", "success");
