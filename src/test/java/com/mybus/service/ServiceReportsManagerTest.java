@@ -251,6 +251,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             Booking booking = new Booking();
             booking.setSeats("D"+i+",E"+i);
             booking.setNetAmt(2500);
+            booking.setBookedBy("test");
             booking.setPaymentType(BookingType.CASH);
             if(i ==2){
                 booking.setDue(true);
@@ -281,6 +282,7 @@ public class ServiceReportsManagerTest extends AbstractControllerIntegrationTest
             Booking booking = new Booking();
             booking.setSeats("D"+i+",E"+i);
             booking.setNetAmt(2500);
+            booking.setBookedBy("test");
             booking.setPaymentType(BookingType.CASH);
             if(i ==2){
                 booking.setDue(true);
