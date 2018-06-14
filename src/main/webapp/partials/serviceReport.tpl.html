@@ -30,7 +30,7 @@
                     <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2"
                         ng-style="isCashBooking(booking) && !booking.hasValidAgent && {'background-color':'red'}">
                        <span ng-show="booking.id != null" >
-                             {{ booking.bookedBy}}
+                             {{ booking.bookedBy}} {{booking.index}}
                         </span>
                         <span ng-show="booking.id == null">
                              <select ng-options="agent.username as agent.username for agent in agents" class="form-control" ng-model="booking.bookedBy"></select>
@@ -74,7 +74,7 @@
                 </tr>
             </table>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <h4>Expenses</h4>
             <table class="table table-bordered table-condensed table-hover">
                 <tr ng-repeat="expense in service.expenses">
