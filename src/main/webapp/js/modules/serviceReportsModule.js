@@ -179,7 +179,9 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.service.bookings = $scope.currentPageOfBookings;
         }
         $scope.deleteBooking= function(booking) {
-            $scope.currentPageOfBookings.splice(booking.index,1);
+            $scope.currentPageOfBookings =  _.filter($scope.currentPageOfBookings, function(thisBooking) {
+                return thisBooking.index !== booking.index;
+            });
             $scope.service.bookings = $scope.currentPageOfBookings;
             $scope.calculateNet();
         }
