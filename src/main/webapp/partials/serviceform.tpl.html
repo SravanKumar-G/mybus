@@ -18,8 +18,8 @@
                     <td data-title="'BookedBy'"  sortable="'bookedBy'" class="clickable-item col-md-2">{{ booking.bookedBy }}</td>
                     <td data-title="'Ticket'"  sortable="'ticketNo'" class="clickable-item col-md-2">{{ booking.ticketNo }}</td>
                     <td data-title="'Seats'"  sortable="'seatsCount'" class="clickable-item col-md-2">{{ booking.seatsCount }}</td>
-                    <td data-title="'Rate'"  class="clickable-item col-md-2" >
-                        {{booking.basicAmount + booking.serviceTax + booking.commission}}
+                    <td data-title="'Basic + Tax'"  class="clickable-item col-md-2" >
+                        {{booking.basicAmount + booking.serviceTax}}
                     </td>
                     <td data-title="'NetAmt'"  sortable="'netAmt'" class="clickable-item col-md-2" >
                         {{booking.netAmt}}
