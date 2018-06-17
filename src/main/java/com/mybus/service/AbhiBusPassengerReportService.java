@@ -236,7 +236,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     if(busService.containsKey("Conductor_Phone")
                             && busService.get("Conductor_Phone") != null
                             && busService.get("Conductor_Phone").toString().trim().length() > 0) {
-                        conductorInfo += (" " + Long.parseLong(busService.get("Conductor_Phone").toString()));
+                        conductorInfo += (" " + busService.get("Conductor_Phone").toString());
                     }
                     serviceReport.setConductorInfo(conductorInfo);
                 }
