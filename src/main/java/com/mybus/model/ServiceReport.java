@@ -56,7 +56,13 @@ public class ServiceReport extends AbstractDocument  {
     private double netRedbusIncome;
     private double netOnlineIncome;
     private double netIncome;
-    
+
+
+    private double luggageIncome;
+    private double advance;
+    private double onRoadServiceIncome;
+    private double otherIncome;
+
     private Date verifiedOn;
     private String verifiedBy;
 

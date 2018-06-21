@@ -259,6 +259,11 @@ public class ServiceReportsManager {
                     cashIncome += booking.getNetAmt();
                 }
             }
+            //add the additional income to cash income
+            serviceForm.setNetCashIncome(serviceReport.getAdvance() + serviceReport.getLuggageIncome() +
+                    serviceReport.getOtherIncome() + serviceReport.getOnRoadServiceIncome());
+            cashIncome = serviceReport.getAdvance() + serviceReport.getLuggageIncome() +
+                    serviceReport.getOtherIncome() + serviceReport.getOnRoadServiceIncome();
 
             if (redbusBooking.getSeatsCount() > 0) {
                 redbusBooking.setNetAmt(roundUp(redbusBooking.getNetAmt()));
