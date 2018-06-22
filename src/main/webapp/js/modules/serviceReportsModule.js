@@ -103,7 +103,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return booking.requireVerification || (booking.netAmt < (booking.originalCost*$scope.differenceAmountRatio/100));
         }
         $scope.calculateNet = function(changedBooking) {
-            var netCashIncome = 0;
+            $scope.service.netCashIncome = 0;
             var expenseTotal = 0;
             //if the net amount is 13% less than original cost
             if(changedBooking){
@@ -121,7 +121,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if ($scope.isCashBooking(booking) && booking.netAmt && booking.netAmt != "") {
-                    netCashIncome += parseFloat(booking.netAmt);
+                    $scope.service.netCashIncome += parseFloat(booking.netAmt);
                 }
             }
             for (var i =0; i< $scope.service.expenses.length;i++) {
@@ -130,8 +130,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                     expenseTotal += parseFloat(expense.amount);
                 }
             }
-            netCashIncome -= expenseTotal;
-            $scope.service.netCashIncome = netCashIncome.toFixed(2);
+            $scope.service.netCashIncome -= expenseTotal;
+             if($scope.service.luggageIncome){
+                $scope.service.netCashIncome += parseFloat($scope.service.luggageIncome);
+            }
+            if($scope.service.advance){
+                $scope.service.netCashIncome += parseFloat($scope.service.advance);
+            }
+            if($scope.service.onRoadServiceIncome){
+                $scope.service.netCashIncome += parseFloat($scope.service.onRoadServiceIncome);
+            }
+            if($scope.service.otherIncome){
+                $scope.service.netCashIncome += parseFloat($scope.service.otherIncome);
+            }
+            $scope.service.netCashIncome = $scope.service.netCashIncome.toFixed(2);
             $scope.service.netIncome = (parseFloat($scope.service.netCashIncome) +
             parseFloat($scope.service.netRedbusIncome) +
             parseFloat($scope.service.netOnlineIncome)).toFixed(2);
@@ -150,10 +162,9 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.due) {
-                    netCashIncome -= parseFloat(booking.netAmt);
+                    $scope.service.netCashIncome -= parseFloat(booking.netAmt);
                 }
             }
-            $scope.service.netCashIncome = netCashIncome.toFixed(2);
         }
         $scope.getFuelCost=function() {
             if($scope.service && $scope.service.serviceExpense){

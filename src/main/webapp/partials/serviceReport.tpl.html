@@ -57,16 +57,18 @@
                             </div>
                         </span>
                     </td>
+                    <td data-title="'Net'"  class="clickable-item col-md-2" >
+                        {{booking.netAmt}}
+                    </td>
                     <td data-title="'Basic'"  class="clickable-item col-md-2" >
                         {{booking.basicAmount}}
                     </td>
-                    <td data-title="'Service Tax'"  class="clickable-item col-md-2" >
+                    <td data-title="'Tax'"  class="clickable-item col-md-2" >
                         {{booking.serviceTax}}
                     </td>
-                    <td data-title="'Commission'"  class="clickable-item col-md-2" >
+                    <td data-title="'Comm'"  class="clickable-item col-md-2" >
                         {{booking.commission}}
                     </td>
-
                 </tr>
                 <tr><td>Total Seats:{{service.totalSeats}}</td></tr>
                 <tr ng-if="!currentPageOfBookings || currentPageOfBookings.length === 0">
@@ -75,6 +77,29 @@
             </table>
         </div>
         <div class="col-sm-4">
+            <h4>Additional Income</h4>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr>
+                    <td>Luggage</td>
+                    <td><input type="number" placeholder="amount" ng-model="service.luggageIncome" ng-change="calculateNet()">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Advance Given</td>
+                    <td><input type="number" placeholder="amount" ng-model="service.advance" ng-change="calculateNet()">
+                    </td>
+                </tr>
+                <tr>
+                    <td>On Road Service Bookings</td>
+                    <td><input type="number" placeholder="amount" ng-model="service.onRoadServiceIncome" ng-change="calculateNet()">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Other</td>
+                    <td><input type="number" placeholder="amount" ng-model="service.otherIncome" ng-change="calculateNet()">
+                    </td>
+                </tr>
+            </table>
             <h4>Expenses</h4>
             <table class="table table-bordered table-condensed table-hover">
                 <tr ng-repeat="expense in service.expenses">
