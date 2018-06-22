@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.mybus.service.ServiceConstants;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.text.ParseException;
 import java.util.*;
 
 
