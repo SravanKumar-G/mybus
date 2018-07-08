@@ -64,7 +64,7 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
     };
 
     $scope.isAdmin = function(){
-        return userManager.getUser().admin;
+        return userManager.getCurrentUser().admin;
     };
     })
 

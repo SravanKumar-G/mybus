@@ -169,11 +169,11 @@
         <div  id="sidebar-wrapper" class="nav-side-menu" ng-controller="MenuBarController">
                     <div class="menu-list">
                         <ul id="menu-content" class="menu-content ">
-                            <li data-toggle="collapse" data-target="#cargo" class="collapsed" ng-if="currentuser.canAccessCargoModule">
+                            <li data-toggle="collapse" data-target="#cargo" class="collapsed" ng-if="canAccessCargoModule()">
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="cargo" >
-                                <my-menu url="cargoBooking" label="CargoBooking" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">

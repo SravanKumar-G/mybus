@@ -40,19 +40,19 @@ var myBus = angular.module('myBus', [
 myBus.config(['$stateProvider','$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
         $stateProvider
-            .state('cargobooking',{
+            .state('newbooking',{
                 level:1,
-                url:'/cargobooking',
+                url:'/newbooking',
                 templateUrl: 'partials/cargoBooking.tpl.html',
                 controller: 'CargoBookingController'
-            }) .state('cargobooking/:id',{
-                url:'/cargobooking/:id',
+            }) .state('viewcargobooking/:id',{
+                url:'/viewcargobooking/:id',
                 templateUrl: 'partials/cargoBookingDetails.tpl.html',
                 controller: 'CargoBookingController'
             }).state('cargobookings',{
                 url:'/cargobookings',
                 templateUrl: 'partials/cargoBookings.tpl.html',
-                controller: 'CargoBookingsController'
+                controller: 'CargoBookingListController'
             }).state('collectionzones',{
                 url:'/collectionZones',
                 templateUrl: 'partials/collectionZones.tpl.html',
@@ -467,6 +467,5 @@ myBus.run(function ($rootScope,$state, $location, appConfigManager, userManager,
             });
         }
     });
-
 
 });

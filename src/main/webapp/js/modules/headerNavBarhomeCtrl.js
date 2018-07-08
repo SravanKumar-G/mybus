@@ -81,5 +81,18 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
             }
             console.log($scope.currentUser);
         });
+        $scope.canAccessCargoModule = function(){
+            if($scope.currentUser){
+                var accessibleModules = $scope.currentUser.accessibleModules;
+                for(var moduleName in accessibleModules){
+                    if(accessibleModules[moduleName] == "cargobooking"){
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        }
+
     });
 
