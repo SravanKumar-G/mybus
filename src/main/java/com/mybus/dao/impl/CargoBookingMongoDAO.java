@@ -37,12 +37,13 @@ public class CargoBookingMongoDAO {
     private SessionManager sessionManager;
 
     public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
-        final Query q = createSearchQuery(query,pageable);
+        final Query q = createSearchQuery(query);
+        q.with(pageable);
         List<CargoBooking> cargoBookings = mongoTemplate.find(q, CargoBooking.class);
         return cargoBookings;
     }
 
-    private Query createSearchQuery(JSONObject query, Pageable pageable) throws ParseException {
+    private Query createSearchQuery(JSONObject query) throws ParseException {
         Query q = new Query();
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
@@ -79,4 +80,14 @@ public class CargoBookingMongoDAO {
         return q;
     }
 
+    /**
+     * Count the shipments
+     * @param query
+     * @return
+     * @throws ParseException
+     */
+    public long countShipments(JSONObject query) throws ParseException {
+        final Query q = createSearchQuery(query);
+        return mongoTemplate.count(q, CargoBooking.class);
+    }
 }

@@ -2,8 +2,48 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingsController",function($rootScope, $scope){
+    .controller("CargoBookingListController",function($rootScope, $scope, NgTableParams, cargoBookingManager,$location){
         $scope.headline = "Cargo Bookings";
+        $scope.cargoBookings = null;
+        $scope.cargoBookingsTable = null;
+
+        var loadCargoBookings = function (tableParams) {
+            var sortingProps = tableParams.sorting();
+            var sortProps = ""
+            for(var prop in sortingProps) {
+                sortProps += prop+"," +sortingProps[prop];
+            }
+            $scope.loading = true;
+            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
+            cargoBookingManager.findCargoBookings(pageable, function(cargoBookings){
+                if(angular.isArray(cargoBookings)) {
+                    $scope.loading = false;
+                    tableParams.data = cargoBookings;
+                    $scope.cargoBookings = cargoBookings;
+                }
+            });
+        };
+        $scope.init = function() {
+            cargoBookingManager.count(function(shipmentCount){
+                $scope.cargoBookingsTable = new NgTableParams({
+                    page: 1, // show first page
+                    count:10,
+                    sorting: {
+                        createdAt: 'desc'
+                    },
+                }, {
+                    counts:[10,50,100],
+                    total:shipmentCount,
+                    getData: function (params) {
+                        loadCargoBookings(params);
+                    }
+                });
+            });
+        };
+        $scope.init();
+        $scope.gotoBooking = function (bookingId) {
+            $location.url('viewcargobooking/'+bookingId);
+        }
 
     }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
         $scope.headline = "Cargo Bookings";
@@ -12,8 +52,24 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $rootScope.modalInstance.dismiss('cancel');
         };
     })
+    .controller("CargoBookingHeaderController",function($rootScope, $scope,cargoBookingManager,$location){
+        $scope.headline = "Cargo Bookings";
+        $scope.bookingId;
+        $scope.search = function() {
+            if(!$scope.bookingId) {
+                sweetAlert("Error","Enter the bookingId for search","error");
+                return;
+            }
+            cargoBookingManager.lookupCargoBooking($scope.bookingId);
+        }
+
+        $scope.newBooking = function(){
+            $location.url('newbooking');
+        }
+    })
 
     .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
+        console.log('CargoBookingController ....');
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
@@ -104,7 +160,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         $scope.saveCargoBooking = function(){
             cargoBookingManager.createShipment($scope.shipment, function (response) {
-                $location.url('cargobooking/'+response.id);
+                $location.url('viewcargobooking/'+response.id);
             });
         }
 
@@ -112,7 +168,8 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             if(!this.filter) {
                 swal("Error", "Search text is missing", "error");
             } else{
-                cargoBookingManager.findCargoBookings(this.filter, function (response) {
+                cargoBookingManager.lookupCargoBooking(this.filter);
+                /*cargoBookingManager.findCargoBookings(this.filter, function (response) {
                     if(response.length == 0) {
                         swal("oops", "Nothing found!!", "error");
                     } else {
@@ -126,18 +183,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                             }
                         });
                     }
-                });
+                });*/
             }
         }
 
-    }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log) {
+    }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
-            findCargoBookings: function (id, callback) {
-                $http.post('/api/v1/shipments/', {"filter": id})
+            findCargoBookings: function (pageable, callback) {
+                $http({url:'/api/v1/shipments',method:"POST", params: pageable})
                     .then(function (response) {
-                        callback(response.data)
+                        callback(response.data);
                     }, function (error) {
-                        swal("oops", error.data.message, "error");
+                        $log.debug("error retrieving payments");
                     });
             },
             getCargoBooking: function (id, callback) {
@@ -162,6 +219,24 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     })
+            },
+            count:function (callback) {
+                $http({url:'/api/v1/shipments/count',method:"POST"})
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        $log.debug("error retrieving shipments count");
+                    });
+            },
+            lookupCargoBooking : function(LRNumber) {
+                $http.get("/api/v1/shipment/search/byLR/"+LRNumber)
+                    .then(function (response) {
+                        $location.url('viewcargobooking/'+response.data);
+                    }, function (error) {
+                        swal("oops", error.data.message, "error");
+                    });
+
+
             }
         }
     });

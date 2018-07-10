@@ -46,6 +46,8 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     @RequiresValue
     private ShipmentStatus shipmentStatus = ShipmentStatus.READYFORSHIPMENT;
+    @RequiresValue
+    private PaymentStatus paymentStatus;
 
     @RequiresValue
     private String shipmentType;

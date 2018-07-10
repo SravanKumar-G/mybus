@@ -1,10 +1,7 @@
 package com.mybus.test.util;
 
 import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.model.BranchOffice;
-import com.mybus.model.CargoBooking;
-import com.mybus.model.ShipmentStatus;
-import com.mybus.model.ShipmentType;
+import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +32,13 @@ public class CargoBookingTestService {
         shipment.setFromName("from");
         shipment.setToName("to");
         shipment.setTotalCharge(100);
+        if(shipmentSequence.getShipmentCode().equals("F")){
+            shipment.setPaymentStatus(PaymentStatus.FREE);
+        } else if(shipmentSequence.getShipmentCode().equals("TP")){
+            shipment.setPaymentStatus(PaymentStatus.TOPAY);
+        } else if(shipmentSequence.getShipmentCode().equals("P")){
+            shipment.setPaymentStatus(PaymentStatus.PAID);
+        }
         shipment.setDispatchDate(new Date());
         return shipment;
     }

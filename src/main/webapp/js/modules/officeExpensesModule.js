@@ -198,7 +198,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         }
 
     })
-    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId, fillingStationsManager) {
+    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId, fillingStationsManager, vehicleManager) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
@@ -212,6 +212,9 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         }
         fillingStationsManager.getFillingStations(function(fillingStations){
             $scope.fillingStations = fillingStations;
+        });
+        vehicleManager.getVehicles(null, function(data){
+            $scope.vehicles = data.content;
         });
         $scope.user = userManager.getUser();
         $scope.expense = {'branchOfficeId': $scope.user.branchOfficeId};
@@ -238,6 +241,13 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
             if($scope.expense.expenseType === 'SALARY') {
                 if(!$scope.expense.fromDate || !$scope.expense.toDate){
                     swal("Error!", "Please enter the dates for Salary", "error");
+                    return;
+                }
+            }
+            if($scope.expense.expenseType === 'SALARY' || $scope.expense.expenseType === 'VEHICLE MAINTENANCE'
+                || $scope.expense.expenseType === 'TRIP ADVANCE' || $scope.expense.expenseType === 'DIESEL') {
+                if(!$scope.expense.vehicleId){
+                    swal("Error!", "Please select the vehicle number", "error");
                     return;
                 }
             }

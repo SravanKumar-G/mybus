@@ -1,10 +1,12 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mybus.dao.RoleDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
+import com.mybus.model.Role;
 import com.mybus.model.User;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
@@ -24,9 +26,11 @@ import java.util.stream.Collectors;
 public class UserManager {
     private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
-
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private RoleDAO roleDAO;
 
     @Autowired
     private MongoQueryDAO mongoQueryDAO;
@@ -37,6 +41,14 @@ public class UserManager {
     @Autowired
     private SessionManager sessionManager;
 
+    public User findByUserName(String userName) {
+        User user = userDAO.findOneByUserName(userName);
+        if(user.getRole() != null){
+            Role role = roleDAO.findOne(user.getRole());
+            user.setAccessibleModules(role.getMenus());
+        }
+        return user;
+    }
     public User findOne(String userId) {
         return userDAO.findOne(userId);
     }

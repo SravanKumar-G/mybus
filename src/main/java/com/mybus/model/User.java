@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by skandula on 3/31/15.
@@ -65,7 +66,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     private double amountToBePaid;
     private double amountToBeCollected;
 
-    private List<String> accessibleModules;
+    private Set<String> accessibleModules;
 
     public User(JSONObject json){
         if(json.containsKey("id")) {
@@ -111,9 +112,8 @@ public class User extends AbstractDocument implements AttributesDocument{
             this.branchOfficeId = json.get("branchOfficeId").toString();
         }
         if(json.containsKey("accessibleModules")){
-            this.accessibleModules = (List<String>)json.get("accessibleModules");
+            this.accessibleModules = (Set<String>)json.get("accessibleModules");
         }
-
     }
 
     @Override

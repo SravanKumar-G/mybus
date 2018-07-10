@@ -206,7 +206,12 @@
                         <my-datepicker id ="toDate" ng-model="expense.toDate"></my-datepicker>
                     </div>
                 </div>
-
+                <div class="form-group" ng-show="expense.expenseType == 'SALARY' || expense.expenseType == 'VEHICLE MAINTENANCE' || expense.expenseType === 'DIESEL' || expense.expenseType === 'TRIP ADVANCE'">
+                    <label class="col-sm-2 control-label" for="vehicleNumber">Vehicle</label>
+                    <div class="col-sm-6">
+                        <select id="vehicleNumber" ng-options="vehicle.id as vehicle.regNo for vehicle in vehicles" class="form-control" ng-model="expense.vehicleId"></select>
+                    </div>
+                </div>
                 <div class="form-group" ng-if="expense.expenseType === 'DIESEL'">
                     <label class="col-sm-2 control-label" for="fillingStation">Filling Station</label>
                     <div class="col-sm-6">

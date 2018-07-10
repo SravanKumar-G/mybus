@@ -59,12 +59,18 @@ public class CargoBookingManager {
         loadShipmentDetails(shipment);
         return shipment;
     }
+
+    public String findByLRNumber(String LRNumber) {
+        Preconditions.checkNotNull(LRNumber, "LRNumber is required");
+        CargoBooking shipment = cargoBookingDAO.findByShipmentNumberAndOperatorId(LRNumber, sessionManager.getOperatorId());
+        Preconditions.checkNotNull(shipment, "No CargoBooking found with LRNumebr",LRNumber);
+        return shipment.getId();
+    }
     public CargoBooking saveWithValidations(CargoBooking shipment) {
         if(shipment.getShipmentType() == null) {
             throw new BadRequestException("ShipmentType missing ");
         }
-        String shipmentNumber = shipmentSequenceManager.createLRNumber(shipment.getShipmentType());
-        shipment.setShipmentNumber(shipmentNumber);
+        shipmentSequenceManager.preProcess(shipment);
         shipment.setOperatorId(sessionManager.getOperatorId());
         List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
         if( shipment.getItems() != null) {
@@ -154,5 +160,9 @@ public class CargoBookingManager {
         if(cargoBooking.getForUser() != null) {
             cargoBooking.getAttributes().put("forUser",userManager.getUser(cargoBooking.getForUser()).getFullName());
         }
+    }
+
+    public long count(JSONObject query) throws ParseException {
+        return cargoBookingMongoDAO.countShipments(query);
     }
 }

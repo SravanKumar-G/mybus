@@ -4,6 +4,7 @@ import com.mongodb.WriteResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.CargoBooking;
+import com.mybus.model.PaymentStatus;
 import com.mybus.model.ShipmentType;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.apache.commons.collections.IteratorUtils;
@@ -71,5 +72,22 @@ public class ShipmentSequenceManager {
         List<ShipmentSequence> shipmentSequences =  IteratorUtils.toList(getShipmentTypes().iterator());
         return shipmentSequences.stream().collect(Collectors.toMap(ShipmentSequence::getId,
                 ShipmentSequence::getShipmentType));
+    }
+
+    /**
+     * Set the shipment number and the payment status
+     * @param shipment
+     */
+    public void preProcess(CargoBooking shipment) {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipment.getShipmentType());
+        shipmentSequence = nextSequeceNumber(shipmentSequence);
+        Calendar currentDate = Calendar.getInstance();
+        String shipmentNumber = String.format("%s-%d-%d-%d", shipmentSequence.getShipmentCode() + shipmentSequence.nextNumber,
+                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+        shipment.setShipmentNumber(shipmentNumber);
+        if (shipmentSequence.shipmentCode.equals(ShipmentSequence.TOPAY_TYPE) ||
+                shipmentSequence.shipmentCode.equals(ShipmentSequence.ON_ACCOUNT)) {
+            shipment.setPaymentStatus(PaymentStatus.TOPAY);
+        }
     }
 }

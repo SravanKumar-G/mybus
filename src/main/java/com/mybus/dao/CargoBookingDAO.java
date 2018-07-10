@@ -14,4 +14,6 @@ public interface CargoBookingDAO extends PagingAndSortingRepository<CargoBooking
     CargoBooking findByIdAndOperatorId(String id, String operatorId);
     List<CargoBooking> findByFromBranchId(String fromBranchId);
     List<CargoBooking> findByToBranchId(String toBranchId);
+
+    CargoBooking findByShipmentNumberAndOperatorId(String lrNumber, String operatorId);
 }

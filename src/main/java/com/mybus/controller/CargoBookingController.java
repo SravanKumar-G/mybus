@@ -43,6 +43,15 @@ public class CargoBookingController extends MyBusBaseController{
     }
 
     @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "shipments/count", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get count of the shipments", response = CargoBooking.class, responseContainer = "List")
+    public long count(HttpServletRequest request,
+                                         @ApiParam(value = "Name") @RequestBody(required = false)
+                                         final JSONObject query) throws ParseException {
+        return cargoBookingManager.count(query);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "shipment", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a CargoBooking")
@@ -71,6 +80,14 @@ public class CargoBookingController extends MyBusBaseController{
         return cargoBookingManager.findOne(id);
     }
 
+    @RequestMapping(value = "shipment/search/byLR/{LRNumber}", method = RequestMethod.GET,produces = MediaType.TEXT_PLAIN_VALUE)
+    @ApiOperation(value ="Get the CargoBooking by LRNumber", response = String.class)
+    public String getBookingByLR(HttpServletRequest request,
+                            @ApiParam(value = "Id of the CargoBooking to be found") @PathVariable final String LRNumber) {
+        logger.debug("get shipment called");
+        return cargoBookingManager.findByLRNumber(LRNumber);
+    }
+
     @RequestMapping(value = "shipment/{id}", method = RequestMethod.DELETE, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Delete a CargoBooking", response = CargoBooking.class)
     public JSONObject delete(HttpServletRequest request,
@@ -88,4 +105,5 @@ public class CargoBookingController extends MyBusBaseController{
         logger.debug("get shipment called");
         return cargoBookingManager.getShipmentTypes();
     }
+
 }
