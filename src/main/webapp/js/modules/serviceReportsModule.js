@@ -211,6 +211,10 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             $scope.calculateNet();
         }
         $scope.submit = function() {
+            //if the report is ready to be submitted i.e. !requiresVerification
+            if(!$scope.service.status) {
+                $scope.service.status = "SUBMITTED"
+            }
             $scope.submitReport();
         }
 

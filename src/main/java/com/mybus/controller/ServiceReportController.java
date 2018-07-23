@@ -107,7 +107,7 @@ public class ServiceReportController {
 	@ApiOperation(value ="Load pending reports", response = JSONObject.class)
 	public Iterable<ServiceReport> findPendingReports(HttpServletRequest request) {
 		try{
-			return serviceReportMongoDAO.findPendingReports(null);
+			return serviceReportMongoDAO.findPendingReports(null, null);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new BadRequestException("Error :Load pending reports ", e);
@@ -117,7 +117,7 @@ public class ServiceReportController {
 	@ApiOperation(value ="Load pending reports", response = JSONObject.class)
 	public Iterable<ServiceReport> findReportsReportsToBeViewed(HttpServletRequest request) {
 		try{
-			return serviceReportMongoDAO.findReportsToBeReviewed(null);
+			return serviceReportMongoDAO.findReportsToBeReviewed(null, null);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new BadRequestException("Error :Load pending reports ", e);

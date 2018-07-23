@@ -1,9 +1,11 @@
 package com.mybus.service;
 
 import com.mybus.SystemProperties;
+import com.mybus.dao.OperatorAccountDAO;
 import com.mybus.dao.VehicleDAO;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.dao.impl.VehicleMongoDAO;
+import com.mybus.model.OperatorAccount;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.Vehicle;
 import com.mybus.util.EmailSender;
@@ -41,6 +43,9 @@ public class SchedulerService {
     @Autowired
     private ServiceReportsManager serviceReportsManager;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+
     @Scheduled(cron = "0 0 3 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void checkExpiryDates () {
@@ -62,28 +67,32 @@ public class SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0 2 * * *")
+    //@Scheduled(cron = "0 0 2 * * *")
     //@Scheduled(fixedDelay = 50000)
     public void checkServiceReportsReview () throws ParseException {
-        Map<String, Object> context = new HashMap<>();
-        List<ServiceReport> reports = IteratorUtils.toList(serviceReportMongoDAO.findPendingReports(null).iterator());
-        if(!reports.isEmpty()) {
-            context.put("pendingReports", reports);
+        List<OperatorAccount> operatorAccounts = IteratorUtils.toList(operatorAccountDAO.findAll().iterator());
+        for(OperatorAccount operatorAccount:operatorAccounts){
+            Map<String, Object> context = new HashMap<>();
+            List<ServiceReport> reports = IteratorUtils.toList(serviceReportMongoDAO.findPendingReports(null, operatorAccount.getId()).iterator());
+            if(!reports.isEmpty()) {
+                context.put("pendingReports", reports);
+            }
+            reports = IteratorUtils.toList(serviceReportMongoDAO.findReportsToBeReviewed(null, operatorAccount.getId()).iterator());
+            if(!reports.isEmpty()) {
+                context.put("reportsToBeReviewed", reports);
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, -2);
+            reports = IteratorUtils.toList(serviceReportMongoDAO.findHaltedReports(calendar.getTime(), operatorAccount.getId()).iterator());
+            if(!reports.isEmpty()) {
+                context.put("haltedReports", reports);
+            }
+            if(!context.isEmpty()) {
+                String content = velocityEngineService.trasnform(context, VelocityEngineService.PENDING_SERVICEREPORTS_TEMPLATE);
+                emailSender.sendServiceReportsToBeReviewed(content);
+            }
         }
-        reports = IteratorUtils.toList(serviceReportMongoDAO.findReportsToBeReviewed(null).iterator());
-        if(!reports.isEmpty()) {
-            context.put("reportsToBeReviewed", reports);
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -2);
-        reports = IteratorUtils.toList(serviceReportMongoDAO.findHaltedReports(calendar.getTime()).iterator());
-        if(!reports.isEmpty()) {
-            context.put("haltedReports", reports);
-        }
-        if(!context.isEmpty()) {
-            String content = velocityEngineService.trasnform(context, VelocityEngineService.PENDING_SERVICEREPORTS_TEMPLATE);
-            emailSender.sendServiceReportsToBeReviewed(content);
-        }
+
     }
 
    // @Scheduled(cron = "0 0 1 * * *")
