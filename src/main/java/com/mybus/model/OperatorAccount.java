@@ -47,6 +47,9 @@ public class OperatorAccount extends AbstractDocument {
 
     private String onlineBookingTypes;
 
+    @RequiresValue
+    private String email;
+
     public OperatorAccount(String providerType){
         this.providerType = providerType;
     }
