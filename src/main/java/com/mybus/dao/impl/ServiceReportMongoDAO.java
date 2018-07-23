@@ -71,9 +71,9 @@ public class ServiceReportMongoDAO {
         if(operatorId == null){
             operatorId = sessionManager.getOperatorId();
         }
-        if(operatorId == null) {
+        /*if(operatorId == null) {
             throw new InvalidArgumentException("OperatorId not found");
-        }
+        }*/
         if(status == null){
             criteria.andOperator(Criteria.where("status").exists(false),
                     Criteria.where("journeyDate").gte(startDate),Criteria.where(SessionManager.OPERATOR_ID).is(operatorId));
