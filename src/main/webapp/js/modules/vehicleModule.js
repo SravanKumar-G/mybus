@@ -26,9 +26,9 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             vehicleManager.deleteVehicle(id,function(data) {
             });
         };
-        $scope.updateVehicleOnClick = function(id) {
-            $location.url('vehicle/'+id);
-        };
+
+
+
     })
     .controller('EditVehicleController', function ($scope,$state,$stateParams, $rootScope, $http,$log, vehicleManager) {
         $scope.headline = "Vehicle";
@@ -86,7 +86,6 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
                     });
             },
             createVehicle: function (vehicle, callback, error) {
-                console.log();
                 $http.post('/api/v1/vehicle', vehicle).then(function (response) {
                     callback(response.data);
                     $rootScope.$broadcast("reloadVehicleInfo");

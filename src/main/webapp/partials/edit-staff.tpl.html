@@ -1,0 +1,73 @@
+<legend>{{ headline }}</legend>
+
+<!--- Edit User Form------->
+
+        <form name="thisForm" class="form-horizontal" autocomplete="off" role="form">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="name">Name<span class="data-required">*</span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.name.$invalid && thisForm.name.$dirty }">
+                    <input type="text" id="name" name="name" class="form-control" ng-model="staff.name"
+                           placeholder="Full Name">
+                    <span ng-show="(thisForm.name.$dirty || thisForm.submitted) && thisForm.name.$error.required">Name required</span>
+                </div>
+                <label class="col-sm-2 control-label" for="contactNumber">Contact Number<span class="data-required">*</span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.contactNumber.$invalid && thisForm.contactNumber.$dirty }">
+                    <input type="text" id="contactNumber" name="contactNumber" class="form-control" ng-model="staff.contactNumber" placeholder="Contact Number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="adhar">Aadhar number<span class="data-required"></span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.name.$invalid && thisForm.name.$dirty }">
+                    <input type="text" id="adhar" name="aadhar" class="form-control" ng-model="staff.aadharNumber"
+                           placeholder="Aadhar Number">
+                </div>
+                <label class="col-sm-2 control-label" for="contactNumber">License Expiry<span class="data-required">*</span></label>
+                <div class="col-sm-4">
+                    <p class="input-group">
+                        <my-datepicker ng-model="staff.dlExpiry"></my-datepicker>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="code">Code<span class="data-required"></span></label>
+                <div class="col-sm-4" ng-class="{ 'has-error': thisForm.name.$invalid && thisForm.name.$dirty }">
+                    <input type="text" id="code" name="code" class="form-control" ng-model="staff.code"
+                           placeholder="Code">
+                </div>
+                <label class="col-sm-2 control-label" for="contactNumber">Type<span class="data-required">*</span></label>
+                <div class="col-sm-4">
+                    <p class="input-group">
+                        <select id="type" class="form-control" ng-model="staff.type">
+                            <option value="Driver">Driver</option>
+                            <option value="Cleaner">Cleaner</option>
+                            <option value="Driver">OtherStaff</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label checkbox" for="editActiveInput">Terminated</label>
+                <div class="col-xs-1">
+                    <input type="checkbox" id="terminated" class="form-check-input" ng-model="staff.terminated">
+                </div>
+                <label class="col-sm-2 control-label checkbox" for="editActiveInput">Active</label>
+                <div class="col-xs-1">
+                    <input type="checkbox" id="editActiveInput" class="form-check-input" ng-model="staff.active">
+                </div>
+            </div>
+
+           <div class="form-group row">
+                <div class="col-sm-4 text-right">
+                    <button class="btn btn-primary" ng-click="save()">Save</button>
+                </div>
+                <div class="col-sm-3 next">
+                    <button  class="btn btn-danger" ng-click="cancel()">Cancel</button>
+                </div>
+            </div>
+
+        </form>
+
+

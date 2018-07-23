@@ -47,7 +47,7 @@ public class ServiceReport extends AbstractDocument  {
     @Field(JOURNEY_DATE)
     @Indexed
     private Date journeyDate;
-    private Set<VehicleStaff> staff;
+    private Set<Staff> staff;
     private Collection<Booking> bookings;
     private Collection<Payment> expenses;
     private double netCashIncome;

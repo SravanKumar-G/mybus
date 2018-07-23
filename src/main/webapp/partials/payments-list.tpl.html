@@ -34,9 +34,9 @@
                     <td data-title="'Income'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(payment.id)"> <span ng-if="payment.type=='INCOME'">{{payment.amount}}</span></td>
                     <td data-title="'Expesnse'" sortable="'amount'" class="clickable-item" ng-click="goToExpense(payment.id)"><span ng-if="payment.type=='EXPENSE'">{{payment.amount}}</span></td>
                     <td data-title="'CreatedBy'" class="clickable-item">{{payment.attributes.createdBy}}</td>
-                    <td data-title="'Status'" sortable="'status'" class="clickable-item" ng-if="user.admin && user.id!=payment.createdBy">
-
-                        <span ng-if="!payment.status">
+                    <td data-title="'Status'" sortable="'status'" class="clickable-item">
+                        <span ng-if="user.admin && user.id!=payment.createdBy">
+                            <span ng-if="!payment.status">
                             <input
                                     type="checkbox"
                                     name="selectedPayments[]"
@@ -46,6 +46,7 @@
                         </span>
                         <span ng-if="payment.status">
                            {{payment.status}}
+                        </span>
                         </span>
                     </td>
                     <td style="width:10%">

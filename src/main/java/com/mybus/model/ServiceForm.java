@@ -25,7 +25,7 @@ public class ServiceForm extends AbstractDocument  {
     private String busType;
     private String vehicleRegNumber;
     private Date jDate;
-    private Set<VehicleStaff> staff;
+    private Set<Staff> staff;
     private Collection<Booking> bookings;
     private Collection<Payment> expenses;
     private double netCashIncome;
