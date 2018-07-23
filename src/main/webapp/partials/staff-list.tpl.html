@@ -1,0 +1,40 @@
+<div class="toolbar-button-div">
+    <div class="row">
+        <div class="col-xs-2">
+           Count : {{count}}
+        </div>
+        <div class="col-xs-2">
+            Search :
+        </div>
+        <div class="col-xs-4">
+            <input class="form-control"  ng-model="searchText" type="search" placeholder="Search text">
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="addVehicleStaff()"><span
+                    class="glyphicon glyphicon-plus"></span> Add Staff
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<table class="table table-bordered table-condensed table-hover" ng-table="staffTableParams">
+    <tr ng-repeat="s in staff | filter:searchText" ng-class="s.active?'':'bg-danger'">
+        <td data-title="'Name'"  sortable="'s.name'" class="clickable-item col-md-2">{{ s.name }}</td>
+        <td data-title="'Phone'"  sortable="'s.contactNumber'" class="clickable-item col-md-2">{{ s.contactNumber }}</td>
+        <td data-title="'License Expiry'"  sortable="'s.dlExpiry'" class="clickable-item col-md-2">{{ s.dlExpiry| date }}</td>
+        <td data-title="'Remarks'"  sortable="'s.remarks'" class="clickable-item col-md-2">{{ s.remarks }}</td>
+        <td class="clickable-item col-md-3">
+                <md-icon type="button" class="btn" ng-click="deleteStaff(s.id)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </md-icon>
+               <md-icon type="button" class="btn" ng-click="updateStaff(s.id)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+               </md-icon>
+        </td>
+    </tr>
+    <tr ng-if="!staff || staff.length === 0">
+        <td colspan="6">No Staff exist.</td>
+    </tr>
+</table>

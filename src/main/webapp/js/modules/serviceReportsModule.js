@@ -232,7 +232,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             return !$scope.service.invalid && $scope.service.requiresVerification && $scope.service.status !== "SUBMITTED";
         }
         $scope.submitReport = function() {
-            $scope.service.status = "SUBMITTED";
             serviceReportsManager.submitReport($scope.service, function (response) {
                 sweetAlert("Great", "The report successfully submitted", "success");
                 window.history.back();

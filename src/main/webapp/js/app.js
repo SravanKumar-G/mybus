@@ -33,7 +33,8 @@ var myBus = angular.module('myBus', [
     'myBus.tripReportsModule',
     'myBus.cargoBooking',
     'myBus.colletionZoneModule',
-    'myBus.operatorAccountsModule'
+    'myBus.operatorAccountsModule',
+    'myBus.staffModule'
 
 ]);
 
@@ -270,6 +271,16 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/vehicles',
                 templateUrl: 'partials/vehicle-list.tpl.html',
                 controller: 'VehicleController'
+            }).state('staff', {
+                level:1,
+                url:'/staff',
+                templateUrl: 'partials/staff-list.tpl.html',
+                controller: 'StaffListController'
+            }).state('editstaff/:id', {
+                level:1,
+                url:'/editstaff/:id',
+                templateUrl: 'partials/edit-staff.tpl.html',
+                controller: 'EditStaffController'
             })
             .state('createvehicle', {
                 level:2,

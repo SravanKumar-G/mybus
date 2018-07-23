@@ -59,6 +59,7 @@
     <script src="js/modules/cargoBookingModule.js"></script>
     <script src="js/modules/collectionZoneModule.js"></script>
     <script src="js/modules/operatorAccountsModule.js"></script>
+    <script src="js/modules/staffModule.js"></script>
 
 
     <script src="js/modules/headerNavBarhomeCtrl.js"></script>
@@ -202,7 +203,7 @@
                                 <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="VehicleStaff" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Staff" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>
