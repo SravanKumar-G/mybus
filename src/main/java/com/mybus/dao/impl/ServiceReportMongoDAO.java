@@ -29,9 +29,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class ServiceReportMongoDAO {
 
     @Autowired
-    private MongoQueryDAO mongoQueryDAO;
-
-    @Autowired
     private MongoTemplate mongoTemplate;
 
     @Autowired

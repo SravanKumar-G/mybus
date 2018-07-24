@@ -190,6 +190,7 @@ public class ServiceReportsManager {
     public ServiceForm submitReport(ServiceReport serviceReport) throws ParseException {
         logger.info("submitting the report");
         if(serviceReport.getStatus().equals(ServiceStatus.HALT)){
+            serviceReport.setBookings(null);
             serviceReportDAO.save(serviceReport);
             return null;
         }
