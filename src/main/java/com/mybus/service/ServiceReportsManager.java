@@ -190,8 +190,14 @@ public class ServiceReportsManager {
     public ServiceForm submitReport(ServiceReport serviceReport) throws ParseException {
         logger.info("submitting the report");
         if(serviceReport.getStatus().equals(ServiceStatus.HALT)){
+            serviceReport.setBookings(null);
             serviceReportDAO.save(serviceReport);
             return null;
+        }
+        //If submitted by a user who can approve the rate changes
+        User user = sessionManager.getCurrentUser();
+        if(user.isCanVerifyRates() && serviceReport.getStatus().equals(ServiceStatus.REQUIRE_VERIFICATION)) {
+            serviceReport.setStatus(ServiceStatus.SUBMITTED);
         }
         //Check if all the bookings has agent set on them
         serviceReport.getBookings().stream().forEach(booking -> {

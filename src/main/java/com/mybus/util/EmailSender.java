@@ -52,18 +52,16 @@ public class EmailSender {
         }
     }
 
-    public void sendExpiringNotifications(String content){
+    public void sendExpiringNotifications(String content, String toEmail){
         String subject ="Important! Vehicle documents exipring";
         if(content.length() > 0) {
-            String to = systemProperties.getProperty("expiring.notification.send.to");
-            sendEmail(to, content, subject);
+            sendEmail(toEmail, content, subject);
         }
     }
-    public void sendServiceReportsToBeReviewed(String content){
+    public void sendServiceReportsToBeReviewed(String content, String toEmail){
         String subject ="Important! Service reports need to be reviewed";
         if(content.length() > 0) {
-            String to = systemProperties.getProperty("serviceReports.review.notification.send.to");
-            sendEmail(to, content, subject);
+            sendEmail(toEmail, content, subject);
         }
     }
 }
