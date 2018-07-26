@@ -166,7 +166,7 @@ public class ServiceReportsManager {
         report.setNetRedbusIncome(roundUp(report.getNetRedbusIncome()));
         report.setNetOnlineIncome(roundUp(report.getNetOnlineIncome()));
         report.setNetCashIncome(roundUp(report.getNetCashIncome()));
-        report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
+        //report.setNetIncome(roundUp(report.getNetCashIncome()+report.getNetOnlineIncome()+report.getNetRedbusIncome()));
         report.setBookings(bookings);
         List<Payment> expenses = paymentDAO.findByServiceReportId(report.getId());
         report.setExpenses(expenses);
@@ -360,10 +360,10 @@ public class ServiceReportsManager {
         serviceForm.setServiceExpense(serviceExpenseManager.getServiceExpenseByServiceReportId(serviceForm.getServiceReportId()));
         */
         //round up the digits
-        serviceForm.setNetRedbusIncome(roundUp(serviceForm.getNetRedbusIncome()));
-        serviceForm.setNetOnlineIncome(roundUp(serviceForm.getNetOnlineIncome()));
-        serviceForm.setNetCashIncome(roundUp(serviceForm.getNetCashIncome()));
-        serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
+        //serviceForm.setNetRedbusIncome(roundUp(serviceForm.getNetRedbusIncome()));
+        //serviceForm.setNetOnlineIncome(roundUp(serviceForm.getNetOnlineIncome()));
+        //serviceForm.setNetCashIncome(roundUp(serviceForm.getNetCashIncome()));
+        //serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
         serviceForm.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         serviceForm.setBookings(IteratorUtils.toList(bookings.iterator()));
         if(serviceForm.getSubmittedBy() != null) {
