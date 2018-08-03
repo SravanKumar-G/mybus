@@ -78,12 +78,12 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
     }
 
-    public static boolean isAdminRequiredButNotPresent(final HandlerMethod handlerMethod, final User user) {
+    private static boolean isAdminRequiredButNotPresent(final HandlerMethod handlerMethod, final User user) {
         boolean isUserAdmin = user != null && user.isAdmin();
         return isAdminRequired(handlerMethod) && !isUserAdmin;
     }
 
-    public static boolean isAdminRequired(final HandlerMethod handlerMethod) {
+    private static boolean isAdminRequired(final HandlerMethod handlerMethod) {
         RequiresAdmin requiresAdmin = handlerMethod.getMethodAnnotation(RequiresAdmin.class);
         return requiresAdmin != null && requiresAdmin.value();
     }
