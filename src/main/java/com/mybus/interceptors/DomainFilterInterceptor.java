@@ -49,9 +49,9 @@ public class DomainFilterInterceptor extends HandlerInterceptorAdapter {
         OperatorAccount operatorAccount = operatorAccountManager.findByServerName(serverName);
         if(operatorAccount != null && request.getUserPrincipal() != null) {
             User user = userDAO.findOneByUserName(request.getUserPrincipal().getName());
-            if(!user.isAdmin()){
+            if(!user.isSuperAdmin()){
                 if(!user.getOperatorId().equals(operatorAccount.getId())){
-                    return false;
+                    throw new ForbiddenException("Wrong user domain", "Not authorized");
                 }
             }
             sessionManager.setOperatorId(operatorAccount.getId());
