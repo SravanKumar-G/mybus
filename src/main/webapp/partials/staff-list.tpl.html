@@ -24,12 +24,14 @@
         <td data-title="'Name'"  sortable="'s.name'" class="clickable-item col-md-2">{{ s.name }}</td>
         <td data-title="'Phone'"  sortable="'s.contactNumber'" class="clickable-item col-md-2">{{ s.contactNumber }}</td>
         <td data-title="'License Expiry'"  sortable="'s.dlExpiry'" class="clickable-item col-md-2">{{ s.dlExpiry| date }}</td>
+        <td data-title="'Type'"  sortable="'s.type'" class="clickable-item col-md-2">{{s.type}}</td>
+        <td data-title="'Code'"  sortable="'s.code'" class="clickable-item col-md-2">{{s.code}}</td>
         <td data-title="'Remarks'"  sortable="'s.remarks'" class="clickable-item col-md-2">{{ s.remarks }}</td>
         <td class="clickable-item col-md-3">
                 <md-icon type="button" class="btn" ng-click="deleteStaff(s.id)">
                     <span class="glyphicon glyphicon-remove"></span>
                 </md-icon>
-               <md-icon type="button" class="btn" ng-click="updateStaff(s.id)">
+               <md-icon type="button" class="btn" ng-click="addVehicleStaff(s.id)">
                     <span class="glyphicon glyphicon-pencil"></span>
                </md-icon>
         </td>
