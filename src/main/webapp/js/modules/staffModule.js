@@ -57,9 +57,10 @@ angular.module('myBus.staffModule', ['ngTable', 'ui.bootstrap'])
         $scope.headline = "Staff";
         $scope.staffId = $stateParams.id;
         $scope.staff = {};
+        console.log('staffId ' + $scope.staffId );
         if($scope.staffId) {
             staffManager.getStaff($scope.staffId, function(response){
-                $scope.staff = response.data;
+                $scope.staff = response;
             }, function(error){
                 sweetAlert("Error finding staff",err.data.message,"error");
             });

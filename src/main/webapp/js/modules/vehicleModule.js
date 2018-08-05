@@ -26,7 +26,9 @@ angular.module('myBus.vehicleModule', ['ngTable', 'ui.bootstrap'])
             vehicleManager.deleteVehicle(id,function(data) {
             });
         };
-
+        $scope.updateVehicleOnClick = function(id) {
+            $location.url('vehicle/'+id);
+        };
 
 
     })
