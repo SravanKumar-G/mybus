@@ -47,7 +47,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         });
 
     })
-    .controller('ServiceReportController', function($rootScope, $scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager) {
+    .controller('ServiceReportController', function($rootScope, $scope,$state,$stateParams, $filter, NgTableParams, $location, serviceReportsManager, userManager, agentManager,staffManager) {
         $scope.headline = "Service Report";
         $scope.service = {};
         $scope.downloaded = false;
@@ -56,6 +56,9 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.allBookings = [];
         $scope.agents = [];
         $scope.differenceAmountRatio = 99;
+        $scope.allStaff = [];
+        $scope.addedStaff = [];
+
         $scope.onlineBookingTypes = $rootScope.operatorAccount && $rootScope.operatorAccount.onlineBookingTypes?$rootScope.operatorAccount.onlineBookingTypes.split(","):[];
 
         agentManager.getNames(function(names){
@@ -148,17 +151,6 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             parseFloat($scope.service.netRedbusIncome) +
             parseFloat($scope.service.netOnlineIncome)).toFixed(2);
 
-            /*$scope.service.serviceExpense.fuelCost = parseFloat($scope.service.serviceExpense.fuelQuantity) * parseFloat($scope.service.serviceExpense.fuelRate);
-
-            $scope.service.serviceExpense.netRealization = parseFloat($scope.service.netIncome)
-                - parseFloat($scope.service.serviceExpense.fuelCost)
-                + parseFloat($scope.service.serviceExpense.paidLuggage)
-                + parseFloat($scope.service.serviceExpense.toPayLuggage)
-                - parseFloat($scope.service.serviceExpense.driverSalary1)
-                - parseFloat($scope.service.serviceExpense.driverSalary2)
-                - parseFloat($scope.service.serviceExpense.cleanerSalary);
-                */
-
             for (var i =0; i< $scope.currentPageOfBookings.length;i++) {
                 var booking = $scope.currentPageOfBookings[i];
                 if (booking.due) {
@@ -202,6 +194,21 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
             }
             $scope.service.expenses.push({'type':"EXPENSE",'index':$scope.service.expenses.length+1});
         }
+        $scope.addStaff = function(){
+            console.log($scope.newStaffId);
+            var newStaffObj = _.find($scope.allStaff, function (s) { return s.id ==$scope.newStaffId; });
+            if(!$scope.service.staff) {
+                $scope.service.staff = [];
+            }
+            $scope.service.staff.push(newStaffObj);
+        }
+        $scope.deleteStaff = function(staff){
+            console.log('deleting staff');
+            $scope.service.staff  = _.without($scope.service.staff , _.findWhere($scope.service.staff , {
+                id: staff.id
+            }));
+        }
+
         $scope.deleteExpense = function(expense){
             $scope.service.expenses.splice(expense.index-1,1);
             //reshiffle the index
@@ -260,6 +267,12 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.launchAgents = function(){
             $location.url('/agents');
         }
+        staffManager.getStaffList(null, function(response){
+           $scope.allStaff = response.content;
+        });
+
+
+
     })
     .controller('DatepickerPopupCtrl', function ($scope,$stateParams,NgTableParams,$rootScope, $filter,serviceReportsManager, $location ,userManager) {
         $scope.headline = "Service Reports";

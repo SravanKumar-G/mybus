@@ -33,7 +33,7 @@ public class StaffController extends MyBusBaseController{
     @RequestMapping(value = "staff", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the staff available")
     public Page<Staff> getVehicles(HttpServletRequest request, final Pageable pageable) {
-        Page<Staff> vs= staffDAO.findAll(pageable);
+        Page<Staff> vs= staffManager.findStaff(null, null);
         return  vs;
     }
 

@@ -50,7 +50,12 @@ public class StaffMongoDAO {
         long count = count(filter);
         q.with(pageable);
         List<Staff> staff = mongoTemplate.find(q, Staff.class);
+        staff.stream().forEach(s -> {
+            s.setNameCode(String.format("%s (%s)", s.getName(), s.getCode()));
+        });
         return new PageImpl<Staff>(staff, pageable, count);
     }
+
+
 
 }

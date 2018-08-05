@@ -26,7 +26,7 @@ public class Staff extends AbstractDocument  {
     private String type;
     private boolean terminated;
     private String remarks;
-
+    private String nameCode;
     private boolean active;
 
     public Staff(String name, String contactNumber, String aadharNumber){
