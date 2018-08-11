@@ -13,6 +13,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -132,8 +135,9 @@ public class UserManager {
         if(!includeInactive) {
             query.put("active", true);
         }
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE, Sort.Direction.ASC, User.FIRST_NAME);
         List<User> users = IteratorUtils.toList(mongoQueryDAO
-                .getDocuments(User.class, User.COLLECTION_NAME, fields, query, null).iterator());
+                .getDocuments(User.class, User.COLLECTION_NAME, fields, query, pageable).iterator());
         return users;
     }
 

@@ -52,8 +52,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'CargoBookingController'
             }).state('cargobookings',{
                 url:'/cargobookings',
-                templateUrl: 'partials/cargoBookings.tpl.html',
-                controller: 'CargoBookingListController'
+                templateUrl: 'partials/cargoBookingsSearch.tpl.html'
             }).state('collectionzones',{
                 url:'/collectionZones',
                 templateUrl: 'partials/collectionZones.tpl.html',

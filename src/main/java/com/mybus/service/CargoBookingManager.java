@@ -66,6 +66,12 @@ public class CargoBookingManager {
         Preconditions.checkNotNull(shipment, "No CargoBooking found with LRNumebr",LRNumber);
         return shipment.getId();
     }
+
+    /**
+     * save cargo booking
+     * @param shipment
+     * @return
+     */
     public CargoBooking saveWithValidations(CargoBooking shipment) {
         if(shipment.getShipmentType() == null) {
             throw new BadRequestException("ShipmentType missing ");

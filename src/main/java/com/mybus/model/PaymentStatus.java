@@ -6,10 +6,12 @@ import lombok.Getter;
  * Created by skandula on 2/13/16.
  */
 public enum PaymentStatus {
-    TOPAY("To Pay"),
-    CREDIT("Credit"),
+    TOPAY("ToPay"),
+    ONACCOUNT("OnAccount"),
     PAID("Paid"),
-    FREE("Free");
+    FREE("Free"),
+    COUNTERTRANSACTION("CounterTransaction");
+
     @Getter
     private final String key;
 

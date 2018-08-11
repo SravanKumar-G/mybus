@@ -11,14 +11,15 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.Date;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -37,8 +38,32 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipments", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the shipments available", response = CargoBooking.class, responseContainer = "List")
     public Iterable<CargoBooking> getAll(HttpServletRequest request,
-                                         @ApiParam(value = "Name") @RequestBody(required = false) final JSONObject query,
-                                         final Pageable pageable) throws ParseException {
+                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
+        int page = 0;
+        int count = 10;
+        Pageable pageable = null;
+        if(query != null) {
+            if(query.containsKey("page")){
+                page = Integer.parseInt(query.get("page").toString());
+                page--;
+            }
+            if(query.containsKey("count")){
+                count = Integer.parseInt(query.get("count").toString());
+            }
+            String sortOn = "createdAt";
+            Sort.Direction sortDirection = Sort.Direction.DESC;
+
+            if(query.containsKey("sort")){
+                String[] sortParams = query.get("sort").toString().split(",");
+                sortOn = sortParams[0];
+                if(sortParams[1].equalsIgnoreCase("DESC")){
+                    sortDirection = Sort.Direction.DESC;
+                } else {
+                    sortDirection = Sort.Direction.ASC;
+                }
+            }
+            pageable = new PageRequest(page, count, sortDirection, sortOn);
+        }
         return cargoBookingManager.findShipments(query, pageable);
     }
 
