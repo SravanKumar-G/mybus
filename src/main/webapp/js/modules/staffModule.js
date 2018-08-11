@@ -56,11 +56,12 @@ angular.module('myBus.staffModule', ['ngTable', 'ui.bootstrap'])
     .controller('EditStaffController', function ($scope,$state,$stateParams, $rootScope, $http,$log, $location, staffManager) {
         $scope.headline = "Staff";
         $scope.staffId = $stateParams.id;
-        $scope.staff = {};
-        console.log('staffId ' + $scope.staffId );
-        if($scope.staffId) {
+        if($scope.staffId != undefined && $scope.staffId != "undefined") {
+            console.log('loading staff....');
             staffManager.getStaff($scope.staffId, function(response){
-                $scope.staff = response;
+                if(response){
+                    $scope.staff = response;
+                }
             }, function(error){
                 sweetAlert("Error finding staff",err.data.message,"error");
             });

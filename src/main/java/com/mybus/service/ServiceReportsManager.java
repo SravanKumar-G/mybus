@@ -311,6 +311,8 @@ public class ServiceReportsManager {
             bookingDAO.save(serviceForm.getBookings());
             serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         }
+        //clear the bookings from service report
+        serviceReport.setBookings(null);
         serviceReportDAO.save(serviceReport);
         return serviceForm;
     }
@@ -366,6 +368,8 @@ public class ServiceReportsManager {
         //serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
         serviceForm.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         serviceForm.setBookings(IteratorUtils.toList(bookings.iterator()));
+        ServiceReport serviceReport = serviceReportDAO.findOne(serviceForm.getServiceReportId());
+        serviceForm.setStaff(serviceReport.getStaff());
         if(serviceForm.getSubmittedBy() != null) {
             serviceForm.getAttributes().put("submittedBy", userManager.getUser(serviceForm.getSubmittedBy()).getFullName());
         } else {

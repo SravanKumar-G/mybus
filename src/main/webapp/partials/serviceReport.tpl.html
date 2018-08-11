@@ -113,6 +113,22 @@
                 <span class="glyphicon glyphicon-plus"></span> Add Expense
             </button>
             <br/>
+            <h4>Staff</h4>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr ng-repeat="s in service.staff">
+                    <td>{{s.nameCode}}</td>
+                    <td>{{s.type}} <span class="glyphicon glyphicon-remove-sign" ng-click="deleteStaff(s)"></span></td>
+                </tr>
+                <tr>
+                    <td> <select ng-options="s.id as s.nameCode for s in allStaff" class="form-control" ng-model="newStaffId"></select></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-primary" ng-click="addStaff()">
+                            <span class="glyphicon glyphicon-plus"></span> Add Staff
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
             <br/>
             <br/>
             <div class="row">

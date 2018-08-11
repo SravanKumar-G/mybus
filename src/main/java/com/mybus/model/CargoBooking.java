@@ -45,9 +45,9 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private boolean copySenderDetails;
 
     @RequiresValue
-    private ShipmentStatus shipmentStatus = ShipmentStatus.READYFORSHIPMENT;
+    private CargoTransitStatus cargoTransitStatus = CargoTransitStatus.READYFORSHIPMENT;
     @RequiresValue
-    private PaymentStatus paymentStatus;
+    private String paymentType;
 
     @RequiresValue
     private String shipmentType;
@@ -80,7 +80,6 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private Date dispatchDate;
 
-    private String bookedBy;
     private String deliveredBy;
     private String loadedBy;
 

@@ -25,7 +25,7 @@ public class CargoBookingTestService {
         shipment.setFromEmail("email@e.com");
         shipment.setFromBranchId(b1.getId());
         shipment.setToBranchId(b2.getId());
-        shipment.setShipmentStatus(ShipmentStatus.ARRIVED);
+        shipment.setCargoTransitStatus(CargoTransitStatus.ARRIVED);
         shipment.setShipmentType(shipmentSequence.getId());
         shipment.setFromContact(new Long(1234));
         shipment.setToContact(new Long(1234));
@@ -33,11 +33,11 @@ public class CargoBookingTestService {
         shipment.setToName("to");
         shipment.setTotalCharge(100);
         if(shipmentSequence.getShipmentCode().equals("F")){
-            shipment.setPaymentStatus(PaymentStatus.FREE);
+            shipment.setPaymentType(PaymentStatus.FREE.toString());
         } else if(shipmentSequence.getShipmentCode().equals("TP")){
-            shipment.setPaymentStatus(PaymentStatus.TOPAY);
+            shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
         } else if(shipmentSequence.getShipmentCode().equals("P")){
-            shipment.setPaymentStatus(PaymentStatus.PAID);
+            shipment.setPaymentType(PaymentStatus.PAID.toString());
         }
         shipment.setDispatchDate(new Date());
         return shipment;

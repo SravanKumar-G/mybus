@@ -41,6 +41,15 @@
                 </tr>
             </table>
         </div>
+        <div class="col-sm-4">
+            <h4>Staff</h4>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr ng-repeat="s in service.staff">
+                    <td>{{s.nameCode}}</td>
+                    <td>{{s.type}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <br/>

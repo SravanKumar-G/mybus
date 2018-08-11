@@ -63,11 +63,14 @@ public class CargoBookingMongoDAO {
             if(query.get("toBranchId") != null) {
                 match.add(Criteria.where("toBranchId").is(query.get("toBranchId").toString()));
             }
-            if(query.get("bookedBy") != null) {
-                match.add(Criteria.where("bookedBy").is(query.get("bookedBy").toString()));
-            }
             if(query.get("deliveredBy") != null) {
                 match.add(Criteria.where("deliveredBy").is(query.get("deliveredBy").toString()));
+            }
+            if(query.get("bookedBy") != null) {
+                match.add(Criteria.where("createdBy").is(query.get("bookedBy").toString()));
+            }
+            if(query.get("paymentType") != null) {
+                match.add(Criteria.where("paymentType").is(query.get("paymentType").toString()));
             }
             match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
 

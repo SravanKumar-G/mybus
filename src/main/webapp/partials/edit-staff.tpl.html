@@ -6,8 +6,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label" for="name">Name<span class="data-required">*</span></label>
                 <div class="col-sm-4" ng-class="{ 'has-error': thisForm.name.$invalid && thisForm.name.$dirty }">
-                    <input type="text" id="name" name="name" class="form-control" ng-model="staff.name"
-                           placeholder="Full Name">
+                    <input type="text" id="name" name="name" class="form-control" ng-model="staff.name" placeholder="Full Name">
                     <span ng-show="(thisForm.name.$dirty || thisForm.submitted) && thisForm.name.$error.required">Name required</span>
                 </div>
                 <label class="col-sm-2 control-label" for="contactNumber">Contact Number<span class="data-required">*</span></label>

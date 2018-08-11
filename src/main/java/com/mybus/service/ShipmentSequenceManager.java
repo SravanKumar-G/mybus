@@ -87,7 +87,7 @@ public class ShipmentSequenceManager {
         shipment.setShipmentNumber(shipmentNumber);
         if (shipmentSequence.shipmentCode.equals(ShipmentSequence.TOPAY_TYPE) ||
                 shipmentSequence.shipmentCode.equals(ShipmentSequence.ON_ACCOUNT)) {
-            shipment.setPaymentStatus(PaymentStatus.TOPAY);
+            shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
         }
     }
 }

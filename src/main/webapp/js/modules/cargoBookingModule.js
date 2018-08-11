@@ -2,29 +2,57 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingListController",function($rootScope, $scope, NgTableParams, cargoBookingManager,$location){
+    .controller("CargoBookingListController",function($rootScope, $scope, NgTableParams,userManager, cargoBookingManager,$location, branchOfficeManager){
         $scope.headline = "Cargo Bookings";
         $scope.cargoBookings = null;
         $scope.cargoBookingsTable = null;
+        $scope.filter = {startDate:new Date(), endDate: new Date()};
+        $scope.tableParams = {};
+        $scope.members = [];
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+        });
 
-        var loadCargoBookings = function (tableParams) {
+        userManager.getUserNames(function (data) {
+            $scope.members = data;
+        });
+
+        cargoBookingManager.getShipmentTypes(function (types) {
+            $scope.shipmentTypes = types;
+            //Set the shipment type to paid by default
+            var paidType = _.find($scope.shipmentTypes, function(type){
+                if(type.shipmentCode === 'P'){
+                    return type.id;
+                }
+            });
+            $scope.shipment.shipmentType = paidType.id;
+        });
+        var loadCargoBookings = function (tableParams, filter) {
             var sortingProps = tableParams.sorting();
             var sortProps = ""
             for(var prop in sortingProps) {
                 sortProps += prop+"," +sortingProps[prop];
             }
             $scope.loading = true;
-            var pageable = {page:tableParams.page(), size:tableParams.count(), sort:sortProps};
-            cargoBookingManager.findCargoBookings(pageable, function(cargoBookings){
+            if(!filter) {
+                filter = {};
+            }
+            filter.page = tableParams.page();
+            filter.size = tableParams.count();
+            filter.sort =sortProps;
+
+            cargoBookingManager.findCargoBookings(filter, function(cargoBookings){
                 if(angular.isArray(cargoBookings)) {
                     $scope.loading = false;
                     tableParams.data = cargoBookings;
+                    $scope.tableParams = tableParams;
                     $scope.cargoBookings = cargoBookings;
                 }
             });
         };
-        $scope.init = function() {
-            cargoBookingManager.count(function(shipmentCount){
+        $scope.init = function(filter) {
+            cargoBookingManager.count(filter, function(shipmentCount){
+                console.log('shipmentCount  '+ shipmentCount);
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
                     count:10,
@@ -35,7 +63,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     counts:[10,50,100],
                     total:shipmentCount,
                     getData: function (params) {
-                        loadCargoBookings(params);
+                        loadCargoBookings(params, filter);
                     }
                 });
             });
@@ -43,6 +71,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.init();
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/'+bookingId);
+        }
+
+        $scope.search = function() {
+           $scope.init($scope.filter);
         }
 
     }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
@@ -69,11 +101,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
     })
 
     .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
-        console.log('CargoBookingController ....');
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
-        $scope.shipment = {'shipmentType':'Paid'};
+        $scope.shipment = {'paymentType':'Paid'};
         $scope.shipment.dispatchDate = new Date();
         $scope.filter;
         branchOfficeManager.loadNames(function(data) {
@@ -189,12 +220,15 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
-            findCargoBookings: function (pageable, callback) {
-                $http({url:'/api/v1/shipments',method:"POST", params: pageable})
+            findCargoBookings: function (filter, callback) {
+                console.log('filter ' + filter);
+                $http.post('/api/v1/shipments', filter)
                     .then(function (response) {
-                        callback(response.data);
-                    }, function (error) {
-                        $log.debug("error retrieving payments");
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                    }, function (err, status) {
+                        sweetAlert("Error searching cargo booking", err.message, "error");
                     });
             },
             getCargoBooking: function (id, callback) {
@@ -220,8 +254,8 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         swal("oops", error.data.message, "error");
                     })
             },
-            count:function (callback) {
-                $http({url:'/api/v1/shipments/count',method:"POST"})
+            count:function (filter, callback) {
+                $http.post('/api/v1/shipments/count', filter)
                     .then(function (response) {
                         callback(response.data);
                     }, function (error) {
