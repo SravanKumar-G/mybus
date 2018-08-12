@@ -103,6 +103,7 @@ public class SystemProperties {
 		AWS_S3_OFFICEEXPENSESBUCKET("aws.s3.officeExpensesBucket"),
 		EXPIRATION_BUFFER("expiry.buffer"),
 		SMS_GATEWAY_API_KEY("sms.api.key"),
+		SMS_GATEWAY_URL("sms.api.url"),
 		FACTUAL_API_KEY("factual.api.key"),
 		FACTUAL_SECRET("factual.secret"),
 		MAX_UPLOAD_SIZE_BYTES("max.upload.size"),

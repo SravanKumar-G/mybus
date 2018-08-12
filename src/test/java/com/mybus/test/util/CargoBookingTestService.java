@@ -3,6 +3,7 @@ package com.mybus.test.util;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
+import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,17 @@ public class CargoBookingTestService {
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
 
+    @Autowired
+    private SessionManager sessionManager;
     public CargoBooking createNew(ShipmentSequence shipmentSequence ) {
-        BranchOffice b1 = branchOfficeDAO.save(new BranchOffice("B1", "C1"));
-        BranchOffice b2 = branchOfficeDAO.save(new BranchOffice("B2", "C2"));
+
+        BranchOffice b1 = new BranchOffice("B1", "C1");
+        b1.setOperatorId(sessionManager.getOperatorId());
+        BranchOffice b2 = new BranchOffice("B2", "C2");
+        b2.setOperatorId(sessionManager.getOperatorId());
+
+        b1 = branchOfficeDAO.save(b1);
+        b2 = branchOfficeDAO.save(b2);
 
         CargoBooking shipment = new CargoBooking();
         shipment.setFromEmail("email@e.com");
