@@ -1,14 +1,12 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.BranchOffice;
-import com.mybus.model.CargoBooking;
-import com.mybus.model.CargoBookingItem;
-import com.mybus.model.Payment;
+import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -46,8 +44,10 @@ public class CargoBookingManager {
     @Autowired
     private PaymentManager paymentManager;
 
-    private Map<String, String> lrTypes;
+    @Autowired
+    private SMSManager smsManager;
 
+    private Map<String, String> lrTypes;
 
     @Autowired
     private SessionManager sessionManager;
@@ -90,6 +90,7 @@ public class CargoBookingManager {
             shipment = cargoBookingDAO.save(shipment);
             if(shipment.getId() != null) {
                 updateUserCashBalance(shipment);
+                sendSMSNotification(shipment);
             } else {
                 throw new BadRequestException("Failed creating shipment");
             }
@@ -170,5 +171,26 @@ public class CargoBookingManager {
 
     public long count(JSONObject query) throws ParseException {
         return cargoBookingMongoDAO.countShipments(query);
+    }
+
+    private void sendSMSNotification(CargoBooking cargoBooking){
+
+        BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
+        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
+
+        String message = String.format("A parcel is booked with LR# %s From:%s(Ph:%s) " +
+                "To:%s At %s, LRType:%s Amt:%s, Date:%s To:%s Contact %s for collecting. " +
+                "Sri Krishna Cargo Services", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
+                String.valueOf(cargoBooking.getFromContact()), cargoBooking.getToName(),
+                String.valueOf(cargoBooking.getToContact()),
+                fromBranchOffice.getName(),cargoBooking.getPaymentType(),
+                String.valueOf(cargoBooking.getTotalCharge()),
+                cargoBooking.getCreatedAt(), toBranchOffice.getName(), toBranchOffice.getContact() +" "+ toBranchOffice.getAddress());
+            try {
+                smsManager.sendSMS(cargoBooking.getFromContact()+","+cargoBooking.getToContact(), message, "CargoBooking", cargoBooking.getId());
+            } catch (UnirestException e) {
+                e.printStackTrace();
+                logger.error("Error sending SMS notification for cargo booking:" + cargoBooking.getId());
+            }
     }
 }

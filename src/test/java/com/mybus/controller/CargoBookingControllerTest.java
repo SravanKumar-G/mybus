@@ -169,9 +169,13 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     }
     @Test
     public void testCreateShipment() throws Exception {
+        OperatorAccount operatorAccount = new OperatorAccount();
+        sessionManager.setOperatorId(operatorAccount.getId());
         ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
         BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
         BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch.setOperatorId(operatorAccount.getId());
+        toBranch.setOperatorId(operatorAccount.getId());
         fromBranch = branchOfficeManager.save(fromBranch);
         toBranch = branchOfficeManager.save(toBranch);
         CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);

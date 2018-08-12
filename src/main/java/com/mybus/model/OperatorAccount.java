@@ -50,6 +50,8 @@ public class OperatorAccount extends AbstractDocument {
     @RequiresValue
     private String email;
 
+    private String smsSenderName;
+
     public OperatorAccount(String providerType){
         this.providerType = providerType;
     }
