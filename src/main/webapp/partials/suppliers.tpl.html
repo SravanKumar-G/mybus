@@ -1,37 +1,40 @@
 <legend>{{ headline }}</legend>
 <div class="toolbar-button-div pull-right">
     <button type="button" class="btn btn-sm btn-primary" ng-click="handleEdit()">
-    	<span class="glyphicon glyphicon-plus"></span> Add Amenity
+    	<span class="glyphicon glyphicon-plus"></span> Add Supplier
     </button>
 </div>
 <br/>
 <br/>
 <table class="table table-bordered table-condensed table-hover" ng-table="tableParams">
-    <tr ng-repeat="fillingStation in fillingStations">
-        <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-6" >{{ fillingStation.name }}</td>
-        <td data-title="'Contact'" sortable="'contact'"  class="clickable-item col-md-4">{{fillingStation.contact}}</td>
+    <tr ng-repeat="supplier in suppliers">
+        <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-4" >{{ supplier.name }}</td>
+        <td data-title="'Contact'" sortable="'contact'"  class="clickable-item col-md-2">{{supplier.contact}}</td>
+        <td data-title="'Due Amount'" sortable="'pendingDue'"  class="clickable-item col-md-2">{{supplier.balance}}</td>
         <td class="col-md-2">
 	        <md-button>
-	            <md-icon type="button" class="btn" ng-click="handleEdit(fillingStation.id)">
+	            <md-icon type="button" class="btn" ng-click="handleEdit(supplier.id)">
 	            <span class="glyphicon glyphicon-pencil"></span></md-icon>
 	        </md-button>
+            <md-icon type="button" class="btn" ng-click="delete(supplier.id)">
+                <span class="glyphicon glyphicon-trash"></span></md-icon>
         </td>
 
     </tr>
-    <tr ng-if="!fillingStations || fillingStations.length === 0">
-        <td colspan="4">No Filling Stations exist.  Please add some.</td>
+    <tr ng-if="!suppliers || suppliers.length === 0">
+        <td colspan="4">No suppliers.  Please add some.</td>
     </tr>
 </table>
 
 
 <!-- modal popup for adding Amenity -->
 
-<script type="text/ng-template" id="edit-fillingstation-modal.html">
+<script type="text/ng-template" id="edit-supplier-modal.html">
     
 	<div class="modal-header">
 		<div class="row">
             <div class="col-sm-11">
-        		<h3 class="modal-title">Filling Station</h3>
+        		<h3 class="modal-title">Supplier</h3>
     		</div>
  			<div class="col-sm-1">
         		<md-button>
@@ -49,19 +52,19 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label checkbox" for="fname">Name</label>
                 <div class="col-sm-5">
-                     <input type="text" id="fname" class="form-control" ng-model="fillingStation.name" placeholder="Name">
+                     <input type="text" id="fname" class="form-control" ng-model="supplier.name" placeholder="Name">
                  </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label checkbox" for="fcontact">Contact</label>
                 <div class="col-sm-5">
-                    <input type="text" id="fcontact" class="form-control" ng-model="fillingStation.contact" placeholder="Contact">
+                    <input type="text" id="fcontact" class="form-control" ng-model="supplier.contact" placeholder="Contact">
                 </div>
             </div>
          	<div class="form-group">
                <label class="col-sm-4 control-label checkbox" for="activeInactive">Active</label> 
                <div class="col-sm-1">
-                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="fillingStation.active">
+                    <input type="checkbox" id="activeInactive" class="form-control" ng-model="supplier.active">
                 </div>
             </div>
 

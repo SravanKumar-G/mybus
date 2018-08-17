@@ -69,7 +69,7 @@ public class OfficeExpenseController {
     public OfficeExpense create(HttpServletRequest request, @RequestBody final OfficeExpense officeExpense) {
         logger.debug("post officeExpense called");
         if(officeExpense.getExpenseType() != null && !officeExpense.getExpenseType().equalsIgnoreCase("diesel")) {
-            officeExpense.setFillingStationId(null);
+            officeExpense.setSupplierId(null);
         }
         if(officeExpense.getExpenseType() != null && officeExpense.getExpenseType().equalsIgnoreCase("salary")) {
             if(officeExpense.getFromDate() == null || officeExpense.getToDate() == null){

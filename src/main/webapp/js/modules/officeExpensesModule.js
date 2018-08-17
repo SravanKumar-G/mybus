@@ -13,6 +13,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         $scope.pendingTotal = 0;
         $scope.approvedTotal = 0;
         $scope.selectedPayments = [];
+        $scope.suppliers = [];
         var user = userManager.getUser();
         $scope.currentUser = user.fullName;
 
@@ -22,6 +23,10 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
 
         userManager.getUserNames(function (data) {
             $scope.members = data;
+        });
+
+        suppliersManager.getSuppliers(function (data) {
+            $scope.suppliers = data;
         });
 
         officeExpensesManager.loadExpenseTypes(function (data) {
@@ -198,7 +203,7 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
         }
 
     })
-    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId, fillingStationsManager, vehicleManager) {
+    .controller("EditExpenseController",function($rootScope, $scope, $uibModal, $location,$log,NgTableParams,officeExpensesManager, userManager,expenseId, suppliersManager, vehicleManager) {
         $scope.today = function () {
             $scope.dt = new Date();
         };
@@ -210,8 +215,8 @@ angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
                 $scope.type = false;
             }
         }
-        fillingStationsManager.getFillingStations(function(fillingStations){
-            $scope.fillingStations = fillingStations;
+        suppliersManager.getSuppliers(function(suppliers){
+            $scope.suppliers = suppliers;
         });
         vehicleManager.getVehicles(null, function(data){
             $scope.vehicles = data.content;

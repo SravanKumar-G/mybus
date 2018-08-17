@@ -10,9 +10,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class FillingStation extends AbstractDocument {
+public class Supplier extends AbstractDocument {
     @RequiresValue
     private String name;
     private String contact;
     private boolean active;
+    private double balance;
 }

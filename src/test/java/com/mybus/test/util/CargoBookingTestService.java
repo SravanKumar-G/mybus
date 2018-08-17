@@ -35,7 +35,6 @@ public class CargoBookingTestService {
         shipment.setFromBranchId(b1.getId());
         shipment.setToBranchId(b2.getId());
         shipment.setCargoTransitStatus(CargoTransitStatus.ARRIVED);
-        shipment.setShipmentType(shipmentSequence.getId());
         shipment.setFromContact(new Long(1234));
         shipment.setToContact(new Long(1234));
         shipment.setFromName("from");

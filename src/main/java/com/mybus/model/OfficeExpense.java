@@ -29,5 +29,5 @@ public class OfficeExpense extends AbstractDocument {
     private Date approvedOn;
     private String vehicleId;
     private String expenseType;
-    private String fillingStationId;
+    private String supplierId;
 }

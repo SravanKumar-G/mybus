@@ -19,7 +19,9 @@
             <div class="col-sm-3">
                 <select id="lrType" class="form-control" ng-model="shipment.paymentType" required
                 ng-options="shipmentType.shipmentType as shipmentType.shipmentType for shipmentType in shipmentTypes"></select>
-            </div>
+
+                <select id="supplier" ng-options="f.id as f.name for f in suppliers" class="form-control" ng-model="shipment.supplierId" ng-if="shipment.paymentType == 'OnAccount'"/>
+             </div>
 
             <label class="col-sm-2 control-label">For User</label>
             <div class="col-sm-3">

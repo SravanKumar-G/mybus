@@ -29,12 +29,13 @@ var myBus = angular.module('myBus', [
     'myBus.fuelExpenseReportModule',
     'myBus.invoiceModule',
     'myBus.gstFilters',
-    'myBus.fillingStations',
+    'myBus.suppliers',
     'myBus.tripReportsModule',
     'myBus.cargoBooking',
-    'myBus.colletionZoneModule',
     'myBus.operatorAccountsModule',
-    'myBus.staffModule'
+    'myBus.staffModule',
+    'myBus.cargoDashboard'
+
 
 ]);
 
@@ -103,6 +104,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/dashboard',
                 templateUrl: 'partials/home.tpl.html',
                 controller: 'HomeController'
+            })
+            .state('cargodashboard', {
+                level:1,
+                url:'/cargodashboard',
+                templateUrl: 'partials/cargoDashBoard.tpl.html',
+                controller: 'CargoDashboardController'
             })
             .state('duereport', {
                 level:1,
@@ -432,7 +439,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             .state('suppliers',{
                 url:'/suppliers',
                 templateUrl: 'partials/suppliers.tpl.html',
-                controller: 'FillingStationsController'
+                controller: 'SuppliersListController'
             })
             .state('tripreports',{
                 url:'/tripreports',

@@ -79,7 +79,7 @@ public class ShipmentSequenceManager {
      * @param shipment
      */
     public void preProcess(CargoBooking shipment) {
-        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipment.getShipmentType());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipment.getPaymentType());
         shipmentSequence = nextSequeceNumber(shipmentSequence);
         Calendar currentDate = Calendar.getInstance();
         String shipmentNumber = String.format("%s-%d-%d-%d", shipmentSequence.getShipmentCode() + shipmentSequence.nextNumber,
