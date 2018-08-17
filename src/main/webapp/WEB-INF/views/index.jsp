@@ -54,13 +54,13 @@
     <script src="js/modules/fuelExpenseReportModule.js"></script>
     <script src="js/modules/invoiceModule.js"></script>
     <script src="js/modules/gstFiltersModule.js"></script>
-    <script src="js/modules/fillingStationsModule.js"></script>
+    <script src="js/modules/suppliersModule.js"></script>
     <script src="js/modules/tripReportsModule.js"></script>
     <script src="js/modules/cargoBookingModule.js"></script>
     <script src="js/modules/collectionZoneModule.js"></script>
     <script src="js/modules/operatorAccountsModule.js"></script>
     <script src="js/modules/staffModule.js"></script>
-
+    <script src="js/modules/cargoDashboardModule.js"></script>
 
     <script src="js/modules/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -174,6 +174,7 @@
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="cargo" >
+                                <my-menu url="cargodashboard" label="CargoDashBoard" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>

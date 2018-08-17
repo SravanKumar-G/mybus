@@ -172,4 +172,9 @@ public class UserManager {
         }
     }
     */
+
+    public Map<String, List<User>> getUsersByBranchOffices() {
+        return null;
+    }
+
 }

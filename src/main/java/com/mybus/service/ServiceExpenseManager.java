@@ -1,10 +1,8 @@
 package com.mybus.service;
 
-import com.mybus.dao.FillingStationDAO;
+import com.mybus.dao.SupplierDAO;
 import com.mybus.dao.ServiceExpenseDAO;
 import com.mybus.dao.ServiceListingDAO;
-import com.mybus.dao.ServiceReportDAO;
-import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dao.impl.ServiceExpenseMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -31,18 +29,18 @@ public class ServiceExpenseManager {
     private ServiceExpenseMongoDAO serviceExpenseMongoDAO;
 
     @Autowired
-    private FillingStationDAO fillingStationDAO;
+    private SupplierDAO fillingStationDAO;
 
     @Autowired
     private ServiceListingDAO serviceListingDAO;
 
     @Autowired
     private SessionManager sessionManager;
-    private Map<String, FillingStation> fillingStationMap = new HashMap<>();
+    private Map<String, Supplier> fillingStationMap = new HashMap<>();
 
     @PostConstruct
     public void init(){
-        Iterable<FillingStation> fillingStations = fillingStationDAO.findAll();
+        Iterable<Supplier> fillingStations = fillingStationDAO.findAll();
         fillingStations.forEach(fillingStation -> {
             fillingStationMap.put(fillingStation.getId(), fillingStation);
         });
@@ -84,7 +82,7 @@ public class ServiceExpenseManager {
             serviceExpense.getAttributes().put("VehicleNumber", serviceListing.getVehicleRegNumber());
         }
         if(serviceExpense.getFillingStationId() != null) {
-            FillingStation fillingStation = fillingStationDAO.findOne(serviceExpense.getFillingStationId());
+            Supplier fillingStation = fillingStationDAO.findOne(serviceExpense.getFillingStationId());
             serviceExpense.getAttributes().put("fillingStation", fillingStation.getName());
         }
         return serviceExpense;

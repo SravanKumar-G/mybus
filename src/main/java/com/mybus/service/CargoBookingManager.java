@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.RequiredFieldValidator;
+import com.mybus.dao.SupplierDAO;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,9 @@ public class CargoBookingManager {
     @Autowired
     private SMSManager smsManager;
 
+    @Autowired
+    private SupplierDAO supplierDAO;
+
     private Map<String, String> lrTypes;
 
     @Autowired
@@ -69,47 +74,99 @@ public class CargoBookingManager {
 
     /**
      * save cargo booking
-     * @param shipment
+     * @param cargoBooking
      * @return
      */
-    public CargoBooking saveWithValidations(CargoBooking shipment) {
-        if(shipment.getShipmentType() == null) {
-            throw new BadRequestException("ShipmentType missing ");
+    public CargoBooking saveWithValidations(CargoBooking cargoBooking) {
+        if(cargoBooking.getPaymentType() == null) {
+            throw new BadRequestException("getPaymentType missing ");
         }
-        shipmentSequenceManager.preProcess(shipment);
-        shipment.setOperatorId(sessionManager.getOperatorId());
-        List<String> errors = RequiredFieldValidator.validateModel(shipment, CargoBooking.class);
-        if( shipment.getItems() != null) {
-            for(CargoBookingItem cargoBookingItem: shipment.getItems()){
+        shipmentSequenceManager.preProcess(cargoBooking);
+        cargoBooking.setOperatorId(sessionManager.getOperatorId());
+        List<String> errors = RequiredFieldValidator.validateModel(cargoBooking, CargoBooking.class);
+        if( cargoBooking.getItems() != null) {
+            for(CargoBookingItem cargoBookingItem: cargoBooking.getItems()){
                 if(cargoBookingItem.getDescription() == null){
                     errors.add("Missing description for item ");
                 }
             }
         }
         if(errors.isEmpty()) {
-            shipment = cargoBookingDAO.save(shipment);
-            if(shipment.getId() != null) {
-                updateUserCashBalance(shipment);
-                sendSMSNotification(shipment);
-            } else {
-                throw new BadRequestException("Failed creating shipment");
+            if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
+                updateUserCashBalance(cargoBooking);
+            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
+                cargoBooking.setDue(true);
+            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
+                cargoBooking.setDue(true);
+                updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), false);
             }
+            sendSMSNotification(cargoBooking);
+            cargoBooking = cargoBookingDAO.save(cargoBooking);
         } else {
             throw new BadRequestException("Required data missing "+ String.join("<br> ", errors));
         }
-        return shipment;
+        return cargoBooking;
     }
+
+    /**
+     * Pay cargobookings of types ToPay or OnAccount
+     *
+     * @param cargoBookingId
+     */
+    public boolean payCargoBooking(String cargoBookingId) {
+        CargoBooking cargoBooking = cargoBookingDAO.findOne(cargoBookingId);
+        if(cargoBooking == null) {
+            throw new BadRequestException("Invalid CargoBooking Id");
+        } else {
+            if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
+                updateUserCashBalance(cargoBooking);
+                cargoBooking.setDue(false);
+                cargoBooking.setPaidOn(new Date());
+                return true;
+            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
+                if(cargoBooking.getSupplierId() == null) {
+                    throw new BadRequestException("Invalid supplierId on OnAccount shipment");
+                }
+                updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), true);
+                updateUserCashBalance(cargoBooking);
+                cargoBooking.setDue(false);
+                cargoBooking.setPaidOn(new Date());
+                return true;
+            } else {
+                throw new BadRequestException("Invalid Type for CargoBooking, Only ToPay and OnAccount types can be paid");
+            }
+        }
+    }
+
+    /**
+     *
+     * @param supplierId
+     * @param balance
+     * @param isPaymentTransaction true when called from payBooking call, false when called from save booking call
+     */
+
+    private void updateOnAccountBalance(String supplierId, double balance, boolean isPaymentTransaction) {
+        Supplier supplier = supplierDAO.findOne(supplierId);
+        if(supplier == null) {
+            throw new BadRequestException("Invalid supplier on OnAccount shipment");
+        }
+        if(isPaymentTransaction){
+            supplier.setBalance(supplier.getBalance() - balance);
+        } else {
+            supplier.setBalance(supplier.getBalance() + balance);
+        }
+        supplierDAO.save(supplier);
+    }
+
 
     /**
      * Update user cash balance for cargo booking
      * @param cargoBooking
      */
     private void updateUserCashBalance(CargoBooking cargoBooking) {
-        if(cargoBooking.getShipmentNumber().startsWith(ShipmentSequence.PAID_TYPE)){
-            Payment payment = paymentManager.createPayment(cargoBooking);
-            if(payment == null){
-                throw new BadRequestException("Failed to create payment for Cargo Booking");
-            }
+        Payment payment = paymentManager.createPayment(cargoBooking);
+        if(payment == null){
+            throw new BadRequestException("Failed to create payment for Cargo Booking");
         }
     }
 
@@ -160,7 +217,7 @@ public class CargoBookingManager {
         cargoBooking.getAttributes().put("fromBranchOfficeName",fromBranchOffice.getName());
         cargoBooking.getAttributes().put("toBranchOfficeName",toBranchOffice.getName());
 
-        cargoBooking.getAttributes().put("LRType",lrTypes.get(cargoBooking.getShipmentType()));
+        cargoBooking.getAttributes().put("LRType",lrTypes.get(cargoBooking.getPaymentType()));
         if(cargoBooking.getCreatedBy() != null){
             cargoBooking.getAttributes().put("bookedBy",userManager.getUser(cargoBooking.getCreatedBy()).getFullName());
         }

@@ -115,6 +115,10 @@ public class BranchOfficeManager {
         branchOfficeDAO.delete(branchOffice);
     }
 
+    /**
+     * Get the list of branch office names( by operatorId is always implicit)
+     * @return
+     */
     public List<BranchOffice> getNames() {
         String[] fields = {"name"};
         JSONObject query = new JSONObject();

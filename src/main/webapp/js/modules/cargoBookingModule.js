@@ -19,13 +19,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         cargoBookingManager.getShipmentTypes(function (types) {
             $scope.shipmentTypes = types;
-            //Set the shipment type to paid by default
-            var paidType = _.find($scope.shipmentTypes, function(type){
-                if(type.shipmentCode === 'P'){
-                    return type.id;
-                }
-            });
-            $scope.shipment.shipmentType = paidType.id;
         });
         var loadCargoBookings = function (tableParams, filter) {
             var sortingProps = tableParams.sorting();
@@ -100,15 +93,20 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
     })
 
-    .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, userManager, branchOfficeManager, $location){
+    .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, suppliersManager, userManager, branchOfficeManager, $location){
         $scope.headline = "Cargo Booking";
         $scope.shipmentTypes = [];
         $scope.users = [];
         $scope.shipment = {'paymentType':'Paid'};
         $scope.shipment.dispatchDate = new Date();
         $scope.filter;
+        $scope.suppliers = [];
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
+        });
+
+        suppliersManager.getSuppliers(function (data) {
+            $scope.suppliers = data;
         });
 
         $scope.getTotalPrice = function () {
@@ -192,6 +190,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.saveCargoBooking = function(){
             cargoBookingManager.createShipment($scope.shipment, function (response) {
                 $location.url('viewcargobooking/'+response.id);
+                $rootScope.$broadcast('UpdateHeader');
             });
         }
 
@@ -200,24 +199,8 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 swal("Error", "Search text is missing", "error");
             } else{
                 cargoBookingManager.lookupCargoBooking(this.filter);
-                /*cargoBookingManager.findCargoBookings(this.filter, function (response) {
-                    if(response.length == 0) {
-                        swal("oops", "Nothing found!!", "error");
-                    } else {
-                        $rootScope.modalInstance = $uibModal.open({
-                            templateUrl : 'cargobookings-modal.html',
-                            controller : 'CargoBookingLookupController',
-                            resolve : {
-                                bookings : function(){
-                                    return response;
-                                }
-                            }
-                        });
-                    }
-                });*/
             }
         }
-
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
             findCargoBookings: function (filter, callback) {

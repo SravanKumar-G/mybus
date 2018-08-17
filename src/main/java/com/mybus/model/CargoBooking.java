@@ -29,6 +29,8 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     private String forUser;
 
+    private boolean due;
+
     @RequiresValue
     @Field(SHIPMENT_NUMBER)
     @Indexed(unique = true)
@@ -48,9 +50,6 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private CargoTransitStatus cargoTransitStatus = CargoTransitStatus.READYFORSHIPMENT;
     @RequiresValue
     private String paymentType;
-
-    @RequiresValue
-    private String shipmentType;
 
     private String fromEmail;
 
@@ -86,6 +85,10 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private List<CargoBookingItem> items;
 
     private String remarks;
+
+    private String supplierId;
+
+    private Date paidOn;
 
     @Override
     public boolean containsKey(String attributeName) {

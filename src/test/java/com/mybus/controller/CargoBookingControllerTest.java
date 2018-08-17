@@ -181,7 +181,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
         shipment.setFromBranchId(fromBranch.getId());
         shipment.setToBranchId(toBranch.getId());
-        shipment.setShipmentType(shipmentSequence.getId());
+        shipment.setPaymentType(shipmentSequence.getId());
 
         ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
                 .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
@@ -244,5 +244,10 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions.andExpect(status().isOk());
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(0, shipments.size());
+    }
+
+    @Test
+    public void testPayToPayOnAccountBooking(){
+
     }
 }
