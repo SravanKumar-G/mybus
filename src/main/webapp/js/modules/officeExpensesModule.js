@@ -3,7 +3,7 @@
 
 angular.module('myBus.officeExpensesModule', ['ngTable', 'ui.bootstrap'])
     .controller("OfficeExpensesController",function($rootScope, $scope, $filter, $location, $log,$uibModal, printManager, branchOfficeManager,
-                                                    NgTableParams, officeExpensesManager, userManager, paginationService){
+                                                    NgTableParams, officeExpensesManager, userManager, suppliersManager, paginationService){
         $scope.loading = false;
         $scope.headline = "Office Expenses";
         $scope.query = {"status":null};
