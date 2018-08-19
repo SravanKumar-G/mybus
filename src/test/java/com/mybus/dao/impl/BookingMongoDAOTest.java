@@ -93,7 +93,6 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testFindDueByService() {
         for(int i=0; i<21; i++) {
             Booking booking = new Booking();
@@ -112,7 +111,6 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testFindOfficeDuesByService() {
         BranchOffice branchOffice1 = branchOfficeDAO.save(new BranchOffice());
         BranchOffice branchOffice2 = branchOfficeDAO.save(new BranchOffice());

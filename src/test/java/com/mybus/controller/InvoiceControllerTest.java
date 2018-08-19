@@ -46,7 +46,6 @@ public class InvoiceControllerTest extends AbstractControllerIntegrationTest  {
     }
 
     @Test
-    @Ignore
     public void testFindBookings() throws Exception {
         createdTestBookings();
         Calendar calendar = Calendar.getInstance();
