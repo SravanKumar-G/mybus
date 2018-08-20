@@ -46,6 +46,8 @@ public class CargoBookingTestService {
             shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
         } else if(shipmentSequence.getShipmentCode().equals("P")){
             shipment.setPaymentType(PaymentStatus.PAID.toString());
+        }else if(shipmentSequence.getShipmentCode().equals("OA")){
+            shipment.setPaymentType(PaymentStatus.ONACCOUNT.toString());
         }
         shipment.setDispatchDate(new Date());
         return shipment;

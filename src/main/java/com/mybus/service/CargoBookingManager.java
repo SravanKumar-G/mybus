@@ -92,16 +92,21 @@ public class CargoBookingManager {
             }
         }
         if(errors.isEmpty()) {
-            if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
-                updateUserCashBalance(cargoBooking);
-            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
-                cargoBooking.setDue(true);
-            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
-                cargoBooking.setDue(true);
-                updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), false);
-            }
             sendSMSNotification(cargoBooking);
             cargoBooking = cargoBookingDAO.save(cargoBooking);
+            try {
+                if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
+                    updateUserCashBalance(cargoBooking);
+                } else if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
+                    cargoBooking.setDue(true);
+                } else if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
+                    cargoBooking.setDue(true);
+                    updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), false);
+                }
+            }catch (Exception e){
+                cargoBookingDAO.delete(cargoBooking);
+                throw e;
+            }
         } else {
             throw new BadRequestException("Required data missing "+ String.join("<br> ", errors));
         }

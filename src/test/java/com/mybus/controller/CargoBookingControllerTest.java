@@ -2,6 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.SupplierDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
@@ -65,6 +66,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
 
     @Autowired
     private CargoBookingTestService cargoBookingTestService;
+
+    @Autowired
+    private SupplierDAO supplierDAO;
 
     @Before
     @After
@@ -167,31 +171,6 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
     }
-    @Test
-    public void testCreateShipment() throws Exception {
-        OperatorAccount operatorAccount = new OperatorAccount();
-        sessionManager.setOperatorId(operatorAccount.getId());
-        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
-        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
-        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
-        fromBranch.setOperatorId(operatorAccount.getId());
-        toBranch.setOperatorId(operatorAccount.getId());
-        fromBranch = branchOfficeManager.save(fromBranch);
-        toBranch = branchOfficeManager.save(toBranch);
-        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
-        shipment.setFromBranchId(fromBranch.getId());
-        shipment.setToBranchId(toBranch.getId());
-        shipment.setPaymentType(shipmentSequence.getId());
-
-        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
-                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
-        actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
-        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
-        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
-        assertEquals(1, shipments.size());
-    }
-
 
     @Test
     public void testUpdateShipment() throws Exception {
@@ -247,7 +226,131 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     }
 
     @Test
-    public void testPayToPayOnAccountBooking(){
+    public void testSaveFreeShipment() throws Exception {
+        OperatorAccount operatorAccount = new OperatorAccount();
+        sessionManager.setOperatorId(operatorAccount.getId());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
+        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch.setOperatorId(operatorAccount.getId());
+        toBranch.setOperatorId(operatorAccount.getId());
+        fromBranch = branchOfficeManager.save(fromBranch);
+        toBranch = branchOfficeManager.save(toBranch);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setFromBranchId(fromBranch.getId());
+        shipment.setToBranchId(toBranch.getId());
+
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
+                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
+        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
+        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
+        assertEquals(1, shipments.size());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
+    }
+
+    @Test
+    public void testSavePaidBooking() throws Exception {
+        OperatorAccount operatorAccount = new OperatorAccount();
+        sessionManager.setOperatorId(operatorAccount.getId());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence(ShipmentSequence.PAID_TYPE, "Paid"));
+        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
+        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch.setOperatorId(operatorAccount.getId());
+        toBranch.setOperatorId(operatorAccount.getId());
+        fromBranch = branchOfficeManager.save(fromBranch);
+        toBranch = branchOfficeManager.save(toBranch);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setFromBranchId(fromBranch.getId());
+        shipment.setToBranchId(toBranch.getId());
+        shipment.setTotalCharge(150);
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
+                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
+        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
+        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
+        assertEquals(1, shipments.size());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
+    }
+
+    @Test
+    public void testPayToPayBooking() throws Exception {
+        Supplier supplier = supplierDAO.save(new Supplier());
+        OperatorAccount operatorAccount = new OperatorAccount();
+        sessionManager.setOperatorId(operatorAccount.getId());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence(ShipmentSequence.TOPAY_TYPE, "OnAccount"));
+        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
+        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch.setOperatorId(operatorAccount.getId());
+        toBranch.setOperatorId(operatorAccount.getId());
+        fromBranch = branchOfficeManager.save(fromBranch);
+        toBranch = branchOfficeManager.save(toBranch);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setFromBranchId(fromBranch.getId());
+        shipment.setToBranchId(toBranch.getId());
+        shipment.setTotalCharge(150);
+        shipment.setSupplierId(supplier.getId());
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
+                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
+        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
+        CargoBooking cargoBooking = getObjectMapper().readValue(actions.andReturn().getResponse().getContentAsString(), CargoBooking.class);
+        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
+        assertEquals(1, shipments.size());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
+        //pay ToPay booking
+        actions = mockMvc.perform(asUser(put("/api/v1/shipment/pay/"+cargoBooking.getId()), currentUser));
+        actions.andExpect(status().isOk());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
+    }
+    @Test
+    public void testSaveOnAccountBooking() throws Exception {
+        Supplier supplier = supplierDAO.save(new Supplier());
+        OperatorAccount operatorAccount = new OperatorAccount();
+        sessionManager.setOperatorId(operatorAccount.getId());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence(ShipmentSequence.ON_ACCOUNT, "OnAccount"));
+        BranchOffice fromBranch = new BranchOffice("FromBranch", "1234");
+        BranchOffice toBranch = new BranchOffice("ToBranch", "1234");
+        fromBranch.setOperatorId(operatorAccount.getId());
+        toBranch.setOperatorId(operatorAccount.getId());
+        fromBranch = branchOfficeManager.save(fromBranch);
+        toBranch = branchOfficeManager.save(toBranch);
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setFromBranchId(fromBranch.getId());
+        shipment.setToBranchId(toBranch.getId());
+        shipment.setTotalCharge(150);
+        ResultActions actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
+                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isBadRequest());
+        //set the supplier
+        shipment.setSupplierId(supplier.getId());
+        actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
+                .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
+        actions.andExpect(status().isOk());
+        actions.andExpect(jsonPath("$.fromBranchId").value(shipment.getFromBranchId()));
+        actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
+        CargoBooking cargoBooking = getObjectMapper().readValue(actions.andReturn().getResponse().getContentAsString(), CargoBooking.class);
+        List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
+        assertEquals(1, shipments.size());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
+        supplier = supplierDAO.findOne(supplier.getId());
+        assertEquals(supplier.getBalance(), 150, 0.0);
+
+        //pay ToPay booking
+        actions = mockMvc.perform(asUser(put("/api/v1/shipment/pay/"+cargoBooking.getId()), currentUser));
+        actions.andExpect(status().isOk());
+        currentUser = userDAO.findOne(currentUser.getId());
+        assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
+        supplier = supplierDAO.findOne(supplier.getId());
+        assertEquals(supplier.getBalance(), 0, 0.0);
 
     }
 }

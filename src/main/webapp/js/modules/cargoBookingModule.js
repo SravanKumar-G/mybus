@@ -150,7 +150,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     return type.id;
                 }
             });
-            $scope.shipment.shipmentType = paidType.id;
         });
 
         //set the user to current user

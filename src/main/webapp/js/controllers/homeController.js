@@ -4,7 +4,5 @@
 angular.module('myBus.homeModule', ['ngTable', 'ui.bootstrap'])
   .controller('HomeController', function($scope, $http, $log, $modal, $filter, $location, userManager) {
     $scope.headline = "Srikrishna Travels - Admin Portal";
-    $scope.canAccessCargoModule = function(){
-        console.log("current user"+ userManager.getCurrentUser().accessibleModules);
-    }
+
   });
