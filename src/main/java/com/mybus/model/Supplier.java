@@ -15,5 +15,7 @@ public class Supplier extends AbstractDocument {
     private String name;
     private String contact;
     private boolean active;
-    private double balance;
+    private double toBePaid;
+    private double toBeCollected;
+
 }

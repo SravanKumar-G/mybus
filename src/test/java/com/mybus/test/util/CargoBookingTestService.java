@@ -41,13 +41,13 @@ public class CargoBookingTestService {
         shipment.setToName("to");
         shipment.setTotalCharge(100);
         if(shipmentSequence.getShipmentCode().equals("F")){
-            shipment.setPaymentType(PaymentStatus.FREE.toString());
+            shipment.setPaymentType("Free");
         } else if(shipmentSequence.getShipmentCode().equals("TP")){
-            shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
+            shipment.setPaymentType("ToPay");
         } else if(shipmentSequence.getShipmentCode().equals("P")){
-            shipment.setPaymentType(PaymentStatus.PAID.toString());
+            shipment.setPaymentType("Paid");
         }else if(shipmentSequence.getShipmentCode().equals("OA")){
-            shipment.setPaymentType(PaymentStatus.ONACCOUNT.toString());
+            shipment.setPaymentType("OnAccount");
         }
         shipment.setDispatchDate(new Date());
         return shipment;

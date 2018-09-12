@@ -9,6 +9,7 @@ import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
+import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,8 +94,8 @@ public class CargoBookingManager {
         }
         if(errors.isEmpty()) {
             sendSMSNotification(cargoBooking);
-            cargoBooking = cargoBookingDAO.save(cargoBooking);
             try {
+                cargoBooking.setCreatedAt(new DateTime());
                 if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
                     updateUserCashBalance(cargoBooking);
                 } else if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
@@ -103,6 +104,7 @@ public class CargoBookingManager {
                     cargoBooking.setDue(true);
                     updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), false);
                 }
+                cargoBooking = cargoBookingDAO.save(cargoBooking);
             }catch (Exception e){
                 cargoBookingDAO.delete(cargoBooking);
                 throw e;
@@ -120,13 +122,14 @@ public class CargoBookingManager {
      */
     public boolean payCargoBooking(String cargoBookingId) {
         CargoBooking cargoBooking = cargoBookingDAO.findOne(cargoBookingId);
-        if(cargoBooking == null) {
+        if(cargoBooking == null || !cargoBooking.isDue()) {
             throw new BadRequestException("Invalid CargoBooking Id");
         } else {
             if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
                 updateUserCashBalance(cargoBooking);
                 cargoBooking.setDue(false);
                 cargoBooking.setPaidOn(new Date());
+                cargoBookingDAO.save(cargoBooking);
                 return true;
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
                 if(cargoBooking.getSupplierId() == null) {
@@ -136,6 +139,7 @@ public class CargoBookingManager {
                 updateUserCashBalance(cargoBooking);
                 cargoBooking.setDue(false);
                 cargoBooking.setPaidOn(new Date());
+                cargoBookingDAO.save(cargoBooking);
                 return true;
             } else {
                 throw new BadRequestException("Invalid Type for CargoBooking, Only ToPay and OnAccount types can be paid");
@@ -156,9 +160,9 @@ public class CargoBookingManager {
             throw new BadRequestException("Invalid supplier on OnAccount shipment");
         }
         if(isPaymentTransaction){
-            supplier.setBalance(supplier.getBalance() - balance);
+            supplier.setToBeCollected(supplier.getToBeCollected() - balance);
         } else {
-            supplier.setBalance(supplier.getBalance() + balance);
+            supplier.setToBeCollected(supplier.getToBeCollected() + balance);
         }
         supplierDAO.save(supplier);
     }
@@ -254,5 +258,39 @@ public class CargoBookingManager {
                 e.printStackTrace();
                 logger.error("Error sending SMS notification for cargo booking:" + cargoBooking.getId());
             }
+    }
+
+    /**
+     * Cancel cargo booking
+     * @param id
+     * @return
+     */
+    public boolean cancelCargoBooking(String id) {
+        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        if(cargoBooking == null) {
+            throw new BadRequestException("Invalid CargoBooking Id");
+        } else {
+            if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
+                paymentManager.cancelCargoBooking(cargoBooking);
+                return true;
+            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
+                cargoBooking.setCancled(true);
+                cargoBooking.setCanceledOn(new Date());
+                cargoBookingDAO.save(cargoBooking);
+                return true;
+            } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
+                if(cargoBooking.getSupplierId() == null) {
+                    throw new BadRequestException("Invalid supplierId on OnAccount shipment");
+                }
+                //deduct the balance
+                updateOnAccountBalance(cargoBooking.getSupplierId(), -cargoBooking.getTotalCharge(), false);
+                cargoBooking.setCancled(true);
+                cargoBooking.setCanceledOn(new Date());
+                cargoBookingDAO.save(cargoBooking);
+                return true;
+            } else {
+                throw new BadRequestException("Invalid Type for CargoBooking, Only ToPay and OnAccount types can be paid");
+            }
+        }
     }
 }

@@ -137,4 +137,11 @@ public class CargoBookingController extends MyBusBaseController{
         logger.debug("Pay cargo booking");
         return cargoBookingManager.payCargoBooking(id);
     }
+
+    @RequestMapping(value = "shipment/cancel/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Cancel CargoBooking", response = CargoBooking.class)
+    public boolean cancelBooking(HttpServletRequest request,@PathVariable final String id ) {
+        logger.debug("Cancel cargo booking");
+        return cargoBookingManager.cancelCargoBooking(id);
+    }
 }

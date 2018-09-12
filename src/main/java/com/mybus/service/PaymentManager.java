@@ -109,6 +109,29 @@ public class PaymentManager {
         payment.setDuePaidOn(new Date());
         return updatePayment(payment);
     }
+
+    /**
+     * Create payment for Cargo Booking
+     * @param booking
+     * @return
+     */
+    public Payment cancelCargoBooking(CargoBooking booking) {
+        User currentUser = sessionManager.getCurrentUser();
+        Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
+        payment.setAmount(booking.getTotalCharge());
+        payment.setDate(booking.getCreatedAt().toDate());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
+        payment.setBookingId(booking.getShipmentNumber());
+        payment.setSubmittedBy(currentUser.getId());
+        payment.setDescription("Cancel "+Payment.CARGO_BOOKING + " : " + booking.getShipmentNumber());
+        payment.setType(PaymentType.EXPENSE);
+        payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDuePaidOn(new Date());
+        return updatePayment(payment);
+    }
+
     /**
      * Create payment for given office and update office's cash balance
      * @param booking

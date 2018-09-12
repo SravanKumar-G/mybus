@@ -2,10 +2,9 @@ package com.mybus.service;
 
 import com.mongodb.WriteResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
-import com.mybus.model.BranchOffice;
+import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.PaymentStatus;
-import com.mybus.model.ShipmentType;
 import com.mybus.model.cargo.ShipmentSequence;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,20 +33,21 @@ public class ShipmentSequenceManager {
     @Autowired
     private ShipmentSequenceDAO shipmentSequenceDAO;
 
+    /**
+     * Set the shipment sequence on the cargoshipment object
+     * @param shipmentSequence
+     * @return
+     */
     private ShipmentSequence nextSequeceNumber(ShipmentSequence shipmentSequence) {
-        if(shipmentSequence == null){
-            shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("P", "PAID"));
+        Update updateOp = new Update();
+        updateOp.inc("nextNumber", 1);
+        final Query query = new Query();
+        query.addCriteria(where("shipmentCode").is(shipmentSequence.getShipmentCode()));
+        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
+        if(writeResult.getN() == 1){
+            shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentSequence.getShipmentCode());
         } else {
-            Update updateOp = new Update();
-            updateOp.inc("nextNumber", 1);
-            final Query query = new Query();
-            query.addCriteria(where("shipmentCode").is(shipmentSequence.getShipmentCode()));
-            WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
-            if(writeResult.getN() == 1){
-                shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentSequence.getShipmentCode());
-            } else {
-                throw new IllegalStateException("next number failed");
-            }
+            throw new IllegalStateException("next number failed");
         }
         return shipmentSequence;
     }
@@ -79,15 +78,17 @@ public class ShipmentSequenceManager {
      * @param shipment
      */
     public void preProcess(CargoBooking shipment) {
-        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipment.getPaymentType());
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findByShipmentType(shipment.getPaymentType());
+        if(shipmentSequence == null) {
+            throw new BadRequestException("Invalid shipment code");
+        }
+        if(shipment.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString()) && shipment.getSupplierId() == null){
+            throw new BadRequestException("Invalid supplier ID");
+        }
         shipmentSequence = nextSequeceNumber(shipmentSequence);
         Calendar currentDate = Calendar.getInstance();
         String shipmentNumber = String.format("%s-%d-%d-%d", shipmentSequence.getShipmentCode() + shipmentSequence.nextNumber,
                 currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
         shipment.setShipmentNumber(shipmentNumber);
-        if (shipmentSequence.shipmentCode.equals(ShipmentSequence.TOPAY_TYPE) ||
-                shipmentSequence.shipmentCode.equals(ShipmentSequence.ON_ACCOUNT)) {
-            shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
-        }
     }
 }
