@@ -46,6 +46,10 @@ public class SMSManager {
                 return;
             }
             OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            if(operatorAccount.getSmsSenderName() == null) {
+                logger.error("SMS sender name is missing");
+                throw new IllegalArgumentException("SMS sender name is missing in Operator Account");
+            }
             //http://alerts.skycel.in/api/v4/?api_key=Ae6794a10ade2e286bd3
             String baseUrl = String.format("%s?api_key=%s",systemProperties.getProperty(SystemProperties.SysProps.SMS_GATEWAY_URL),
                     systemProperties.getProperty(SystemProperties.SysProps.SMS_GATEWAY_API_KEY));
@@ -67,7 +71,7 @@ public class SMSManager {
                 smsNotification.setRefId(refId);
                 smsNotification.setRefType(refType);
                 smsNotificationDAO.save(smsNotification);
-                logger.info("sent SMS {}", smsNotification);
+                logger.info("sent SMS {}, result{}", sendMessage, smsNotification);
         }
 
     }
