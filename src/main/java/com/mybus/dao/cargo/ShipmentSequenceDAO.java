@@ -8,5 +8,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface ShipmentSequenceDAO extends PagingAndSortingRepository<ShipmentSequence, String> {
     ShipmentSequence findByShipmentCode(String shipmentCode);
-
+    ShipmentSequence findByShipmentType(String shipmentType);
 }

@@ -6,6 +6,10 @@
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Print"></i>
             <span class="p_font_size13 ng-binding">Print</span>
         </div>
+        <div class="btn btn-success" ng-click="payCargoBooking(shipment.id)" ng-if="shipment.due">
+            <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
+            <span class="p_font_size13 ng-binding">Pay Booking</span>
+        </div>
     </div>
     <br/> <br/>
     <div class="panel panel-default m_b_0">

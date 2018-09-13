@@ -10,7 +10,8 @@
     <tr ng-repeat="supplier in suppliers">
         <td data-title="'Name'"  sortable="'name'" class="clickable-item col-md-4" >{{ supplier.name }}</td>
         <td data-title="'Contact'" sortable="'contact'"  class="clickable-item col-md-2">{{supplier.contact}}</td>
-        <td data-title="'Due Amount'" sortable="'pendingDue'"  class="clickable-item col-md-2">{{supplier.balance}}</td>
+        <td data-title="'Amount to be paid'" sortable="'toBePaid'"  class="clickable-item col-md-2">{{supplier.toBePaid}}</td>
+        <td data-title="'Amount to be collected'" sortable="'toBeCollected'"  class="clickable-item col-md-2">{{supplier.toBeCollected}}</td>
         <td class="col-md-2">
 	        <md-button>
 	            <md-icon type="button" class="btn" ng-click="handleEdit(supplier.id)">

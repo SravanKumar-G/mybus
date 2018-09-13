@@ -48,6 +48,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     @RequiresValue
     private CargoTransitStatus cargoTransitStatus = CargoTransitStatus.READYFORSHIPMENT;
+
     @RequiresValue
     private String paymentType;
 
@@ -89,6 +90,9 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private String supplierId;
 
     private Date paidOn;
+
+    private boolean cancled;
+    private Date canceledOn;
 
     @Override
     public boolean containsKey(String attributeName) {

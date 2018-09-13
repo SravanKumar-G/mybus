@@ -70,6 +70,14 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
            $scope.init($scope.filter);
         }
 
+        $scope.payCargoBooking = function(bookingId) {
+            console.log('pay cargo booking '+ bookingId);
+            cargoBookingManager.payCargoBooking(bookingId, function () {
+               $location.url('cargobookings');
+               //reload bookings now
+               $scope.init();
+            });
+        }
     }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
         $scope.headline = "Cargo Bookings";
         $scope.bookings = bookings;
@@ -150,7 +158,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     return type.id;
                 }
             });
-            $scope.shipment.shipmentType = paidType.id;
         });
 
         //set the user to current user
@@ -188,6 +195,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
 
         $scope.saveCargoBooking = function(){
+            if($scope.shipment.paymentType  === 'OnAccount' && !$scope.shipment.supplierId ){
+                swal("Error", "Please select the account name", "error");
+                return;
+            }
             cargoBookingManager.createShipment($scope.shipment, function (response) {
                 $location.url('viewcargobooking/'+response.id);
                 $rootScope.$broadcast('UpdateHeader');
@@ -243,6 +254,22 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         callback(response.data);
                     }, function (error) {
                         $log.debug("error retrieving shipments count");
+                    });
+            },
+            payCargoBooking:function (bookingId, callback) {
+                swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, pay now!",
+                    closeOnConfirm: true }, function() {
+                    $http.put('/api/v1/shipment/pay/'+bookingId)
+                        .then(function (response) {
+                            callback(response.data);
+                        }, function (error) {
+                            $log.debug("error retrieving shipments count");
+                        }),function (error) {
+                        alert("Error paying booking:" + error.data.message);
+                        }
                     });
             },
             lookupCargoBooking : function(LRNumber) {

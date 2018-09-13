@@ -170,7 +170,7 @@
         <div  id="sidebar-wrapper" class="nav-side-menu" ng-controller="MenuBarController">
                     <div class="menu-list">
                         <ul id="menu-content" class="menu-content ">
-                            <li data-toggle="collapse" data-target="#cargo" class="collapsed" ng-if="canAccessCargoModule()">
+                            <li data-toggle="collapse" data-target="#cargo" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="cargo" >
