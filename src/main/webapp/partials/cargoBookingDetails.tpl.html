@@ -10,6 +10,11 @@
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
             <span class="p_font_size13 ng-binding">Pay Booking</span>
         </div>
+        <!-- only admin can cacel the booking. Only show if booking is not already cancelled -->
+        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="currentuser.admin && !shipment.cancled">
+            <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
+            <span class="p_font_size13 ng-binding">Cancel Booking</span>
+        </div>
     </div>
     <br/> <br/>
     <div class="panel panel-default m_b_0">

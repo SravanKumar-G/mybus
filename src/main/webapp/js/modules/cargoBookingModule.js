@@ -48,12 +48,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 console.log('shipmentCount  '+ shipmentCount);
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
-                    count:10,
+                    count:20,
                     sorting: {
                         createdAt: 'desc'
                     },
                 }, {
-                    counts:[10,50,100],
+                    counts:[20,50,100],
                     total:shipmentCount,
                     getData: function (params) {
                         loadCargoBookings(params, filter);
@@ -78,6 +78,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                $scope.init();
             });
         }
+        /**
+         * This can be called when CargoBooking is paid from the details screen
+         */
+        $rootScope.$on('UpdateCargoBookingList',function (e,value) {
+            $scope.init();
+        });
     }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
         $scope.headline = "Cargo Bookings";
         $scope.bookings = bookings;
@@ -212,6 +218,20 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 cargoBookingManager.lookupCargoBooking(this.filter);
             }
         }
+        $scope.payCargoBooking = function(bookingId) {
+            cargoBookingManager.payCargoBooking(bookingId, function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
+        }
+        $scope.cancelCargoBooking = function(bookingId) {
+            cargoBookingManager.cancelCargoBooking(bookingId, function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
+        }
+
+
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
             findCargoBookings: function (filter, callback) {
@@ -256,6 +276,23 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving shipments count");
                     });
             },
+            cancelCargoBooking:function (bookingId, callback) {
+                swal({title: "Do you want to cancel this booking now?",   text: "Are you sure?",   type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, cancel!",
+                    closeOnConfirm: true }, function() {
+                    $http.put('/api/v1/shipment/cancel/'+bookingId)
+                        .then(function (response) {
+                            callback(response.data);
+                        }, function (error) {
+                            $log.debug("error canceling the booking " + error);
+                        }),function (error) {
+                            alert("Error paying booking:" + error.data.message);
+                        }
+                    });
+            },
+
             payCargoBooking:function (bookingId, callback) {
                 swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
                     showCancelButton: true,
@@ -269,8 +306,8 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                             $log.debug("error retrieving shipments count");
                         }),function (error) {
                         alert("Error paying booking:" + error.data.message);
-                        }
-                    });
+                    }
+                });
             },
             lookupCargoBooking : function(LRNumber) {
                 $http.get("/api/v1/shipment/search/byLR/"+LRNumber)

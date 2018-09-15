@@ -93,6 +93,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     private boolean cancled;
     private Date canceledOn;
+    private String canceldBy;
 
     @Override
     public boolean containsKey(String attributeName) {

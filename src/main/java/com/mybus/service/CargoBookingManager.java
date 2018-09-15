@@ -286,6 +286,7 @@ public class CargoBookingManager {
                 updateOnAccountBalance(cargoBooking.getSupplierId(), -cargoBooking.getTotalCharge(), false);
                 cargoBooking.setCancled(true);
                 cargoBooking.setCanceledOn(new Date());
+                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else {
