@@ -48,12 +48,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 console.log('shipmentCount  '+ shipmentCount);
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
-                    count:10,
+                    count:20,
                     sorting: {
                         createdAt: 'desc'
                     },
                 }, {
-                    counts:[10,50,100],
+                    counts:[20,50,100],
                     total:shipmentCount,
                     getData: function (params) {
                         loadCargoBookings(params, filter);
@@ -78,6 +78,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                $scope.init();
             });
         }
+        /**
+         * This can be called when CargoBooking is paid from the details screen
+         */
+        $rootScope.$on('UpdateCargoBookingList',function (e,value) {
+            $scope.init();
+        });
     }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
         $scope.headline = "Cargo Bookings";
         $scope.bookings = bookings;
@@ -193,10 +199,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $scope.shipment.toEmail = $scope.shipment.fromEmail;
             }
         }
-
         $scope.saveCargoBooking = function(){
             if($scope.shipment.paymentType  === 'OnAccount' && !$scope.shipment.supplierId ){
                 swal("Error", "Please select the account name", "error");
+                return;
+            }
+            if(!$scope.shipment.fromContact || $scope.shipment.fromContact.toString().length < 10){
+                swal("Error", "Invalid contact number for From", "error");
+                return;
+            }
+
+            if(!$scope.shipment.toContact || $scope.shipment.toContact.toString().length < 10){
+                swal("Error", "Invalid contact number for To", "error");
                 return;
             }
             cargoBookingManager.createShipment($scope.shipment, function (response) {
@@ -212,8 +226,49 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 cargoBookingManager.lookupCargoBooking(this.filter);
             }
         }
+        $scope.payCargoBooking = function(bookingId) {
+            cargoBookingManager.payCargoBooking(bookingId, function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
+        }
+        $scope.cancelCargoBooking = function(bookingId) {
+            cargoBookingManager.cancelCargoBooking(bookingId, function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
+        }
+        /**
+         * Module to find the contact details from the previous booking using the contact number
+         * @param contactType -- 'from' or 'to'
+         *
+         */
+        $scope.getDetailsForContact = function(contactType){
+            if(contactType === 'from'){
+                cargoBookingManager.findContactInfoFromPreviousBookings(contactType, $scope.shipment.fromContact, function(data){
+                    $scope.shipment.fromName = data.name;
+                    $scope.shipment.fromEmail = data.email;
+                });
+            } else if(contactType === 'to'){
+                cargoBookingManager.findContactInfoFromPreviousBookings(contactType, $scope.shipment.toContact, function(data){
+                    $scope.shipment.toName = data.name;
+                    $scope.shipment.toEmail = data.email;
+                });
+            }
+        }
+
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
+            findContactInfoFromPreviousBookings: function (contactType, contact, callback) {
+                $http.get('/api/v1/shipment/findContactInfo?contactType='+contactType+"&contact="+contact)
+                    .then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                    }, function (err, status) {
+                        sweetAlert("Error searching cargo contact info", err.message, "error");
+                    });
+            },
             findCargoBookings: function (filter, callback) {
                 console.log('filter ' + filter);
                 $http.post('/api/v1/shipments', filter)
@@ -256,6 +311,23 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         $log.debug("error retrieving shipments count");
                     });
             },
+            cancelCargoBooking:function (bookingId, callback) {
+                swal({title: "Do you want to cancel this booking now?",   text: "Are you sure?",   type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, cancel!",
+                    closeOnConfirm: true }, function() {
+                    $http.put('/api/v1/shipment/cancel/'+bookingId)
+                        .then(function (response) {
+                            callback(response.data);
+                        }, function (error) {
+                            $log.debug("error canceling the booking " + error);
+                        }),function (error) {
+                            alert("Error paying booking:" + error.data.message);
+                        }
+                    });
+            },
+
             payCargoBooking:function (bookingId, callback) {
                 swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
                     showCancelButton: true,
@@ -269,8 +341,8 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                             $log.debug("error retrieving shipments count");
                         }),function (error) {
                         alert("Error paying booking:" + error.data.message);
-                        }
-                    });
+                    }
+                });
             },
             lookupCargoBooking : function(LRNumber) {
                 $http.get("/api/v1/shipment/search/byLR/"+LRNumber)

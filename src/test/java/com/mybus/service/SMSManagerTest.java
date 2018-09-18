@@ -11,6 +11,7 @@ import com.mybus.model.User;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.*;
@@ -50,6 +51,7 @@ public class SMSManagerTest extends AbstractControllerIntegrationTest {
         sessionManager.setCurrentUser(user);
     }
     @Test
+    @Ignore
     public void testSendSMS() throws UnirestException {
         String number = "+918886665253";
         smsManager.sendSMS(number, "test", "booking", "1234");

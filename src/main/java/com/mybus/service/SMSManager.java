@@ -63,6 +63,7 @@ public class SMSManager {
                 status.put("statusText", response.getStatusText());
             } else {
                 logger.info("ignoring SMS notification");
+                return;
             }
                 SMSNotification smsNotification = new SMSNotification();
                 smsNotification.setNumber(number);

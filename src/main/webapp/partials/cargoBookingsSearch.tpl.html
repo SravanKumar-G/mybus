@@ -48,8 +48,9 @@
             <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt| date}}</td>
             <td data-title="'From'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}}</td>
             <td data-title="'To'" sortable="'attributes.toBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.toBranchOfficeName}}</td>
+            <td data-title="'Amount'" class="clickable-item">{{cargoBooking.totalCharge}}</td>
             <td data-title="'BookedBy'" sortable="'bookedBy'"  class="clickable-item">{{cargoBooking.attributes.bookedBy}}</td>
-            <td data-title="'PayNow'" class="clickable-item"> <a href="#" ng-if="cargoBooking.due" ng-click="payCargoBooking(cargoBooking.id)">Pay Now</a></td>
+            <td data-title="'PayNow'" class="clickable-item"> <a href="#" ng-if="cargoBooking.due && !cargoBooking.canceled" ng-click="payCargoBooking(cargoBooking.id)">Pay Now</a></td>
         </tr>
         <tr ng-if="!cargoBookings || cargoBookings.length === 0">
             <td colspan="7">No Cargo Bookings found</td>
