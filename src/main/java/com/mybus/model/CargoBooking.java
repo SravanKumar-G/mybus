@@ -91,7 +91,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     private Date paidOn;
 
-    private boolean cancled;
+    private boolean canceled;
     private Date canceledOn;
     private String canceldBy;
 

@@ -11,12 +11,13 @@ import com.mybus.model.User;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import static org.junit.Assert.*;
 import java.util.List;
 
 /**
@@ -96,4 +97,18 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         shipmentManager.saveWithValidations(shipment);
     }
 
+    @Test
+    public void testFindContactInfo() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setOperatorId(sessionManager.getOperatorId());
+        shipment = shipmentManager.saveWithValidations(shipment);
+        JSONObject jsonObject = shipmentManager.findContactInfo("from", shipment.getFromContact());
+        assertEquals(jsonObject.get("name"), "from");
+        assertEquals(jsonObject.get("email"), "email@e.com");
+        jsonObject = shipmentManager.findContactInfo("to", shipment.getToContact());
+        assertEquals(jsonObject.get("name"), "to");
+        assertEquals(jsonObject.get("email"), "to@e.com");
+
+    }
 }

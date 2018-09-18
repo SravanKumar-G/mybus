@@ -131,6 +131,15 @@ public class CargoBookingController extends MyBusBaseController{
         return cargoBookingManager.getShipmentTypes();
     }
 
+    @RequestMapping(value = "shipment/findContactInfo", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value ="Get the CargoBooking", response = CargoBooking.class)
+    public JSONObject findContactInfo(HttpServletRequest request,
+                                                      @RequestParam(name = "contactType") String contactType,
+                                                      @RequestParam(name = "contact") long contact) {
+        logger.debug("findContactInfo called");
+        return cargoBookingManager.findContactInfo(contactType,contact);
+    }
+
     @RequestMapping(value = "shipment/pay/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Pay CargoBooking", response = CargoBooking.class)
     public boolean payCargoBooking(HttpServletRequest request,@PathVariable final String id ) {

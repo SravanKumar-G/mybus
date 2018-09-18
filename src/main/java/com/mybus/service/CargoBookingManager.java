@@ -271,11 +271,18 @@ public class CargoBookingManager {
             throw new BadRequestException("Invalid CargoBooking Id");
         } else {
             if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
+                cargoBooking.setCanceled(true);
+                cargoBooking.setCanceledOn(new Date());
+                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
                 paymentManager.cancelCargoBooking(cargoBooking);
+                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
+                cargoBookingDAO.save(cargoBooking);
                 return true;
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
-                cargoBooking.setCancled(true);
+                cargoBooking.setCanceled(true);
                 cargoBooking.setCanceledOn(new Date());
+                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
+                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
@@ -284,14 +291,34 @@ public class CargoBookingManager {
                 }
                 //deduct the balance
                 updateOnAccountBalance(cargoBooking.getSupplierId(), -cargoBooking.getTotalCharge(), false);
-                cargoBooking.setCancled(true);
+                cargoBooking.setCanceled(true);
                 cargoBooking.setCanceledOn(new Date());
                 cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
+                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else {
                 throw new BadRequestException("Invalid Type for CargoBooking, Only ToPay and OnAccount types can be paid");
             }
         }
+    }
+
+    public JSONObject findContactInfo(String contactType, Long contact) {
+        JSONObject jsonObject = new JSONObject();
+        CargoBooking cargoBooking = null;
+        if(contactType.equalsIgnoreCase("from")){
+            cargoBooking = cargoBookingDAO.findOneByFromContactAndOperatorId(contact, sessionManager.getOperatorId());
+            if(cargoBooking != null) {
+                jsonObject.put("name", cargoBooking.getFromName());
+                jsonObject.put("email", cargoBooking.getFromEmail());
+            }
+        }else if(contactType.equalsIgnoreCase("to")){
+            cargoBooking = cargoBookingDAO.findOneByToContactAndOperatorId(contact, sessionManager.getOperatorId());
+            if(cargoBooking != null) {
+                jsonObject.put("name", cargoBooking.getToName());
+                jsonObject.put("email", cargoBooking.getToEmail());
+            }
+        }
+        return jsonObject;
     }
 }

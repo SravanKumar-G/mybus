@@ -52,13 +52,6 @@ public class ShipmentSequenceManager {
         return shipmentSequence;
     }
 
-    public String createLRNumber(String shipmentType) {
-        ShipmentSequence shipmentSequence = shipmentSequenceDAO.findOne(shipmentType);
-        shipmentSequence = nextSequeceNumber(shipmentSequence);
-        Calendar currentDate = Calendar.getInstance();
-        return String.format("%s-%d-%d-%d",shipmentSequence.getShipmentCode()+shipmentSequence.nextNumber,
-                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),currentDate.get(Calendar.DATE));
-    }
     public Iterable<ShipmentSequence> getShipmentTypes(){
         return shipmentSequenceDAO.findAll(new Sort(Sort.Direction.DESC,"shipmentType"));
     }
@@ -87,8 +80,8 @@ public class ShipmentSequenceManager {
         }
         shipmentSequence = nextSequeceNumber(shipmentSequence);
         Calendar currentDate = Calendar.getInstance();
-        String shipmentNumber = String.format("%s-%d-%d-%d", shipmentSequence.getShipmentCode() + shipmentSequence.nextNumber,
-                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+        String shipmentNumber = String.format("%s-%d-%d-%d-%d", shipmentSequence.getShipmentCode(),
+                currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE),shipmentSequence.nextNumber);
         shipment.setShipmentNumber(shipmentNumber);
     }
 }

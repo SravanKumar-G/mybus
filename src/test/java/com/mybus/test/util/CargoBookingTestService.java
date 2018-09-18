@@ -32,11 +32,12 @@ public class CargoBookingTestService {
 
         CargoBooking shipment = new CargoBooking();
         shipment.setFromEmail("email@e.com");
+        shipment.setToEmail("to@e.com");
         shipment.setFromBranchId(b1.getId());
         shipment.setToBranchId(b2.getId());
         shipment.setCargoTransitStatus(CargoTransitStatus.ARRIVED);
         shipment.setFromContact(new Long(1234));
-        shipment.setToContact(new Long(1234));
+        shipment.setToContact(new Long(12345678));
         shipment.setFromName("from");
         shipment.setToName("to");
         shipment.setTotalCharge(100);

@@ -12,8 +12,9 @@ import java.util.List;
 @Repository
 public interface CargoBookingDAO extends PagingAndSortingRepository<CargoBooking, String> {
     CargoBooking findByIdAndOperatorId(String id, String operatorId);
-    List<CargoBooking> findByFromBranchId(String fromBranchId);
-    List<CargoBooking> findByToBranchId(String toBranchId);
-
+    List<CargoBooking> findByFromBranchId(String fromBranchId, String operatorId);
+    List<CargoBooking> findByToBranchId(String toBranchId, String operatorId);
+    CargoBooking findOneByFromContactAndOperatorId(long contact, String operatorId);
+    CargoBooking findOneByToContactAndOperatorId(long contact, String operatorId);
     CargoBooking findByShipmentNumberAndOperatorId(String lrNumber, String operatorId);
 }

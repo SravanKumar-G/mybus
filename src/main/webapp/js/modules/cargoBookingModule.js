@@ -199,10 +199,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $scope.shipment.toEmail = $scope.shipment.fromEmail;
             }
         }
-
         $scope.saveCargoBooking = function(){
             if($scope.shipment.paymentType  === 'OnAccount' && !$scope.shipment.supplierId ){
                 swal("Error", "Please select the account name", "error");
+                return;
+            }
+            if(!$scope.shipment.fromContact || $scope.shipment.fromContact.toString().length < 10){
+                swal("Error", "Invalid contact number for From", "error");
+                return;
+            }
+
+            if(!$scope.shipment.toContact || $scope.shipment.toContact.toString().length < 10){
+                swal("Error", "Invalid contact number for To", "error");
                 return;
             }
             cargoBookingManager.createShipment($scope.shipment, function (response) {
@@ -230,10 +238,37 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $rootScope.$broadcast('UpdateCargoBookingList');
             });
         }
-
+        /**
+         * Module to find the contact details from the previous booking using the contact number
+         * @param contactType -- 'from' or 'to'
+         *
+         */
+        $scope.getDetailsForContact = function(contactType){
+            if(contactType === 'from'){
+                cargoBookingManager.findContactInfoFromPreviousBookings(contactType, $scope.shipment.fromContact, function(data){
+                    $scope.shipment.fromName = data.name;
+                    $scope.shipment.fromEmail = data.email;
+                });
+            } else if(contactType === 'to'){
+                cargoBookingManager.findContactInfoFromPreviousBookings(contactType, $scope.shipment.toContact, function(data){
+                    $scope.shipment.toName = data.name;
+                    $scope.shipment.toEmail = data.email;
+                });
+            }
+        }
 
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
+            findContactInfoFromPreviousBookings: function (contactType, contact, callback) {
+                $http.get('/api/v1/shipment/findContactInfo?contactType='+contactType+"&contact="+contact)
+                    .then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                    }, function (err, status) {
+                        sweetAlert("Error searching cargo contact info", err.message, "error");
+                    });
+            },
             findCargoBookings: function (filter, callback) {
                 console.log('filter ' + filter);
                 $http.post('/api/v1/shipments', filter)
