@@ -239,8 +239,11 @@ public class CargoBookingManager {
         return cargoBookingMongoDAO.countShipments(query);
     }
 
+    /**
+     * Send SMS for cargobooking
+     * @param cargoBooking
+     */
     private void sendSMSNotification(CargoBooking cargoBooking){
-
         BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
         BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
 
@@ -320,5 +323,20 @@ public class CargoBookingManager {
             }
         }
         return jsonObject;
+    }
+
+    /**
+     * Module to re-send SMS for cargobooking
+     * @param id
+     * @return
+     */
+    public boolean sendSMSForCargoBooking(String id) {
+        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        if(cargoBooking != null) {
+            sendSMSNotification(cargoBooking);
+        } else {
+            return false;
+        }
+        return true;
     }
 }
