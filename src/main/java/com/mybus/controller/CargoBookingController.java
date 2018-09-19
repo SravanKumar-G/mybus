@@ -153,4 +153,10 @@ public class CargoBookingController extends MyBusBaseController{
         logger.debug("Cancel cargo booking");
         return cargoBookingManager.cancelCargoBooking(id);
     }
+
+    @RequestMapping(value = "shipment/sendSMS/{id}", method = RequestMethod.POST)
+    @ApiOperation(value ="Send SMS for cargoBooking")
+    public boolean sendSMS(HttpServletRequest request,@PathVariable final String id ) {
+        return cargoBookingManager.sendSMSForCargoBooking(id);
+    }
 }

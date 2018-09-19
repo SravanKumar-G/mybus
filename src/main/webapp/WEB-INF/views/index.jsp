@@ -177,6 +177,8 @@
                                 <my-menu url="cargodashboard" label="CargoDashBoard" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="branchwiseSummary" label="BranchWiseSummary" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="userBookingReport" label="UserBookingReport" class="nav navbar-nav col-md-12"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>
@@ -187,7 +189,6 @@
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></span></a>
                             </li>
-
                             <ul class="sub-menu collapse" id="master">
                                 <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>

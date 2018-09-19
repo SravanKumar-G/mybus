@@ -256,6 +256,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 });
             }
         }
+        $scope.sendSMS = function(shipmentId){
+            console.log('Send SMS');
+            cargoBookingManager.sendSMSForCargoBooking(shipmentId);
+        }
 
     }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
         return {
@@ -348,6 +352,16 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $http.get("/api/v1/shipment/search/byLR/"+LRNumber)
                     .then(function (response) {
                         $location.url('viewcargobooking/'+response.data);
+                    }, function (error) {
+                        swal("oops", error.data.message, "error");
+                    });
+
+
+            },
+            sendSMSForCargoBooking : function(shipmentId) {
+                $http.post("/api/v1/shipment/sendSMS/"+shipmentId)
+                    .then(function (response) {
+                     console.log('sent SMS');
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     });
