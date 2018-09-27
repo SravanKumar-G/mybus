@@ -1,25 +1,30 @@
 <div class="container" style="width: 95%">
     <div ng-include="'partials/cargoLookup.tpl.html'"></div>
 
-    <div class=" col-sm-6 pull-left p_l_0">
+    <div class=" col-sm-10 pull-left p_l_0">
         <div class="btn btn-success" ng-click="printArea()">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Print"></i>
             <span class="p_font_size13 ng-binding">Print</span>
         </div>
-        <div class="btn btn-success" ng-click="payCargoBooking(shipment.id)" ng-if="shipment.due  && !shipment.canceled">
+        <div class="btn btn-success" ng-click="initiateDeliverCargoBooking(shipment.id)" ng-if="shipment.cargoTransitStatus !== 'DELIVERED' && !shipment.canceled">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
-            <span class="p_font_size13 ng-binding">Pay Booking</span>
+            <span class="p_font_size13 ng-binding">Deliver</span>
         </div>
         <!-- only admin can cacel the booking. Only show if booking is not already cancelled -->
-        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="currentuser.admin && !shipment.canceled">
+        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="currentuser.admin && !shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
             <span class="p_font_size13 ng-binding">Cancel Booking</span>
         </div>
 
-        <div class="btn btn-info" ng-click="sendSMS(shipment.id)" ng-if="!shipment.canceled">
+        <div class="btn btn-info" ng-click="sendSMS(shipment.id)" ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
             <span class="glyphicon glyphicon-share" ></span>Send SMS
         </div>
+        <!--div class="btn btn-info" ng-click="assignVehicle(shipment.id)" ng-if="!shipment.vehicleId && !shipment.canceled && shipment.cargoTransitStatus === 'READYFORSHIPMENT'">
+            <span class="glyphicon glyphicon-share"></span>Assign Vehicle
+        </div -->
 
+        <span ng-if="shipment.paidOn"> Booking is paid on {{shipment.paidOn | date}} by {{shipment.paidBy}}</span>
+        <span ng-if="shipment.cargoTransitStatus === 'DELIVERED'"> Booking is delivered on {{shipment.deliveredOn | date}} to {{shipment.deliveryNotes}} <b>by</b> {{shipment.deliveredBy}}</span>
     </div>
     <br/> <br/>
     <div class="panel panel-default m_b_0">

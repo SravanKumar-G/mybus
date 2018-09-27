@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Created by srinikandula on 12/11/16.
@@ -140,13 +141,6 @@ public class CargoBookingController extends MyBusBaseController{
         return cargoBookingManager.findContactInfo(contactType,contact);
     }
 
-    @RequestMapping(value = "shipment/pay/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
-    @ApiOperation(value ="Pay CargoBooking", response = CargoBooking.class)
-    public boolean payCargoBooking(HttpServletRequest request,@PathVariable final String id ) {
-        logger.debug("Pay cargo booking");
-        return cargoBookingManager.payCargoBooking(id);
-    }
-
     @RequestMapping(value = "shipment/cancel/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Cancel CargoBooking", response = CargoBooking.class)
     public boolean cancelBooking(HttpServletRequest request,@PathVariable final String id ) {
@@ -158,5 +152,19 @@ public class CargoBookingController extends MyBusBaseController{
     @ApiOperation(value ="Send SMS for cargoBooking")
     public boolean sendSMS(HttpServletRequest request,@PathVariable final String id ) {
         return cargoBookingManager.sendSMSForCargoBooking(id);
+    }
+
+    @RequestMapping(value = "shipment/assignVehicle/{vehicleId}", method = RequestMethod.POST)
+    @ApiOperation(value ="Allot vehicle to cargo booking")
+    public boolean assignVehicle(HttpServletRequest request,@PathVariable(name = "vehicleId")String vehicleId,
+                                 @RequestBody final List<String> ids ) {
+        return cargoBookingManager.assignVehicle(vehicleId, ids);
+    }
+
+    @RequestMapping(value = "shipment/deliver/{id}", method = RequestMethod.PUT)
+    @ApiOperation(value ="Deliver to cargo booking")
+    public CargoBooking deliverCargoBooking(HttpServletRequest request,@PathVariable final String id,
+                                       @RequestBody String deliveryNotes) {
+        return cargoBookingManager.deliverCargoBooking(id, deliveryNotes);
     }
 }

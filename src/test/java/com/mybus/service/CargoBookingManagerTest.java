@@ -6,19 +6,22 @@ import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.OperatorAccount;
-import com.mybus.model.PaymentStatus;
 import com.mybus.model.User;
+import com.mybus.model.Vehicle;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.test.util.CargoBookingTestService;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by srinikandula on 12/10/16.
@@ -51,9 +54,13 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
     @Autowired
     private BranchOfficeDAO branchOfficeDAO;
 
+    @Autowired
+    private VehicleDAO vehicleDAO;
+
     @Before
     @After
     public void cleanup() {
+        vehicleDAO.deleteAll();
         cargoBookingDAO.deleteAll();
         branchOfficeDAO.deleteAll();
         shipmentSequenceDAO.deleteAll();
@@ -86,7 +93,7 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
         CargoBooking saved = shipmentManager.saveWithValidations(shipment);
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
-        Assert.assertEquals(1, shipments.size());
+        assertEquals(1, shipments.size());
     }
 
     @Test(expected = BadRequestException.class)
@@ -109,6 +116,35 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         jsonObject = shipmentManager.findContactInfo("to", shipment.getToContact());
         assertEquals(jsonObject.get("name"), "to");
         assertEquals(jsonObject.get("email"), "to@e.com");
-
     }
+
+    @Test
+    public void testAssignVehicle() throws Exception {
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        shipment.setOperatorId(sessionManager.getOperatorId());
+        CargoBooking shipment1 = cargoBookingTestService.createNew(shipmentSequence);
+        shipment1.setOperatorId(sessionManager.getOperatorId());
+        shipment = shipmentManager.saveWithValidations(shipment);
+        shipment1 = shipmentManager.saveWithValidations(shipment1);
+        CargoBooking shipment2 = cargoBookingTestService.createNew(shipmentSequence);
+        shipment2.setOperatorId(sessionManager.getOperatorId());
+        shipment2 = shipmentManager.saveWithValidations(shipment2);
+        List<String> ids = new ArrayList<>();
+        ids.add(shipment.getId());
+        ids.add(shipment1.getId());
+
+        Vehicle vehicle = new Vehicle();
+        vehicle.setRegNo("AP27TU1234");
+        vehicle = vehicleDAO.save(vehicle);
+        assertTrue(shipmentManager.assignVehicle(vehicle.getId(), ids));
+        shipment = cargoBookingDAO.findOne(shipment.getId());
+        shipment1 = cargoBookingDAO.findOne(shipment1.getId());
+        shipment2 = cargoBookingDAO.findOne(shipment2.getId());
+
+        assertEquals(shipment.getVehicleId(), vehicle.getId());
+        assertEquals(shipment1.getVehicleId(), vehicle.getId());
+        assertNull(shipment2.getVehicleId());
+    }
+
 }

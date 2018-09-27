@@ -120,27 +120,28 @@ public class CargoBookingManager {
      *
      * @param cargoBookingId
      */
-    public boolean payCargoBooking(String cargoBookingId) {
+    private CargoBooking payCargoBooking(String cargoBookingId, String deliveryNotes) {
         CargoBooking cargoBooking = cargoBookingDAO.findOne(cargoBookingId);
         if(cargoBooking == null || !cargoBooking.isDue()) {
             throw new BadRequestException("Invalid CargoBooking Id");
         } else {
+            cargoBooking.setDeliveryNotes(deliveryNotes);
+            cargoBooking.setDeliveredOn(new Date());
+            cargoBooking.setDeliveredBy(sessionManager.getCurrentUser().getFullName());
+            cargoBooking.setDue(false);
+            cargoBooking.setPaidOn(new Date());
+            cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
+            cargoBooking.setPaidBy(sessionManager.getCurrentUser().getFullName());
             if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
                 updateUserCashBalance(cargoBooking);
-                cargoBooking.setDue(false);
-                cargoBooking.setPaidOn(new Date());
-                cargoBookingDAO.save(cargoBooking);
-                return true;
+                return cargoBookingDAO.save(cargoBooking);
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
                 if(cargoBooking.getSupplierId() == null) {
                     throw new BadRequestException("Invalid supplierId on OnAccount shipment");
                 }
                 updateOnAccountBalance(cargoBooking.getSupplierId(), cargoBooking.getTotalCharge(), true);
                 updateUserCashBalance(cargoBooking);
-                cargoBooking.setDue(false);
-                cargoBooking.setPaidOn(new Date());
-                cargoBookingDAO.save(cargoBooking);
-                return true;
+                return cargoBookingDAO.save(cargoBooking);
             } else {
                 throw new BadRequestException("Invalid Type for CargoBooking, Only ToPay and OnAccount types can be paid");
             }
@@ -338,5 +339,40 @@ public class CargoBookingManager {
             return false;
         }
         return true;
+    }
+
+    /**
+     *
+     * @param vehicleId
+     * @param ids
+     * @return
+     */
+    public boolean assignVehicle(String vehicleId, List<String> ids) {
+        boolean assignmentSuccess = cargoBookingMongoDAO.assignVehicles(ids, vehicleId, sessionManager.getOperatorId());
+        return assignmentSuccess;
+    }
+
+    /**
+     * Deliver a cargobooking
+     * @param id
+     * @return
+     */
+    public CargoBooking deliverCargoBooking(String id, String deliveryNotes) {
+        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        if(cargoBooking == null){
+            throw new IllegalArgumentException("Invalid cargo booking being delivered.");
+        }
+        if(cargoBooking.getCargoTransitStatus().getKey().equalsIgnoreCase(CargoTransitStatus.DELIVERED.getKey())){
+            throw new BadRequestException("Cargo booking already delivered");
+        }
+        if(cargoBooking.isDue()){
+            return payCargoBooking(id, deliveryNotes);
+        } else {
+            cargoBooking.setDeliveredBy(sessionManager.getCurrentUser().getFullName());
+            cargoBooking.setDeliveryNotes(deliveryNotes);
+            cargoBooking.setDeliveredOn(new Date());
+            cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
+            return cargoBookingDAO.save(cargoBooking);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 
+import com.mongodb.WriteResult;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.CashTransfer;
 import com.mybus.model.User;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
@@ -35,6 +37,23 @@ public class CargoBookingMongoDAO {
 
     @Autowired
     private SessionManager sessionManager;
+
+    /**
+     * Assign vehicle to cargo bookings
+     * @param ids
+     * @param vehicleId
+     * @param operatorId
+     * @return
+     */
+    public boolean assignVehicles(List<String> ids, String vehicleId, String operatorId) {
+        Update updateOp = new Update();
+        updateOp.set("vehicleId", vehicleId);
+        final Query query = new Query();
+        query.addCriteria(where("_id").in(ids));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(operatorId));
+        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getN() == ids.size();
+    }
 
     public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
         final Query q = createSearchQuery(query);
@@ -93,4 +112,5 @@ public class CargoBookingMongoDAO {
         final Query q = createSearchQuery(query);
         return mongoTemplate.count(q, CargoBooking.class);
     }
+
 }

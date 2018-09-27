@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingListController",function($rootScope, $scope, NgTableParams,userManager, cargoBookingManager,$location, branchOfficeManager){
+    .controller("CargoBookingListController",function($rootScope, $scope,$uibModal, NgTableParams,userManager, cargoBookingManager,$location, branchOfficeManager){
         $scope.headline = "Cargo Bookings";
         $scope.cargoBookings = null;
         $scope.cargoBookingsTable = null;
@@ -48,12 +48,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 console.log('shipmentCount  '+ shipmentCount);
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
-                    count:20,
+                    count:10,
                     sorting: {
                         createdAt: 'desc'
                     },
                 }, {
-                    counts:[20,50,100],
+                    counts:[10,50,100],
                     total:shipmentCount,
                     getData: function (params) {
                         loadCargoBookings(params, filter);
@@ -65,19 +65,53 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/'+bookingId);
         }
-
         $scope.search = function() {
            $scope.init($scope.filter);
         }
 
-        $scope.payCargoBooking = function(bookingId) {
-            console.log('pay cargo booking '+ bookingId);
-            cargoBookingManager.payCargoBooking(bookingId, function () {
-               $location.url('cargobookings');
-               //reload bookings now
-               $scope.init();
+        $scope.initiateDeliverCargoBooking = function (bookingId) {
+            swal({
+                title: "Delivery comment",
+                text: "Please provide delivery comment:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "Collecting person name or identification"
+            }, function (deliveryComment) {
+                if (deliveryComment === false) return false;
+                if (deliveryComment === "") {
+                    swal.showInputError("Identification is required");
+                    return false
+                }
+                cargoBookingManager.deliverCargoBooking(bookingId,deliveryComment,function (data) {
+                    swal("Nice!", data.shipmentNumber+" has been delivered", "success");
+                    $scope.init();
+                } );
             });
         }
+
+        $scope.initiateServiceAllotment = function (bookingId) {
+            swal({
+                title: "Assign Service",
+                text: "Please provide provide a service number",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "Collecting person name or identification"
+            }, function (serviceNumber) {
+                if (serviceNumber === false) return false;
+                if (serviceNumber === "") {
+                    swal.showInputError("ServiceNumber is required");
+                    return false
+                }
+                cargoBookingManager.allotService(bookingId,serviceNumber,function (data) {
+                    swal("Nice!", data.shipmentNumber+" has been alloted to service" + data.vehicleId, "success");
+                    $scope.init();
+                } );
+            });
+        }
+
+
         /**
          * This can be called when CargoBooking is paid from the details screen
          */
@@ -101,9 +135,27 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             }
             cargoBookingManager.lookupCargoBooking($scope.bookingId);
         }
-
         $scope.newBooking = function(){
             $location.url('newbooking');
+        }
+    }).controller("DeliverBookingController",function($rootScope, $scope,cargoBookingManager,$location, bookingId){
+        $scope.deliveryComment = null;
+        $scope.showError = false;
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+        $scope.cargoBookingId = bookingId;
+
+        $scope.deliverCargoBooking = function() {
+            console.log('deliver it now....');
+            if(!$scope.deliveryComment) {
+                $scope.showError = true;
+                return;
+            }
+            cargoBookingManager.deliverCargoBooking($scope.cargoBookingId, $scope.deliveryComment,function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
         }
     })
 
@@ -158,7 +210,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         cargoBookingManager.getShipmentTypes(function (types) {
             $scope.shipmentTypes = types;
-            //Set the shipment type to paid by default
             var paidType = _.find($scope.shipmentTypes, function(type){
                 if(type.shipmentCode === 'P'){
                     return type.id;
@@ -168,6 +219,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         //set the user to current user
         $scope.shipment.forUser = userManager.getUser().id;
+        $scope.currentUser = userManager.getUser();
 
         $scope.copyDetails = function () {
             $scope.shipment.receiverName = $scope.shipment.senderName;
@@ -226,10 +278,25 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 cargoBookingManager.lookupCargoBooking(this.filter);
             }
         }
-        $scope.payCargoBooking = function(bookingId) {
-            cargoBookingManager.payCargoBooking(bookingId, function () {
-                $location.url('cargobookings');
-                $rootScope.$broadcast('UpdateCargoBookingList');
+
+        $scope.initiateDeliverCargoBooking = function (bookingId) {
+            swal({
+                title: "Delivery comment",
+                text: "Please provide delivery comment:",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                inputPlaceholder: "Collecting person name or identification"
+            }, function (deliveryComment) {
+                if (deliveryComment === false) return false;
+                if (deliveryComment === "") {
+                    swal.showInputError("Identification is required");
+                    return false
+                }
+                cargoBookingManager.deliverCargoBooking(bookingId,deliveryComment,function (data) {
+                    swal("Nice!", data.shipmentNumber+" has been delivered", "success");
+                    $location.url('cargobookings');
+                } );
             });
         }
         $scope.cancelCargoBooking = function(bookingId) {
@@ -261,7 +328,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             cargoBookingManager.sendSMSForCargoBooking(shipmentId);
         }
 
-    }).factory('cargoBookingManager', function ($rootScope, $q, $http, $log, $location) {
+    }).factory('cargoBookingManager', function ($rootScope, $q, $uibModal, $http, $log, $location) {
         return {
             findContactInfoFromPreviousBookings: function (contactType, contact, callback) {
                 $http.get('/api/v1/shipment/findContactInfo?contactType='+contactType+"&contact="+contact)
@@ -274,7 +341,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     });
             },
             findCargoBookings: function (filter, callback) {
-                console.log('filter ' + filter);
                 $http.post('/api/v1/shipments', filter)
                     .then(function (response) {
                         if (angular.isFunction(callback)) {
@@ -326,27 +392,16 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                             callback(response.data);
                         }, function (error) {
                             $log.debug("error canceling the booking " + error);
-                        }),function (error) {
-                            alert("Error paying booking:" + error.data.message);
-                        }
+                        });
                     });
             },
-
-            payCargoBooking:function (bookingId, callback) {
-                swal({title: "Pay for this booking now?",   text: "Are you sure?",   type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, pay now!",
-                    closeOnConfirm: true }, function() {
-                    $http.put('/api/v1/shipment/pay/'+bookingId)
-                        .then(function (response) {
-                            callback(response.data);
-                        }, function (error) {
-                            $log.debug("error retrieving shipments count");
-                        }),function (error) {
-                        alert("Error paying booking:" + error.data.message);
-                    }
-                });
+            deliverCargoBooking:function (bookingId, deliveryComment, callback) {
+                $http.put('/api/v1/shipment/deliver/'+bookingId,deliveryComment)
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        $log.debug("error retrieving shipments count");
+                    });
             },
             lookupCargoBooking : function(LRNumber) {
                 $http.get("/api/v1/shipment/search/byLR/"+LRNumber)
@@ -355,8 +410,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     });
-
-
             },
             sendSMSForCargoBooking : function(shipmentId) {
                 $http.post("/api/v1/shipment/sendSMS/"+shipmentId)
@@ -365,8 +418,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     });
-
-
             }
         }
     });
