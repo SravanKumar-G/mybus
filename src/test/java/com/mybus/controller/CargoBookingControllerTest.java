@@ -17,6 +17,7 @@ import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -80,6 +81,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         cargoBookingDAO.deleteAll();
         shipmentSequenceDAO.deleteAll();
         userDAO.deleteAll();
+        supplierDAO.deleteAll();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
         currentUser = new User("test", "test", "test", "test", true, true);
         currentUser = userDAO.save(currentUser);
@@ -316,13 +318,15 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         currentUser = userDAO.findOne(currentUser.getId());
         assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
         //pay ToPay booking
-        actions = mockMvc.perform(asUser(put("/api/v1/shipment/pay/"+shipments.get(0).getId()), currentUser));
+        actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+shipments.get(0).getId()).content(
+                "Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isOk());
         currentUser = userDAO.findOne(currentUser.getId());
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
 
         //pay ToPay booking which is already paid
-        actions = mockMvc.perform(asUser(put("/api/v1/shipment/pay/"+shipments.get(0).getId()), currentUser));
+        actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+shipments.get(0).getId())
+                .content("Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isBadRequest());
     }
     @Test
@@ -352,7 +356,8 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         assertEquals(supplier.getToBeCollected(), 150, 0.0);
 
         //pay OnAccount booking
-        actions = mockMvc.perform(asUser(put("/api/v1/shipment/pay/"+cargoBooking.getId()), currentUser));
+        actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+cargoBooking.getId())
+                .content("Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isOk());
         currentUser = userDAO.findOne(currentUser.getId());
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);

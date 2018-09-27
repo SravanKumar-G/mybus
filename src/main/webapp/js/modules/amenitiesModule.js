@@ -105,7 +105,6 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
     $scope.isInputValid = function () {
         return ($scope.amenity.name || '') !== '';
     };
-		console.log("loading amenity info....");
     amenitiesManager.getAmenityByID(amenityId,function(data){
     	$scope.amenity = data;
 	});

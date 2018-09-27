@@ -80,7 +80,6 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @RequiresValue
     private Date dispatchDate;
 
-    private String deliveredBy;
     private String loadedBy;
 
     private List<CargoBookingItem> items;
@@ -90,10 +89,16 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private String supplierId;
 
     private Date paidOn;
-
+    private String  paidBy;
     private boolean canceled;
     private Date canceledOn;
     private String canceldBy;
+
+    private String vehicleId;
+
+    private Date deliveredOn;
+    private String deliveredBy;
+    private String deliveryNotes;
 
     @Override
     public boolean containsKey(String attributeName) {
