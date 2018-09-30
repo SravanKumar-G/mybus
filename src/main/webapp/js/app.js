@@ -74,6 +74,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'InvoiceController'
             })
             .state('amenities',{
+                level:1,
                 url:'/amenities',
                 templateUrl: 'partials/amenities.tpl.html',
                 controller: 'AmenitiesController'
@@ -95,6 +96,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 params:{phoneNumber: null, totalBookings:0}
             })
             .state('cashtransfers',{
+                level:1,
                 url:'/cashtransfers',
                 templateUrl: 'partials/cashTransfers.tpl.html',
                 controller: 'cashTransfersController'
@@ -118,6 +120,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'DueReportController'
             })
             .state('expensesincomesreports',{
+                level:1,
                 url:'/expensesincomesreports',
                 templateUrl: 'partials/expensesIncomesReports.tpl.html',
                 controller: 'expensesIncomesReportsCtrl'
@@ -128,6 +131,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'expensesIncomesReportsCtrl'
             })
             .state('fuelexpensereports',{
+                level:1,
                 url:'/fuelexpensereports',
                 templateUrl: 'partials/fuelExpenseReports.tpl.html',
                 controller: 'fuelExpenseReportsCtrl'
@@ -189,7 +193,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'ServiceFormController'
             })
             .state('servicereports', {
-                level:2,
+                level:1,
                 url:'/serviceReports',
                 templateUrl: 'partials/serviceReports.tpl.html',
                 controller: 'ServiceReportsController'
@@ -207,25 +211,25 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'sequenceController'
             })
             .state('pendingreports', {
-                level:2,
+                level:1,
                 url:'/pendingReports',
                 templateUrl: 'partials/pendingReports.tpl.html',
                 controller: 'pendingReportController'
             })
             .state('reportstobereviewed', {
-                level:2,
+                level:1,
                 url:'/reportstobereviewed',
                 templateUrl: 'partials/pendingReports.tpl.html',
                 controller: 'ReportsToBeReviewedController'
             })
             .state('servicecombo', {
-                level:2,
+                level:1,
                 url:'/servicecombo',
                 templateUrl: 'partials/serviceCombo.tpl.html',
                 controller: 'ServiceComboController'
             })
             .state('tripcombo', {
-                level:2,
+                level:1,
                 url:'/tripcombo',
                 templateUrl: 'partials/tripCombo.tpl.html',
                 controller: 'TripComboController'
@@ -283,7 +287,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 templateUrl: 'partials/staff-list.tpl.html',
                 controller: 'StaffListController'
             }).state('editstaff/:id', {
-                level:1,
+                level:2,
                 url:'/editstaff/:id',
                 templateUrl: 'partials/edit-staff.tpl.html',
                 controller: 'EditStaffController'
@@ -403,6 +407,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'BookingController as bookingCtrl'
             })
             .state('shipments',{
+                level:1,
                 url:'/shipments',
                 templateUrl: 'partials/shipments.tpl.html',
                 controller: 'ShipmentsController'
@@ -418,6 +423,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'EditShipmentController'
             })
             .state('branchoffices',{
+                level:1,
                 url:'/branchoffices',
                 templateUrl: 'partials/branchOffices.tpl.html',
                 controller: 'BranchOfficesController'
@@ -437,11 +443,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'GSTFiltersController'
             })
             .state('suppliers',{
+                level:1,
                 url:'/suppliers',
                 templateUrl: 'partials/suppliers.tpl.html',
                 controller: 'SuppliersListController'
             })
             .state('tripreports',{
+                level:1,
                 url:'/tripreports',
                 templateUrl: 'partials/tripReports.tpl.html',
                 controller: 'TripReportsController'

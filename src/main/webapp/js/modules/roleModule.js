@@ -132,7 +132,19 @@ angular.module('myBus.roleModule', ['ngTable', 'ui.bootstrap'])
 						$scope.menus.push({'name':eachState.name});
 					}
 				});
-				angular.forEach($scope.menus,function(menu){
+             	$scope.menus.sort(function (a, b) {
+                    var namea = a.name.toLowerCase();
+                    var nameb = b.name.toLowerCase();
+
+                    if (namea > nameb) {
+                        return 1;
+                    } else if (namea < nameb) {
+                        return -1;
+                    } else if (namea === nameb) {
+                        return 0;
+                    }
+				});
+                angular.forEach($scope.menus,function(menu){
 					angular.forEach($scope.roles,function(role){
 						if(!menu.permissions){
 							menu.permissions = [];
