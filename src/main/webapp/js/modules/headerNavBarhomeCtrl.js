@@ -81,18 +81,19 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
             }
             console.log($scope.currentUser);
         });
-        $scope.canAccessCargoModule = function(){
-            if($scope.currentUser){
-                var accessibleModules = $scope.currentUser.accessibleModules;
-                for(var moduleName in accessibleModules){
-                    if(accessibleModules[moduleName] == "cargobooking"){
+
+        $scope.canAccessModule = function(moduleName){
+            if($scope.currentUser && $scope.currentUser.admin){
+                return true;
+            } else {
+                if($scope.currentUser){
+                    var accessibleModules = $scope.currentUser.accessibleModules;
+                    if(accessibleModules.indexOf(moduleName) != -1){
                         return true;
                     }
+                    return false;
                 }
-                return false;
             }
-
-        }
-
+        };
     });
 

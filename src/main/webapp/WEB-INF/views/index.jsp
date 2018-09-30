@@ -173,64 +173,64 @@
                             <li data-toggle="collapse" data-target="#cargo" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Cargo <span class="arrow"></span></a>
                             </li>
-                            <ul class="sub-menu collapse" id="cargo" >
+                            <ul class="sub-menu collapse" id="cargo">
                                 <my-menu url="cargodashboard" label="CargoDashBoard" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="branchwiseSummary" label="BranchWiseSummary" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu url="userBookingReport" label="UserBookingReport" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')" ></my-menu>
+                                <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="branchwiseSummary" label="BranchWiseSummary" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="userBookingReport" label="UserBookingReport" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="analytics">
-                                <my-menu url="bookingAnalytics" label="BookingAnalytics" class="nav navbar-nav  col-md-12"></my-menu>
+                                <my-menu url="bookingAnalytics" label="BookingAnalytics" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('bookinganalytics')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#master" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i> Master <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="master">
-                                <my-menu label="Agents" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="Amenities" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="Cities" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu label="CollectionZones" class="nav navbar-nav col-md-12 " ></my-menu>
-                                <my-menu label="GSTFilters" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Agents" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('agents')"></my-menu>
+                                <my-menu label="Amenities" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('amenities')"></my-menu>
+                                <my-menu label="BranchOffices" class="nav navbar-nav col-md-12" ng-if="canAccessModule('branchoffices')"></my-menu>
+                                <my-menu label="Cities" class="nav navbar-nav col-md-12 " ng-if="canAccessModule('cities')"></my-menu>
+                                <my-menu label="CollectionZones" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="GSTFilters" class="nav navbar-nav col-md-12" ></my-menu>
                                 <my-menu label="Suppliers" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="OperatorAccounts" class="nav navbar-nav col-md-12" ng-if="currentuser.superAdmin"></my-menu>
                                 <my-menu label="Roles" class="nav navbar-nav col-md-12" ng-if="currentuser.admin"></my-menu>
                                 <my-menu label="ManageRoles" class="nav navbar-nav col-md-12" ng-if="currentuser.admin"></my-menu>
-                                <my-menu label="Routes" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="TripCombo" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="Users" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="Vehicles" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="Staff" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="Routes" class="nav navbar-nav col-md-12" ng-if="canAccessModule('routes')"></my-menu>
+                                <my-menu label="ServiceCombo" class="nav navbar-nav col-md-12" ng-if="canAccessModule('servicecombo')"></my-menu>
+                                <my-menu label="TripCombo" class="nav navbar-nav col-md-12" ng-if="canAccessModule('tripcombo')"></my-menu>
+                                <my-menu label="Users" class="nav navbar-nav col-md-12" ></my-menu>
+                                <my-menu label="Vehicles" class="nav navbar-nav col-md-12" ng-if="canAccessModule('vehicles')"></my-menu>
+                                <my-menu label="Staff" class="nav navbar-nav col-md-12" ng-if="canAccessModule('staff')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
                                 <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
-                                <my-menu url="tripreports" label="TripReports" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="FuelExpenseReports" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="DueReport" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu label="CashTransfers" class="nav navbar-nav col-md-12">Cash Transfers</my-menu>
-                                <my-menu label="Payments" class="nav navbar-nav  col-md-12">Payments</my-menu>
-                                <my-menu label="OfficeExpenses" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu url="tripreports" label="TripReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('tripreports')"></my-menu>
+                                <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('servicereports')"></my-menu>
+                                <my-menu label="FuelExpenseReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('fuelexpensereports')"></my-menu>
+                                <my-menu label="DueReport" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('duereport')"></my-menu>
+                                <my-menu label="CashTransfers" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cashtransfers')">Cash Transfers</my-menu>
+                                <my-menu label="Payments" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('payments')">Payments</my-menu>
+                                <my-menu label="OfficeExpenses" class="nav navbar-nav col-md-12" ng-if="canAccessModule('officeexpenses')"></my-menu>
+                                <my-menu label="ExpensesIncomesReports" class="nav navbar-nav col-md-12" ng-if="canAccessModule('expensesincomesreports')"></my-menu>
                                 <my-menu label="ReturnTickets" class="nav navbar-nav col-md-12"></my-menu>
-                                <my-menu label="CashBalances" class="nav navbar-nav col-md-12"></my-menu>
+                                <my-menu label="CashBalances" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cashbalances')"></my-menu>
                                 <my-menu label="Invoices" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu label="ShipmentSequence" class="nav navbar-nav col-md-12"></my-menu>
 
                             </ul>
-                            <li data-toggle="collapse" data-target="#checklist" class="collapsed">
+                            <li data-toggle="collapse" data-target="#checklist" class="collapsed" ng-if="canAccessChecklist()">
                                 <a><i class="fa fa-book fa-lg"></i> Check List <span class="arrow"></span></a>
                             </li>
-                            <ul class="sub-menu collapse" id="checklist">
-                                <my-menu url="pendingreports" label="PendingReports" class="nav navbar-nav  col-md-12"></my-menu>
-                                <my-menu url="reportstobereviewed" label="ReportsToBeReviewed" class="nav navbar-nav  col-md-12"></my-menu>
+                            <ul class="sub-menu collapse" id="checklist" ng-if="canAccessChecklist()">
+                                <my-menu url="pendingreports" label="PendingReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('pendingreports')"></my-menu>
+                                <my-menu url="reportstobereviewed" label="ReportsToBeReviewed" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('reportstobereviewed')"></my-menu>
                             </ul>
 
                             <li>
