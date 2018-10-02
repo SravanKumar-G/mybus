@@ -229,7 +229,7 @@
                             <li data-toggle="collapse" data-target="#checklist" class="collapsed" ng-if="canAccessModule('pendingreports')">
                                 <a><i class="fa fa-book fa-lg"></i> Check List <span class="arrow"></span></a>
                             </li>
-                            <ul class="sub-menu collapse" id="checklist" ng-if="canAccessChecklist()">
+                            <ul class="sub-menu collapse" id="checklist">
                                 <my-menu url="pendingreports" label="PendingReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('pendingreports')"></my-menu>
                                 <my-menu url="reportstobereviewed" label="ReportsToBeReviewed" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('reportstobereviewed')"></my-menu>
                             </ul>
