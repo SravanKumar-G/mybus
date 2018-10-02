@@ -139,7 +139,25 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
             $location.url('/roles');
         }
     })
-
+    .controller('UpdatePasswordController', function ($scope,$stateParams, $location, userManager) {
+        $scope.user= {};
+        $scope.user.userName = userManager.getUser().userName;
+        $scope.updatePassword = function (){
+            if($scope.user.currentPassword !== userManager.getUser().password){
+                swal("Error!", "Wrong current password", "error");
+                return;
+            }
+            if($scope.user.password !== $scope.user.confirmPassword){
+                swal("Error!", "Password and confirm password do not match", "error");
+                return;
+            }
+            userManager.updatePassword($scope.user, function(data){
+                swal("success", "Password successfully updated", "success");
+            }, function(error){
+                swal("Error!", "Failed to update password", "error");
+            });
+        }
+    })
     //
   // ======================== Edit User =====================================
   //
@@ -342,6 +360,14 @@ angular.module('myBus.userModule', ['ngTable', 'ui.bootstrap'])
                     callback(response.data);
                     $rootScope.$broadcast('UpdateUserCompleted');
                 },function (data, status, header, config) {
+                    errorcallback(data);
+                });
+            },
+            updatePassword : function (user,callback,errorcallback) {
+                $http.put('/api/v1/user/updatePassword',user).then(function(response){
+                    callback(response.data);
+                    $rootScope.$broadcast('UpdateUserCompleted');
+                },function (data) {
                     errorcallback(data);
                 });
             },

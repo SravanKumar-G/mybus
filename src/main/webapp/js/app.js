@@ -34,9 +34,8 @@ var myBus = angular.module('myBus', [
     'myBus.cargoBooking',
     'myBus.operatorAccountsModule',
     'myBus.staffModule',
-    'myBus.cargoDashboard'
-
-
+    'myBus.cargoDashboard',
+    'myBus.cargoBranchSummary'
 ]);
 
 myBus.config(['$stateProvider','$urlRouterProvider',
@@ -54,7 +53,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             }).state('cargobookings',{
                 url:'/cargobookings',
                 templateUrl: 'partials/cargoBookingsSearch.tpl.html'
-            }).state('collectionzones',{
+            })
+            .state('branchbookingsummary',{
+                url:'/branchbookingsummary',
+                templateUrl: 'partials/branchBookingSummary.tpl.html'
+            })
+            .state('collectionzones',{
                 url:'/collectionZones',
                 templateUrl: 'partials/collectionZones.tpl.html',
                 controller: 'CollectionZonesController'
@@ -80,6 +84,7 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'AmenitiesController'
             })
             .state('cashbalances',{
+                level:1,
                 url:'/cashbalances',
                 templateUrl: 'partials/cashBalances.tpl.html',
                 controller: 'CashBalancesController'
@@ -459,7 +464,12 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/tripReports/:date',
                 templateUrl: 'partials/tripReports.tpl.html',
                 controller: 'TripReportsController'
-            });
+            })
+            .state('updatepassword', {
+            level:2,
+            url:'/updatepassword',
+            templateUrl: 'partials/updatePassword.tpl.html'
+        });
         $urlRouterProvider.otherwise( '/');
     }]);
 

@@ -61,6 +61,7 @@
     <script src="js/modules/operatorAccountsModule.js"></script>
     <script src="js/modules/staffModule.js"></script>
     <script src="js/modules/cargoDashboardModule.js"></script>
+    <script src="js/modules/cargoBrachSummaryModule.js"></script>
 
     <script src="js/modules/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -177,7 +178,7 @@
                                 <my-menu url="cargodashboard" label="CargoDashBoard" class="nav navbar-nav col-md-12"></my-menu>
                                 <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')" ></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
-                                <my-menu url="branchwiseSummary" label="BranchWiseSummary" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="branchbookingsummary" label="BranchBookingSummary" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                                 <my-menu url="userBookingReport" label="UserBookingReport" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
@@ -225,7 +226,7 @@
                                 <my-menu label="ShipmentSequence" class="nav navbar-nav col-md-12"></my-menu>
 
                             </ul>
-                            <li data-toggle="collapse" data-target="#checklist" class="collapsed" ng-if="canAccessChecklist()">
+                            <li data-toggle="collapse" data-target="#checklist" class="collapsed" ng-if="canAccessModule('pendingreports')">
                                 <a><i class="fa fa-book fa-lg"></i> Check List <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="checklist" ng-if="canAccessChecklist()">
@@ -233,12 +234,12 @@
                                 <my-menu url="reportstobereviewed" label="ReportsToBeReviewed" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('reportstobereviewed')"></my-menu>
                             </ul>
 
-                            <li>
-                                <a href="#">
-                                    <i class="fa fa-user fa-lg"></i> Profile
-                                </a>
+                            <li data-toggle="collapse" data-target="#profile" class="collapsed">
+                                <a><i class="fa fa-book fa-lg"></i> Profile <span class="arrow"></span></a>
                             </li>
-
+                            <ul class="sub-menu collapse" id="profile">
+                                <my-menu url="updatePassword" label="UpdatePassword" class="nav navbar-nav  col-md-12"></my-menu>
+                            </ul>
                             <li>
                                 <a href="#">
                                     <i class="fa fa-users fa-lg"></i> Users

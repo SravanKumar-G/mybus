@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mybus.dao.RoleDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
+import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Role;
@@ -31,6 +32,9 @@ public class UserManager {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private UserMongoDAO userMongoDAO;
 
     @Autowired
     private RoleDAO roleDAO;
@@ -177,4 +181,22 @@ public class UserManager {
         return null;
     }
 
+    public User updatePassword(JSONObject userJson) {
+        User user = userDAO.findOneByUserName(userJson.get("userName").toString());
+        if(user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if(!user.getPassword().equals(userJson.get("currentPassword").toString())) {
+            throw new IllegalArgumentException("Invalid old password");
+        }
+        if(!userJson.get("password").toString().equals(userJson.get("confirmPassword").toString())){
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+        if(userMongoDAO.updatePassword(user.getUserName(), userJson.get("password").toString())){
+            user.setPassword(userJson.get("password").toString());
+            return user;
+        } else {
+            throw new IllegalArgumentException("Failed to update password");
+        }
+    }
 }

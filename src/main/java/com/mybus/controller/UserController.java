@@ -100,6 +100,14 @@ public class UserController extends MyBusBaseController{
         return userManager.updateUser(user);
     }
 
+    @RequestMapping(value = "user/updatePassword", method = RequestMethod.PUT)
+    @ApiOperation(value ="Update user", response = User.class)
+    public User updatePassword(HttpServletRequest request,
+                           @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
+        logger.debug("update user password");
+        return userManager.updatePassword(userJson);
+    }
+
     @RequestMapping(value = "userId/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get user with Id", response = User.class)
     public User getUser(HttpServletRequest request,
