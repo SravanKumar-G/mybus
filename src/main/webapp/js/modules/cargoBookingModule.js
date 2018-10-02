@@ -418,6 +418,16 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     });
-            }
+            },
+            getBranchSummary: function (filter, callback) {
+                $http.post('/api/v1/shipment/branchSummary', filter)
+                    .then(function (response) {
+                        if (angular.isFunction(callback)) {
+                            callback(response.data);
+                        }
+                    }, function (err, status) {
+                        sweetAlert("Error searching branch summary", err.message, "error");
+                    });
+            },
         }
     });

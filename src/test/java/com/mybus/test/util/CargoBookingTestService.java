@@ -53,4 +53,6 @@ public class CargoBookingTestService {
         shipment.setDispatchDate(new Date());
         return shipment;
     }
+
+
 }

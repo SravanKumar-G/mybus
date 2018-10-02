@@ -1,18 +1,22 @@
 package com.mybus.dao.impl;
 
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
+import com.mybus.dto.BranchCargoBookingsSummary;
+import com.mybus.dto.BranchwiseCargoBookingSummary;
+import com.mybus.model.Booking;
 import com.mybus.model.CargoBooking;
-import com.mybus.model.CashTransfer;
-import com.mybus.model.User;
-import com.mybus.service.BookingTypeManager;
-import com.mybus.service.ServiceConstants;
+import com.mybus.model.PaymentStatus;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -22,8 +26,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -57,7 +61,9 @@ public class CargoBookingMongoDAO {
 
     public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
         final Query q = createSearchQuery(query);
-        q.with(pageable);
+        if(pageable != null) {
+            q.with(pageable);
+        }
         List<CargoBooking> cargoBookings = mongoTemplate.find(q, CargoBooking.class);
         return cargoBookings;
     }
@@ -111,6 +117,94 @@ public class CargoBookingMongoDAO {
     public long countShipments(JSONObject query) throws ParseException {
         final Query q = createSearchQuery(query);
         return mongoTemplate.count(q, CargoBooking.class);
+    }
+
+    /**
+     * Get booking summary for one branch office
+     * @param branchOfficeId
+     * @param start
+     * @param end
+     * @return
+     */
+    public BranchwiseCargoBookingSummary getBranchwiseBookingSummary(String branchOfficeId, Date start, Date end) {
+        BranchwiseCargoBookingSummary branchwiseCargoBookingSummary  = new BranchwiseCargoBookingSummary();
+        //db.cargoBooking.aggregate({$group:{_id:"$paymentType",total:{$sum:"$totalCharge"}, count: { $sum: 1 }}})
+        if(start == null || end == null){
+            throw new IllegalArgumentException("Dates are required");
+        }
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(branchOfficeId == null){
+            throw new IllegalArgumentException("BranchOfficeId is required");
+        }
+        match.add(where("fromBranchId").is(branchOfficeId));
+        match.add(where("createdAt").gte(start));
+        match.add(where("createdAt").lte(end));
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group("paymentType").sum("totalCharge").as("totalCharge").count().as("totalCount"),
+                sort(Sort.Direction.DESC, "totalCharge"));
+
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        List<BasicDBObject> results = groupResults.getMappedResults();
+        for(BasicDBObject result: results){
+            BranchCargoBookingsSummary bookingsSummary = new BranchCargoBookingsSummary();
+            bookingsSummary.setBranchOfficeId(branchOfficeId);
+            if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.PAID.toString())){
+                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+            } else if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
+                bookingsSummary.setTopayBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setTopayBookingsCount(result.getInt("totalCount"));
+            } else if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
+                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+            }
+            branchwiseCargoBookingSummary.getBranchCargoBookings().add(bookingsSummary);
+        }
+
+        return branchwiseCargoBookingSummary;
+    }
+
+    public BranchwiseCargoBookingSummary getAllBranchsBookingSummary(Date start, Date end) {
+        BranchwiseCargoBookingSummary branchwiseCargoBookingSummary  = new BranchwiseCargoBookingSummary();
+        //db.cargoBooking.aggregate({$group:{_id:"$paymentType",total:{$sum:"$totalCharge"}, count: { $sum: 1 }}})
+        if(start == null || end == null){
+            throw new IllegalArgumentException("Dates are required");
+        }
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        match.add(where("createdAt").gte(start));
+        match.add(where("createdAt").lte(end));
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group("paymentType", "fromBranchId").sum("totalCharge").as("totalCharge").count().as("totalCount"),
+                sort(Sort.Direction.DESC, "totalCharge"));
+
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        List<BasicDBObject> results = groupResults.getMappedResults();
+        for(BasicDBObject result: results){
+            BranchCargoBookingsSummary bookingsSummary = new BranchCargoBookingsSummary();
+            bookingsSummary.setBranchOfficeId(result.get("fromBranchId").toString());
+            if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.PAID.toString())){
+                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+            } else if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
+                bookingsSummary.setTopayBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setTopayBookingsCount(result.getInt("totalCount"));
+            } else if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
+                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+            }
+            branchwiseCargoBookingSummary.getBranchCargoBookings().add(bookingsSummary);
+        }
+        return branchwiseCargoBookingSummary;
     }
 
 }

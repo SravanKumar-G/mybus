@@ -31,6 +31,16 @@ public class UserMongoDAO {
         return writeResult.getN() == 1;
     }
 
+
+    public boolean updatePassword(String userName, String password) {
+        Update updateOp = new Update();
+        updateOp.set("password", password);
+        final Query query = new Query();
+        query.addCriteria(where("userName").is(userName));
+        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
+        return writeResult.getN() == 1;
+    }
+
     public Map<String, List<User>> getUsersByBranchOffices() {
         //db.booking.aggregate([{ $match: { 'due': true } },{$group:{_id:"$serviceNumber",total:{$sum:"$netAmt"}}}])
         /*

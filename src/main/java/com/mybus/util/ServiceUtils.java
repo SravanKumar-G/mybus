@@ -52,9 +52,37 @@ public class ServiceUtils {
             return null;
         }
         DateFormat df = new SimpleDateFormat(ServiceConstants.df);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(df.parse(dateString));
+        if (!endOfTheDay) {
+            cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+            cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+            cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+            cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+            return cal.getTime();
+        } else {
+            cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
+            cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
+            cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));
+            cal.set(Calendar.MILLISECOND, cal.getMaximum(Calendar.MILLISECOND));
+            return cal.getTime();
+        }
+    }
+
+    /**
+     * Method to parse date string. Boolean param indicates if the time should be should set to end of the day
+     * @param date
+     * @param endOfTheDay
+     * @return
+     */
+    public static Date parseDate(final Date date, boolean endOfTheDay) throws ParseException {
+        if (date == null) {
+            return null;
+        }
+        DateFormat df = new SimpleDateFormat(ServiceConstants.df);
         if (!endOfTheDay) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime(df.parse(dateString));
+            cal.setTime(date);
             cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
             cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
             cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
@@ -62,7 +90,7 @@ public class ServiceUtils {
             return cal.getTime();
         } else {
             Calendar cal = Calendar.getInstance();
-            cal.setTime(df.parse(dateString));
+            cal.setTime(date);
             cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
             cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
             cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));

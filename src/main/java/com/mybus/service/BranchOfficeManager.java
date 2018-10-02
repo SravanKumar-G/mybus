@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,7 @@ public class BranchOfficeManager {
         JSONObject query = new JSONObject();
         List<BranchOffice> offices = IteratorUtils.toList(mongoQueryDAO
                 .getDocuments(BranchOffice.class, BranchOffice.COLLECTION_NAME, fields, query, null).iterator());
+        offices.sort(new BranchOfficeComparator());
         return offices;
     }
 
@@ -136,6 +138,18 @@ public class BranchOfficeManager {
         return offices.stream().collect(
                 Collectors.toMap(BranchOffice::getId, BranchOffice::getName));
 
+    }
+
+    class BranchOfficeComparator implements Comparator<BranchOffice> {
+        @Override
+        public int compare(BranchOffice o1, BranchOffice o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
     }
 
 }

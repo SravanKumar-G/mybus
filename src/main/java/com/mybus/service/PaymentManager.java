@@ -118,6 +118,7 @@ public class PaymentManager {
     public Payment cancelCargoBooking(CargoBooking booking) {
         User currentUser = sessionManager.getCurrentUser();
         Payment payment = new Payment();
+        payment.setCreatedBy(booking.getCreatedBy());
         payment.setOperatorId(sessionManager.getOperatorId());
         payment.setBranchOfficeId(currentUser.getBranchOfficeId());
         payment.setAmount(booking.getTotalCharge());

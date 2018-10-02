@@ -1,6 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
+import com.mybus.dto.BranchwiseCargoBookingSummary;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.CargoBookingManager;
@@ -166,5 +167,13 @@ public class CargoBookingController extends MyBusBaseController{
     public CargoBooking deliverCargoBooking(HttpServletRequest request,@PathVariable final String id,
                                        @RequestBody String deliveryNotes) {
         return cargoBookingManager.deliverCargoBooking(id, deliveryNotes);
+    }
+
+
+    @RequestMapping(value = "shipment/branchSummary", method = RequestMethod.POST)
+    @ApiOperation(value ="Branch summary to cargo booking")
+    public BranchwiseCargoBookingSummary getBranchSummary(HttpServletRequest request,
+                                                          @RequestBody(required = false) final JSONObject query) throws ParseException {
+        return cargoBookingManager.getBranchSummary(query);
     }
 }

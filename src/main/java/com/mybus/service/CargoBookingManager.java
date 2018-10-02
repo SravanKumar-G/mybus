@@ -6,9 +6,13 @@ import com.mybus.dao.CargoBookingDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.SupplierDAO;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
+import com.mybus.dto.BranchCargoBookingsSummary;
+import com.mybus.dto.BranchwiseCargoBookingSummary;
+import com.mybus.dto.UserCargoBookingsSummary;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
+import com.mybus.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -374,5 +379,93 @@ public class CargoBookingManager {
             cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
             return cargoBookingDAO.save(cargoBooking);
         }
+    }
+
+    /**
+     * Get branch office summary for given date range
+     * @param query
+     * @return
+     * @throws ParseException
+     */
+    public BranchwiseCargoBookingSummary getBranchSummary(JSONObject query) throws ParseException {
+        BranchwiseCargoBookingSummary branchwiseCargoBookingSummary = new BranchwiseCargoBookingSummary();
+        Iterable<CargoBooking> cargoBookings = findShipments(query, null);
+        Map<String, BranchCargoBookingsSummary> branchCargoBookingsSummaryMap= new HashMap<>();
+        Map<String, UserCargoBookingsSummary> userCargoBookingsSummaryMap= new HashMap<>();
+        Map<String, String> branchNamesMap = branchOfficeManager.getNamesMap();
+        Map<String, String> userNamesMap = userManager.getUserNames(true);
+        for(CargoBooking cargoBooking:cargoBookings){
+            BranchCargoBookingsSummary branchSummary = branchCargoBookingsSummaryMap.get(cargoBooking.getFromBranchId());
+            if(branchSummary == null){
+                branchSummary =  new BranchCargoBookingsSummary();
+                branchSummary.setBranchOfficeId(cargoBooking.getFromBranchId());
+                branchSummary.setBranchOfficeName(branchNamesMap.get(cargoBooking.getFromBranchId()));
+                branchCargoBookingsSummaryMap.put(cargoBooking.getFromBranchId(), branchSummary);
+            }
+            UserCargoBookingsSummary userSummary = userCargoBookingsSummaryMap.get(cargoBooking.getCreatedBy());
+            if(userSummary == null){
+                userSummary =  new UserCargoBookingsSummary();
+                userSummary.setUserId(cargoBooking.getCreatedBy());
+                userSummary.setUserName(userNamesMap.get(cargoBooking.getCreatedBy()));
+                userCargoBookingsSummaryMap.put(cargoBooking.getCreatedBy(), userSummary);
+            }
+            if(cargoBooking.getPaymentType().equals(PaymentStatus.PAID.getKey())){
+                branchSummary.setPaidBookingsTotal(branchSummary.getPaidBookingsTotal()+ cargoBooking.getTotalCharge());
+                branchSummary.setPaidBookingsCount(branchSummary.getPaidBookingsCount()+1);
+                userSummary.setPaidBookingsTotal(userSummary.getPaidBookingsTotal()+ cargoBooking.getTotalCharge());
+                userSummary.setPaidBookingsCount(userSummary.getPaidBookingsCount()+1);
+            } else if(cargoBooking.getPaymentType().equals(PaymentStatus.TOPAY.getKey())){
+                branchSummary.setTopayBookingsTotal(branchSummary.getTopayBookingsTotal()+ cargoBooking.getTotalCharge());
+                branchSummary.setTopayBookingsCount(branchSummary.getTopayBookingsCount()+1);
+                userSummary.setTopayBookingsTotal(userSummary.getTopayBookingsTotal()+cargoBooking.getTotalCharge());
+                userSummary.setTopayBookingsCount(userSummary.getTopayBookingsCount() + 1);
+            } else if(cargoBooking.getPaymentType().equals(PaymentStatus.ONACCOUNT.getKey())){
+                branchSummary.setOnAccountBookingsTotal(branchSummary.getOnAccountBookingsTotal()+ cargoBooking.getTotalCharge());
+                branchSummary.setOnAccountBookingsCount(branchSummary.getOnAccountBookingsCount()+1);
+                userSummary.setOnAccountBookingsTotal(userSummary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
+                userSummary.setOnAccountBookingsCount(userSummary.getOnAccountBookingsCount()+1);
+            }
+        }
+        branchwiseCargoBookingSummary.getBranchCargoBookings().addAll(branchCargoBookingsSummaryMap.values());
+        branchwiseCargoBookingSummary.getUserCargoBookingsSummaries().addAll(userCargoBookingsSummaryMap.values());
+        return branchwiseCargoBookingSummary;
+    }
+
+    /**
+     *
+     * @param branchOfficeId
+     * @param start
+     * @param end
+     * @return
+     * @throws ParseException
+     */
+    public BranchwiseCargoBookingSummary getBranchwiseCargoBookingSummary(String branchOfficeId, Date start, Date end) throws ParseException {
+        start = ServiceUtils.parseDate(start, false);
+        end = ServiceUtils.parseDate(end, true);
+        BranchwiseCargoBookingSummary branchwiseCargoBookingSummary = null;
+        if(branchOfficeId != null) {
+            branchwiseCargoBookingSummary = cargoBookingMongoDAO.getBranchwiseBookingSummary(branchOfficeId, start, end);
+        } else {
+            branchwiseCargoBookingSummary = cargoBookingMongoDAO.getAllBranchsBookingSummary(start, end);
+        }
+        //fill in the branch office names
+        Map<String,String> branchOfficeNames = branchOfficeManager.getNamesMap();
+        for(BranchCargoBookingsSummary summary: branchwiseCargoBookingSummary.getBranchCargoBookings()){
+            summary.setBranchOfficeName(branchOfficeNames.get(summary.getBranchOfficeId()));
+        }
+        return branchwiseCargoBookingSummary;
+    }
+
+    /**
+     * Get summary of all bookings
+     * @param start
+     * @param end
+     * @return
+     * @throws ParseException
+     */
+    public BranchwiseCargoBookingSummary getAllBranchCargoBookingSummary(Date start, Date end) throws ParseException {
+        start = ServiceUtils.parseDate(start, false);
+        end = ServiceUtils.parseDate(end, true);
+        return cargoBookingMongoDAO.getAllBranchsBookingSummary(start, end);
     }
 }
