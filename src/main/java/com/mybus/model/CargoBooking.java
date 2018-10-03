@@ -99,6 +99,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private Date deliveredOn;
     private String deliveredBy;
     private String deliveryNotes;
+    private List<String> messages;
 
     @Override
     public boolean containsKey(String attributeName) {

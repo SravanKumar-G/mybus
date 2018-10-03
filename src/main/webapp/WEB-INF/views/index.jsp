@@ -179,7 +179,8 @@
                                 <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')" ></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                                 <my-menu url="branchbookingsummary" label="BranchBookingSummary" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
-                                <my-menu url="userBookingReport" label="UserBookingReport" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="unloadingsheet" label="UnloadingSheet" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="deliverysheet" label="DeliverySheet" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#analytics" class="collapsed">
                                 <a><i class="fa fa-globe fa-lg"></i> Analytics <span class="arrow"></span></a>

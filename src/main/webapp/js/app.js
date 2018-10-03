@@ -58,6 +58,14 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 url:'/branchbookingsummary',
                 templateUrl: 'partials/branchBookingSummary.tpl.html'
             })
+            .state('unloadingsheet',{
+                url:'/unloadingsheet',
+                templateUrl: 'partials/cargoUnloadingSheet.tpl.html'
+            })
+            .state('deliverysheet',{
+                url:'/deliverysheet',
+                templateUrl: 'partials/cargoDeliverySheet.tpl.html'
+            })
             .state('collectionzones',{
                 url:'/collectionZones',
                 templateUrl: 'partials/collectionZones.tpl.html',

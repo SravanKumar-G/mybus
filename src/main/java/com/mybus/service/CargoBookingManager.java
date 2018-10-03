@@ -98,7 +98,7 @@ public class CargoBookingManager {
             }
         }
         if(errors.isEmpty()) {
-            sendSMSNotification(cargoBooking);
+            sendBookingConfirmationSMS(cargoBooking);
             try {
                 cargoBooking.setCreatedAt(new DateTime());
                 if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
@@ -249,7 +249,7 @@ public class CargoBookingManager {
      * Send SMS for cargobooking
      * @param cargoBooking
      */
-    private void sendSMSNotification(CargoBooking cargoBooking){
+    private void sendBookingConfirmationSMS(CargoBooking cargoBooking){
         BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
         BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
 
@@ -269,6 +269,19 @@ public class CargoBookingManager {
             }
     }
 
+    private void sendBookingArrivalNotification(CargoBooking cargoBooking){
+        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
+        String message = String.format("A parcel with LR# %s From:%s(Ph:%s) " +
+                        "has been arrived. Please collect it from %s " +
+                        "Sri Krishna Cargo Services", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
+                String.valueOf(cargoBooking.getFromContact()), toBranchOffice.getAddress());
+        try {
+            smsManager.sendSMS(cargoBooking.getToContact().toString(), message, "CargoBookingArrived", cargoBooking.getId());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            logger.error("Error sending SMS notification for cargo booking:" + cargoBooking.getId());
+        }
+    }
     /**
      * Cancel cargo booking
      * @param id
@@ -339,7 +352,7 @@ public class CargoBookingManager {
     public boolean sendSMSForCargoBooking(String id) {
         CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
         if(cargoBooking != null) {
-            sendSMSNotification(cargoBooking);
+            sendBookingConfirmationSMS(cargoBooking);
         } else {
             return false;
         }
@@ -467,5 +480,42 @@ public class CargoBookingManager {
         start = ServiceUtils.parseDate(start, false);
         end = ServiceUtils.parseDate(end, true);
         return cargoBookingMongoDAO.getAllBranchsBookingSummary(start, end);
+    }
+
+    /**
+     * Find bookings for unloading
+     * @param query
+     * @return
+     * @throws ParseException
+     */
+    public List<CargoBooking> findShipmentsForUnloading(JSONObject query) throws ParseException {
+        List<CargoBooking> cargoBookings = cargoBookingMongoDAO.findShipmentsForUnloading(query);
+        cargoBookings.stream().forEach(shipment -> {
+            loadShipmentDetails(shipment);
+        });
+        return cargoBookings;
+    }
+
+    /**
+     * Unload bookings and send arrival SMS notifications
+     * @param bookingIds
+     * @return
+     */
+    public boolean unloadBookings(List<String> bookingIds){
+        if(cargoBookingMongoDAO.unloadBookings(bookingIds)){
+            bookingIds.stream().forEach(id -> {
+                sendBookingArrivalNotification(cargoBookingDAO.findByIdAndOperatorId(id, sessionManager.getOperatorId()));
+            });
+            return true;
+        };
+        return false;
+    }
+
+    public List<CargoBooking> findUndeliveredShipments(JSONObject query) throws ParseException {
+        List<CargoBooking> cargoBookings = cargoBookingMongoDAO.findUndeliveredShipments(query);
+        cargoBookings.stream().forEach(shipment -> {
+            loadShipmentDetails(shipment);
+        });
+        return cargoBookings;
     }
 }

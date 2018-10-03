@@ -22,7 +22,9 @@
         <!--div class="btn btn-info" ng-click="assignVehicle(shipment.id)" ng-if="!shipment.vehicleId && !shipment.canceled && shipment.cargoTransitStatus === 'READYFORSHIPMENT'">
             <span class="glyphicon glyphicon-share"></span>Assign Vehicle
         </div -->
-
+        <span class="row" ng-repeat="message in shipment.messages">
+            {{message}}<br/>
+        </span>
         <span ng-if="shipment.paidOn"> Booking is paid on {{shipment.paidOn | date}} by {{shipment.paidBy}}</span>
         <span ng-if="shipment.cargoTransitStatus === 'DELIVERED'"> Booking is delivered on {{shipment.deliveredOn | date}} to {{shipment.deliveryNotes}} <b>by</b> {{shipment.deliveredBy}}</span>
     </div>

@@ -169,11 +169,40 @@ public class CargoBookingController extends MyBusBaseController{
         return cargoBookingManager.deliverCargoBooking(id, deliveryNotes);
     }
 
-
     @RequestMapping(value = "shipment/branchSummary", method = RequestMethod.POST)
     @ApiOperation(value ="Branch summary to cargo booking")
     public BranchwiseCargoBookingSummary getBranchSummary(HttpServletRequest request,
                                                           @RequestBody(required = false) final JSONObject query) throws ParseException {
         return cargoBookingManager.getBranchSummary(query);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "shipment/search/unloading", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get the shipments available for unloading", response = CargoBooking.class, responseContainer = "List")
+    public Iterable<CargoBooking> getBookingForUnloading(HttpServletRequest request,
+                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
+        if(query == null){
+            throw new IllegalArgumentException("Query is invalid");
+        }
+        return cargoBookingManager.findShipmentsForUnloading(query);
+    }
+
+    @RequestMapping(value = "shipment/unload", method = RequestMethod.POST)
+    @ApiOperation(value ="Unload cargo bookings ")
+    public boolean unloadBookings(HttpServletRequest request, @RequestBody final List<String> bookingIds ) {
+        return cargoBookingManager.unloadBookings(bookingIds);
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(value = "shipment/search/undelivered", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+    @ApiOperation(value = "Get the shipments available for delivering", response = CargoBooking.class, responseContainer = "List")
+    public Iterable<CargoBooking> getBookingForDelivery(HttpServletRequest request,
+                                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
+        if(query == null){
+            throw new IllegalArgumentException("Query is invalid");
+        }
+        return cargoBookingManager.findUndeliveredShipments(query);
+    }
+
+
 }
