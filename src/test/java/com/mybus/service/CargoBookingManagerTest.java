@@ -227,8 +227,16 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         assertEquals(userCargoBookingsSummary.getPaidBookingsTotal(), 1300,0.0);
         assertEquals(userCargoBookingsSummary.getTopayBookingsCount(), 7);
         assertEquals(userCargoBookingsSummary.getTopayBookingsTotal(), 700, 0.0);
+    }
 
-
+    @Test
+    public void testUnloadBookings(){
+        ShipmentSequence shipmentSequence = shipmentSequenceDAO.save(new ShipmentSequence("F", "Free"));
+        CargoBooking shipment = cargoBookingTestService.createNew(shipmentSequence);
+        CargoBooking saved = shipmentManager.saveWithValidations(shipment);
+        List<String> ids = new ArrayList<>();
+        ids.add(saved.getId());
+        shipmentManager.unloadBookings(ids);
     }
 
 }

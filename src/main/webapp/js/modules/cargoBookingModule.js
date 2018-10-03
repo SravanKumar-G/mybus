@@ -11,6 +11,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.members = [];
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
+            $scope.offices.unshift({"name":"All"});
         });
 
         userManager.getUserNames(function (data) {
@@ -45,7 +46,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         };
         $scope.init = function(filter) {
             cargoBookingManager.count(filter, function(shipmentCount){
-                console.log('shipmentCount  '+ shipmentCount);
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
                     count:10,
@@ -147,7 +147,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.cargoBookingId = bookingId;
 
         $scope.deliverCargoBooking = function() {
-            console.log('deliver it now....');
             if(!$scope.deliveryComment) {
                 $scope.showError = true;
                 return;
@@ -156,6 +155,69 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $location.url('cargobookings');
                 $rootScope.$broadcast('UpdateCargoBookingList');
             });
+        }
+    })
+    .controller("CargoUnloadingSheetController",function($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location){
+        $scope.selectedBookings = [];
+        $scope.offices = [];
+        $scope.filter = {};
+        $scope.cargoBookings = [];
+        $scope.filter.toBranchId = userManager.getUser().branchOfficeId;
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+            $scope.offices.unshift({"name":"All"});
+        });
+        $scope.unload = function() {
+            cargoBookingManager.unloadBookings($scope.selectedBookings, function (success) {
+                //reload the bookings for unload
+                $scope.searchBookingForUnload();
+            })
+        }
+        $scope.searchBookingForUnload = function() {
+            cargoBookingManager.getBookingsForUnloading($scope.filter, function(response){
+                $scope.cargoBookings = response;
+            })
+        }
+        $scope.searchBookingForUnload();
+        $scope.gotoBooking = function (bookingId) {
+            $location.url('viewcargobooking/'+bookingId);
+        }
+    })
+    .controller("CargoDeliverySheetController",function($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location){
+        $scope.selectedBookings = [];
+        $scope.offices = [];
+        $scope.filter = {};
+        $scope.cargoBookings = [];
+        $scope.filter.toBranchId = userManager.getUser().branchOfficeId;
+        $scope.toggleBookingSelection = function(bookingId){
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        branchOfficeManager.loadNames(function(data) {
+            $scope.offices = data;
+            $scope.offices.unshift({"name":"All"});
+        });
+
+        $scope.searchBookingForDelivery = function() {
+            cargoBookingManager.getBookingsForDelivery($scope.filter, function(response){
+                $scope.cargoBookings = response;
+            })
+        }
+        $scope.searchBookingForDelivery();
+        $scope.gotoBooking = function (bookingId) {
+            $location.url('viewcargobooking/'+bookingId);
         }
     })
 
@@ -243,7 +305,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $location.url();
         }
         $scope.dt = new Date();
-
         $scope.copySenderDetails = function(){
             if($scope.shipment.copySenderDetails){
                 $scope.shipment.toContact = $scope.shipment.fromContact;
@@ -324,7 +385,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             }
         }
         $scope.sendSMS = function(shipmentId){
-            console.log('Send SMS');
             cargoBookingManager.sendSMSForCargoBooking(shipmentId);
         }
 
@@ -429,5 +489,28 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         sweetAlert("Error searching branch summary", err.message, "error");
                     });
             },
+            getBookingsForUnloading:function (filter, callback) {
+                $http.post('/api/v1/shipment/search/unloading', filter)
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        sweetAlert("Error searching for unloading bookings", error.message, "error");
+                    });
+            },
+            unloadBookings:function (bookingIds, callback) {
+                $http.post('/api/v1/shipment/unload', bookingIds)
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        sweetAlert("Error unloading bookings", error.message, "error");
+                    });
+            },getBookingsForDelivery:function (filter, callback) {
+                $http.post('/api/v1/shipment/search/undelivered', filter)
+                    .then(function (response) {
+                        callback(response.data);
+                    }, function (error) {
+                        sweetAlert("Error searching for undelivered bookings", error.message, "error");
+                    });
+            }
         }
     });

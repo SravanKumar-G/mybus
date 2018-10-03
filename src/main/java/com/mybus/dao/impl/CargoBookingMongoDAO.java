@@ -5,9 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 import com.mybus.dto.BranchCargoBookingsSummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
-import com.mybus.model.Booking;
-import com.mybus.model.CargoBooking;
-import com.mybus.model.PaymentStatus;
+import com.mybus.model.*;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
@@ -104,7 +102,6 @@ public class CargoBookingMongoDAO {
                 q.addCriteria(criteria);
             }
         }
-
         return q;
     }
 
@@ -207,4 +204,90 @@ public class CargoBookingMongoDAO {
         return branchwiseCargoBookingSummary;
     }
 
+    /**
+     * Find cargo bookings with a given matching string
+     * @param query
+     * @return
+     */
+    public Iterable<CargoBooking> findShipments(JSONObject query){
+        Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(query != null) {
+            if(query.get("filter") != null) {
+                q.addCriteria(where(CargoBooking.SHIPMENT_NUMBER).regex(query.get("filter").toString(), "i"));
+            }
+            match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+            criteria.andOperator(match.toArray(new Criteria[match.size()]));
+            q.addCriteria(criteria);
+        }
+        return mongoTemplate.find(q, CargoBooking.class);
+    }
+
+    /**
+     * Find cargo bookings for unloading
+     * @param query
+     * @return
+     * @throws ParseException
+     */
+    public List<CargoBooking> findShipmentsForUnloading(JSONObject query) throws ParseException {
+        Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(query != null) {
+            if(query.get("startDate") != null) {
+                match.add(Criteria.where("dispatchDate").gte(ServiceUtils.parseDate(query.get("startDate").toString(), false)));
+            }
+            if(query.get("endDate") != null) {
+                match.add(Criteria.where("dispatchDate").lte(ServiceUtils.parseDate(query.get("endDate").toString(), true)));
+            }
+            if(query.get("toBranchId") != null) {
+                match.add(Criteria.where("toBranchId").is(query.get("toBranchId").toString()));
+            }
+            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.getKey(),
+                    CargoTransitStatus.ARRIVED.toString(),
+                    CargoTransitStatus.DELIVERED.toString(),
+                    CargoTransitStatus.ONHOLD.toString()));
+            match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+            criteria.andOperator(match.toArray(new Criteria[match.size()]));
+            q.addCriteria(criteria);
+        }
+        return mongoTemplate.find(q, CargoBooking.class);
+    }
+
+    public boolean unloadBookings(List<String> bookingIds) {
+        User currentUser = sessionManager.getCurrentUser();
+        Update updateOp = new Update();
+        updateOp.set("cargoTransitStatus", CargoTransitStatus.ARRIVED.toString());
+        updateOp.push("messages", "Unloaded by "+ currentUser.getFullName() + " on "+ new Date());
+        final Query query = new Query();
+        query.addCriteria(where("_id").in(bookingIds));
+        query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getN() == bookingIds.size();
+    }
+
+    public List<CargoBooking> findUndeliveredShipments(JSONObject query) throws ParseException {
+        Query q = new Query();
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        if(query != null) {
+            if(query.get("startDate") != null) {
+                match.add(Criteria.where("dispatchDate").gte(ServiceUtils.parseDate(query.get("startDate").toString(), false)));
+            }
+            if(query.get("endDate") != null) {
+                match.add(Criteria.where("dispatchDate").lte(ServiceUtils.parseDate(query.get("endDate").toString(), true)));
+            }
+            if(query.get("toBranchId") != null) {
+                match.add(Criteria.where("toBranchId").is(query.get("toBranchId").toString()));
+            }
+            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.getKey(),
+                    CargoTransitStatus.DELIVERED.toString(),
+                    CargoTransitStatus.ONHOLD.toString()));
+            match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+            criteria.andOperator(match.toArray(new Criteria[match.size()]));
+            q.addCriteria(criteria);
+        }
+        return mongoTemplate.find(q, CargoBooking.class);
+    }
 }
