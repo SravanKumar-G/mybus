@@ -11,7 +11,7 @@
             <span class="p_font_size13 ng-binding">Deliver</span>
         </div>
         <!-- only admin can cacel the booking. Only show if booking is not already cancelled -->
-        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="currentuser.admin && !shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
+        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
             <span class="p_font_size13 ng-binding">Cancel Booking</span>
         </div>

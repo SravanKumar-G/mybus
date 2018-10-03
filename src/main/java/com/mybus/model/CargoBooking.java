@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -99,7 +100,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private Date deliveredOn;
     private String deliveredBy;
     private String deliveryNotes;
-    private List<String> messages;
+    private List<String> messages = new ArrayList<>();
 
     @Override
     public boolean containsKey(String attributeName) {

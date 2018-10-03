@@ -244,7 +244,7 @@ public class CargoBookingMongoDAO {
             if(query.get("toBranchId") != null) {
                 match.add(Criteria.where("toBranchId").is(query.get("toBranchId").toString()));
             }
-            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.getKey(),
+            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.toString(),
                     CargoTransitStatus.ARRIVED.toString(),
                     CargoTransitStatus.DELIVERED.toString(),
                     CargoTransitStatus.ONHOLD.toString()));
@@ -281,7 +281,7 @@ public class CargoBookingMongoDAO {
             if(query.get("toBranchId") != null) {
                 match.add(Criteria.where("toBranchId").is(query.get("toBranchId").toString()));
             }
-            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.getKey(),
+            match.add(Criteria.where("cargoTransitStatus").nin(CargoTransitStatus.CANCELLED.toString(),
                     CargoTransitStatus.DELIVERED.toString(),
                     CargoTransitStatus.ONHOLD.toString()));
             match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));

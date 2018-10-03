@@ -289,22 +289,20 @@ public class CargoBookingManager {
      */
     public boolean cancelCargoBooking(String id) {
         CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+
         if(cargoBooking == null) {
             throw new BadRequestException("Invalid CargoBooking Id");
         } else {
+            cargoBooking.getMessages().add(String.format("Cancelled by %s on %s", sessionManager.getCurrentUser().getFullName(), new DateTime()));
+            cargoBooking.setCanceled(true);
+            cargoBooking.setCanceledOn(new Date());
+            cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
+            cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
             if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
-                cargoBooking.setCanceled(true);
-                cargoBooking.setCanceledOn(new Date());
-                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
                 paymentManager.cancelCargoBooking(cargoBooking);
-                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
-                cargoBooking.setCanceled(true);
-                cargoBooking.setCanceledOn(new Date());
-                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
-                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())) {
@@ -313,10 +311,6 @@ public class CargoBookingManager {
                 }
                 //deduct the balance
                 updateOnAccountBalance(cargoBooking.getSupplierId(), -cargoBooking.getTotalCharge(), false);
-                cargoBooking.setCanceled(true);
-                cargoBooking.setCanceledOn(new Date());
-                cargoBooking.setCanceldBy(sessionManager.getCurrentUser().getFullName());
-                cargoBooking.setCargoTransitStatus(CargoTransitStatus.CANCELLED);
                 cargoBookingDAO.save(cargoBooking);
                 return true;
             } else {
