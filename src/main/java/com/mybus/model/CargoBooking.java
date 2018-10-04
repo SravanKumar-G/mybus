@@ -84,6 +84,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private String loadedBy;
 
     private List<CargoBookingItem> items;
+    private int totalArticles;
 
     private String remarks;
 

@@ -96,6 +96,8 @@ public class CargoBookingManager {
         List<String> errors = RequiredFieldValidator.validateModel(cargoBooking, CargoBooking.class);
         if( cargoBooking.getItems() != null) {
             for(CargoBookingItem cargoBookingItem: cargoBooking.getItems()){
+                //calculate the total articles
+                cargoBooking.setTotalArticles(cargoBooking.getTotalArticles()+ cargoBookingItem.getQuantity());
                 if(cargoBookingItem.getDescription() == null){
                     errors.add("Missing description for item ");
                 }
@@ -410,7 +412,7 @@ public class CargoBookingManager {
      * @throws ParseException
      */
     public BranchwiseCargoBookingSummary getBranchSummary(JSONObject query) throws ParseException {
-        BranchwiseCargoBookingSummary branchwiseCargoBookingSummary = new BranchwiseCargoBookingSummary();
+        BranchwiseCargoBookingSummary summary = new BranchwiseCargoBookingSummary();
         Iterable<CargoBooking> cargoBookings = findShipments(query, null);
         Map<String, BranchCargoBookingsSummary> branchCargoBookingsSummaryMap= new HashMap<>();
         Map<String, UserCargoBookingsSummary> userCargoBookingsSummaryMap= new HashMap<>();
@@ -436,21 +438,28 @@ public class CargoBookingManager {
                 branchSummary.setPaidBookingsCount(branchSummary.getPaidBookingsCount()+1);
                 userSummary.setPaidBookingsTotal(userSummary.getPaidBookingsTotal()+ cargoBooking.getTotalCharge());
                 userSummary.setPaidBookingsCount(userSummary.getPaidBookingsCount()+1);
+                summary.setPaidBookingsTotal(summary.getPaidBookingsTotal() + cargoBooking.getTotalCharge());
             } else if(cargoBooking.getPaymentType().equals(PaymentStatus.TOPAY.getKey())){
                 branchSummary.setTopayBookingsTotal(branchSummary.getTopayBookingsTotal()+ cargoBooking.getTotalCharge());
                 branchSummary.setTopayBookingsCount(branchSummary.getTopayBookingsCount()+1);
                 userSummary.setTopayBookingsTotal(userSummary.getTopayBookingsTotal()+cargoBooking.getTotalCharge());
                 userSummary.setTopayBookingsCount(userSummary.getTopayBookingsCount() + 1);
+                summary.setToPayBookingsTotal(summary.getToPayBookingsTotal() + cargoBooking.getTotalCharge());
             } else if(cargoBooking.getPaymentType().equals(PaymentStatus.ONACCOUNT.getKey())){
                 branchSummary.setOnAccountBookingsTotal(branchSummary.getOnAccountBookingsTotal()+ cargoBooking.getTotalCharge());
                 branchSummary.setOnAccountBookingsCount(branchSummary.getOnAccountBookingsCount()+1);
                 userSummary.setOnAccountBookingsTotal(userSummary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
                 userSummary.setOnAccountBookingsCount(userSummary.getOnAccountBookingsCount()+1);
+                summary.setOnAccountBookingsTotal(summary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
+            }
+
+            if(cargoBooking.getCargoTransitStatus().toString().equalsIgnoreCase(CargoTransitStatus.CANCELLED.toString())){
+                summary.setCancelledTotal(summary.getCancelledTotal() + cargoBooking.getTotalCharge());
             }
         }
-        branchwiseCargoBookingSummary.getBranchCargoBookings().addAll(branchCargoBookingsSummaryMap.values());
-        branchwiseCargoBookingSummary.getUserCargoBookingsSummaries().addAll(userCargoBookingsSummaryMap.values());
-        return branchwiseCargoBookingSummary;
+        summary.getBranchCargoBookings().addAll(branchCargoBookingsSummaryMap.values());
+        summary.getUserCargoBookingsSummaries().addAll(userCargoBookingsSummaryMap.values());
+        return summary;
     }
 
     /**
