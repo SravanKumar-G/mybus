@@ -1,9 +1,6 @@
 package com.mybus.controller;
 
-import com.mybus.dao.BranchOfficeDAO;
-import com.mybus.dao.CargoBookingDAO;
-import com.mybus.dao.SupplierDAO;
-import com.mybus.dao.UserDAO;
+import com.mybus.dao.*;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
@@ -75,6 +72,9 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
     private ShipmentSequence toPaySequence;
     private ShipmentSequence onAccountSequence;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+
     @Before
     @After
     public void cleanup() {
@@ -82,14 +82,17 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         shipmentSequenceDAO.deleteAll();
         userDAO.deleteAll();
         supplierDAO.deleteAll();
+        operatorAccountDAO.deleteAll();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(getWac()).build();
         currentUser = new User("test", "test", "test", "test", true, true);
         currentUser = userDAO.save(currentUser);
         sessionManager.setCurrentUser(currentUser);
+
         paidBookingSequence = shipmentSequenceDAO.save(new ShipmentSequence("P", "Paid"));
         toPaySequence =  shipmentSequenceDAO.save(new ShipmentSequence("TP", "ToPay"));
         onAccountSequence = shipmentSequenceDAO.save(new ShipmentSequence(ShipmentSequence.ON_ACCOUNT, "OnAccount"));
-
+        OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount());
+        sessionManager.setOperatorId(operatorAccount.getId());
     }
 
     @Test

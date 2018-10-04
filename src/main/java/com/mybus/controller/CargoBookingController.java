@@ -107,10 +107,10 @@ public class CargoBookingController extends MyBusBaseController{
         return cargoBookingManager.findOne(id);
     }
 
-    @RequestMapping(value = "shipment/search/byLR/{LRNumber}", method = RequestMethod.GET,produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "shipment/search/byLR", method = RequestMethod.GET,produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get the CargoBooking by LRNumber", response = String.class)
-    public String getBookingByLR(HttpServletRequest request,
-                            @ApiParam(value = "Id of the CargoBooking to be found") @PathVariable final String LRNumber) {
+    public List<CargoBooking> getBookingByLR(HttpServletRequest request,
+                            @ApiParam(value = "Id of the CargoBooking to be found") @RequestParam final String LRNumber) {
         logger.debug("get shipment called");
         return cargoBookingManager.findByLRNumber(LRNumber);
     }

@@ -36,14 +36,14 @@
         <table class="table table-bordered">
             <thead>
                 <th>Booking ID</th>
-                <th>From</th>
+                <th>From Contact</th>
                 <th>To</th>
             </thead>
             <tbody>
                 <tr ng-repeat="booking in bookings">
-                    <td> <a ng-click="cancel()" ng-href="#!/cargobooking/{{booking.id}}">{{booking.shipmentNumber}}</a></td>
-                    <td> {{booking.attributes.fromBranchOfficeName}}</a></td>
-                    <td> {{booking.attributes.toBranchOfficeName}}</a></td>
+                    <td> <a ng-click="gotoBooking(booking.id)">{{booking.shipmentNumber}}</a></td>
+                    <td> {{booking.fromContact}} {{booking.fromName}}</a></td>
+                    <td> {{booking.toContact}} {{booking.toName}}</a></td>
                 </tr>
             </tbody>
         </table>

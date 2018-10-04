@@ -118,12 +118,16 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $rootScope.$on('UpdateCargoBookingList',function (e,value) {
             $scope.init();
         });
-    }).controller("CargoBookingLookupController",function($rootScope, $scope, $uibModal,cargoBookingManager, userManager, bookings){
+    }).controller("CargoBookingLookupController",function($rootScope, $scope, $location, $uibModal,cargoBookingManager, userManager, bookings){
         $scope.headline = "Cargo Bookings";
         $scope.bookings = bookings;
         $scope.cancel = function () {
             $rootScope.modalInstance.dismiss('cancel');
         };
+        $scope.gotoBooking = function (bookingId) {
+            $rootScope.modalInstance.dismiss('cancel');
+            $location.url('viewcargobooking/'+bookingId);
+        }
     })
     .controller("CargoBookingHeaderController",function($rootScope, $scope,cargoBookingManager,$location){
         $scope.headline = "Cargo Bookings";
@@ -464,9 +468,24 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     });
             },
             lookupCargoBooking : function(LRNumber) {
-                $http.get("/api/v1/shipment/search/byLR/"+LRNumber)
+                $http.get("/api/v1/shipment/search/byLR?LRNumber="+LRNumber)
                     .then(function (response) {
-                        $location.url('viewcargobooking/'+response.data);
+                        if(response.data.length === 0){
+                            swal("Error", "No Cargo Bookings found", "error");
+                        } else if(response.data.length === 1){
+                            $location.url('viewcargobooking/'+response.data[0].id);
+                        } else {
+                            //console.log("found more than one booking " + JSON.stringify(response.data.length));
+                            $rootScope.modalInstance = $uibModal.open({
+                                templateUrl: 'cargobookings-modal.html',
+                                controller: 'CargoBookingLookupController',
+                                resolve : {
+                                    bookings : function(){
+                                        return response.data;
+                                    }
+                                }
+                            });
+                        }
                     }, function (error) {
                         swal("oops", error.data.message, "error");
                     });
