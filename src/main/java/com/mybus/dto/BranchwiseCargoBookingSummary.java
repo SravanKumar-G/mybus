@@ -18,6 +18,11 @@ public class BranchwiseCargoBookingSummary  {
     public static final String COLLECTION_NAME="brachwiseCargoBookingSummary";
     private List<BranchCargoBookingsSummary> branchCargoBookings;
     private List<UserCargoBookingsSummary> userCargoBookingsSummaries;
+    private double paidBookingsTotal;
+    private double toPayBookingsTotal;
+    private double onAccountBookingsTotal;
+    private double cancelledTotal;
+
     public BranchwiseCargoBookingSummary(){
         this.branchCargoBookings = new ArrayList<>();
         this.userCargoBookingsSummaries = new ArrayList<>();

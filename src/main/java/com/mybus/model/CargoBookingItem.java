@@ -11,7 +11,7 @@ public class CargoBookingItem {
     private String description;
     private String value;
     private String charge;
-    private String quantity;
+    private int quantity;
     private String cdm;
     private String weight;
     private int index;

@@ -36,21 +36,33 @@
                 <tbody>
                 <tr>
                     <th>Branch name</th>
-                    <th>Total No of Articles</th>
+                    <th>Total No of Bookings</th>
                     <th>Paid Booking</th>
                     <th>To-Pay Booking</th>
                     <th>To-Pay Delivered</th>
                     <th>On-Account Booking</th>
                     <th>Cancelled Amount</th>
                   </tr>
-                <tr ng-repeat="booking in summaryData.branchCargoBookings" class="ng-scope">
-                    <td>{{booking.branchOfficeName}}   </td>
-                    <td>{{booking.onAccountBookingsCount + booking.paidBookingsCount  + booking.topayBookingsCount}}   </td>
-                    <td>{{booking.paidBookingsTotal}}</td>
-                    <td>{{booking.topayBookingsTotal}}</td>
+                <tr ng-repeat="branch in summaryData.branchCargoBookings" class="ng-scope">
+                    <td>{{branch.branchOfficeName}}   </td>
+                    <td>{{branch.onAccountBookingsCount + branch.paidBookingsCount  + branch.topayBookingsCount}}   </td>
+                    <td>{{branch.paidBookingsTotal}}</td>
+                    <td>{{branch.topayBookingsTotal}}</td>
                     <td>0</td>
-                    <td>{{booking.onAccountBookingsTotal}}</td>
+                    <td>{{branch.onAccountBookingsTotal}}</td>
                     <td>0</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>{{summaryData.paidBookingsTotal}}</td>
+                    <td>{{summaryData.toPayBookingsTotal}}</td>
+                    <td>0</td>
+                    <td>{{summaryData.onAccountBookingsTotal}}</td>
+                    <td>{{summaryData.cancelledTotal}}</td>
+                </tr>
+                <tr>
+                    <td colspan="7">Net total: {{summaryData.paidBookingsTotal + summaryData.toPayBookingsTotal + summaryData.onAccountBookingsTotal - summaryData.cancelledTotal}}</td>
                 </tr>
                 </tbody></table>
         </div>

@@ -235,6 +235,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.suppliers = [];
         branchOfficeManager.loadNames(function(data) {
             $scope.offices = data;
+            $scope.shipment.fromBranchId = userManager.getUser().branchOfficeId;
         });
 
         suppliersManager.getSuppliers(function (data) {

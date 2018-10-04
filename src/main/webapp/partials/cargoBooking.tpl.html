@@ -5,7 +5,8 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">From Branch Office<span class="data-required">*</span></label>
             <div class="col-sm-3">
-                <select id="fromBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="shipment.fromBranchId" required></select>
+                <select id="fromBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="shipment.fromBranchId" ng-if="currentUser.admin"></select>
+                <select id="fromBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="shipment.fromBranchId" readonly="true" ng-if="!currentUser.admin"></select>
             </div>
             <label class="col-sm-2 control-label">To Branch Office<span class="data-required">*</span></label>
             <div class="col-sm-3">
