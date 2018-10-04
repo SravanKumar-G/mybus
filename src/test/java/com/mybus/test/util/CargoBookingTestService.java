@@ -1,6 +1,7 @@
 package com.mybus.test.util;
 
 import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.dao.OperatorAccountDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.SessionManager;
@@ -19,12 +20,17 @@ public class CargoBookingTestService {
     private BranchOfficeDAO branchOfficeDAO;
 
     @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+    @Autowired
     private SessionManager sessionManager;
     public CargoBooking createNew(ShipmentSequence shipmentSequence ) {
 
         BranchOffice b1 = new BranchOffice("B1", "C1");
         b1.setOperatorId(sessionManager.getOperatorId());
         BranchOffice b2 = new BranchOffice("B2", "C2");
+        b2.setOperatorId(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.save(new OperatorAccount());
+        b1.setOperatorId(sessionManager.getOperatorId());
         b2.setOperatorId(sessionManager.getOperatorId());
 
         b1 = branchOfficeDAO.save(b1);

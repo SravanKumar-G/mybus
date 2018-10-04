@@ -206,21 +206,13 @@ public class CargoBookingMongoDAO {
 
     /**
      * Find cargo bookings with a given matching string
-     * @param query
+     * @param id
      * @return
      */
-    public Iterable<CargoBooking> findShipments(JSONObject query){
+    public List<CargoBooking> findShipments(String id){
         Query q = new Query();
-        List<Criteria> match = new ArrayList<>();
-        Criteria criteria = new Criteria();
-        if(query != null) {
-            if(query.get("filter") != null) {
-                q.addCriteria(where(CargoBooking.SHIPMENT_NUMBER).regex(query.get("filter").toString(), "i"));
-            }
-            match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-            criteria.andOperator(match.toArray(new Criteria[match.size()]));
-            q.addCriteria(criteria);
-        }
+        q.addCriteria(where(CargoBooking.SHIPMENT_NUMBER).regex(id, "i"));
+        q.addCriteria(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         return mongoTemplate.find(q, CargoBooking.class);
     }
 

@@ -72,7 +72,7 @@ angular.module('myBus.amenitiesModule', ['ngTable', 'ui.bootstrap'])
 	        templateUrl: 'add-Amenity-modal.html',
 	        controller: 'AddAmenityModalController',
 	        size: size
-	    })
+	    	});
 	    };
 
 	$scope.handleClickUpdateAmenity = function(amenityID){

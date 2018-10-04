@@ -2,9 +2,7 @@ package com.mybus.service;
 
 import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mybus.dao.CargoBookingDAO;
-import com.mybus.dao.RequiredFieldValidator;
-import com.mybus.dao.SupplierDAO;
+import com.mybus.dao.*;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.dto.BranchCargoBookingsSummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
@@ -44,6 +42,9 @@ public class CargoBookingManager {
     private ShipmentSequenceManager shipmentSequenceManager;
 
     @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
+    @Autowired
     private BranchOfficeManager branchOfficeManager;
 
     @Autowired
@@ -63,6 +64,9 @@ public class CargoBookingManager {
     @Autowired
     private SessionManager sessionManager;
 
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+
     public CargoBooking findOne(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "shipmentId is required");
         CargoBooking shipment = cargoBookingDAO.findByIdAndOperatorId(shipmentId, sessionManager.getOperatorId());
@@ -71,11 +75,11 @@ public class CargoBookingManager {
         return shipment;
     }
 
-    public String findByLRNumber(String LRNumber) {
+    public List<CargoBooking> findByLRNumber(String LRNumber) {
         Preconditions.checkNotNull(LRNumber, "LRNumber is required");
-        CargoBooking shipment = cargoBookingDAO.findByShipmentNumberAndOperatorId(LRNumber, sessionManager.getOperatorId());
-        Preconditions.checkNotNull(shipment, "No CargoBooking found with LRNumebr",LRNumber);
-        return shipment.getId();
+        List<CargoBooking> shipments = cargoBookingMongoDAO.findShipments(LRNumber);
+        Preconditions.checkNotNull(shipments, "No CargoBooking found with LRNumebr",LRNumber);
+        return shipments;
     }
 
     /**
@@ -196,6 +200,8 @@ public class CargoBookingManager {
         }
         return cargoBookingDAO.save(shipmentCopy);
     }
+
+
     public Iterable<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
         if(logger.isDebugEnabled()) {
             logger.debug("Looking up shipments with {0}", query);
@@ -222,8 +228,8 @@ public class CargoBookingManager {
      * Module to populate details in to Cargo Shipment. The details would be like branchOfficeNames, createdBy etc..
      */
     private void loadShipmentDetails(CargoBooking cargoBooking){
-        BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
-        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
+        BranchOffice fromBranchOffice = branchOfficeDAO.findOne(cargoBooking.getFromBranchId());
+        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
         if(lrTypes == null){
             lrTypes = shipmentSequenceManager.getShipmentNamesMap();
         }
@@ -250,31 +256,40 @@ public class CargoBookingManager {
      * @param cargoBooking
      */
     private void sendBookingConfirmationSMS(CargoBooking cargoBooking){
-        BranchOffice fromBranchOffice = branchOfficeManager.findOne(cargoBooking.getFromBranchId());
-        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
-
+        BranchOffice fromBranchOffice = branchOfficeDAO.findOne(cargoBooking.getFromBranchId());
+        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
+        String cargoServiceName = "Cargo Services";
+        if(sessionManager.getOperatorId() != null) {
+            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            cargoServiceName = operatorAccount.getCargoServiceName();
+        }
         String message = String.format("A parcel is booked with LR# %s From:%s(Ph:%s) " +
-                "To:%s At %s, LRType:%s Amt:%s, Date:%s To:%s Contact %s for collecting. " +
-                "Sri Krishna Cargo Services", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
+                "To:%s At %s, LRType:%s Amt:%s, Date:%s To:%s Contact %s for collecting. %s ", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
                 String.valueOf(cargoBooking.getFromContact()), cargoBooking.getToName(),
                 String.valueOf(cargoBooking.getToContact()),
                 fromBranchOffice.getName(),cargoBooking.getPaymentType(),
                 String.valueOf(cargoBooking.getTotalCharge()),
-                cargoBooking.getCreatedAt(), toBranchOffice.getName(), toBranchOffice.getContact() +" "+ toBranchOffice.getAddress());
-            try {
-                smsManager.sendSMS(cargoBooking.getFromContact()+","+cargoBooking.getToContact(), message, "CargoBooking", cargoBooking.getId());
-            } catch (UnirestException e) {
-                e.printStackTrace();
-                logger.error("Error sending SMS notification for cargo booking:" + cargoBooking.getId());
-            }
+                cargoBooking.getCreatedAt(), toBranchOffice.getName(),
+                toBranchOffice.getContact() +" "+ toBranchOffice.getAddress(),
+                cargoServiceName);
+        try {
+            smsManager.sendSMS(cargoBooking.getFromContact()+","+cargoBooking.getToContact(), message, "CargoBooking", cargoBooking.getId());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            logger.error("Error sending SMS notification for cargo booking:" + cargoBooking.getId());
+        }
     }
 
     private void sendBookingArrivalNotification(CargoBooking cargoBooking){
-        BranchOffice toBranchOffice = branchOfficeManager.findOne(cargoBooking.getToBranchId());
+        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
+        String cargoServiceName = "Cargo Services";
+        if(sessionManager.getOperatorId() != null) {
+            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            cargoServiceName = operatorAccount.getCargoServiceName();
+        }
         String message = String.format("A parcel with LR# %s From:%s(Ph:%s) " +
-                        "has been arrived. Please collect it from %s " +
-                        "Sri Krishna Cargo Services", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
-                String.valueOf(cargoBooking.getFromContact()), toBranchOffice.getAddress());
+                        "has been arrived. Please collect it from %s. %s", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
+                String.valueOf(cargoBooking.getFromContact()), toBranchOffice.getAddress(), cargoServiceName);
         try {
             smsManager.sendSMS(cargoBooking.getToContact().toString(), message, "CargoBookingArrived", cargoBooking.getId());
         } catch (UnirestException e) {
@@ -374,7 +389,7 @@ public class CargoBookingManager {
         if(cargoBooking == null){
             throw new IllegalArgumentException("Invalid cargo booking being delivered.");
         }
-        if(cargoBooking.getCargoTransitStatus().getKey().equalsIgnoreCase(CargoTransitStatus.DELIVERED.getKey())){
+        if(cargoBooking.getCargoTransitStatus().toString().equalsIgnoreCase(CargoTransitStatus.DELIVERED.toString())){
             throw new BadRequestException("Cargo booking already delivered");
         }
         if(cargoBooking.isDue()){

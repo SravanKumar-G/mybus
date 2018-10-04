@@ -52,6 +52,8 @@ public class OperatorAccount extends AbstractDocument {
 
     private String smsSenderName;
 
+    private String cargoServiceName = "Cargo Services";
+
     public OperatorAccount(String providerType){
         this.providerType = providerType;
     }
