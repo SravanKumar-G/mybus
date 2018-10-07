@@ -48,7 +48,7 @@
                     <td>{{branch.onAccountBookingsCount + branch.paidBookingsCount  + branch.topayBookingsCount}}   </td>
                     <td>{{branch.paidBookingsTotal}}</td>
                     <td>{{branch.topayBookingsTotal}}</td>
-                    <td>0</td>
+                    <td>{{branch.topayBookingsDeliveredTotal}}</td>
                     <td>{{branch.onAccountBookingsTotal}}</td>
                     <td>0</td>
                 </tr>
@@ -68,4 +68,40 @@
         </div>
     </div>
 
+
+    <div ng-if="summaryData.userCargoBookingsSummaries.length > 0">
+        <div class="table-responsive labelTextSize">
+            <table class="table  table-striped table-bordered" id="menu_list" data-theme="a">
+                <tbody>
+                <tr>
+                    <th>User Name</th>
+                    <th>Total No of Bookings</th>
+                    <th>Paid Booking</th>
+                    <th>To-Pay Booking</th>
+                    <th>To-Pay Delivered</th>
+                    <th>On-Account Booking</th>
+                    <th>Cancelled Amount</th>
+                </tr>
+                <tr ng-repeat="user in summaryData.userCargoBookingsSummaries" class="ng-scope">
+                    <td>{{user.userName}}   </td>
+                    <td>{{user.onAccountBookingsCount + branch.paidBookingsCount  + branch.topayBookingsCount}}   </td>
+                    <td>{{user.paidBookingsTotal}}</td>
+                    <td>{{user.topayBookingsTotal}}</td>
+                    <td>{{user.topayBookingsDeliveredTotal}}</td>
+                    <td>{{user.onAccountBookingsTotal}}</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>{{user.paidBookingsTotal}}</td>
+                    <td>{{user.toPayBookingsTotal}}</td>
+                    <td>0</td>
+                    <td>{{user.onAccountBookingsTotal}}</td>
+                    <td>{{user.cancelledTotal}}</td>
+                </tr>
+
+                </tbody></table>
+        </div>
+    </div>
 </div>

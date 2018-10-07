@@ -327,7 +327,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         currentUser = userDAO.findOne(currentUser.getId());
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
 
-        //pay ToPay booking which is already paid
+        //deliver booking which is already delivered
         actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+shipments.get(0).getId())
                 .content("Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isBadRequest());

@@ -14,4 +14,9 @@ public class UserCargoBookingsSummary {
     private int topayBookingsCount;
     private double onAccountBookingsTotal;
     private int onAccountBookingsCount;
+    private double canceledBookingsTotal;
+    private int canceledBookingCount;
+
+    private double topayBookingsDeliveredTotal;
+
 }

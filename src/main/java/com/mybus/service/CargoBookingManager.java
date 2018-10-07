@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -129,19 +130,13 @@ public class CargoBookingManager {
     /**
      * Pay cargobookings of types ToPay or OnAccount
      *
-     * @param cargoBookingId
+     * @param cargoBooking
      */
-    private CargoBooking payCargoBooking(String cargoBookingId, String deliveryNotes) {
-        CargoBooking cargoBooking = cargoBookingDAO.findOne(cargoBookingId);
+    private CargoBooking payCargoBooking(CargoBooking cargoBooking, String deliveryNotes) {
         if(cargoBooking == null || !cargoBooking.isDue()) {
             throw new BadRequestException("Invalid CargoBooking Id");
         } else {
-            cargoBooking.setDeliveryNotes(deliveryNotes);
-            cargoBooking.setDeliveredOn(new Date());
-            cargoBooking.setDeliveredBy(sessionManager.getCurrentUser().getFullName());
             cargoBooking.setDue(false);
-            cargoBooking.setPaidOn(new Date());
-            cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
             cargoBooking.setPaidBy(sessionManager.getCurrentUser().getFullName());
             if(cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
                 updateUserCashBalance(cargoBooking);
@@ -213,6 +208,22 @@ public class CargoBookingManager {
             loadShipmentDetails(shipment);
         });
         return shipments;
+    }
+
+    /**
+     * Find ToPay booking delivery
+     * @param branchId
+     * @param start
+     * @param end
+     * @return
+     * @throws ParseException
+     */
+    public double findToPayDeliveryShipmentsTotalByBranchUsers(String branchId, Date start, Date end) throws ParseException {
+        if(logger.isDebugEnabled()) {
+            logger.debug("Finding delivered shipments between {} and {}", start, end);
+        }
+        double total = cargoBookingMongoDAO.findToPayDeliveryShipmentsTotalByBranchUsers(branchId, start, end);
+        return total;
     }
 
     public void delete(String shipmentId) {
@@ -388,19 +399,22 @@ public class CargoBookingManager {
      */
     public CargoBooking deliverCargoBooking(String id, String deliveryNotes) {
         CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+
         if(cargoBooking == null){
             throw new IllegalArgumentException("Invalid cargo booking being delivered.");
         }
         if(cargoBooking.getCargoTransitStatus().toString().equalsIgnoreCase(CargoTransitStatus.DELIVERED.toString())){
             throw new BadRequestException("Cargo booking already delivered");
         }
-        if(cargoBooking.isDue()){
-            return payCargoBooking(id, deliveryNotes);
+        cargoBooking.setDeliveredBy(sessionManager.getCurrentUser().getFullName());
+        cargoBooking.setDeliveryNotes(deliveryNotes);
+        cargoBooking.setDeliveredOn(new Date());
+        cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
+        cargoBooking.setDeliveredByUserId(sessionManager.getCurrentUser().getId());
+
+        if(cargoBooking.isDue()){ //ToPay or OnAccount booking
+            return payCargoBooking(cargoBooking, deliveryNotes);
         } else {
-            cargoBooking.setDeliveredBy(sessionManager.getCurrentUser().getFullName());
-            cargoBooking.setDeliveryNotes(deliveryNotes);
-            cargoBooking.setDeliveredOn(new Date());
-            cargoBooking.setCargoTransitStatus(CargoTransitStatus.DELIVERED);
             return cargoBookingDAO.save(cargoBooking);
         }
     }
@@ -412,6 +426,15 @@ public class CargoBookingManager {
      * @throws ParseException
      */
     public BranchwiseCargoBookingSummary getBranchSummary(JSONObject query) throws ParseException {
+        Date start = null;
+        Date end = null;
+
+        if(query != null && query.get("startDate") != null) {
+            start = ServiceUtils.parseDate(query.get("startDate").toString(), false);
+        }
+        if(query != null && query.get("endDate") != null) {
+            end = ServiceUtils.parseDate(query.get("endDate").toString(), true);
+        }
         BranchwiseCargoBookingSummary summary = new BranchwiseCargoBookingSummary();
         Iterable<CargoBooking> cargoBookings = findShipments(query, null);
         Map<String, BranchCargoBookingsSummary> branchCargoBookingsSummaryMap= new HashMap<>();
@@ -425,6 +448,9 @@ public class CargoBookingManager {
                 branchSummary.setBranchOfficeId(cargoBooking.getFromBranchId());
                 branchSummary.setBranchOfficeName(branchNamesMap.get(cargoBooking.getFromBranchId()));
                 branchCargoBookingsSummaryMap.put(cargoBooking.getFromBranchId(), branchSummary);
+            }
+            if(start != null && end != null) {
+                branchSummary.setTopayBookingsDeliveredTotal(findToPayDeliveryShipmentsTotalByBranchUsers(cargoBooking.getFromBranchId(), start, end));
             }
             UserCargoBookingsSummary userSummary = userCargoBookingsSummaryMap.get(cargoBooking.getCreatedBy());
             if(userSummary == null){
@@ -452,7 +478,6 @@ public class CargoBookingManager {
                 userSummary.setOnAccountBookingsCount(userSummary.getOnAccountBookingsCount()+1);
                 summary.setOnAccountBookingsTotal(summary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
             }
-
             if(cargoBooking.getCargoTransitStatus().toString().equalsIgnoreCase(CargoTransitStatus.CANCELLED.toString())){
                 summary.setCancelledTotal(summary.getCancelledTotal() + cargoBooking.getTotalCharge());
             }
