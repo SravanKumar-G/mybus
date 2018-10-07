@@ -36,6 +36,9 @@ public class ServiceUtils {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SessionManager sessionManager;
+
     private Map<String, String> userNames = new HashMap<>();
     @PostConstruct
     public void init(){
@@ -162,7 +165,8 @@ public class ServiceUtils {
             match.add(Criteria.where("date").lte(ServiceConstants.parseDate(query.get("endDate").toString())));
         }
         if(query.get("officeId") != null) {
-            List<User> officeUsers = userDAO.findByBranchOfficeId(query.get("officeId").toString());
+            List<User> officeUsers = userDAO.findByBranchOfficeIdAndOperatorId(query.get("officeId").toString(),
+                    sessionManager.getOperatorId());
             List<String> officeUserIds = officeUsers.stream().map(User::getId).collect(Collectors.toList());
             match.add(Criteria.where("createdBy").in(officeUserIds));
         }

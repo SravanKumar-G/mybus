@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface UserDAO extends PagingAndSortingRepository<User, String> {
     User findOneByUserName(String username);
-    List<User> findByBranchOfficeId(String officeId);
+    List<User> findByBranchOfficeIdAndOperatorId(String officeId, String operatorId);
     List<User> findByOperatorId(String operatorid);
 
 }

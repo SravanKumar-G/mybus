@@ -3,6 +3,8 @@ package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
+import com.mybus.dao.BranchOfficeDAO;
+import com.mybus.dao.UserDAO;
 import com.mybus.dto.BranchCargoBookingsSummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
 import com.mybus.model.*;
@@ -24,6 +26,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -39,6 +42,12 @@ public class CargoBookingMongoDAO {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private BranchOfficeDAO branchOfficeDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     /**
      * Assign vehicle to cargo bookings
@@ -281,5 +290,45 @@ public class CargoBookingMongoDAO {
             q.addCriteria(criteria);
         }
         return mongoTemplate.find(q, CargoBooking.class);
+    }
+
+    /**
+     * For a given branchOfficeId
+     *
+     * 1) find all users of that branch
+     * 2) find the topay deliveries total for those users
+     *
+     * @param branchId
+     * @param start
+     * @param end
+     */
+    public double findToPayDeliveryShipmentsTotalByBranchUsers(String branchId, Date start, Date end)
+            throws ParseException {
+        if(start == null || end == null){
+            throw new IllegalArgumentException("Dates are required");
+        }
+        List<User> users = userDAO.findByBranchOfficeIdAndOperatorId(branchId, sessionManager.getOperatorId());
+        List<String> userNames = users.stream().map(u -> u.getFullName()).collect(Collectors.toList());
+        List<Criteria> match = new ArrayList<>();
+        Criteria criteria = new Criteria();
+        match.add(where(CargoBooking.DELIVERED_ON).gte(ServiceUtils.parseDate(start, false)));
+        match.add(where(CargoBooking.DELIVERED_ON).lte(ServiceUtils.parseDate(end, true)));
+        match.add(where(CargoBooking.DELIVERED_BY).in(userNames));
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group("toBranchId").sum("totalCharge").as("totalCharge"));
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        List<JSONObject> results = new ArrayList<>();
+        double total = 0;
+        for(BasicDBObject object: groupResults){
+            if(object.get("_id").toString().equalsIgnoreCase(branchId)){
+                total = Double.parseDouble(object.get("totalCharge").toString());
+            }
+        }
+        return total;
     }
 }

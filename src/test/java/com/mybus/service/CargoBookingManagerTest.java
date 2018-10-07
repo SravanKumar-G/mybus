@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,7 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
     @Autowired
     private VehicleDAO vehicleDAO;
 
+    private User currentUser;
     @Before
     @After
     public void cleanup() {
@@ -73,8 +75,12 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         sessionManager.setOperatorId(operatorAccount.getId());
         User user = new User();
         user.setUserName("test");
-        user = userDAO.save(user);
-        sessionManager.setCurrentUser(user);
+        user.setFirstName("test");
+        user.setLastName("last");
+
+        user.setOperatorId(operatorAccount.getId());
+        currentUser = userDAO.save(user);
+        sessionManager.setCurrentUser(currentUser);
     }
 
     public void testSave() throws Exception {
@@ -237,6 +243,49 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         List<String> ids = new ArrayList<>();
         ids.add(saved.getId());
         shipmentManager.unloadBookings(ids);
+    }
+
+    @Test
+    public void testFindDeliveredToPayShipmentTotal() throws ParseException {
+        BranchOffice b1 = new BranchOffice("B1", "C1");
+        b1.setOperatorId(sessionManager.getOperatorId());
+        BranchOffice b2 = new BranchOffice("B2", "C2");
+        b2.setOperatorId(sessionManager.getOperatorId());
+        b1 = branchOfficeDAO.save(b1);
+        b2 = branchOfficeDAO.save(b2);
+        currentUser.setBranchOfficeId(b2.getId());
+        userDAO.save(currentUser);
+        ShipmentSequence paid = shipmentSequenceDAO.save(new ShipmentSequence("P", "Paid"));
+        ShipmentSequence free = shipmentSequenceDAO.save(new ShipmentSequence("TP", "ToPay"));
+        List<CargoBooking> cargoBookings = new ArrayList<>();
+        for(int i=0; i< 20; i++){
+            CargoBooking shipment = new CargoBooking();
+            if(i%2 == 0){
+                shipment.setPaymentType(PaymentStatus.TOPAY.getKey());
+                shipment.setFromBranchId(b1.getId());
+                shipment.setToBranchId(b2.getId());
+            } else {
+                shipment.setPaymentType(PaymentStatus.PAID.getKey());
+                shipment.setFromBranchId(b1.getId());
+                shipment.setToBranchId(b2.getId());
+            }
+            shipment.setCargoTransitStatus(CargoTransitStatus.ARRIVED);
+            shipment.setFromContact(new Long(1234));
+            shipment.setToContact(new Long(12345678));
+            shipment.setFromName("from");
+            shipment.setToName("to");
+            shipment.setTotalCharge(100);
+            shipment.setDispatchDate(new Date());
+            cargoBookings.add(shipmentManager.saveWithValidations(shipment));
+        }
+        for(int i=0; i< 20; i++){
+            if(i%4 == 0){
+                CargoBooking shipment = cargoBookings.get(i);
+                shipmentManager.deliverCargoBooking(shipment.getId(), "Notes ");
+            }
+        }
+        double total  = shipmentManager.findToPayDeliveryShipmentsTotalByBranchUsers(b2.getId(), new Date(), new Date());
+        assertEquals(total, 500, 0.0);
     }
 
 }

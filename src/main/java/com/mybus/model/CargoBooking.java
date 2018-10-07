@@ -27,6 +27,9 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     public static final String COLLECTION_NAME="cargoBooking";
     public static final String DISPATCH_DATE="dispatchDate";
     public static final String SHIPMENT_NUMBER="shipmentNumber";
+    public static final String DELIVERED_BY = "deliveredBy";
+    public static final String DELIVERED_ON = "deliveredOn";
+
 
     private String forUser;
 
@@ -100,6 +103,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
 
     private Date deliveredOn;
     private String deliveredBy;
+    private String deliveredByUserId;
     private String deliveryNotes;
     private List<String> messages = new ArrayList<>();
 
