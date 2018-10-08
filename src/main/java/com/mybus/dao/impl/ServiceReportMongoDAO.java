@@ -1,24 +1,29 @@
 package com.mybus.dao.impl;
 
-import com.amazonaws.services.kinesis.model.InvalidArgumentException;
+import com.mongodb.BasicDBObject;
 import com.mybus.SystemProperties;
 import com.mybus.model.ServiceReport;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
@@ -85,5 +90,43 @@ public class ServiceReportMongoDAO {
         query.fields().exclude("serviceExpense");
         List<ServiceReport> reports = IteratorUtils.toList(mongoTemplate.find(query, ServiceReport.class).iterator());
         return reports;
+    }
+
+
+    public List<BasicDBObject> findServiceIncomeReport(JSONObject query) throws ParseException {
+        List<Criteria> match = new ArrayList<>();
+        Query q = new Query();
+        Criteria criteria = new Criteria();
+        if(query.containsKey("source")){
+            match.add(where("source").is(query.get("source").toString()));
+        }
+        if(query.containsKey("destination")){
+            match.add(where("destination").is(query.get("destination").toString()));
+        }
+        if(query.containsKey("startDate")){
+            match.add(where("journeyDate").gte(ServiceUtils.parseDate(query.get("startDate").toString(), false)));
+        }
+        if(query.containsKey("endDate")){
+            match.add(where("journeyDate").lte(ServiceUtils.parseDate(query.get("endDate").toString(), false)));
+        }
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group("serviceNumber")
+                        .addToSet("serviceName").as("serviceName")
+                        .addToSet("source").as("source")
+                        .addToSet("destination").as("destination")
+                        .addToSet("busType").as("busType")
+                        .sum("netIncome").as("netIncome")
+                        .sum("netRedbusIncome").as("netRedbusIncome")
+                        .sum("netOnlineIncome").as("netOnlineIncome")
+                        .sum("netCashIncome").as("netCashIncome"));
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, ServiceReport.class, BasicDBObject.class);
+        return groupResults.getMappedResults();
+    }
+    public List<String> getDistinctCities() {
+        return mongoTemplate.getCollection("serviceReport").distinct("source");
     }
 }

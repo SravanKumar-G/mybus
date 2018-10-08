@@ -435,4 +435,7 @@ public class ServiceReportsManager {
         return invoice;
     }
 
+    public List<String> getAllCities(){
+        return serviceReportMongoDAO.getDistinctCities();
+    }
 }

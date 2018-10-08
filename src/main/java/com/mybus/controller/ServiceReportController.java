@@ -1,9 +1,13 @@
 package com.mybus.controller;
 
+import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.*;
+import com.mybus.model.Booking;
+import com.mybus.model.ServiceForm;
+import com.mybus.model.ServiceReport;
+import com.mybus.model.User;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
 import com.mybus.service.SessionManager;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -176,6 +181,24 @@ public class ServiceReportController {
 			serviceReport.setSubmittedBy(currentUser.getId());
 			serviceReportsManager.submitReport(serviceReport);
 		}
+	}
+
+	@RequestMapping(value = "serviceReport/incomeReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load one service form", response = JSONObject.class)
+	public List<BasicDBObject> getIncomeReport(HttpServletRequest request, @RequestBody final JSONObject query) {
+		try{
+			return serviceReportMongoDAO.findServiceIncomeReport(query);
+		}catch (Exception e) {
+			throw new BadRequestException("Error finding income report");
+		}
+	}
+
+	@RequestMapping(value = "serviceReport/getCities", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
+	@ApiOperation(value ="Load one service form", response = JSONObject.class)
+	public List<String> getCities(HttpServletRequest request) {
+		List<String> cities = serviceReportsManager.getAllCities();
+		cities.sort(String::compareTo);
+		return cities;
 	}
 
 }
