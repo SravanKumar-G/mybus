@@ -4,7 +4,10 @@ import com.mybus.model.ServiceReport;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ServiceReportDAO extends PagingAndSortingRepository<ServiceReport, String> {
@@ -12,6 +15,6 @@ public interface ServiceReportDAO extends PagingAndSortingRepository<ServiceRepo
     ServiceReport findByJourneyDateAndServiceNumber(Date date, String serviceNUmber);
     ServiceReport findByJourneyDateAndServiceId(Date date, String serviceId);
     ServiceReport findByJDateAndServiceIdAndOperatorId(String date, String serviceId, String operatorId);
-
     ServiceReport findByJDateAndServiceNumber(String journeyDate, String comboNumber);
 }
+

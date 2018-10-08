@@ -477,6 +477,10 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             level:2,
             url:'/updatepassword',
             templateUrl: 'partials/updatePassword.tpl.html'
+            }).state('serviceincomereport', {
+            level:2,
+            url:'/serviceincomereport',
+            templateUrl: 'partials/serviceIncomeReport.tpl.html'
         });
         $urlRouterProvider.otherwise( '/');
     }]);

@@ -1,0 +1,47 @@
+
+<div ng-controller="ServiceIncomeReportController">
+    <form name="shipments">
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">Source:</label>
+            <div class="col-sm-2">
+                <select id="fromBranchOffice" ng-options="city for city in cities" class="form-control" ng-model="filter.source" required></select>
+            </div>
+
+            <label class="col-sm-1 control-label ">Destination:</label>
+            <div class="col-sm-2" >
+                <select id="toBranchOffice" ng-options="city for city in cities" class="form-control" ng-model="filter.destination" required></select>
+            </div>
+
+            <label class="col-sm-1 control-label">Start Date :</label>
+            <div class="col-sm-2">
+                <my-datepicker ng-model="filter.startDate"></my-datepicker>
+            </div>
+
+            <label class="col-sm-1 control-label ">End Date :</label>
+            <div class="col-sm-2" >
+                <my-datepicker ng-model="filter.endDate"></my-datepicker>
+            </div>
+        </div>
+        <div class="form-group row">
+            <button type="button" class="btn btn-sm btn-success " ng-click="search()"> Search </button></button>
+            <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('ServiceReports', 'ServiceReports')" ng-disabled = "searchPayments.$invalid ">Export to Excel </button></button>
+        </div>
+    </form>
+    <br/>
+    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportParams" id="ServiceReports">
+        <tr ng-repeat="serviceReport in serviceReports">
+            <td data-title="Id" sortable="'_id'" class="clickable-item">{{serviceReport._id}}</td>
+            <td data-title="ServiceName" sortable="'serviceName'" class="clickable-item">{{serviceReport.serviceName[0]}}</td>
+            <td data-title="Source" sortable="'source'" class="clickable-item">{{serviceReport.source[0]}}</td>
+            <td data-title="Destination" sortable="'destination'" class="clickable-item">{{serviceReport.destination[0]}}</td>
+            <td data-title="CashIncome" sortable="'netCashIncome'" class="clickable-item">{{serviceReport.netCashIncome}}</td>
+            <td data-title="OnlineIncome" sortable="'netOnlineIncome'" class="clickable-item">{{serviceReport.netOnlineIncome}}</td>
+            <td data-title="RedbusIncome" sortable="'netRedbusIncome'" class="clickable-item">{{serviceReport.netRedbusIncome}}</td>
+            <td data-title="NetIncome" sortable="'netIncome'" class="clickable-item">{{serviceReport.netIncome}}</td>
+
+        </tr>
+        <tr ng-if="!serviceReports || serviceReports.length === 0">
+            <td colspan="7">No serviceReports found</td>
+        </tr>
+    </table>
+</div>

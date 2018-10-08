@@ -512,8 +512,41 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.$on('ReportDownloaded',function(e,value){
             $scope.init();
         });
-    })
-    .factory('serviceReportsManager', function ($http, $log, $rootScope) {
+    }).controller('ServiceIncomeReportController', function($scope, serviceReportsManager,NgTableParams){
+        $scope.headline = "Reports To Be Reviewed";
+        $scope.cities = [];
+        $scope.filter = {};
+        $scope.serviceReports = [];
+        serviceReportsManager.getDistinctSource(function (data) {
+            $scope.cities = data;
+        })
+        var loadPendingData = function (tableParams, $defer) {
+            serviceReportsManager.getServiceIncomeReports($scope.filter, function(data){
+                $scope.serviceReports = data;
+                tableParams.total( $scope.serviceReports.length);
+                if (angular.isDefined($defer)) {
+                    $defer.resolve($scope.serviceReports);
+                }
+            })
+        };
+        $scope.search = function() {
+            $scope.submitted = 0;
+            $scope.serviceReportParams = new NgTableParams({
+                page: 1,
+                count:9999,
+                sorting: {
+                    source: 'desc'
+                }
+            }, {
+                total:  $scope.serviceReports.length,
+                getData: function (params) {
+                    loadPendingData(params);
+                }
+            });
+        };
+
+
+    }).factory('serviceReportsManager', function ($http, $log, $rootScope) {
         var serviceReports = {};
         return {
             getServiceReportStatus:function(date, callback) {
@@ -612,7 +645,25 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
                 },function (error) {
                     $log.debug("error loading services for date");
                 });
+            },
+            getDistinctSource:function(callback) {
+                $http.get('api/v1/serviceReport/getCities')
+                .then(function (response) {
+                    callback(response.data);
+                },function (error) {
+                    $log.debug("error loading unique city names");
+                })
+            },
+            getServiceIncomeReports:function(query,successcallback, errorcallback) {
+                $http.post('/api/v1/serviceReport/incomeReport', query)
+                    .then(function (response) {
+                        successcallback(response.data);
+                    },function (error) {
+                        $log.debug("error loading service reports");
+                        errorcallback(error);
+                    });
             }
+
         }
     });
 
