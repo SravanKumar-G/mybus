@@ -11,6 +11,7 @@ import com.mybus.model.Role;
 import com.mybus.model.User;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,7 +157,7 @@ public class UserManager {
     }
 
     public List<User> getUserCashBalances() {
-        String fields[] = {User.FIRST_NAME, User.LAST_NAME, User.AMOUNT_TO_BE_PAID,};
+        String fields[] = {User.FIRST_NAME, User.LAST_NAME, User.AMOUNT_TO_BE_PAID, User.CONTACT, User.ROLE};
         JSONObject query = new JSONObject();
         List<User> users = IteratorUtils.toList(mongoQueryDAO
                 .getDocuments(User.class, User.COLLECTION_NAME, fields, query, null).iterator());

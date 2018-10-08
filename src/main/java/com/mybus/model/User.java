@@ -31,6 +31,7 @@ public class User extends AbstractDocument implements AttributesDocument{
     public static final String USER_NAME = "userName";
     public static final String BRANCH_USER = "branchUser";
     public static final String AMOUNT_TO_BE_PAID = "amountToBePaid";
+    public static final String ROLE = "role";
 
     @Field(USER_NAME)
     @RequiresValue
