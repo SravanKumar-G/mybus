@@ -37,11 +37,11 @@
                 <tr>
                     <th>Branch name</th>
                     <th>Total No of Bookings</th>
-                    <th>Paid Booking</th>
-                    <th>To-Pay Booking</th>
-                    <th>To-Pay Delivered</th>
-                    <th>On-Account Booking</th>
-                    <th>Cancelled Amount</th>
+                    <th>Paid Booking (A) </th>
+                    <th>To-Pay Booking (B)</th>
+                    <th>To-Pay Delivered (C) </th>
+                    <th>On-Account Booking (D)</th>
+                    <th>Cancelled Amount (E) </th>
                   </tr>
                 <tr ng-repeat="branch in summaryData.branchCargoBookings" class="ng-scope">
                     <td>{{branch.branchOfficeName}}   </td>
@@ -50,19 +50,20 @@
                     <td>{{branch.topayBookingsTotal}}</td>
                     <td>{{branch.topayBookingsDeliveredTotal}}</td>
                     <td>{{branch.onAccountBookingsTotal}}</td>
-                    <td>0</td>
+                    <td>{{branch.canceledBookingsTotal}}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td>{{summaryData.paidBookingsTotal}}</td>
                     <td>{{summaryData.toPayBookingsTotal}}</td>
-                    <td>0</td>
+                    <td>{{summaryData.toPayDeliveryTotal}}</td>
                     <td>{{summaryData.onAccountBookingsTotal}}</td>
                     <td>{{summaryData.cancelledTotal}}</td>
                 </tr>
                 <tr>
-                    <td colspan="7">Net total: {{summaryData.paidBookingsTotal + summaryData.toPayBookingsTotal + summaryData.onAccountBookingsTotal - summaryData.cancelledTotal}}</td>
+                    <td colspan="4">(A + B + D - E) : {{summaryData.paidBookingsTotal + summaryData.toPayBookingsTotal + summaryData.onAccountBookingsTotal - summaryData.cancelledTotal}}</td>
+                    <td colspan="4">(A + C - E)  : {{summaryData.paidBookingsTotal + summaryData.toPayDeliveryTotal - summaryData.cancelledTotal}}</td>
                 </tr>
                 </tbody></table>
         </div>

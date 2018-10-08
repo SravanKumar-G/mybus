@@ -172,7 +172,7 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipment/branchSummary", method = RequestMethod.POST)
     @ApiOperation(value ="Branch summary to cargo booking")
     public BranchwiseCargoBookingSummary getBranchSummary(HttpServletRequest request,
-                                                          @RequestBody(required = false) final JSONObject query) throws ParseException {
+                                                          @RequestBody(required = false) final JSONObject query) throws Exception {
         return cargoBookingManager.getBranchSummary(query);
     }
 

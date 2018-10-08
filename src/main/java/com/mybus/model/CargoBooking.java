@@ -28,8 +28,8 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     public static final String DISPATCH_DATE="dispatchDate";
     public static final String SHIPMENT_NUMBER="shipmentNumber";
     public static final String DELIVERED_BY = "deliveredBy";
+    public static final String DELIVERED_BY_USERID = "deliveredByUserId";
     public static final String DELIVERED_ON = "deliveredOn";
-
 
     private String forUser;
 
