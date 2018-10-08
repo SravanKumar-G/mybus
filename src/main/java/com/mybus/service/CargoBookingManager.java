@@ -100,9 +100,9 @@ public class CargoBookingManager {
             }
         }
         if(errors.isEmpty()) {
+            cargoBooking.setCreatedAt(new DateTime());
             sendBookingConfirmationSMS(cargoBooking);
             try {
-                cargoBooking.setCreatedAt(new DateTime());
                 if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.PAID.toString())) {
                     updateUserCashBalance(cargoBooking);
                 } else if (cargoBooking.getPaymentType().equalsIgnoreCase(PaymentStatus.TOPAY.toString())) {
@@ -271,15 +271,12 @@ public class CargoBookingManager {
             OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
             cargoServiceName = operatorAccount.getCargoServiceName();
         }
-        String message = String.format("A parcel is booked with LR# %s From:%s(Ph:%s) " +
-                "To:%s At %s, LRType:%s Amt:%s, Date:%s To:%s Contact %s for collecting. %s ", cargoBooking.getShipmentNumber(), cargoBooking.getFromName(),
-                String.valueOf(cargoBooking.getFromContact()), cargoBooking.getToName(),
-                String.valueOf(cargoBooking.getToContact()),
-                fromBranchOffice.getName(),cargoBooking.getPaymentType(),
-                String.valueOf(cargoBooking.getTotalCharge()),
-                cargoBooking.getCreatedAt(), toBranchOffice.getName(),
-                toBranchOffice.getContact() +" "+ toBranchOffice.getAddress(),
-                cargoServiceName);
+        String message ="A parcel is booked with LR# "+cargoBooking.getShipmentNumber()+"" +
+                " From:"+cargoBooking.getFromName()+"(Ph:"+cargoBooking.getFromContact()+") " +
+                "To:"+cargoBooking.getToName()+" At "+fromBranchOffice.getName()+", " +
+                "LRType:"+cargoBooking.getPaymentType()+" Amt:"+cargoBooking.getTotalCharge()+"," +
+                " Date:"+ServiceConstants.formatDate(cargoBooking.getCreatedAt().toDate())+" To:"+toBranchOffice.getName()+"" +
+                " Contact "+toBranchOffice.getContact() +" "+ toBranchOffice.getAddress()+" for collecting. "+cargoServiceName;
         try {
             smsManager.sendSMS(cargoBooking.getFromContact()+","+cargoBooking.getToContact(), message, "CargoBooking", cargoBooking.getId());
         } catch (UnirestException e) {

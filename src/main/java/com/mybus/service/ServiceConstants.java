@@ -15,7 +15,7 @@ public class ServiceConstants {
         return new SimpleDateFormat(df).parse(dateValue);
     }
 
-    public static String formatDate(Date dateValue) throws ParseException {
+    public static String formatDate(Date dateValue) {
         return new SimpleDateFormat(df).format(dateValue);
     }
 
