@@ -9,7 +9,7 @@
 <table class="table table-bordered table-condensed table-hover table-striped" ng-table="accountTableParams">
     <tr ng-repeat="account in accounts">
         <td data-title="'Name'" class="col-sm-2" sortable="'name'">{{ account.name }}</td>
-        <td data-title="'City'" class="col-sm-2" sortable="'attributes.cityName'">{{ account.domainName }}</td>
+        <td data-title="'URL'" class="col-sm-2" sortable="'attributes.cityName'">{{ account.domainName }}</td>
         <td data-title="'Manager'" class="col-sm-2" >{{ account.apiURL }}</td>
         <td data-title="'Contact'" class="col-sm-1" sortable="'contact'">{{ account.providerType }}</td>
         <td class="col-sm-1">
