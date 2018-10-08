@@ -70,24 +70,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
 
         $scope.initiateDeliverCargoBooking = function (bookingId) {
-            swal({
-                title: "Delivery comment",
-                text: "Please provide delivery comment:",
-                type: "input",
-                showCancelButton: true,
-                closeOnConfirm: false,
-                inputPlaceholder: "Collecting person name or identification"
-            }, function (deliveryComment) {
-                if (deliveryComment === false) return false;
-                if (deliveryComment === "") {
-                    swal.showInputError("Identification is required");
-                    return false
-                }
-                cargoBookingManager.deliverCargoBooking(bookingId,deliveryComment,function (data) {
-                    swal("Nice!", data.shipmentNumber+" has been delivered", "success");
-                    $scope.init();
-                } );
-            });
+            cargoBookingManager.initiateDeliverCargoBooking(bookingId,function (data) {
+                swal("Great!", data.shipmentNumber+" has been delivered", "success");
+                $scope.init();
+            } );
         }
 
         $scope.initiateServiceAllotment = function (bookingId) {
@@ -223,6 +209,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/'+bookingId);
         }
+        $scope.initiateDeliverCargoBooking = function (bookingId) {
+            cargoBookingManager.initiateDeliverCargoBooking(bookingId,function (data) {
+                swal("Great!", data.shipmentNumber+" has been delivered", "success");
+                $scope.searchBookingForDelivery();
+            } );
+        }
     })
 
     .controller("CargoBookingController",function($rootScope, $scope, $stateParams, $uibModal,cargoBookingManager, suppliersManager, userManager, branchOfficeManager, $location){
@@ -344,27 +336,13 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 cargoBookingManager.lookupCargoBooking(this.filter);
             }
         }
-
         $scope.initiateDeliverCargoBooking = function (bookingId) {
-            swal({
-                title: "Delivery comment",
-                text: "Please provide delivery comment:",
-                type: "input",
-                showCancelButton: true,
-                closeOnConfirm: false,
-                inputPlaceholder: "Collecting person name or identification"
-            }, function (deliveryComment) {
-                if (deliveryComment === false) return false;
-                if (deliveryComment === "") {
-                    swal.showInputError("Identification is required");
-                    return false
-                }
-                cargoBookingManager.deliverCargoBooking(bookingId,deliveryComment,function (data) {
-                    swal("Nice!", data.shipmentNumber+" has been delivered", "success");
-                    $location.url('cargobookings');
-                } );
-            });
+            cargoBookingManager.initiateDeliverCargoBooking(bookingId,function (data) {
+                swal("Great!", data.shipmentNumber+" has been delivered", "success");
+                $scope.init();
+            } );
         }
+
         $scope.cancelCargoBooking = function(bookingId) {
             cargoBookingManager.cancelCargoBooking(bookingId, function () {
                 $location.url('cargobookings');
@@ -460,13 +438,27 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                         });
                     });
             },
-            deliverCargoBooking:function (bookingId, deliveryComment, callback) {
-                $http.put('/api/v1/shipment/deliver/'+bookingId,deliveryComment)
-                    .then(function (response) {
-                        callback(response.data);
-                    }, function (error) {
-                        $log.debug("error retrieving shipments count");
-                    });
+            initiateDeliverCargoBooking : function (bookingId, callback) {
+                swal({
+                    title: "Delivery comment",
+                    text: "Please provide delivery comment:",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "Collecting person name or identification"
+                }, function (deliveryComment) {
+                    if (deliveryComment === false) return false;
+                    if (deliveryComment === "") {
+                        swal.showInputError("Identification is required");
+                        return false
+                    }
+                    $http.put('/api/v1/shipment/deliver/'+bookingId,deliveryComment)
+                        .then(function (response) {
+                            callback(response.data);
+                        }, function (error) {
+                            $log.debug("error retrieving shipments count");
+                        });
+                });
             },
             lookupCargoBooking : function(LRNumber) {
                 $http.get("/api/v1/shipment/search/byLR?LRNumber="+LRNumber)
