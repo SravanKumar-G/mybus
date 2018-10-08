@@ -3,6 +3,7 @@ package com.mybus.service;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.*;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
+import com.mybus.dto.BranchDeliverySummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
 import com.mybus.dto.UserCargoBookingsSummary;
 import com.mybus.exception.BadRequestException;
@@ -17,8 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -225,7 +229,13 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         }
         BranchwiseCargoBookingSummary summary = shipmentManager.getAllBranchCargoBookingSummary(new Date(), new Date());
         assertEquals(summary.getBranchCargoBookings().size() ,3);
-        summary = shipmentManager.getBranchSummary(null);
+        JSONObject query = new JSONObject();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, -1);
+        DateFormat df = new SimpleDateFormat(ServiceConstants.df);
+        query.put("startDate", df.format(calendar.getTime()));
+        query.put("endDate", df.format(new Date()));
+        summary = shipmentManager.getBranchSummary(query);
         assertEquals(summary.getBranchCargoBookings().size() ,2);
         assertEquals(summary.getUserCargoBookingsSummaries().size() ,1);
         UserCargoBookingsSummary userCargoBookingsSummary = summary.getUserCargoBookingsSummaries().get(0);
@@ -284,8 +294,10 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
                 shipmentManager.deliverCargoBooking(shipment.getId(), "Notes ");
             }
         }
-        double total  = shipmentManager.findToPayDeliveryShipmentsTotalByBranchUsers(b2.getId(), new Date(), new Date());
-        assertEquals(total, 500, 0.0);
+        BranchDeliverySummary deliverySummary = shipmentManager.findDeliveryShipmentsTotalByBranchUsers(b2.getId(), PaymentStatus.TOPAY, new Date(), new Date());
+        assertEquals(deliverySummary.getTotal(), 500, 0.0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, -2);
     }
 
 }

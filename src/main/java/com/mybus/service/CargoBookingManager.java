@@ -4,9 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
-import com.mybus.dto.BranchCargoBookingsSummary;
-import com.mybus.dto.BranchwiseCargoBookingSummary;
-import com.mybus.dto.UserCargoBookingsSummary;
+import com.mybus.dto.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
@@ -21,10 +19,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by srinikandula on 12/10/16.
@@ -218,12 +213,12 @@ public class CargoBookingManager {
      * @return
      * @throws ParseException
      */
-    public double findToPayDeliveryShipmentsTotalByBranchUsers(String branchId, Date start, Date end) throws ParseException {
+    public BranchDeliverySummary findDeliveryShipmentsTotalByBranchUsers(String branchId, PaymentStatus paymentStatus, Date start, Date end) throws ParseException {
         if(logger.isDebugEnabled()) {
             logger.debug("Finding delivered shipments between {} and {}", start, end);
         }
-        double total = cargoBookingMongoDAO.findToPayDeliveryShipmentsTotalByBranchUsers(branchId, start, end);
-        return total;
+        BranchDeliverySummary summary = cargoBookingMongoDAO.findDeliveryShipmentsTotalByBranchUsers(branchId,  paymentStatus, start, end);
+        return summary;
     }
 
     public void delete(String shipmentId) {
@@ -419,22 +414,15 @@ public class CargoBookingManager {
         }
     }
 
-    /**
+    /** This is very complicated module. I need to revisit this.
      * Get branch office summary for given date range
      * @param query
      * @return
      * @throws ParseException
      */
-    public BranchwiseCargoBookingSummary getBranchSummary(JSONObject query) throws ParseException {
-        Date start = null;
-        Date end = null;
-
-        if(query != null && query.get("startDate") != null) {
-            start = ServiceUtils.parseDate(query.get("startDate").toString(), false);
-        }
-        if(query != null && query.get("endDate") != null) {
-            end = ServiceUtils.parseDate(query.get("endDate").toString(), true);
-        }
+    public BranchwiseCargoBookingSummary getBranchSummary(JSONObject query) throws Exception {
+        Date start = ServiceUtils.parseDate(query.get("startDate").toString(), false);;
+        Date end = ServiceUtils.parseDate(query.get("endDate").toString(), true);
         BranchwiseCargoBookingSummary summary = new BranchwiseCargoBookingSummary();
         Iterable<CargoBooking> cargoBookings = findShipments(query, null);
         Map<String, BranchCargoBookingsSummary> branchCargoBookingsSummaryMap= new HashMap<>();
@@ -449,9 +437,6 @@ public class CargoBookingManager {
                 branchSummary.setBranchOfficeName(branchNamesMap.get(cargoBooking.getFromBranchId()));
                 branchCargoBookingsSummaryMap.put(cargoBooking.getFromBranchId(), branchSummary);
             }
-            if(start != null && end != null) {
-                branchSummary.setTopayBookingsDeliveredTotal(findToPayDeliveryShipmentsTotalByBranchUsers(cargoBooking.getFromBranchId(), start, end));
-            }
             UserCargoBookingsSummary userSummary = userCargoBookingsSummaryMap.get(cargoBooking.getCreatedBy());
             if(userSummary == null){
                 userSummary =  new UserCargoBookingsSummary();
@@ -464,23 +449,53 @@ public class CargoBookingManager {
                 branchSummary.setPaidBookingsCount(branchSummary.getPaidBookingsCount()+1);
                 userSummary.setPaidBookingsTotal(userSummary.getPaidBookingsTotal()+ cargoBooking.getTotalCharge());
                 userSummary.setPaidBookingsCount(userSummary.getPaidBookingsCount()+1);
-                summary.setPaidBookingsTotal(summary.getPaidBookingsTotal() + cargoBooking.getTotalCharge());
             } else if(cargoBooking.getPaymentType().equals(PaymentStatus.TOPAY.getKey())){
                 branchSummary.setTopayBookingsTotal(branchSummary.getTopayBookingsTotal()+ cargoBooking.getTotalCharge());
                 branchSummary.setTopayBookingsCount(branchSummary.getTopayBookingsCount()+1);
                 userSummary.setTopayBookingsTotal(userSummary.getTopayBookingsTotal()+cargoBooking.getTotalCharge());
                 userSummary.setTopayBookingsCount(userSummary.getTopayBookingsCount() + 1);
-                summary.setToPayBookingsTotal(summary.getToPayBookingsTotal() + cargoBooking.getTotalCharge());
             } else if(cargoBooking.getPaymentType().equals(PaymentStatus.ONACCOUNT.getKey())){
                 branchSummary.setOnAccountBookingsTotal(branchSummary.getOnAccountBookingsTotal()+ cargoBooking.getTotalCharge());
                 branchSummary.setOnAccountBookingsCount(branchSummary.getOnAccountBookingsCount()+1);
                 userSummary.setOnAccountBookingsTotal(userSummary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
                 userSummary.setOnAccountBookingsCount(userSummary.getOnAccountBookingsCount()+1);
-                summary.setOnAccountBookingsTotal(summary.getOnAccountBookingsTotal() + cargoBooking.getTotalCharge());
             }
             if(cargoBooking.getCargoTransitStatus().toString().equalsIgnoreCase(CargoTransitStatus.CANCELLED.toString())){
+                branchSummary.setCanceledBookingsTotal(branchSummary.getCanceledBookingsTotal() + cargoBooking.getTotalCharge());
                 summary.setCancelledTotal(summary.getCancelledTotal() + cargoBooking.getTotalCharge());
             }
+        }
+        Map<String, UserDeliverySummary> userToPayDeliveries = new HashMap<>();
+        branchCargoBookingsSummaryMap.values().stream().forEach(b -> {
+            BranchDeliverySummary deliverySummary = null;
+            if(start != null && end != null) {
+                try {
+                    deliverySummary = findDeliveryShipmentsTotalByBranchUsers
+                             (b.getBranchOfficeId(), PaymentStatus.TOPAY, start, end);
+                    userToPayDeliveries.putAll(deliverySummary.getUserDeliverySummaryList());
+                    b.setTopayBookingsDeliveredTotal(deliverySummary.getTotal());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            summary.setToPayDeliveryTotal(summary.getToPayDeliveryTotal()+ deliverySummary.getTotal());
+            summary.setOnAccountBookingsTotal(summary.getOnAccountBookingsTotal() + b.getOnAccountBookingsTotal());
+            summary.setPaidBookingsTotal(summary.getPaidBookingsTotal() + b.getPaidBookingsTotal());
+            summary.setToPayBookingsTotal(summary.getToPayBookingsTotal() + b.getTopayBookingsTotal());
+        });
+
+        for (UserCargoBookingsSummary u : userCargoBookingsSummaryMap.values()) {
+            if(userToPayDeliveries.get(u.getUserName()) != null) {
+                u.setTopayBookingsDeliveredTotal(userToPayDeliveries.get(u.getUserName()).getTotal());
+                userToPayDeliveries.remove(u.getUserName());
+            }
+        }
+        //for additional user deliveries who didn't do bookings
+        for(UserDeliverySummary deliverySummary: userToPayDeliveries.values()){
+            UserCargoBookingsSummary userDeliverySummary = new UserCargoBookingsSummary();
+            userDeliverySummary.setUserName(deliverySummary.getUserName());
+            userDeliverySummary.setTopayBookingsDeliveredTotal(deliverySummary.getTotal());
+            userCargoBookingsSummaryMap.put(deliverySummary.getUserName(), userDeliverySummary);
         }
         summary.getBranchCargoBookings().addAll(branchCargoBookingsSummaryMap.values());
         summary.getUserCargoBookingsSummaries().addAll(userCargoBookingsSummaryMap.values());

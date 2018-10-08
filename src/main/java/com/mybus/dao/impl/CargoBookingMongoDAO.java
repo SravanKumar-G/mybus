@@ -6,7 +6,9 @@ import com.mongodb.WriteResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dto.BranchCargoBookingsSummary;
+import com.mybus.dto.BranchDeliverySummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
+import com.mybus.dto.UserDeliverySummary;
 import com.mybus.model.*;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
@@ -302,7 +304,8 @@ public class CargoBookingMongoDAO {
      * @param start
      * @param end
      */
-    public double findToPayDeliveryShipmentsTotalByBranchUsers(String branchId, Date start, Date end)
+    public BranchDeliverySummary findDeliveryShipmentsTotalByBranchUsers(String branchId, PaymentStatus paymentStatus,
+                                                                              Date start, Date end)
             throws ParseException {
         if(start == null || end == null){
             throw new IllegalArgumentException("Dates are required");
@@ -311,21 +314,48 @@ public class CargoBookingMongoDAO {
         List<String> userNames = users.stream().map(u -> u.getFullName()).collect(Collectors.toList());
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
+        match.add(where("paymentType").is(paymentStatus.getKey()));
         match.add(where(CargoBooking.DELIVERED_ON).gte(ServiceUtils.parseDate(start, false)));
         match.add(where(CargoBooking.DELIVERED_ON).lte(ServiceUtils.parseDate(end, true)));
         match.add(where(CargoBooking.DELIVERED_BY).in(userNames));
         match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
-
         Aggregation agg = newAggregation(
                 match(criteria),
-                group("toBranchId").sum("totalCharge").as("totalCharge"));
+                group(CargoBooking.DELIVERED_BY).sum("totalCharge").as("totalCharge"));
         AggregationResults<BasicDBObject> groupResults
                 = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
-        List<JSONObject> results = new ArrayList<>();
+        BranchDeliverySummary deliverySummary = new BranchDeliverySummary();
+        deliverySummary.setBranchId(branchId);
         double total = 0;
         for(BasicDBObject object: groupResults){
-            if(object.get("_id").toString().equalsIgnoreCase(branchId)){
+            UserDeliverySummary userDeliverySummary = new UserDeliverySummary();
+            userDeliverySummary.setUserName(object.get("_id").toString());
+            userDeliverySummary.setTotal(Double.parseDouble(object.get("totalCharge").toString()));
+            deliverySummary.setTotal(deliverySummary.getTotal() + userDeliverySummary.getTotal());
+            deliverySummary.getUserDeliverySummaryList().put(userDeliverySummary.getUserName(), userDeliverySummary);
+        }
+        return deliverySummary;
+    }
+
+    public double findUserToPayDeliveryTotal(String userName, String userId, Date start, Date end) {
+        List<Criteria> match = new ArrayList<>();
+        Query q = new Query();
+        Criteria criteria = new Criteria();
+        match.add(where("paymentType").is(PaymentStatus.TOPAY.getKey()));
+        match.add(where(CargoBooking.DELIVERED_ON).gte(start));
+        match.add(where(CargoBooking.DELIVERED_ON).lte(end)
+                .orOperator(where(CargoBooking.DELIVERED_BY_USERID).is(userId),where(CargoBooking.DELIVERED_BY).is(userName)));
+        match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
+        criteria.andOperator(match.toArray(new Criteria[match.size()]));
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group(CargoBooking.DELIVERED_BY).sum("totalCharge").as("totalCharge"));
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        double total = 0;
+        for(BasicDBObject object: groupResults){
+            if(object.get("_id").toString().equalsIgnoreCase(userName)){
                 total = Double.parseDouble(object.get("totalCharge").toString());
             }
         }

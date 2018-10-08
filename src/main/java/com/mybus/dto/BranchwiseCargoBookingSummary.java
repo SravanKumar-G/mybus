@@ -23,6 +23,8 @@ public class BranchwiseCargoBookingSummary  {
     private double onAccountBookingsTotal;
     private double cancelledTotal;
 
+    private double toPayDeliveryTotal;
+
     public BranchwiseCargoBookingSummary(){
         this.branchCargoBookings = new ArrayList<>();
         this.userCargoBookingsSummaries = new ArrayList<>();
