@@ -494,6 +494,7 @@ public class CargoBookingManager {
         for(UserDeliverySummary deliverySummary: userToPayDeliveries.values()){
             UserCargoBookingsSummary userDeliverySummary = new UserCargoBookingsSummary();
             userDeliverySummary.setUserName(deliverySummary.getUserName());
+            userDeliverySummary.setUserId(deliverySummary.getUserId());
             userDeliverySummary.setTopayBookingsDeliveredTotal(deliverySummary.getTotal());
             userCargoBookingsSummaryMap.put(deliverySummary.getUserName(), userDeliverySummary);
         }
