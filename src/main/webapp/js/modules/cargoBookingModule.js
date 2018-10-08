@@ -203,8 +203,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.searchBookingForDelivery = function() {
             cargoBookingManager.getBookingsForDelivery($scope.filter, function(response){
                 $scope.cargoBookings = response;
+                $scope.paidCargoBooking = 0;
+                $scope.toPayCargoBooking = 0;
+                for (var i = 0; i < $scope.cargoBookings.length; i++) {
+                        if($scope.cargoBookings[i].paymentType === "Paid" ) {
+                            $scope.paidCargoBooking += $scope.cargoBookings[i].totalCharge;
+                        }else{
+                            $scope.toPayCargoBooking += $scope.cargoBookings[i].totalCharge;
+                        }
+                    }
             })
-        }
+        };
+
         $scope.searchBookingForDelivery();
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/'+bookingId);

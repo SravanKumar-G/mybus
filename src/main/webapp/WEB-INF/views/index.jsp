@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>My Bus </title>
 
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.css">
@@ -94,9 +96,10 @@
 
         <nav class="navbar navbar-default panel_heading_background ng-scope" role="navigation" ng-controller="headerNavBarhomeCtrl">
             <div class="navbar-header">
-                <a class="navbar-brand" href="index.html" title="HOME"><i class="fa fa-bus"></i> Sri Krishna <span>travels</span></a>
+                <a class="navbar-brand" href="index.html" title="HOME" ng-if="!operatorAccount.name"><i class="fa fa-bus"></i> Sri Krishna <span>travels</span></a>
+                <a class="navbar-brand" href="index.html" title="HOME" ng-if="operatorAccount.name"><i class="fa fa-bus"></i><span> {{operatorAccount.name}}</span></a>
             </div>
-            
+
                 <div class="collapse navbar-collapse in" collapse="isCollapsed" style="height: auto;">
                     <div class="nav navbar-nav navbar-right navbar_background_clr">
                         <!-- ngIf: privlgeAndCheck.showInchargeAmounts -->
@@ -210,7 +213,7 @@
                                 <my-menu label="Staff" class="nav navbar-nav col-md-12" ng-if="canAccessModule('staff')"></my-menu>
                             </ul>
                             <li data-toggle="collapse" data-target="#reports" class="collapsed">
-                                <a><i class="fa fa-book fa-lg"></i>Reports <span class="arrow"></span></a>
+                                <a><i class="fa fa-book fa-lg"></i> Reports <span class="arrow"></span></a>
                             </li>
                             <ul class="sub-menu collapse" id="reports">
                                 <my-menu url="tripreports" label="TripReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('tripreports')"></my-menu>
@@ -280,6 +283,7 @@
     });
     </script>
 <script src="js/directives/menu.js"></script>
+
 
 </body>
 </html>
