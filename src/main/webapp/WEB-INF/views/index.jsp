@@ -182,6 +182,7 @@
                                 <my-menu url="newBooking" label="NewBooking" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')" ></my-menu>
                                 <my-menu url="cargoBookings" label="CargoBookings" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                                 <my-menu url="branchbookingsummary" label="BranchBookingSummary" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
+                                <my-menu url="loadingsheet" label="LoadingSheet" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                                 <my-menu url="unloadingsheet" label="UnloadingSheet" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                                 <my-menu url="deliverysheet" label="DeliverySheet" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cargodashboard')"></my-menu>
                             </ul>

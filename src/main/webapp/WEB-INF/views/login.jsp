@@ -5,7 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<html lang="en-US">
+<html lang="en-US" ng-app="myBus">
 <!--<![endif]-->
 <head>
     <!-- meta -->
@@ -23,10 +23,77 @@
     <script src="assets-new/js/jquery.min.js"></script>
     <script src="assets-new/js/menu_jquery.js"></script>
 
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css">
+
+
+    <script src="js/s-chat/s-chat-support.js"></script>
+    <script src="lib/underscore-min-1.5.2.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="lib/jquery.table2excel.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.js"></script>
+
+    <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+    <script src="node_modules/angular-strap/dist/angular-strap.js"></script>
+    <script src="node_modules/angular-strap/dist/angular-strap.tpl.min.js"></script>
+    <script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="node_modules/ng-table/bundles/ng-table.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/modules/usersModule.js"></script>
+    <script src="js/services/appConfigManager.js"></script>
+    <script src="js/modules/amenitiesModule.js"></script>
+    <script src="js/modules/cityModule.js"></script>
+    <script src="js/modules/vehicleModule.js"></script>
+    <script src="js/modules/branchOfficeModules.js"></script>
+    <script src="js/modules/serviceReportsModule.js"></script>
+    <script src="js/modules/paymentModule.js"></script>
+    <script src="js/modules/routeModule.js"></script>
+    <script src="js/modules/cancelModule.js"></script>
+    <script src="js/modules/roleModule.js"></script>
+    <script src="js/modules/agentModule.js"></script>
+    <script src="js/modules/dueReportModule.js"></script>
+    <script src="js/modules/serviceComboModule.js"></script>
+    <script src="js/modules/tripComboModule.js"></script>
+    <script src="js/modules/cashTransfersModule.js"></script>
+    <script src="js/modules/vehicleExpensesModule.js"></script>
+    <script src="js/modules/expensesIncomesReportsModule.js"></script>
+    <script src="js/modules/officeExpensesModule.js"></script>
+    <script src="js/services/paginationService.js"></script>
+    <script src="js/modules/returnTicketsModule.js"></script>
+    <script src="js/modules/bookingModule.js"></script>
+    <script src="js/modules/sequenceModule.js"></script>
+    <script src="js/modules/fuelExpenseReportModule.js"></script>
+    <script src="js/modules/invoiceModule.js"></script>
+    <script src="js/modules/gstFiltersModule.js"></script>
+    <script src="js/modules/suppliersModule.js"></script>
+    <script src="js/modules/tripReportsModule.js"></script>
+    <script src="js/modules/cargoBookingModule.js"></script>
+    <script src="js/modules/collectionZoneModule.js"></script>
+    <script src="js/modules/operatorAccountsModule.js"></script>
+    <script src="js/modules/staffModule.js"></script>
+    <script src="js/modules/cargoDashboardModule.js"></script>
+    <script src="js/modules/cargoBrachSummaryModule.js"></script>
+
+    <script src="js/modules/headerNavBarhomeCtrl.js"></script>
+    <script src="js/directives/ng-really.js"></script>
+    <script src="js/directives/pwCheck.js"></script>
+    <script src="js/directives/stateOptions.js"></script>
+    <script src="js/directives/datePicker.js"></script>
+    <script src="js/directives/myMenu.js"></script>
+    <script src="js/directives/someDirectives.js"></script>
+    <script src="js/filters/arrayNoneFilter.js"></script>
+    <script src="js/filters/range.js"></script>
+    <script src="js/providers/stateValueProvider.js"></script>
+    <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
+    <script src="js/filters/someFilters.js"></script>
+
 
 </head>
-<body>
+<body ng-controller="headerNavBarhomeCtrl" ng-cloak>
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -37,7 +104,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travels</span></a>
+    <a class="navbar-brand" href="index.html" title="HOME" ng-if="!operatorAccount.name"><i class="fa fa-bus"></i> Sri Krishna<span>travels</span></a>
+            <%--<a class="navbar-brand" href="index.html" title="HOME"><i class="ion-android-bus"></i> Sri Krishna <span>travels</span></a>--%>
+    <a class="navbar-brand" href="index.html" title="HOME" ng-if="operatorAccount.name"><i class="fa fa-bus"></i><span> {{operatorAccount.name}}</span></a>
         </div> <!-- /.navbar-header -->
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -84,7 +153,7 @@
 </nav>
 
 <!-- Home -->
-<div id="header">
+<div id="header" style="margin-top:58px;">
     <div class="flexslider">
         <ul class="slides">
             <li class="slider-item" style="background-image: url('assets-new/images/banner1.png')">
@@ -525,6 +594,13 @@
 <script src="assets-new/js/owl.carousel.min.js"></script>
 <script src="assets-new/js/jquery.flexslider.js"></script>
 <script src="assets-new/js/script.js"></script>
+    <script>
+    $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+    <script src="js/directives/menu.js"></script>
 
 </body>
 </html>

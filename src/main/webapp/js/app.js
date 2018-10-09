@@ -481,6 +481,9 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             level:2,
             url:'/serviceincomereport',
             templateUrl: 'partials/serviceIncomeReport.tpl.html'
+        }).state('loadingsheet',{
+            url:'/loadingsheet',
+            templateUrl: 'partials/cargoLoadingSheet.tpl.html'
         });
         $urlRouterProvider.otherwise( '/');
     }]);

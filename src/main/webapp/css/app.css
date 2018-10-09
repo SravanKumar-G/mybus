@@ -723,7 +723,6 @@ body {
     }
 }
 
-
 .changedRate{
     background-color: #f0ad4e;
 }
@@ -731,11 +730,14 @@ body {
     font-weight: normal;
     cursor: pointer;
 }
+.shipments label:hover{
+     color: #0e90d2;
+ }
 .shipments input[type="radio"]{
-    -webkit-appearance: none;
+    /*-webkit-appearance: none;*/
 }
 .active{
-    color: #0e90d2;
+    color: green;
 }
 .p-0{
     padding: 0;

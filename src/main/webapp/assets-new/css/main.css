@@ -164,7 +164,7 @@ ul.nav.navbar-nav.navbar-right{
 }
 .inner-intro{
     display: table-cell;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
     position: relative;
 }
 .intro{
