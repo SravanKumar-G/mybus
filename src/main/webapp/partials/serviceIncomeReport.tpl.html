@@ -28,20 +28,22 @@
         </div>
     </form>
     <br/>
-    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportParams" id="ServiceReports">
+    <table class="table table-bordered table-condensed table-hover" ng-table="serviceReportParams">
         <tr ng-repeat="serviceReport in serviceReports">
-            <td data-title="Id" sortable="'_id'" class="clickable-item">{{serviceReport._id}}</td>
-            <td data-title="ServiceName" sortable="'serviceName'" class="clickable-item">{{serviceReport.serviceName[0]}}</td>
-            <td data-title="Source" sortable="'source'" class="clickable-item">{{serviceReport.source[0]}}</td>
-            <td data-title="Destination" sortable="'destination'" class="clickable-item">{{serviceReport.destination[0]}}</td>
-            <td data-title="CashIncome" sortable="'netCashIncome'" class="clickable-item">{{serviceReport.netCashIncome}}</td>
-            <td data-title="OnlineIncome" sortable="'netOnlineIncome'" class="clickable-item">{{serviceReport.netOnlineIncome}}</td>
-            <td data-title="RedbusIncome" sortable="'netRedbusIncome'" class="clickable-item">{{serviceReport.netRedbusIncome}}</td>
-            <td data-title="NetIncome" sortable="'netIncome'" class="clickable-item">{{serviceReport.netIncome}}</td>
+            <td data-title="'Id'" sortable="'_id'">{{serviceReport._id}}</td>
+            <td data-title="'ServiceName'" sortable="'serviceName'" class="clickable-item">{{serviceReport.serviceName[0]}} {{serviceReport.busType[0]}}</td>
+            <td data-title="'Source'" sortable="'source'" class="clickable-item">{{serviceReport.source[0]}}</td>
+            <td data-title="'Destination'" sortable="'destination'" class="clickable-item">{{serviceReport.destination[0]}}</td>
+            <td data-title="'CashIncome'" sortable="'netCashIncome'" class="clickable-item">{{serviceReport.netCashIncome}}</td>
+            <td data-title="'OnlineIncome'" sortable="'netOnlineIncome'" class="clickable-item">{{serviceReport.netOnlineIncome}}</td>
+            <td data-title="'RedbusIncome'" sortable="'netRedbusIncome'" class="clickable-item">{{serviceReport.netRedbusIncome}}</td>
+            <td data-title="'NetIncome'" sortable="'netIncome'" class="clickable-item">{{serviceReport.netIncome}}</td>
 
         </tr>
         <tr ng-if="!serviceReports || serviceReports.length === 0">
             <td colspan="7">No serviceReports found</td>
         </tr>
     </table>
+
+
 </div>
