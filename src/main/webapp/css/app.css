@@ -1,6 +1,8 @@
 body {
     /*min-height: 1000px;*/
     padding-top: 70px;
+    /*font-family: 'Roboto', sans-serif;*/
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 .toolbar-button-div {
     padding-bottom: 8px;
@@ -431,7 +433,7 @@ table.table.table-hover{ width:100%; }
 
 .nav-side-menu {
     overflow: auto;
-    font-family: verdana;
+    /*font-family: verdana;*/
     font-size: 12px;
     font-weight: 200;
     background-color: #2e353d;
@@ -527,6 +529,7 @@ table.table.table-hover{ width:100%; }
 .nav-side-menu li a {
     text-decoration: none;
     color: #e1ffff;
+    font-size: 13px;
 }
 .nav-side-menu li a i {
     padding-left: 10px;
@@ -723,4 +726,11 @@ body {
 
 .changedRate{
     background-color: #f0ad4e;
+}
+.shipments label{
+    font-weight: normal;
+    cursor: pointer;
+}
+.shipments input[type="radio"]{
+    -webkit-appearance: none;
 }

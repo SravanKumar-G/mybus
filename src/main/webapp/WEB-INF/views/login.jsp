@@ -22,15 +22,9 @@
     <link rel="stylesheet" href="assets-new/css/main.css">
     <script src="assets-new/js/jquery.min.js"></script>
     <script src="assets-new/js/menu_jquery.js"></script>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="assets-new/js/html5shiv.js"></script>
-    <script src="assets-new/js/respond.js"></script>
-    <![endif]-->
 
-    <!--[if IE 8]>
-    <script src="assets-new/js/selectivizr.js"></script>
-    <![endif]-->
+    <script src="js/app.js"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
