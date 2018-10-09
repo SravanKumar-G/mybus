@@ -512,7 +512,7 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         $scope.$on('ReportDownloaded',function(e,value){
             $scope.init();
         });
-    }).controller('ServiceIncomeReportController', function($scope, serviceReportsManager,NgTableParams){
+    }).controller('ServiceIncomeReportController', function($scope, serviceReportsManager,NgTableParams, $filter){
         $scope.headline = "Reports To Be Reviewed";
         $scope.cities = [];
         $scope.filter = {};
@@ -522,17 +522,20 @@ angular.module('myBus.serviceReportsModule', ['ngTable', 'ngAnimate', 'ui.bootst
         })
         var loadPendingData = function (tableParams, $defer) {
             serviceReportsManager.getServiceIncomeReports($scope.filter, function(data){
-                $scope.serviceReports = data;
                 tableParams.total( $scope.serviceReports.length);
+                var orderedData= tableParams.sorting() ? $filter('orderBy')(data, tableParams.orderBy()) : data;
+                $scope.serviceReports = orderedData;
                 if (angular.isDefined($defer)) {
                     $defer.resolve($scope.serviceReports);
                 }
             })
         };
+
         $scope.search = function() {
             $scope.submitted = 0;
             $scope.serviceReportParams = new NgTableParams({
                 page: 1,
+                size:9999,
                 count:9999,
                 sorting: {
                     source: 'desc'
