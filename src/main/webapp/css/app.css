@@ -727,3 +727,10 @@ body {
 .changedRate{
     background-color: #f0ad4e;
 }
+.shipments label{
+    font-weight: normal;
+    cursor: pointer;
+}
+.shipments input[type="radio"]{
+    -webkit-appearance: none;
+}
