@@ -48,6 +48,10 @@
             <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt| date}}</td>
             <td data-title="'From'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}}</td>
             <td data-title="'To'" sortable="'attributes.toBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.toBranchOfficeName}}</td>
+            <td data-title="'To Contact'" sortable="'attributes.toName'"  class="clickable-item">
+                {{cargoBooking.toName}}<br>{{cargoBooking.toContact}}</td>
+            <td data-title="'Remarks'" sortable="'attributes.remarks'"  class="clickable-item">
+                {{cargoBooking.remarks}}</td>
             <td data-title="'Amount'" class="clickable-item">{{cargoBooking.totalCharge}}</td>
             <td data-title="'BookedBy'" sortable="'bookedBy'"  class="clickable-item">{{cargoBooking.attributes.bookedBy}}</td>
             <td data-title="'PayNow'" class="clickable-item"> <a href="#" ng-if="!cargoBooking.canceled && cargoBooking.cargoTransitStatus !== 'DELIVERED'" ng-click="initiateDeliverCargoBooking(cargoBooking.id)">Deliver</a>
