@@ -1,24 +1,29 @@
-<div class="container" style="width: 95%">
+<div class="container">
     <div ng-include="'partials/cargoLookup.tpl.html'"></div>
 </div>
 
 <div ng-controller="CargoDeliverySheetController">
     <form name="shipments" class="shipments">
-        <div class="form-group col-sm-6">
-            <label class="col-sm-4 control-label">Undelivered at Branch Office:</label>
-            <div class="col-sm-4">
+        <div class="form-group col-sm-7 p-0">
+            <label class="col-sm-5 control-label p-0">Undelivered at Branch Office:</label>
+            <div class="col-sm-4 pl-0">
                 <select id="fromBranchOffice" ng-options="office.id as office.name for office in offices" class="form-control" ng-model="filter.toBranchId" ng-change="searchBookingForDelivery()" required></select>
             </div>
             <button type="button" class="btn btn-sm btn-success " ng-click="exportToExcel('cargoBookings', 'CargoBookings')">Export to Excel </button></button>
         </div>
-        <div class="col-sm-3">
-          <label> <input type="radio" value="ToPay" ng-model="filterString"
-                   name="status"> <b>ToPay Amount:</b>  :{{toPayCargoBooking}}</label>
-        </div>
-        <div class="col-sm-3">
-            <label> <input type="radio" value="Paid" ng-model="filterString"
-                           name="status"> <b>Paid Amount:</b>  :{{paidCargoBooking}}</label>
-        </div>
+    <div>
+        <ul class="list-inline pull-right">
+            <li><label ng-class="{'active':filterString === ''}">
+                <input type="radio" value="" checked="checked" ng-model="filterString" name="status" >
+                <b>All:</b> {{total}}</label></li>
+            <li><label ng-class="{'active':filterString === 'Paid'}">
+                <input type="radio" value="Paid" ng-model="filterString" name="status">
+                <b>Paid:</b> {{paidCargoBooking}}</label></li>
+            <li><label ng-class="{'active':filterString === 'ToPay'}">
+                <input type="radio" value="ToPay" ng-model="filterString" name="status">
+                <b>ToPay:</b> {{toPayCargoBooking}}</label></li>
+        </ul>
+    </div>
     </form>
     <br/>
     <table class="table table-bordered table-condensed table-hover" id="cargoBookings">

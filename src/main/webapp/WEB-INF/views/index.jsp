@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html lang="en" ng-app="myBus">
+<html lang="en" ng-app="myBus" ng-cloak>
 <head>
     <meta charset="UTF-8">
     <title>My Bus </title>

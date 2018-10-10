@@ -151,6 +151,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
+        $scope.filterString = '';
         $scope.cargoBookings = [];
         $scope.filter.toBranchId = userManager.getUser().branchOfficeId;
         $scope.toggleBookingSelection = function (bookingId) {
@@ -175,9 +176,11 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             cargoBookingManager.getBookingsForUnloading($scope.filter, function (response) {
                 $scope.cargoBookings = response;
                 console.log("$scope.cargoBookings", $scope.cargoBookings);
+                $scope.total = 0;
                 $scope.paidCargoBooking = 0;
                 $scope.toPayCargoBooking = 0;
                 for (var i = 0; i < $scope.cargoBookings.length; i++) {
+                    $scope.total += $scope.cargoBookings[i].totalCharge;
                     if ($scope.cargoBookings[i].paymentType === "Paid") {
                         $scope.paidCargoBooking += $scope.cargoBookings[i].totalCharge;
                     } else {
@@ -195,6 +198,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
+        $scope.filterString = '';
         $scope.cargoBookings = [];
         $scope.filter.toBranchId = userManager.getUser().branchOfficeId;
         $scope.toggleBookingSelection = function (bookingId) {
@@ -213,9 +217,11 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.searchBookingForDelivery = function () {
             cargoBookingManager.getBookingsForDelivery($scope.filter, function (response) {
                 $scope.cargoBookings = response;
+                $scope.total = 0;
                 $scope.paidCargoBooking = 0;
                 $scope.toPayCargoBooking = 0;
                 for (var i = 0; i < $scope.cargoBookings.length; i++) {
+                    $scope.total += $scope.cargoBookings[i].totalCharge;
                     if ($scope.cargoBookings[i].paymentType === "Paid") {
                         $scope.paidCargoBooking += $scope.cargoBookings[i].totalCharge;
                     } else {
