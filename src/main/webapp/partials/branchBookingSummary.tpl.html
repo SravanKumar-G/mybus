@@ -84,7 +84,6 @@
                 </tr>
                 <tr ng-repeat="user in summaryData.userCargoBookingsSummaries" class="ng-scope">
                     <td>{{user.userName}}   </td>
-                    <td>{{user.onAccountBookingsCount + branch.paidBookingsCount  + branch.topayBookingsCount}}   </td>
                     <td>{{user.paidBookingsTotal}}</td>
                     <td>{{user.topayBookingsTotal}}</td>
                     <td>{{user.topayBookingsDeliveredTotal}}</td>
@@ -95,12 +94,12 @@
                     <td></td>
                     <td>{{user.paidBookingsTotal}}</td>
                     <td>{{user.toPayBookingsTotal}}</td>
-                    <td>0</td>
+                    <td></td>
                     <td>{{user.onAccountBookingsTotal}}</td>
                     <td>{{user.cancelledTotal}}</td>
                 </tr>
-
-                </tbody></table>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

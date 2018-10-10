@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
+import com.mybus.dao.VehicleDAO;
 import com.mybus.dto.BranchCargoBookingsSummary;
 import com.mybus.dto.BranchDeliverySummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
@@ -51,6 +52,9 @@ public class CargoBookingMongoDAO {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private VehicleDAO vehicleDAO;
+
     /**
      * Assign vehicle to cargo bookings
      * @param ids
@@ -59,8 +63,14 @@ public class CargoBookingMongoDAO {
      * @return
      */
     public boolean assignVehicles(List<String> ids, String vehicleId, String operatorId) {
+        Vehicle vehicle = vehicleDAO.findOne(vehicleId);
         Update updateOp = new Update();
         updateOp.set("vehicleId", vehicleId);
+        updateOp.set("cargoTransitStatus", CargoTransitStatus.INTRANSIT);
+        if(vehicle != null) {
+            updateOp.push("messages", "Loaded to vehicle "+ vehicle.getRegNo()
+                    +" by "+ sessionManager.getCurrentUser().getFullName());
+        }
         final Query query = new Query();
         query.addCriteria(where("_id").in(ids));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(operatorId));
