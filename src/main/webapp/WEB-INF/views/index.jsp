@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="node_modules/ng-table/bundles/ng-table.css">
     <link rel="stylesheet" href="node_modules/ui-select/dist/select.css">
+
     <link rel="stylesheet" href="css/select2.css">
 
     <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -24,6 +25,9 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-animate/angular-animate.js"></script>
+    <script src="node_modules/ui-select/dist/select.js" type="text/javascript"></script>
+    <script src="node_modules/angular-sanitize/angular-sanitize.js" type="text/javascript"></script>
+
 
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <script src="node_modules/angular-strap/dist/angular-strap.js"></script>
@@ -79,8 +83,6 @@
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
-    <script src="node_modules/ui-select/dist/select.js"></script>
-    <script src="//code.angularjs.org/snapshot/angular-sanitize.js"></script>
 
     <link rel="stylesheet" href="css/app.css">
 

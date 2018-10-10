@@ -214,8 +214,18 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $scope.offices = data;
             $scope.offices.unshift({"name": "All"});
         });
-        $scope.unload = function () {
-            cargoBookingManager.unloadBookings($scope.selectedBookings, function (success) {
+        $scope.loadToVehicle = function () {
+            console.log('loading to vehicle ' + $scope.selected);
+            if(!$scope.selected) {
+                swal("Error", "Please select a vehicle number to load", "error");
+                return;
+            }
+            if($scope.selectedBookings.length === 0) {
+                swal("Error", "Please select a bookings to load", "error");
+                return;
+            }
+
+            cargoBookingManager.loadBookings($scope.vehicle, $scope.selectedBookings, function (success) {
                 //reload the bookings for unload
                 $scope.searchBookingForUnload();
             })
@@ -237,6 +247,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             })
         };
         $scope.searchBookingForUnload();
+
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/' + bookingId);
         };
@@ -245,7 +256,6 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             vehicleManager.getVehicles({}, function (response) {
                 $scope.vehicles = response.content;
             })
-
         }
         $scope.getAllVehicles();
 
@@ -596,6 +606,14 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                     callback(response.data);
                 }, function (error) {
                     sweetAlert("Error searching for unloading bookings", error.message, "error");
+                });
+        },
+        loadBookings: function (vehicleId, bookingIds, callback) {
+            $http.post('/api/v1/shipment/assignVehicle/'+vehicleId, bookingIds)
+                .then(function (response) {
+                    callback(response.data);
+                }, function (error) {
+                    sweetAlert("Error unloading bookings", error.message, "error");
                 });
         },
         unloadBookings: function (bookingIds, callback) {
