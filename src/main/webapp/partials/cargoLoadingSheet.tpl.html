@@ -36,7 +36,7 @@
             <th>To</th>
             <th>No of Items</th>
             <th>Amount</th>
-            <!--<th>Deliver</th>-->
+            <th>Deliver</th>
             <th>Vehicle</th>
         </tr>
         <tr ng-repeat="cargoBooking in cargoBookings | filter:{paymentType: filterString}">
@@ -49,15 +49,19 @@
             <td data-title="'Amount'" class="clickable-item">
                 {{cargoBooking.totalCharge}}
             </td>
-            <!--<td data-title="'Deliver'" class="clickable-item"> <a href="#" ng-if="!cargoBooking.canceled && cargoBooking.cargoTransitStatus !== 'DELIVERED'" ng-click="initiateDeliverCargoBooking(cargoBooking.id)">Deliver</a>-->
-                <!--<span ng-if="cargoBooking.canceled"> Cancelled</span>-->
-                <!--<span ng-if="cargoBooking.cargoTransitStatus === 'DELIVERED'"> Delivered</span>-->
-            <!--</td>-->
-            <td data-title="'Vehicle'" class="clickable-item">
-                <select id="fromBranchOffice" class="form-control" required>
-                    <option value="" selected>--Select--</option>
-                    <option value="{{vehicle.id}}" ng-repeat="vehicle in vehicles">{{vehicle.regNo}}</option>
-                </select>
+            <td data-title="'Deliver'" class="clickable-item"> <a href="#" ng-if="!cargoBooking.canceled && cargoBooking.cargoTransitStatus !== 'DELIVERED'" ng-click="initiateDeliverCargoBooking(cargoBooking.id)">Deliver</a>
+                <span ng-if="cargoBooking.canceled"> Cancelled</span>
+                <span ng-if="cargoBooking.cargoTransitStatus === 'DELIVERED'"> Delivered</span>
+            </td>
+            <td data-title="'Vehicle'" class="clickable-item loadingSheet">
+                <ui-select theme="select2"  title="Choose a Vehicle" ng-model="vehicle">
+                    <ui-select-match placeholder="Select a Vehicle">{{$select.selected.regNo}}</ui-select-match>
+                    <ui-select-choices repeat="vehicle in vehicles | propsFilter: {regNo: $select.search}">
+                        <div ng-bind-html="vehicle.regNo | highlight: $select.search"></div>
+                    </ui-select-choices>
+
+                </ui-select>
+                {{vehicle}}
             </td>
         </tr>
         <tr ng-if="!cargoBookings || cargoBookings.length === 0">
