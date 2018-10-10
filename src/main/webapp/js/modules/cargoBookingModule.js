@@ -194,6 +194,62 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $location.url('viewcargobooking/' + bookingId);
         }
     })
+
+    .controller("CargoLoadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, vehicleManager) {
+        $scope.selectedBookings = [];
+        $scope.offices = [];
+        $scope.filter = {};
+        $scope.filterString = '';
+        $scope.cargoBookings = [];
+        $scope.filter.toBranchId = userManager.getUser().branchOfficeId;
+        $scope.toggleBookingSelection = function (bookingId) {
+            var idx = $scope.selectedBookings.indexOf(bookingId);
+            if (idx > -1) {
+                $scope.selectedBookings.splice(idx, 1);
+            } else {
+                $scope.selectedBookings.push(bookingId);
+            }
+        }
+        branchOfficeManager.loadNames(function (data) {
+            $scope.offices = data;
+            $scope.offices.unshift({"name": "All"});
+        });
+        $scope.unload = function () {
+            cargoBookingManager.unloadBookings($scope.selectedBookings, function (success) {
+                //reload the bookings for unload
+                $scope.searchBookingForUnload();
+            })
+        }
+        $scope.searchBookingForUnload = function () {
+            cargoBookingManager.getBookingsForUnloading($scope.filter, function (response) {
+                $scope.cargoBookings = response;
+                $scope.total = 0;
+                $scope.paidCargoBooking = 0;
+                $scope.toPayCargoBooking = 0;
+                for (var i = 0; i < $scope.cargoBookings.length; i++) {
+                    $scope.total += $scope.cargoBookings[i].totalCharge;
+                    if ($scope.cargoBookings[i].paymentType === "Paid") {
+                        $scope.paidCargoBooking += $scope.cargoBookings[i].totalCharge;
+                    } else {
+                        $scope.toPayCargoBooking += $scope.cargoBookings[i].totalCharge;
+                    }
+                }
+            })
+        };
+        $scope.searchBookingForUnload();
+        $scope.gotoBooking = function (bookingId) {
+            $location.url('viewcargobooking/' + bookingId);
+        };
+
+        $scope.getAllVehicles = function () {
+            vehicleManager.getVehicles({}, function (response) {
+                $scope.vehicles = response.content;
+            })
+
+        }
+        $scope.getAllVehicles();
+    })
+
     .controller("CargoDeliverySheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location) {
         $scope.selectedBookings = [];
         $scope.offices = [];
