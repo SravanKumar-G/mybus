@@ -34,10 +34,17 @@
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">WayBill No:</label>
-            <div class="col-sm-4"><input type="text" class="form-control" ng-model="shipment.wayBillNo"></div>
+            <div class="col-sm-3"><input type="text" class="form-control" ng-model="shipment.wayBillNo"></div>
 
             <label class="col-sm-2 control-label">Dispatch Date:</label>
-            <div class="col-sm-4"><my-datepicker ng-model="shipment.dispatchDate"></my-datepicker></div>
+            <div class="col-sm-3"><my-datepicker ng-model="shipment.dispatchDate"></my-datepicker></div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Remarks:</label>
+            <div class="col-sm-6">
+            <textarea class="form-control" rows="3" ng-model="shipment.remarks"></textarea>
+            </div>
         </div>
 
 

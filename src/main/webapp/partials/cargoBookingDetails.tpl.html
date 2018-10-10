@@ -6,18 +6,21 @@
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Print"></i>
             <span class="p_font_size13 ng-binding">Print</span>
         </div>
-        <div class="btn btn-success" ng-click="initiateDeliverCargoBooking(shipment.id)" ng-if="shipment.cargoTransitStatus !== 'DELIVERED' && !shipment.canceled">
+        <div class="btn btn-success" ng-click="initiateDeliverCargoBooking(shipment.id)"
+             ng-if="shipment.cargoTransitStatus !== 'DELIVERED' && !shipment.canceled">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
             <span class="p_font_size13 ng-binding">Deliver</span>
         </div>
         <!-- only admin can cacel the booking. Only show if booking is not already cancelled -->
-        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)" ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
+        <div class="btn btn-warning" ng-click="cancelCargoBooking(shipment.id)"
+             ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
             <i class="fa fa-print icon-4x p_font_size20 handCursor" title="Pay"></i>
             <span class="p_font_size13 ng-binding">Cancel Booking</span>
         </div>
 
-        <div class="btn btn-info" ng-click="sendSMS(shipment.id)" ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
-            <span class="glyphicon glyphicon-share" ></span>Send SMS
+        <div class="btn btn-info" ng-click="sendSMS(shipment.id)"
+             ng-if="!shipment.canceled && shipment.cargoTransitStatus !== 'DELIVERED'">
+            <span class="glyphicon glyphicon-share"></span>Send SMS
         </div>
         <!--div class="btn btn-info" ng-click="assignVehicle(shipment.id)" ng-if="!shipment.vehicleId && !shipment.canceled && shipment.cargoTransitStatus === 'READYFORSHIPMENT'">
             <span class="glyphicon glyphicon-share"></span>Assign Vehicle
@@ -39,14 +42,16 @@
                 <tbody>
                 <tr>
                     <td><label class="control-label">LR Number:</label>&nbsp; {{shipment.shipmentNumber}}</td>
-                    <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOfficeName}}</td>
+                    <td><label class="control-label">From:</label>&nbsp; {{shipment.attributes.fromBranchOfficeName}}
+                    </td>
                     <td><label class="control-label">To:</label>&nbsp; {{shipment.attributes.toBranchOfficeName}}</td>
                     <td><label class="control-label">Date:</label>&nbsp; {{shipment.dispatchDate | date}}</td>
                 </tr>
                 <tr>
                     <td><label class="control-label">LR Type:</label>&nbsp; {{shipment.paymentType}}</td>
-                    <td colspan="3"><label class="control-label">WayBill No.:</label>&nbsp; {{shipment.wayBillNo}}</td>
-                    <td colspan="3"><label class="control-label">Status:</label>&nbsp; {{shipment.cargoTransitStatus}}</td>
+                    <td colspan="2"><label class="control-label">WayBill No.:</label>&nbsp; {{shipment.wayBillNo}}</td>
+                    <td colspan="1"><label class="control-label">Status:</label>&nbsp; {{shipment.cargoTransitStatus}}
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -58,18 +63,19 @@
                         Sender Details
                     </div>
                     <div class="panel-body p_rl_0">
-                         <div class="form-group row">
-                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">Mobile No<span class="mandatory_symbol ng-scope">&nbsp;</span></label>
+                        <div class="form-group">
+                            <label class="control-label LabelForm">Mobile No :<span
+                                    class="mandatory_symbol ng-scope">&nbsp;</span></label>
                             {{shipment.fromContact}}
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
-                                Sender Name &nbsp;</span>
+                        <div class="form-group">
+                            <label class="control-label LabelForm">
+                                Sender Name:
                             </label> {{shipment.fromName}}
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
-                                Sender Email
+                        <div class="form-group">
+                            <label class="control-label LabelForm">
+                                Sender Email :
                             </label> {{shipment.fromEmail}}
                         </div>
                     </div>
@@ -80,76 +86,85 @@
                     <div class="panel-heading clr_l_brown bold ng-binding">
                         Receiver Details
                     </div>
-                    <div class="panel-body row">
-                        <label class="col-sm-4 col-xs-4 control-label LabelForm">
-                                <span class="ng-binding">Mobile No
-                                    <span class="mandatory_symbol ng-scope">&nbsp;</span>
-                                </span>
-                        </label>{{shipment.toContact}}
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-xs-4 control-label">
-                                <span class="ng-binding">
-                                    Receiver Name
-                                    <span class="mandatory_symbol">&nbsp;</span>
-                                </span>
-                        </label>
-                        {{shipment.toName}}
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-xs-4 control-label LabelForm ng-binding">
-                            To Email
-                        </label>{{shipment.toEmail}}
+                    <div class="panel-body p_rl_0">
+                        <div class="form-group">
+                            <label class="control-label LabelForm">
+                              Mobile No:
+                            </label>{{shipment.toContact}}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label LabelForm">
+                                    Receiver Name:
+                            </label>
+                            {{shipment.toName}}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label LabelForm ">
+                                To Email:
+                            </label>{{shipment.toEmail}}
 
+                        </div>
                     </div>
+                </div> <!--Close the 3rd line of code-->
+            </div>
+        </div>
+
+            <div class="row">
+                <table class="table table-bordered table-condensed table-hover" style="width: 95%;margin-left: 30px;">
+                    <thead>
+                    <th>Item Description</th>
+                    <th>Value of Goods</th>
+                    <th>Quantity</th>
+                    <th>Kg's</th>
+                    <th>Freight Charge</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in shipment.items">
+                        <td>{{item.description}}</td>
+                        <td>{{item.value}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.weight}}</td>
+                        <td>{{item.charge}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Loading Charge</td>
+                        <td>{{shipment.loadingCharge}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Unloading Charge</td>
+                        <td>{{shipment.unloadingCharge}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Other Charge</td>
+                        <td>{{shipment.otherCharge}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Total Charge</td>
+                        <td>{{shipment.totalCharge}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <label class="col-sm-2 control-label LabelForm"> Remarks: </label>
+                    {{shipment.remarks}}
                 </div>
-            </div> <!--Close the 3rd line of code-->
-        </div>
-
-        <div class="row">
-            <table class="table table-bordered table-condensed table-hover" style="width: 95%;margin-left: 25px;">
-                <thead>
-                <th>Item Description</th>
-                <th>Value of Goods</th>
-                <th>Quantity</th>
-                <th>Kg's</th>
-                <th>Freight Charge</th>
-                </thead>
-                <tbody>
-                <tr ng-repeat="item in shipment.items">
-                    <td>{{item.description}}</td>
-                    <td>{{item.value}}</td>
-                    <td>{{item.quantity}}</td>
-                    <td>{{item.weight}}</td>
-                    <td>{{item.charge}}</td>
-                </tr>
-                <tr><td colspan="4">Loading Charge</td><td>{{shipment.loadingCharge}}</td></tr>
-                <tr><td colspan="4">Unloading Charge</td><td>{{shipment.unloadingCharge}}</td></tr>
-                <tr><td colspan="4">Other Charge</td><td>{{shipment.otherCharge}}</td></tr>
-                <tr><td colspan="4">Total Charge</td><td>{{shipment.totalCharge}}</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <label class="col-sm-4 col-xs-4 control-label LabelForm"> Remarks: </label>
-                {{shipment.remarks}}
+                <div class="col-sm-6">
+                    <label class="col-sm-4 col-xs-4 control-label LabelForm"> Booked By: </label>
+                    {{shipment.attributes.bookedBy}}
+                </div>
+                <div class="col-sm-6" ng-if="shipment.attributes.forUser">
+                    <label class="col-sm-4 col-xs-4 control-label LabelForm"> For User: </label>
+                    {{shipment.attributes.forUser}}
+                </div>
             </div>
-            <div class="col-sm-6">
-                <label class="col-sm-4 col-xs-4 control-label LabelForm"> Booked By: </label>
-                {{shipment.attributes.bookedBy}}
-            </div>
-            <div class="col-sm-6" ng-if="shipment.attributes.forUser">
-                <label class="col-sm-4 col-xs-4 control-label LabelForm"> For User: </label>
-                {{shipment.attributes.forUser}}
-            </div>
-        </div>
-        <div class="col-sm-12 printhide ng-scope">
-            <div class="pull-left">
-                <strong class="ng-binding">Terms &amp; Conditions &nbsp;:&nbsp;</strong></div>
-            <br>
-            <div>
+            <div class="col-sm-12 printhide ng-scope" style="margin-top: 20px;">
+                <div class="pull-left">
+                    <strong class="ng-binding">Terms &amp; Conditions &nbsp;:&nbsp;</strong></div>
+                <br>
+                <div>
                 <span class="ng-binding">
                 <p>1.<em> Parcel, Luggage are carried at owner's risk.</em></p>
 
@@ -167,301 +182,362 @@
 
                 <p><em>5. All Disputes are subject to the jurisdiction of Ongole courts only. &nbsp;&nbsp;the consignor has the right to file a suit against the Company.&nbsp;</em></p>
                 </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="report_left_inner" style="display: none;">
-    <div>
-        <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.fromBranchOfficeAddress}}</p>
-    </div>
-    <div class="panel-body no-padding">
-    <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
-        <tbody>
-        <tr>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Number:</label>&nbsp;
-                <b>{{shipment.shipmentNumber}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
-                <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
-                <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
-            </td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
-                <b>{{shipment.dispatchDate | date}}</b></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Type:</label>&nbsp;
-                <b>{{shipment.attributes.LRType}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From Branch:</label>&nbsp;
-                <b>{{shipment.attributes.fromBranchOfficeName}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To Branch:</label>&nbsp;
-                <b>{{shipment.attributes.toBranchOfficeName}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">WayBill No.:</label>&nbsp;
-                <b>{{shipment.wayBillNo}}</b></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Sender Name:</label>&nbsp;
-                <b>{{shipment.fromName}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile Num:</label>&nbsp;
-                <b>{{shipment.fromContact}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Receiver
-                Name:</label>&nbsp; <b>{{shipment.toName}}</b></td>
-            <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile Num:</label>&nbsp;
-                <b>{{shipment.toContact}}</b></td>
-        </tr>
-        </tbody>
-    </table>
-    <table style="border: 2px solid #000; border-top: none !important; font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
-        <tbody>
-        <tr style="text-align: center;">
-            <td style="border: 1px solid #000;">Item Description</td>
-            <td style="border: 1px solid #000;">Value Of Goods</td>
-            <td style="border: 1px solid #000;">Quantity</td>
-            <td style="border: 1px solid #000;">Weight(Kg's)</td>
-            <td style="border: 1px solid #000;">Freight Charge (₹)</td>
-        </tr>
-        <tr ng-repeat="item in shipment.items">
-            <td style="border: 1px solid #000;padding-left: 5px;">{{item.description}}</td>
-            <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                {{item.value}}
-            </td>
-            <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                {{item.quantity}}
-            </td>
-            <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                {{item.weight}}
-            </td>
-            <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                {{item.charge}}
-            </td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;"></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)
-            </td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.loadingCharge}}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;"></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading Charges (₹)
-            </td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.unloadingCharge}}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;"></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges (₹)
-            </td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;">Condition Of the Goods</td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt Payable
-                (₹)</b></td>
-            <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"><b>{{shipment.totalCharge}}</b></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
-                Number</b></td>
-            <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
-            <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
-            <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number</td>
-            <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">Receivers
-                Copy
-            </td>
-            <td style="border: 1px solid #000;padding-left: 5px;height: 50px;color: #ccc;text-align: center;"
-                colspan="2">Signature
-            </td>
-            <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">Booked
-                by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
-            </td>
-
-        </tr>
-        </tbody>
-    </table>
-    <div style="width:800px;">
-        <p style="padding: 0;margin: 0;"><b>Terms and Conditions:</b></p>
-        <ul style="list-style-type: decimal;font-size: 12px;margin-left: 0;padding-left: 10px;">
-            <li style="padding-bottom: 3px;">Parcel, Luggage are carried at owner's risk.</li>
-            <li style="padding-bottom: 3px;"> Incase the Parcels are lost or damaged in transit the company will not
-                be liable Though every care shall be taken by the company for safe Transportation of Parcels.
-            </li>
-            <li style="padding-bottom: 3px;">Contraband articles are not permitted to carry in the vehicle. The
-                parcels owner will bear soleon checkup by Octrol, Excise and other authorities.
-            </li>
-            <li style="padding-bottom: 3px;">We do not hold any other responsibility on the late arrival of
-                Parcel/Luggage.
-            </li>
-            <li style="padding-bottom: 3px;"> Luggage/Parcel should be collected within 24 hours of its arrival,
-                falling which the Management is not responsible for the delivery.
-            </li>
-            <li style="padding-bottom: 3px;"><b> Dema Charge per day Rs.5/­ per parcel after 7 days of receipt of
-                the parcel. Consignment are not taken delivery within 30 days it will be auctioned without any
-                intimation to the Consignor or Consignee.</b></li>
-            <li style="padding-bottom: 3px;"> Don't Book Cash, Glass Liquor, Jewels, Lottery, Explosive materials
-                and other restricted items. If booked we are not responsible. Company is not responsible for any
-                breakable items. It will be booked only on the Owner's risk.
-            </li>
-            <li style="padding-bottom: 3px;">All Disputes are subject to the jurisdiction of Ongole courts only. the
-                consignor has the right to file a suit against the Company.
-            </li>
-        </ul>
-    </div>
-    </tbody>
-    </table>
-</div>
-
-    <div style="width:800px;padding-left: 15px;"><span style="font-size: 35px;">✂</span><small style="position:relative;top: -2px;font-size: 35px;left:-10px;"> -------------------------------------------------------------</small></div>
-    <!--line panel body -->
-    <div>
-        <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.toBranchOfficeAddress}}</p>
-    </div>
-    <div class="panel-body no-padding">
-        <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
-            <tbody>
-            <tr>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Number:</label>&nbsp;
-                    <b>{{shipment.shipmentNumber}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
-                    <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
-                    <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
-                </td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
-                    <b>{{shipment.dispatchDate | date}}</b></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Type:</label>&nbsp;
-                    <b>{{shipment.attributes.LRType}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From Branch:</label>&nbsp;
-                    <b>{{shipment.attributes.fromBranchOfficeName}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To Branch:</label>&nbsp;
-                    <b>{{shipment.attributes.toBranchOfficeName}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">WayBill No.:</label>&nbsp;
-                    <b>{{shipment.wayBillNo}}</b></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Sender Name:</label>&nbsp;
-                    <b>{{shipment.fromName}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile Num:</label>&nbsp;
-                    <b>{{shipment.fromContact}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Receiver
-                    Name:</label>&nbsp; <b>{{shipment.toName}}</b></td>
-                <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile Num:</label>&nbsp;
-                    <b>{{shipment.toContact}}</b></td>
-            </tr>
-            </tbody>
-        </table>
-        <table style="border: 2px solid #000; border-top: none !important; font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
-            <tbody>
-            <tr style="text-align: center;">
-                <td style="border: 1px solid #000;">Item Description</td>
-                <td style="border: 1px solid #000;">Value Of Goods</td>
-                <td style="border: 1px solid #000;">Quantity</td>
-                <td style="border: 1px solid #000;">Weight(Kg's)</td>
-                <td style="border: 1px solid #000;">Freight Charge (₹)</td>
-            </tr>
-            <tr ng-repeat="item in shipment.items">
-                <td style="border: 1px solid #000;padding-left: 5px;">{{item.description}}</td>
-                <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                    {{item.value}}
-                </td>
-                <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                    {{item.quantity}}
-                </td>
-                <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                    {{item.weight}}
-                </td>
-                <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
-                    {{item.charge}}
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;"></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges (₹)
-                </td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.loadingCharge}}</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;"></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading Charges (₹)
-                </td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.unloadingCharge}}</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;"></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges (₹)
-                </td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;">Condition Of the Goods</td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt Payable
-                    (₹)</b></td>
-                <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"><b>{{shipment.totalCharge}}</b></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
-                    Number</b></td>
-                <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
-                <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
-                <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number</td>
-                <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">Sender
-                    Copy
-                </td>
-                <td style="border: 1px solid #000;padding-left: 5px;height: 50px;color: #ccc;text-align: center;"
-                    colspan="2">Signature
-                </td>
-                <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">Booked
-                    by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
-                </td>
-
-            </tr>
-            </tbody>
-        </table>
-        <div style="width:800px;">
-            <p style="padding: 0;margin: 0;"><b>Terms and Conditions:</b></p>
-            <ul style="list-style-type: decimal;font-size: 12px;margin-left: 0;padding-left: 10px;">
-                <li style="padding-bottom: 3px;">Parcel, Luggage are carried at owner's risk.</li>
-                <li style="padding-bottom: 3px;"> Incase the Parcels are lost or damaged in transit the company will not
-                    be liable Though every care shall be taken by the company for safe Transportation of Parcels.
-                </li>
-                <li style="padding-bottom: 3px;">Contraband articles are not permitted to carry in the vehicle. The
-                    parcels owner will bear soleon checkup by Octrol, Excise and other authorities.
-                </li>
-                <li style="padding-bottom: 3px;">We do not hold any other responsibility on the late arrival of
-                    Parcel/Luggage.
-                </li>
-                <li style="padding-bottom: 3px;"> Luggage/Parcel should be collected within 24 hours of its arrival,
-                    falling which the Management is not responsible for the delivery.
-                </li>
-                <li style="padding-bottom: 3px;"><b> Dema Charge per day Rs.5/­ per parcel after 7 days of receipt of
-                    the parcel. Consignment are not taken delivery within 30 days it will be auctioned without any
-                    intimation to the Consignor or Consignee.</b></li>
-                <li style="padding-bottom: 3px;"> Don't Book Cash, Glass Liquor, Jewels, Lottery, Explosive materials
-                    and other restricted items. If booked we are not responsible. Company is not responsible for any
-                    breakable items. It will be booked only on the Owner's risk.
-                </li>
-                <li style="padding-bottom: 3px;">All Disputes are subject to the jurisdiction of Ongole courts only. the
-                    consignor has the right to file a suit against the Company.
-                </li>
-            </ul>
+    <div class="report_left_inner" style="display: none;">
+        <div>
+            <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.fromBranchOfficeAddress}}</p>
         </div>
-        </tbody>
-        </table>
+        <div class="panel-body no-padding">
+            <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
+                <tbody>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR
+                        Number:</label>&nbsp;
+                        <b>{{shipment.shipmentNumber}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
+                        <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
+                        <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
+                    </td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
+                        <b>{{shipment.dispatchDate | date}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Type:</label>&nbsp;
+                        <b>{{shipment.paymentType}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From
+                        Branch:</label>&nbsp;
+                        <b>{{shipment.attributes.fromBranchOfficeName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To
+                        Branch:</label>&nbsp;
+                        <b>{{shipment.attributes.toBranchOfficeName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">WayBill
+                        No.:</label>&nbsp;
+                        <b>{{shipment.wayBillNo}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Sender
+                        Name:</label>&nbsp;
+                        <b>{{shipment.fromName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile
+                        Num:</label>&nbsp;
+                        <b>{{shipment.fromContact}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Receiver
+                        Name:</label>&nbsp; <b>{{shipment.toName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile
+                        Num:</label>&nbsp;
+                        <b>{{shipment.toContact}}</b></td>
+                </tr>
+                </tbody>
+            </table>
+            <table style="border: 2px solid #000; border-top: none !important; font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
+                <tbody>
+                <tr style="text-align: center;">
+                    <td style="border: 1px solid #000;">Item Description</td>
+                    <td style="border: 1px solid #000;">Value Of Goods</td>
+                    <td style="border: 1px solid #000;">Quantity</td>
+                    <td style="border: 1px solid #000;">Weight(Kg's)</td>
+                    <td style="border: 1px solid #000;">Freight Charge (₹)</td>
+                </tr>
+                <tr ng-repeat="item in shipment.items">
+                    <td style="border: 1px solid #000;padding-left: 5px;">{{item.description}}</td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.value}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.quantity}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.weight}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.charge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges
+                        (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        {{shipment.loadingCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading
+                        Charges (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        {{shipment.unloadingCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges
+                        (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;">Condition Of the Goods</td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt
+                        Payable
+                        (₹)</b></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        <b>{{shipment.totalCharge}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
+                        Number</b></td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
+                    <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;" colspan="6">
+                        Remarks: {{shipment.remarks}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">
+                        Receivers
+                        Copy
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;height: 50px;color: #ccc;text-align: center;"
+                        colspan="2">Signature
+                    </td>
+                    <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">
+                        Booked
+                        by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+            <div style="width:800px;">
+                <p style="padding: 0;margin: 0;"><b>Terms and Conditions:</b></p>
+                <ul style="list-style-type: decimal;font-size: 12px;margin-left: 0;padding-left: 10px;">
+                    <li style="padding-bottom: 3px;">Parcel, Luggage are carried at owner's risk.</li>
+                    <li style="padding-bottom: 3px;"> Incase the Parcels are lost or damaged in transit the company will
+                        not
+                        be liable Though every care shall be taken by the company for safe Transportation of Parcels.
+                    </li>
+                    <li style="padding-bottom: 3px;">Contraband articles are not permitted to carry in the vehicle. The
+                        parcels owner will bear soleon checkup by Octrol, Excise and other authorities.
+                    </li>
+                    <li style="padding-bottom: 3px;">We do not hold any other responsibility on the late arrival of
+                        Parcel/Luggage.
+                    </li>
+                    <li style="padding-bottom: 3px;"> Luggage/Parcel should be collected within 24 hours of its arrival,
+                        falling which the Management is not responsible for the delivery.
+                    </li>
+                    <li style="padding-bottom: 3px;"><b> Dema Charge per day Rs.5/­ per parcel after 7 days of receipt
+                        of
+                        the parcel. Consignment are not taken delivery within 30 days it will be auctioned without any
+                        intimation to the Consignor or Consignee.</b></li>
+                    <li style="padding-bottom: 3px;"> Don't Book Cash, Glass Liquor, Jewels, Lottery, Explosive
+                        materials
+                        and other restricted items. If booked we are not responsible. Company is not responsible for any
+                        breakable items. It will be booked only on the Owner's risk.
+                    </li>
+                    <li style="padding-bottom: 3px;">All Disputes are subject to the jurisdiction of Ongole courts only.
+                        the
+                        consignor has the right to file a suit against the Company.
+                    </li>
+                </ul>
+            </div>
+            </tbody>
+            </table>
+        </div>
+
+        <div style="width:800px;padding-left: 15px;"><span style="font-size: 35px;">✂</span>
+            <small style="position:relative;top: -2px;font-size: 35px;left:-10px;">
+                -------------------------------------------------------------
+            </small>
+        </div>
+        <!--line panel body -->
+        <div>
+            <p style="font-size: 16px;color:#218cff;">{{shipment.attributes.toBranchOfficeAddress}}</p>
+        </div>
+        <div class="panel-body no-padding">
+            <table style="border: 2px solid #000; border-bottom: none !important;  font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
+                <tbody>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR
+                        Number:</label>&nbsp;
+                        <b>{{shipment.shipmentNumber}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From:</label>&nbsp;
+                        <b>{{shipment.attributes.fromBranchOfficeAddress}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To:</label>&nbsp;
+                        <b>{{shipment.attributes.toBranchOfficeAddress}}</b>
+                    </td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Date:</label>&nbsp;
+                        <b>{{shipment.dispatchDate | date}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">LR Type:</label>&nbsp;
+                        <b>{{shipment.paymentType}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">From
+                        Branch:</label>&nbsp;
+                        <b>{{shipment.attributes.fromBranchOfficeName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">To
+                        Branch:</label>&nbsp;
+                        <b>{{shipment.attributes.toBranchOfficeName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">WayBill
+                        No.:</label>&nbsp;
+                        <b>{{shipment.wayBillNo}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Sender
+                        Name:</label>&nbsp;
+                        <b>{{shipment.fromName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile
+                        Num:</label>&nbsp;
+                        <b>{{shipment.fromContact}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Receiver
+                        Name:</label>&nbsp; <b>{{shipment.toName}}</b></td>
+                    <td style="border: 1px solid #ccc;padding-left: 5px;"><label class="control-label">Mobile
+                        Num:</label>&nbsp;
+                        <b>{{shipment.toContact}}</b></td>
+                </tr>
+                </tbody>
+            </table>
+            <table style="border: 2px solid #000; border-top: none !important; font-family: arial, sans-serif; border-collapse: collapse;width: 800px;font-size: 10px;">
+                <tbody>
+                <tr style="text-align: center;">
+                    <td style="border: 1px solid #000;">Item Description</td>
+                    <td style="border: 1px solid #000;">Value Of Goods</td>
+                    <td style="border: 1px solid #000;">Quantity</td>
+                    <td style="border: 1px solid #000;">Weight(Kg's)</td>
+                    <td style="border: 1px solid #000;">Freight Charge (₹)</td>
+                </tr>
+                <tr ng-repeat="item in shipment.items">
+                    <td style="border: 1px solid #000;padding-left: 5px;">{{item.description}}</td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.value}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.quantity}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.weight}}
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;text-align: right;padding-right: 5px;">
+                        {{item.charge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Loading Charges
+                        (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        {{shipment.loadingCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3">Unloading
+                        Charges (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        {{shipment.unloadingCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="3"> Other Charges
+                        (₹)
+                    </td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">{{shipment.otherCharge}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;">Condition Of the Goods</td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;"></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;" colspan="2"><b>Net Amt
+                        Payable
+                        (₹)</b></td>
+                    <td style="border: 1px solid #000;text-align: right;padding-right: 5px;">
+                        <b>{{shipment.totalCharge}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;text-align: right;color: red;padding-right: 5px;" colspan="4"><b>Invoice
+                        Number</b></td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.invoiceNo || '--'}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;">Mode of Transport</td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>Road</b></td>
+                    <td style="border: 1px solid #000;text-align:right;padding-right: 5px;" colspan="2">Vehicle Number
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;"><b>{{shipment.vehicleNo || '--'}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;" colspan="6">
+                        Remarks: {{shipment.remarks}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000;padding-left: 5px;height: 50px;font-size: 13px;color: red;">Sender
+                        Copy
+                    </td>
+                    <td style="border: 1px solid #000;padding-left: 5px;height: 50px;color: #ccc;text-align: center;"
+                        colspan="2">Signature
+                    </td>
+                    <td style="border: 1px solid #000;text-align:right;padding-right: 5px;height: 50px;" colspan="2">
+                        Booked
+                        by {{shipment.attributes.bookedBy}} at {{shipment.createdAt | date: 'medium'}}
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+            <div style="width:800px;">
+                <p style="padding: 0;margin: 0;"><b>Terms and Conditions:</b></p>
+                <ul style="list-style-type: decimal;font-size: 12px;margin-left: 0;padding-left: 10px;">
+                    <li style="padding-bottom: 3px;">Parcel, Luggage are carried at owner's risk.</li>
+                    <li style="padding-bottom: 3px;"> Incase the Parcels are lost or damaged in transit the company will
+                        not
+                        be liable Though every care shall be taken by the company for safe Transportation of Parcels.
+                    </li>
+                    <li style="padding-bottom: 3px;">Contraband articles are not permitted to carry in the vehicle. The
+                        parcels owner will bear soleon checkup by Octrol, Excise and other authorities.
+                    </li>
+                    <li style="padding-bottom: 3px;">We do not hold any other responsibility on the late arrival of
+                        Parcel/Luggage.
+                    </li>
+                    <li style="padding-bottom: 3px;"> Luggage/Parcel should be collected within 24 hours of its arrival,
+                        falling which the Management is not responsible for the delivery.
+                    </li>
+                    <li style="padding-bottom: 3px;"><b> Dema Charge per day Rs.5/­ per parcel after 7 days of receipt
+                        of
+                        the parcel. Consignment are not taken delivery within 30 days it will be auctioned without any
+                        intimation to the Consignor or Consignee.</b></li>
+                    <li style="padding-bottom: 3px;"> Don't Book Cash, Glass Liquor, Jewels, Lottery, Explosive
+                        materials
+                        and other restricted items. If booked we are not responsible. Company is not responsible for any
+                        breakable items. It will be booked only on the Owner's risk.
+                    </li>
+                    <li style="padding-bottom: 3px;">All Disputes are subject to the jurisdiction of Ongole courts only.
+                        the
+                        consignor has the right to file a suit against the Company.
+                    </li>
+                </ul>
+            </div>
+            </tbody>
+            </table>
+        </div>
     </div>
-</div>

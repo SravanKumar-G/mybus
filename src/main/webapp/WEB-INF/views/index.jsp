@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="node_modules/ng-table/bundles/ng-table.css">
+    <link rel="stylesheet" href="node_modules/ui-select/dist/select.css">
+    <link rel="stylesheet" href="css/select2.css">
 
     <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="js/s-chat/s-chat-support.css" rel="stylesheet">
@@ -77,6 +79,8 @@
     <script src="js/providers/stateValueProvider.js"></script>
     <link rel="stylesheet" href="assets-new/css/ionicons.min.css">
     <script src="js/filters/someFilters.js"></script>
+    <script src="node_modules/ui-select/dist/select.js"></script>
+    <script src="//code.angularjs.org/snapshot/angular-sanitize.js"></script>
 
     <link rel="stylesheet" href="css/app.css">
 

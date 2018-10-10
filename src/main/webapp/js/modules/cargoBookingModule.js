@@ -195,7 +195,7 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         }
     })
 
-    .controller("CargoLoadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, vehicleManager) {
+    .controller("CargoLoadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, vehicleManager, $sce) {
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
@@ -248,6 +248,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
 
         }
         $scope.getAllVehicles();
+
+        $scope.vehicleMy = function (vehicle) {
+            console.log("vehice", vehicle);
+        }
     })
 
     .controller("CargoDeliverySheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location) {

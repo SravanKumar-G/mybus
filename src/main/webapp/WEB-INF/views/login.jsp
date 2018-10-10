@@ -24,9 +24,8 @@
     <script src="assets-new/js/menu_jquery.js"></script>
 
     <script src="js/app.js"></script>
-
 </head>
-<body>
+
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->

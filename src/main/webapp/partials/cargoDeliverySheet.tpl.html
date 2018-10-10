@@ -33,6 +33,8 @@
             <th>CreatedAt</th>
             <th>From</th>
             <th>To</th>
+            <th>To Contact</th>
+            <th>Remarks</th>
             <th>No of Items</th>
             <th>Amount</th>
             <th>Deliver</th>
@@ -43,6 +45,10 @@
             <td data-title="'Service'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt|date}}</td>
             <td data-title="'From'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}}</td>
             <td data-title="'To'" sortable="'attributes.toBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.toBranchOfficeName}}</td>
+            <td data-title="'To Contact'" sortable="'attributes.toName'"  class="clickable-item col-sm-1">
+                {{cargoBooking.toName}}<br>{{cargoBooking.toContact}}</td>
+            <td data-title="'Remarks'" sortable="'attributes.remarks'"  class="clickable-item col-sm-2">
+                {{cargoBooking.remarks}}</td>
             <td data-title="'No of items'" sortable="'bookedBy'"  class="clickable-item">{{cargoBooking.totalArticles}}</td>
             <td data-title="'Amount'" class="clickable-item">
                {{cargoBooking.totalCharge}}
