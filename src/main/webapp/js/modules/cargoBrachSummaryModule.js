@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBranchSummary', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBranchSummaryController",function($rootScope, $scope, NgTableParams,userManager, cargoBookingManager,$location, branchOfficeManager){
+    .controller("CargoBranchSummaryController",function($rootScope, $scope, NgTableParams,userManager, cargoBookingManager,$location,paginationService, branchOfficeManager){
         $scope.headline = "Branch Booking Summary";
         $scope.currentUser = userManager.getUser();
         $scope.filter = {};
@@ -23,6 +23,10 @@ angular.module('myBus.cargoBranchSummary', ['ngTable', 'ui.bootstrap'])
             cargoBookingManager.getBranchSummary($scope.filter, function(data){
                 $scope.summaryData = data;
             });
+        }
+        $scope.exportToExcel = function (tableId, fileName) {
+            console.log('export');
+            paginationService.exportToExcel(tableId, fileName);
         }
 
     });

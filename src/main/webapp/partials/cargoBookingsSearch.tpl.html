@@ -44,6 +44,8 @@
     <br/>
     <table class="table table-bordered table-condensed table-hover" ng-table="cargoBookingsTable" id="cargoBookings">
         <tr ng-repeat="cargoBooking in cargoBookings">
+            <td class="clickable-item">{{$index + ((cargoBookingsTable.page()-1) * cargoBookingsTable.count()) }}</td>
+
             <td data-title="'LR#'" sortable="'date'" class="clickable-item"><a href="#" ng-click="gotoBooking(cargoBooking.id)">{{cargoBooking.shipmentNumber}}</a> </td>
             <td data-title="'CreatedOn'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt| date}}</td>
             <td data-title="'From'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}}</td>
