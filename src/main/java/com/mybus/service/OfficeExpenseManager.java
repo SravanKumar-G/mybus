@@ -154,6 +154,9 @@ public class OfficeExpenseManager {
     public List<OfficeExpense> findOfficeExpenses(JSONObject query, Pageable pageable) throws ParseException {
         List<OfficeExpense> expenses = officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
         serviceUtils.fillInUserNames(expenses);
+        expenses.stream().forEach(expense -> {
+            fillInVehicleNumber(expense);
+        });
         return expenses;
     }
 
