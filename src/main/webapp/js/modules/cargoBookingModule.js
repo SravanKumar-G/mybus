@@ -2,7 +2,7 @@
 /*global angular, _*/
 
 angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
-    .controller("CargoBookingListController", function ($rootScope, $scope, $uibModal, NgTableParams, userManager, cargoBookingManager, $location, branchOfficeManager) {
+    .controller("CargoBookingListController", function ($rootScope, $scope, $uibModal, NgTableParams, userManager, cargoBookingManager, $location, branchOfficeManager, paginationService) {
         $scope.headline = "Cargo Bookings";
         $scope.cargoBookings = null;
         $scope.cargoBookingsTable = null;
@@ -48,12 +48,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             cargoBookingManager.count(filter, function (shipmentCount) {
                 $scope.cargoBookingsTable = new NgTableParams({
                     page: 1, // show first page
-                    count: 10,
+                    count: 100,
                     sorting: {
                         createdAt: 'desc'
                     },
                 }, {
-                    counts: [10, 50, 100],
+                    counts: [100, 200, 500],
                     total: shipmentCount,
                     getData: function (params) {
                         loadCargoBookings(params, filter);
@@ -97,6 +97,9 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             });
         }
 
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
 
         /**
          * This can be called when CargoBooking is paid from the details screen
@@ -105,16 +108,16 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $scope.init();
         });
     }).controller("CargoBookingLookupController", function ($rootScope, $scope, $location, $uibModal, cargoBookingManager, userManager, bookings) {
-    $scope.headline = "Cargo Bookings";
-    $scope.bookings = bookings;
-    $scope.cancel = function () {
-        $rootScope.modalInstance.dismiss('cancel');
-    };
-    $scope.gotoBooking = function (bookingId) {
-        $rootScope.modalInstance.dismiss('cancel');
-        $location.url('viewcargobooking/' + bookingId);
-    }
-})
+        $scope.headline = "Cargo Bookings";
+        $scope.bookings = bookings;
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+        $scope.gotoBooking = function (bookingId) {
+            $rootScope.modalInstance.dismiss('cancel');
+            $location.url('viewcargobooking/' + bookingId);
+        }
+    })
     .controller("CargoBookingHeaderController", function ($rootScope, $scope, cargoBookingManager, $location) {
         $scope.headline = "Cargo Bookings";
         $scope.bookingId;
@@ -129,25 +132,25 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
             $location.url('newbooking');
         }
     }).controller("DeliverBookingController", function ($rootScope, $scope, cargoBookingManager, $location, bookingId) {
-    $scope.deliveryComment = null;
-    $scope.showError = false;
-    $scope.cancel = function () {
-        $rootScope.modalInstance.dismiss('cancel');
-    };
-    $scope.cargoBookingId = bookingId;
+        $scope.deliveryComment = null;
+        $scope.showError = false;
+        $scope.cancel = function () {
+            $rootScope.modalInstance.dismiss('cancel');
+        };
+        $scope.cargoBookingId = bookingId;
 
-    $scope.deliverCargoBooking = function () {
-        if (!$scope.deliveryComment) {
-            $scope.showError = true;
-            return;
+        $scope.deliverCargoBooking = function () {
+            if (!$scope.deliveryComment) {
+                $scope.showError = true;
+                return;
+            }
+            cargoBookingManager.deliverCargoBooking($scope.cargoBookingId, $scope.deliveryComment, function () {
+                $location.url('cargobookings');
+                $rootScope.$broadcast('UpdateCargoBookingList');
+            });
         }
-        cargoBookingManager.deliverCargoBooking($scope.cargoBookingId, $scope.deliveryComment, function () {
-            $location.url('cargobookings');
-            $rootScope.$broadcast('UpdateCargoBookingList');
-        });
-    }
-})
-    .controller("CargoUnloadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location) {
+    })
+    .controller("CargoUnloadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, paginationService) {
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
@@ -193,9 +196,13 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.gotoBooking = function (bookingId) {
             $location.url('viewcargobooking/' + bookingId);
         }
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
+
     })
 
-    .controller("CargoLoadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, vehicleManager, $sce) {
+    .controller("CargoLoadingSheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, vehicleManager, paginationService) {
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
@@ -262,9 +269,12 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
         $scope.vehicleMy = function (vehicle) {
             console.log("vehice", vehicle);
         }
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
     })
 
-    .controller("CargoDeliverySheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location) {
+    .controller("CargoDeliverySheetController", function ($rootScope, $scope, branchOfficeManager, userManager, cargoBookingManager, $location, paginationService) {
         $scope.selectedBookings = [];
         $scope.offices = [];
         $scope.filter = {};
@@ -311,6 +321,10 @@ angular.module('myBus.cargoBooking', ['ngTable', 'ui.bootstrap'])
                 $scope.searchBookingForDelivery();
             });
         };
+
+        $scope.exportToExcel = function (tableId, fileName) {
+            paginationService.exportToExcel(tableId, fileName);
+        }
 
     })
 

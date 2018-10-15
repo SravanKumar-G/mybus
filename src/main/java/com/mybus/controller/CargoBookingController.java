@@ -42,15 +42,15 @@ public class CargoBookingController extends MyBusBaseController{
     public Iterable<CargoBooking> getAll(HttpServletRequest request,
                                          @RequestBody(required = false) final JSONObject query) throws ParseException {
         int page = 0;
-        int count = 10;
+        int count = 100;
         Pageable pageable = null;
         if(query != null) {
             if(query.containsKey("page")){
                 page = Integer.parseInt(query.get("page").toString());
                 page--;
             }
-            if(query.containsKey("count")){
-                count = Integer.parseInt(query.get("count").toString());
+            if(query.containsKey("size")){
+                count = Integer.parseInt(query.get("size").toString());
             }
             String sortOn = "createdAt";
             Sort.Direction sortDirection = Sort.Direction.DESC;

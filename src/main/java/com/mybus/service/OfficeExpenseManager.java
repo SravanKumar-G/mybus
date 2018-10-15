@@ -1,14 +1,13 @@
 package com.mybus.service;
 
 import com.mybus.dao.OfficeExpenseDAO;
+import com.mybus.dao.VehicleDAO;
 import com.mybus.dao.impl.OfficeExpenseMongoDAO;
 import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.ApproveStatus;
-import com.mybus.model.OfficeExpense;
-import com.mybus.model.Payment;
-import com.mybus.model.User;
+import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
+import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by srinikandula on 12/12/16.
@@ -45,6 +43,18 @@ public class OfficeExpenseManager {
     @Autowired
     private ServiceUtils serviceUtils;
 
+    @Autowired
+    private VehicleDAO vehicleDAO;
+
+    Map<String, Vehicle> vehicleMap = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        List<Vehicle> vehicles = IteratorUtils.toList(vehicleDAO.findAll().iterator());
+        vehicles.stream().forEach(vehicle -> {
+            vehicleMap.put(vehicle.getId(), vehicle);
+        });
+    }
     public OfficeExpense save(OfficeExpense officeExpense) {
         officeExpense.setOperatorId(sessionManager.getOperatorId());
         return officeExpenseMongoDAO.save(officeExpense);
@@ -107,6 +117,7 @@ public class OfficeExpenseManager {
     private void loadUserNames(List<OfficeExpense> officeExpenses) {
         officeExpenses.forEach(officeExpense -> {
             serviceUtils.fillInUserNames(officeExpense);
+            fillInVehicleNumber(officeExpense);
         });
     }
 
@@ -144,5 +155,14 @@ public class OfficeExpenseManager {
         List<OfficeExpense> expenses = officeExpenseMongoDAO.searchOfficeExpenses(query,pageable);
         serviceUtils.fillInUserNames(expenses);
         return expenses;
+    }
+
+    private void fillInVehicleNumber(OfficeExpense officeExpense) {
+        if(officeExpense.getVehicleId() != null) {
+            Vehicle vehicle = vehicleMap.get(officeExpense.getVehicleId());
+            if(vehicle != null) {
+                officeExpense.getAttributes().put("vehicle", vehicle.getRegNo());
+            }
+        }
     }
 }
