@@ -30,12 +30,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-<<<<<<< HEAD
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import org.springframework.web.context.request.RequestContextListener;
-=======
->>>>>>> Changes for Spring upgrade
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;

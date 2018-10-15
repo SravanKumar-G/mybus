@@ -12,5 +12,6 @@ public interface CityDAO extends PagingAndSortingRepository<City, String> {
     City findByIdAndOperatorId(String id, String operatorId);
     City findOneByNameAndState(String name, String state);
     Iterable<City> findByName(String name);
+    Iterable<City> findByActive(boolean all);
     City findOneByNameAndOperatorId(String name, String operatorId);
 }

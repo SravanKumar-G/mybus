@@ -1,6 +1,9 @@
 package com.mybus.interceptors;
 
+import com.mybus.dao.UserDAO;
+import com.mybus.exception.ForbiddenException;
 import com.mybus.model.OperatorAccount;
+import com.mybus.model.User;
 import com.mybus.service.OperatorAccountManager;
 import com.mybus.service.SessionManager;
 import org.slf4j.Logger;

@@ -1,9 +1,7 @@
 package com.mybus.dao.impl;
 
 
-<<<<<<< HEAD
 import com.mongodb.BasicDBObject;
-import com.mongodb.WriteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
@@ -13,9 +11,6 @@ import com.mybus.dto.BranchDeliverySummary;
 import com.mybus.dto.BranchwiseCargoBookingSummary;
 import com.mybus.dto.UserDeliverySummary;
 import com.mybus.model.*;
-=======
-import com.mybus.model.CargoBooking;
->>>>>>> Changes for Spring upgrade
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
@@ -23,17 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-<<<<<<< HEAD
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
-=======
->>>>>>> Changes for Spring upgrade
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

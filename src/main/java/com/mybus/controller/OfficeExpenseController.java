@@ -1,11 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-<<<<<<< HEAD
 import com.mybus.exception.BadRequestException;
-import com.mybus.model.BranchOffice;
-=======
->>>>>>> Changes for Spring upgrade
 import com.mybus.model.OfficeExpense;
 import com.mybus.service.OfficeExpenseManager;
 import com.mybus.service.ServiceConstants;
