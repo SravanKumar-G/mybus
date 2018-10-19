@@ -226,6 +226,7 @@
                                 <my-menu url="tripreports" label="TripReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('tripreports')"></my-menu>
                                 <my-menu url="serviceIncomeReport" label="ServiceIncomeReport" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('servicereports')"></my-menu>
                                 <my-menu url="serviceReports" label="ServiceReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('servicereports')"></my-menu>
+                                <my-menu label="FullTrips" class="nav navbar-nav  col-md-12"></my-menu>
                                 <my-menu label="FuelExpenseReports" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('fuelexpensereports')"></my-menu>
                                 <my-menu label="DueReport" class="nav navbar-nav  col-md-12" ng-if="canAccessModule('duereport')"></my-menu>
                                 <my-menu label="CashTransfers" class="nav navbar-nav col-md-12" ng-if="canAccessModule('cashtransfers')">Cash Transfers</my-menu>

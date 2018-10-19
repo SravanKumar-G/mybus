@@ -476,17 +476,20 @@ myBus.config(['$stateProvider','$urlRouterProvider',
                 controller: 'TripReportsController'
             })
             .state('updatepassword', {
-            level:2,
-            url:'/updatepassword',
-            templateUrl: 'partials/updatePassword.tpl.html'
+                level:2,
+                url:'/updatepassword',
+                templateUrl: 'partials/updatePassword.tpl.html'
             }).state('serviceincomereport', {
-            level:2,
-            url:'/serviceincomereport',
-            templateUrl: 'partials/serviceIncomeReport.tpl.html'
-        }).state('loadingsheet',{
-            url:'/loadingsheet',
-            templateUrl: 'partials/cargoLoadingSheet.tpl.html'
-        });
+                level:2,
+                url:'/serviceincomereport',
+                templateUrl: 'partials/serviceIncomeReport.tpl.html'
+            }).state('loadingsheet',{
+                url:'/loadingsheet',
+                templateUrl: 'partials/cargoLoadingSheet.tpl.html'
+            }).state('fulltrips',{
+                url:'/fulltrips',
+                templateUrl: 'partials/fullTrips.tpl.html'
+            });
         $urlRouterProvider.otherwise( '/');
     }]);
 
