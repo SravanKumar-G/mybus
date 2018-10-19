@@ -87,7 +87,19 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private String loadedBy;
 
     private List<CargoBookingItem> items;
+
     private int totalArticles;
+    public String getDescription() {
+        if(items == null || items.size() == 0){
+            return null;
+        } else {
+            StringBuilder builder = new StringBuilder();
+            items.stream().forEach(i -> {
+                builder.append(i.getDescription());
+            });
+            return builder.toString();
+        }
+    }
 
     private String remarks;
 

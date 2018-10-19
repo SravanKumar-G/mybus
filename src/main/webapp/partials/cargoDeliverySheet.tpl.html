@@ -30,29 +30,28 @@
         <tr>
             <th>#</th>
             <th>LR#</th>
-            <th>CreatedAt</th>
-            <th>From</th>
-            <th>To</th>
-            <th>To Contact</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Description</th>
+            <th>From - To</th>
+            <th>Contact</th>
             <th>Remarks</th>
-            <th>No of Items</th>
             <th>Amount</th>
+            <th>BookedBy</th>
             <th>Deliver</th>
         </tr>
         <tr ng-repeat="cargoBooking in cargoBookings | filter:{paymentType: filterString}">
             <td>{{$index}}</td>
             <td data-title="'LR#'" class="clickable-item"><a href="#" ng-click="gotoBooking(cargoBooking.id)">{{cargoBooking.shipmentNumber}}</a> </td>
-            <td data-title="'Service'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt|date}}</td>
-            <td data-title="'From'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}}</td>
-            <td data-title="'To'" sortable="'attributes.toBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.toBranchOfficeName}}</td>
-            <td data-title="'To Contact'" sortable="'attributes.toName'"  class="clickable-item col-sm-1">
+            <td data-title="'Date'" sortable="'createdAt'"  class="clickable-item">{{cargoBooking.createdAt|date}}</td>
+            <td data-title="'Items'" class="clickable-item">{{cargoBooking.totalArticles}}</td>
+            <td data-title="'Description'" class="clickable-item">{{cargoBooking.description}}</td>
+            <td data-title="'From - To'" sortable="'attributes.fromBranchOfficeName'"  class="clickable-item">{{cargoBooking.attributes.fromBranchOfficeName}} - {{cargoBooking.attributes.toBranchOfficeName}}</td>
+            <td data-title="'To Contact'" sortable="'attributes.toName'"  class="clickable-item">
                 {{cargoBooking.toName}}<br>{{cargoBooking.toContact}}</td>
-            <td data-title="'Remarks'" sortable="'attributes.remarks'"  class="clickable-item col-sm-2">
-                {{cargoBooking.remarks}}</td>
-            <td data-title="'No of items'" sortable="'bookedBy'"  class="clickable-item">{{cargoBooking.totalArticles}}</td>
-            <td data-title="'Amount'" class="clickable-item">
-               {{cargoBooking.totalCharge}}
-            </td>
+            <td data-title="'Remarks'" sortable="'attributes.remarks'"  class="clickable-item">{{cargoBooking.remarks}}</td>
+            <td data-title="'Amount'" class="clickable-item">{{cargoBooking.totalCharge}}</td>
+            <td data-title="'BookedBy'" sortable="'bookedBy'"  class="clickable-item">{{cargoBooking.attributes.bookedBy}}</td>
             <td data-title="'Deliver'" class="clickable-item"> <a href="#" ng-if="!cargoBooking.canceled && cargoBooking.cargoTransitStatus !== 'DELIVERED'" ng-click="initiateDeliverCargoBooking(cargoBooking.id)">Deliver</a>
                 <span ng-if="cargoBooking.canceled"> Cancelled</span>
                 <span ng-if="cargoBooking.cargoTransitStatus === 'DELIVERED'"> Delivered</span>
