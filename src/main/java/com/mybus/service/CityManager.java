@@ -7,13 +7,10 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 

@@ -257,4 +257,20 @@ public class PaymentManager {
     public long getPaymentsCount(boolean pendingPayments) {
         return paymentMongoDAO.getPaymentsCount(pendingPayments);
     }
+
+    public Payment createPayment(FullTrip fullTrip) {
+        User currentUser = sessionManager.getCurrentUser();
+        Payment payment = new Payment();
+        payment.setOperatorId(sessionManager.getOperatorId());
+        payment.setBranchOfficeId(currentUser.getBranchOfficeId());
+        payment.setAmount(fullTrip.getCharge());
+        payment.setDate(new Date());
+        payment.setBookingId(fullTrip.getId());
+        payment.setSubmittedBy(currentUser.getId());
+        payment.setDescription(Payment.FULLTRIP_AMOUNT + " "+fullTrip.getFrom()+" - " + fullTrip.getTo() +" "+ fullTrip.getTripDate());
+        payment.setType(PaymentType.INCOME);
+        payment.setStatus(Payment.STATUS_AUTO);
+        payment.setDuePaidOn(new Date());
+        return updatePayment(payment);
+    }
 }

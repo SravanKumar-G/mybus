@@ -102,7 +102,7 @@ for(i in serviceForms) {
 
 //remove duplicate bookings
 
-var duplicateTickets = db.booking.aggregate([{"$group" : {_id:"$ticketNo", ids: { $push : "$_id"},count:{$sum:1},due:{$push:"$due"}}},{"$match": {"count": { "$gt": 1 }}}]).toArray()
+var duplicateTickets = db.booking.aggregate([{"$match":{"formId":{$exists:true}}},{"$group" : {_id:"$ticketNo", ids: { $push : "$_id"},serviceReportIds: { $push : "$serviceReportId"},count:{$sum:1},due:{$push:"$due"}}},{"$match": {"count": { "$gt": 1 }}}],{"allowDiskUse":true}).toArray()
 
 for(t in duplicateTickets){
     var ticket = duplicateTickets[t];
