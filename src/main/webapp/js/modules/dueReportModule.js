@@ -424,7 +424,6 @@ angular.module('myBus.dueReportModule', ['ngTable', 'ngAnimate', 'ui.bootstrap']
                 alert("Error paying booking:" + error.data.message);
             });
         }
-
     })
 
 
