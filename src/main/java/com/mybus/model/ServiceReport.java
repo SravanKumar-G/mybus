@@ -54,6 +54,7 @@ public class ServiceReport extends AbstractDocument  {
     private double netRedbusIncome;
     private double netOnlineIncome;
     private double netIncome;
+    private double grossIncome;
 
 
     private double luggageIncome;

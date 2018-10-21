@@ -255,6 +255,7 @@ public class AbhiBusPassengerReportService extends BaseService{
                     booking.setJDate(passengerInfo.get("JourneyDate").toString());
                     booking.setJourneyDate(ServiceConstants.parseDate(booking.getJDate()));
                     booking.setPhoneNo(passengerInfo.get("Mobile").toString());
+                    booking.setEmailID(passengerInfo.get("Email").toString());
                     booking.setSeats(passengerInfo.get("Seats").toString().replace(",", ", "));
                     booking.setName(passengerInfo.get("PassengerName").toString());
                     booking.setSource(passengerInfo.get("Source").toString());
