@@ -237,6 +237,7 @@ public class ServiceReportsManager {
             onlineBooking.setOperatorId(serviceReport.getOperatorId());
             double cashIncome = 0;
             for (Booking booking : serviceReport.getBookings()) {
+                serviceReport.setGrossIncome(serviceReport.getGrossIncome() + booking.getNetAmt());
                 //Need to set journey date for service bookings
                 if (booking.getJourneyDate() == null) {
                     booking.setJourneyDate(serviceReport.getJourneyDate());
@@ -288,6 +289,7 @@ public class ServiceReportsManager {
             for (Payment expense : serviceReport.getExpenses()) {
                 serviceReport.setNetCashIncome(serviceReport.getNetCashIncome() - expense.getAmount());
             }
+            serviceForm.setGrossIncome(serviceReport.getGrossIncome());
             serviceForm.setNetRedbusIncome(serviceReport.getNetRedbusIncome());
             serviceForm.setNetOnlineIncome(serviceReport.getNetOnlineIncome());
             serviceForm.setNetCashIncome(serviceReport.getNetCashIncome());

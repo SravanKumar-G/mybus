@@ -32,6 +32,7 @@ public class ServiceForm extends AbstractDocument  {
     private double netRedbusIncome;
     private double netOnlineIncome;
     private double netIncome;
+    private double grossIncome;
 
     private String verifiedBy;
     private String submittedBy;
