@@ -8,7 +8,7 @@ import com.mybus.model.OperatorAccount;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.Vehicle;
 import com.mybus.util.EmailSender;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

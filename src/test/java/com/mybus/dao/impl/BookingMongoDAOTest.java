@@ -9,6 +9,7 @@ import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import org.apache.commons.collections.IteratorUtils;
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -102,7 +103,7 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
             booking.setDue(true);
             bookingDAO.save(booking);
         }
-        List<BasicDBObject> dues = bookingMongoDAO.getBookingDueTotalsByService(null);
+        List<Document> dues = bookingMongoDAO.getBookingDueTotalsByService(null);
         assertEquals(2, dues.size());
         assertTrue(dues.get(0).get("_id").equals("ServiceNumber0"));
         assertTrue(Double.parseDouble(dues.get(0).get("totalDue").toString()) == 2200.0);
@@ -124,7 +125,7 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
             booking.setBookedBy("agent"+i);
             bookingDAO.save(booking);
         }
-        List<BasicDBObject> dues = bookingMongoDAO.getBookingDueTotalsByService(branchOffice1.getId());
+        List<Document> dues = bookingMongoDAO.getBookingDueTotalsByService(branchOffice1.getId());
         assertEquals(3, dues.size());
     }
 
@@ -149,7 +150,7 @@ public class BookingMongoDAOTest extends AbstractControllerIntegrationTest {
         }
         Pageable pageable = new PageRequest(0,2);
 
-        Page<BasicDBObject> bookingsPage = bookingMongoDAO.getBookingCountsByPhone(pageable);
+        Page<Document> bookingsPage = bookingMongoDAO.getBookingCountsByPhone(pageable);
         assertEquals(3, bookingsPage.getTotalElements());
         Object count = bookingsPage.getContent().stream()
                 .filter(booking -> booking.get("_id").equals("123457")).findFirst().get().get("totalBookings");

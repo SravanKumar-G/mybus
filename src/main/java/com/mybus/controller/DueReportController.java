@@ -1,6 +1,6 @@
 package com.mybus.controller;
 
-import com.google.gson.JsonArray;
+
 import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.exception.BadRequestException;
@@ -11,6 +11,7 @@ import com.mybus.service.DueReportManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +111,7 @@ public class DueReportController extends MyBusBaseController{
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/payBookingDues", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
-    @ApiOperation(value = "Record due payment", response = JsonArray.class )
+    @ApiOperation(value = "Record due payment")
     public List<Booking> recordDuePayments(HttpServletRequest request,
                                     @ApiParam(value = "Ids of the bookings") @RequestBody final List<String> ids) {
        return bookingManager.payBookingDues(ids);
@@ -119,7 +120,7 @@ public class DueReportController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/officeDuesByService", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Record due payment", response = BranchOfficeDue.class )
-    public List<BasicDBObject> getOfficeDuesByService(HttpServletRequest request) {
+    public List<Document> getOfficeDuesByService(HttpServletRequest request) {
         return dueReportManager.getOfficeDuesByService();
     }
 
@@ -133,7 +134,7 @@ public class DueReportController extends MyBusBaseController{
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/officeDuesByAgent", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Agent due totals", response = BranchOfficeDue.class )
-    public List<BasicDBObject> getOfficeDuesByAgents(HttpServletRequest request) {
+    public List<Document> getOfficeDuesByAgents(HttpServletRequest request) {
         return dueReportManager.getBookingDuesGroupByAgent();
     }
 

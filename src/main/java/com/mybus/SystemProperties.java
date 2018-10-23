@@ -11,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.*;
 
 @ManagedResource
-@ContextConfiguration(classes = { CoreAppConfig.class })
 public class SystemProperties {
 	private static final String HOME_DIR_PROPS_FILENAME = ".mybus.properties";
 	private Properties homeDirProperties;

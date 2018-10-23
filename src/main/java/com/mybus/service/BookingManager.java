@@ -7,7 +7,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.ServiceReport;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

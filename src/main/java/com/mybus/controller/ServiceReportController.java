@@ -13,6 +13,7 @@ import com.mybus.service.ServiceReportsManager;
 import com.mybus.service.SessionManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,7 +186,7 @@ public class ServiceReportController {
 
 	@RequestMapping(value = "serviceReport/incomeReport", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service form", response = JSONObject.class)
-	public List<BasicDBObject> getIncomeReport(HttpServletRequest request, @RequestBody final JSONObject query) {
+	public List<Document> getIncomeReport(HttpServletRequest request, @RequestBody final JSONObject query) {
 		try{
 			return serviceReportMongoDAO.findServiceIncomeReport(query);
 		}catch (Exception e) {

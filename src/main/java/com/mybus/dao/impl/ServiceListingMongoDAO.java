@@ -4,7 +4,7 @@ import com.mybus.SystemProperties;
 import com.mybus.model.ServiceListing;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;

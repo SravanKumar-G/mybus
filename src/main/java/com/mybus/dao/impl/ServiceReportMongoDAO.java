@@ -1,13 +1,13 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCursor;
 import com.mybus.SystemProperties;
 import com.mybus.model.ServiceReport;
 import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -94,7 +94,7 @@ public class ServiceReportMongoDAO {
     }
 
 
-    public List<BasicDBObject> findServiceIncomeReport(JSONObject query) throws ParseException {
+    public List<Document> findServiceIncomeReport(JSONObject query) throws ParseException {
         List<Criteria> match = new ArrayList<>();
         Query q = new Query();
         Criteria criteria = new Criteria();
@@ -123,8 +123,8 @@ public class ServiceReportMongoDAO {
                         .sum("netRedbusIncome").as("netRedbusIncome")
                         .sum("netOnlineIncome").as("netOnlineIncome")
                         .sum("netCashIncome").as("netCashIncome"));
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, ServiceReport.class, BasicDBObject.class);
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, ServiceReport.class, Document.class);
         return groupResults.getMappedResults();
     }
     public List<String> getDistinctCities() {

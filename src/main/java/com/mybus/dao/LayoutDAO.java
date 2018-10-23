@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LayoutDAO extends PagingAndSortingRepository<Layout, String> {
     Layout findOneByName(String name);
-    Iterable<City> findByActive(boolean active);
+    Iterable<Layout> findByActive(boolean active);
 }

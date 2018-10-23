@@ -7,7 +7,7 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;

@@ -63,7 +63,7 @@ public class FullTripManager {
         if (!fullTrip.isDue()) {
             throw new IllegalArgumentException("FullTrip is already paid");
         }
-        FullTrip savedTrip = fullTripsDAO.findOne(fullTrip.getId());
+        FullTrip savedTrip = fullTripsDAO.findById(fullTrip.getId()).get();
         savedTrip.setFrom(fullTrip.getFrom());
         savedTrip.setTo(fullTrip.getTo());
         savedTrip.setCharge(fullTrip.getCharge());
@@ -78,7 +78,7 @@ public class FullTripManager {
         return fullTripsDAO.save(fullTrip);
     }
     public boolean payOffFullTrip(String fullTripId){
-        FullTrip fullTrip = fullTripsDAO.findOne(fullTripId);
+        FullTrip fullTrip = fullTripsDAO.findById(fullTripId).get();
         if(fullTrip.getId() == null) {
             throw new IllegalArgumentException("Invalid Id in FullTrip");
         }
@@ -95,7 +95,7 @@ public class FullTripManager {
     }
 
     public FullTrip findOne(String id) {
-        return fullTripsDAO.findOne(id);
+        return fullTripsDAO.findById(id).get();
     }
 
     public long count(JSONObject query) throws ParseException {
@@ -103,6 +103,6 @@ public class FullTripManager {
     }
 
     public void delete(String id) {
-        fullTripsDAO.delete(id);
+        fullTripsDAO.deleteById(id);
     }
 }

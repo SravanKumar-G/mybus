@@ -5,6 +5,7 @@ import com.mybus.dao.GSTFilterDAO;
 import com.mybus.dao.impl.GSTFilterMongoDAO;
 import com.mybus.model.GSTFilter;
 import org.apache.commons.collections.IteratorUtils;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class GSTFilterService {
     @Scheduled(fixedDelay = 900000)
     public void refreshGSTFilters(){
         List<String> serviceNumbers = gstFilterMongoDAO.getGSTFilterServiceNumbers();
-        List<BasicDBObject> filters = gstFilterMongoDAO.getUniqueServiceNumbers(serviceNumbers);
+        List<Document> filters = gstFilterMongoDAO.getUniqueServiceNumbers(serviceNumbers);
         filters.stream().filter(filter -> !serviceNumbers.contains(filter.getString("serviceNumber")))
                 .forEach(filter -> {
                     if(gstFilterDAO.findOneByServiceNumber(filter.getString("_id")) == null) {

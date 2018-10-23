@@ -16,11 +16,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableScheduling
 @ComponentScan(basePackages = "com.mybus")
 @EnableWebSecurity
-@EnableWebMvcSecurity
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LoginService loginService;
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		/*auth.inMemoryAuthentication().withUser("tom").password("123").roles("USER");

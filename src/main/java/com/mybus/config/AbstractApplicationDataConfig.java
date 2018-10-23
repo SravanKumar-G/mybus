@@ -13,19 +13,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.format;
-
+public abstract class AbstractApplicationDataConfig {
+}
+/*
 public abstract class AbstractApplicationDataConfig extends AbstractMongoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractApplicationDataConfig.class);
@@ -49,31 +49,13 @@ public abstract class AbstractApplicationDataConfig extends AbstractMongoConfigu
         String portProp = getMongoSystemProperties().getProperty("mongo.port");
         if (!StringUtils.isBlank(hostProp) || StringUtils.isBlank(portProp)) {
             return new MongoClient(Collections.singletonList(new ServerAddress(hostProp, Integer.parseInt(portProp))),
-                    Collections.singletonList(MongoCredential.createCredential("","mybus", null)));
+                    Collections.singletonList(MongoCredential.createCredential(
+                            getMongoSystemProperties().getProperty("mongo.user"),
+                            getMongoSystemProperties().getProperty("mongo.db"),
+                            getMongoSystemProperties().getProperty("mongo.password").toCharArray())));
         }
         return null;
-        /*logger.info("Configuring mongo connection...");
 
-        for (int i = 0; i < MAX_NODES_IN_REPLICA_SET; i++) {
-            String hostPropertyName = format("mongo.%d.host", i);
-            String host = getMongoSystemProperties().getProperty(hostPropertyName);
-            String portPropertyName = format("mongo.%d.port", i);
-            String portStr = getMongoSystemProperties().getProperty(portPropertyName);
-            if (StringUtils.isBlank(host) || StringUtils.isBlank(portStr)) {
-                break;
-            }
-            int port = toInt(portStr);
-            Assert.isTrue(port > 0, format("Invalid value '%s' for property '%s'", portStr, portPropertyName));
-            servers.add(new ServerAddress(host, port));
-            logger.info(format("Adding connection to mongo server [%d]: host: '%s', port: %d", i, host, port));
-        }
-
-        Assert.notEmpty(servers, "No mongo hosts were defined in the mongo properties file.");
-        logger.info(format("A total of %d mongo servers have been configured.", servers.size()));
-        Mongo mongo = new Mongo(servers);
-        mongo.setWriteConcern(WriteConcern.SAFE);
-
-        return mongo;*/
     }
 
 
@@ -99,4 +81,6 @@ public abstract class AbstractApplicationDataConfig extends AbstractMongoConfigu
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
     }
+
 }
+*/

@@ -1,5 +1,9 @@
 package com.mybus.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
 import com.mybus.dao.BookingPaymentDAO;
 import com.mybus.dao.BookingSessionInfoDAO;
@@ -7,10 +11,6 @@ import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.*;
 import com.mybus.util.Constants;
 import com.mybus.util.Status;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -452,7 +452,7 @@ public class BookingPaymentManager {
 		List<CancellationPolicy> cancellationPolicyList = null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			cancellationPolicyList = mapper.readValue(cancellationPolicyJsonString, new TypeReference<List<CancellationPolicy>>(){});
+			cancellationPolicyList = mapper.readValue(cancellationPolicyJsonString, new TypeReference(){});
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

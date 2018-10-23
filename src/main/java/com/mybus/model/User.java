@@ -69,6 +69,10 @@ public class User extends AbstractDocument implements AttributesDocument{
 
     private Set<String> accessibleModules;
 
+    public User(String userName) {
+        this.setUserName(userName);
+    }
+
     public User(JSONObject json){
         if(json.containsKey("id")) {
             this.setId(json.get("id").toString());

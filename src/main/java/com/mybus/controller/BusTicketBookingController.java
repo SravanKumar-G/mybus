@@ -12,6 +12,7 @@ import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -196,7 +197,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "getBookingCounts", method = RequestMethod.GET)
 	@ApiOperation(value = "booked ticket passenger info request")
-    public Page<BasicDBObject> getBookingCounts(HttpServletRequest request, Pageable pageable) {
+    public Page<Document> getBookingCounts(HttpServletRequest request, Pageable pageable) {
 		return bookingMongoDAO.getBookingCountsByPhone(pageable);
 	}
 

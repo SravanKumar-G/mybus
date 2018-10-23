@@ -17,8 +17,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan(basePackages = "com.mybus")
 @PropertySource(name = "mongoProperties", value = "classpath:mongo-config.properties")
 @EnableMongoRepositories(basePackages = "com.mybus.dao")
-public class ApplicationDataConfig extends AbstractApplicationDataConfig {
 
+public class ApplicationDataConfig {
+
+    /*
 	private static final String HOME_DIR_PROPS_FILENAME = ".mybus.mongo.properties";
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationDataConfig.class);
 	
@@ -39,5 +41,5 @@ public class ApplicationDataConfig extends AbstractApplicationDataConfig {
     @Override
     public MongoClient mongoClient() {
         return null;
-    }
+    }*/
 }

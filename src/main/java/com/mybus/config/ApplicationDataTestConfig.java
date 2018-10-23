@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @PropertySource(name = "mongoProperties", value = "classpath:test-mongo-config.properties")
 @EnableMongoRepositories(basePackages = "com.mybus")
 @EnableMongoAuditing
-public class ApplicationDataTestConfig extends AbstractApplicationDataConfig {
-
+public class ApplicationDataTestConfig {
+/*
     private static final String HOME_DIR_PROPS_FILENAME = ".mybus.mongo.test.properties";
 
     @Autowired
@@ -30,4 +30,5 @@ public class ApplicationDataTestConfig extends AbstractApplicationDataConfig {
     String getHomeDirPropertiesFilename() {
         return HOME_DIR_PROPS_FILENAME;
     }
+    */
 }

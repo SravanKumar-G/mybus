@@ -1,22 +1,18 @@
 package com.mybus.config;
 
 import com.mybus.dao.UserDAO;
-import com.mybus.model.OperatorAccount;
 import com.mybus.model.User;
-import com.mybus.service.OperatorAccountManager;
-import com.mybus.service.SessionManager;
 import com.mybus.service.TestDataCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 /**
@@ -24,7 +20,9 @@ import java.util.Collection;
  */
 @Service
 public class LoginService implements UserDetailsService {
-    
+    private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+
+
     @Autowired
     private UserDAO userDAO;
 
@@ -33,6 +31,7 @@ public class LoginService implements UserDetailsService {
 
     @PostConstruct
     public void createTestData() {
+        userDAO.deleteByUserName("test");
         testDataCreator.createTestData();
     }
     

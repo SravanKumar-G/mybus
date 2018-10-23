@@ -1,5 +1,6 @@
 package com.mybus.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.exception.BadRequestException;
 import io.swagger.annotations.ApiModel;
@@ -7,7 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
