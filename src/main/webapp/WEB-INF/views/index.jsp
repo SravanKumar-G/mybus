@@ -70,6 +70,7 @@
     <script src="js/modules/staffModule.js"></script>
     <script src="js/modules/cargoDashboardModule.js"></script>
     <script src="js/modules/cargoBrachSummaryModule.js"></script>
+    <script src="js/modules/fullTripModule.js"></script>
 
     <script src="js/modules/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>

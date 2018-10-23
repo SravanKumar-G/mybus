@@ -36,6 +36,7 @@ var myBus = angular.module('myBus', [
     'myBus.staffModule',
     'myBus.cargoDashboard',
     'myBus.cargoBranchSummary',
+    'myBus.fullTripModule',
     'ui.select',
     'ngSanitize'
 ]);
@@ -489,7 +490,13 @@ myBus.config(['$stateProvider','$urlRouterProvider',
             }).state('fulltrips',{
                 url:'/fulltrips',
                 templateUrl: 'partials/fullTrips.tpl.html'
-            });
+            }).state('addFullTrip',{
+            url:'/addFullTrip',
+            templateUrl: 'partials/addFullTrip-details.tpl.html'
+            }).state('editFullTrip',{
+            url:'/editFullTrip/:id',
+            templateUrl: 'partials/addFullTrip-details.tpl.html'
+         });
         $urlRouterProvider.otherwise( '/');
     }]);
 
