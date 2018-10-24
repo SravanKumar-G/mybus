@@ -31,24 +31,12 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     @Autowired
     private UserDAO userDAO;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    private User testUser = null;
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            String userName = "test";
-            testUser = userDAO.findOneByUserName(userName);
-            if(testUser == null){
-                Document d = new Document();
-                d.put("userName", userName);
-                mongoTemplate.getCollection("user").insertOne(d);
-                testUser = userDAO.findOneByUserName(userName);
-                logger.info("created test user {}", testUser);
-            }
-            return Optional.of(testUser.getId());
+            return Optional.of("anonymousUser");
         }
         String username = null;
         if (authentication.getPrincipal() instanceof String) {

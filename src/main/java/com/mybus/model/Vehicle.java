@@ -9,8 +9,6 @@ import lombok.ToString;
 import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.List;
 
 /**
@@ -41,31 +39,27 @@ public class Vehicle extends AbstractDocument  {
     private String permitNumber;
 
     @RequiresValue
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.NONE)
     private DateTime permitExpiry;
     private String insuranceProvider;
     private String policyNumber;
 
     @RequiresValue
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private DateTime insuranceExpiry;
 
     private String fitnessNumber;
 
     @RequiresValue
-    @Temporal(TemporalType.DATE)
+
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private DateTime fitnessExpiry;
 
     @RequiresValue
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private DateTime pollutionExpiry;
 
     @RequiresValue
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private DateTime authExpiry;
 

@@ -6,12 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@Configuration
-@Profile("test")
-@ComponentScan(basePackages = "com.mybus")
-@PropertySource(name = "mongoProperties", value = "classpath:test-mongo-config.properties")
-@EnableMongoRepositories(basePackages = "com.mybus")
-@EnableMongoAuditing
+
 public class ApplicationDataTestConfig {
 /*
     private static final String HOME_DIR_PROPS_FILENAME = ".mybus.mongo.test.properties";

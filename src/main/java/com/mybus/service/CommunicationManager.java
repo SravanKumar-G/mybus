@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CommunicationManager {
-	
-	@Autowired
-	JavaMailSenderImpl JavaMailSenderImpl;
+
 
 	/*
 	public void sendMail(final EmailData emailData,final ByteArrayOutputStream attachmentAsByteArrResource) {  

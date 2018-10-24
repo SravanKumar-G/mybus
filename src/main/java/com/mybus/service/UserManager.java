@@ -109,6 +109,9 @@ public class UserManager {
 
     public User getUser(String id){
         Preconditions.checkNotNull(id,"UserId cannot be Null");
+        if(id.equalsIgnoreCase("anonymousUser")) {
+            return userDAO.save(new User("anonymousUser"));
+        }
         User user = userDAO.findById(id).get();
         if(user == null){
             throw new RuntimeException("User does not exist with that Id");

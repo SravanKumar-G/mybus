@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.mybus.SystemProperties;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @Service
 public class AWSClient {
     private static final Logger logger = LoggerFactory.getLogger(AWSClient.class);
-
-    private static final Tika tika = new Tika();
 
     private AmazonS3Client s3Client;
     @Autowired
@@ -94,7 +91,7 @@ public class AWSClient {
         return retval;
     }
     private static String detectContentTypeFromFilename(final String filename) {
-        return tika.detect(filename);
+        return ".txt";
     }
 
 }

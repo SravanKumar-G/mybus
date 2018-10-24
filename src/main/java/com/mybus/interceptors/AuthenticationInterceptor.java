@@ -12,7 +12,7 @@ import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -124,12 +124,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     private void failIfSessionExpired(final HttpServletRequest request) {
         if (logger.isTraceEnabled()) {
             logger.trace(this.getClass().getName() + ".failIfSessionExpired(...) called.");
-        }
-        if (request instanceof MockHttpServletRequest) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Skipping failIfSessionExpired because the request is a MockHttpServletRequest");
-            }
-            return;
         }
     }
 }

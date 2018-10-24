@@ -289,20 +289,6 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter implements Asy
 		return factory.createVelocityEngine();
 	}
 	*/
-    @Bean
-    public JavaMailSenderImpl getJavaMailSenderImpl(){
-		JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
-		javaMailSenderImpl.setHost("");
-		javaMailSenderImpl.setPort(1);
-		javaMailSenderImpl.setUsername("");
-		javaMailSenderImpl.setPassword("");
-		Properties javaMailProperties = new Properties();
-		javaMailProperties.put("mail.smtp.auth", true);
-		javaMailProperties.put("mail.smtp.starttls.enable", false);
-		javaMailProperties.put("mail.smtp.quitwait", false);
-		javaMailProperties.put("mail.smtp.ssl.trust","");
-		javaMailSenderImpl.setJavaMailProperties(javaMailProperties);
-		return javaMailSenderImpl;
-	}
+
 
 }

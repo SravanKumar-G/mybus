@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.mybus.SystemProperties;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ public class FileUploadManager {
     @Autowired
     private SystemProperties props;
 
-    private static final Tika tika = new Tika();
 
     /**
      * Saves a multipart file to a temp file, and returns it.
@@ -57,8 +55,8 @@ public class FileUploadManager {
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         return tempFile;
     }
-    private static String detectContentTypeFromFilename(final String filename) {
+  /*  private static String detectContentTypeFromFilename(final String filename) {
         return tika.detect(filename);
-    }
+    }*/
 
 }
