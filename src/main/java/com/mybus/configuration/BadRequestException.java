@@ -1,5 +1,7 @@
 package com.mybus.configuration;
 
+import com.mybus.exception.AbstractUserFriendlyRuntimeException;
+
 public class BadRequestException extends AbstractUserFriendlyRuntimeException {
 
     public BadRequestException(String message, String userFriendlyMessage) {
