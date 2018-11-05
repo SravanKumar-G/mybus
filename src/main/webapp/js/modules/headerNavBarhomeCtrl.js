@@ -66,7 +66,7 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
         $scope.$on('UpdateHeader', function(){
             $scope.updateHeader();
         });
-    }).controller('MenuBarController', function($scope,$rootScope, $location, $stateParams,userManager ) {
+    }).controller('MenuBarController', function($scope,$rootScope, $location, $stateParams,userManager,vehicleManager ) {
         $scope.currentUser = null;
         $scope.$on('currentuserLoaded', function(){
             $scope.currentUser = $rootScope.currentuser;
@@ -95,5 +95,22 @@ angular.module('myBus.header', ['ngTable','ui.bootstrap'])
                 }
             }
         };
+
+    setTimeout(function() {
+        $('#myModal').modal('show');
+    }, 3000);
+
+    setTimeout(function() {
+        $('#myModal').modal('hide');
+    }, 35000);
+
+    $scope.loadVehicles = function () {
+        vehicleManager.getVehicles({}, function(response){
+                $scope.vehicles = response.content;
+            })
+        };
+
+    $scope.loadVehicles();
+
     });
 
