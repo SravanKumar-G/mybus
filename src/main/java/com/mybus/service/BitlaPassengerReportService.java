@@ -1,6 +1,5 @@
 package com.mybus.service;
 
-import com.google.common.collect.Lists;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -8,6 +7,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,14 +18,13 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by srinikandula on 2/18/17.
  */
 @Service
-public class BitlaPassengerReportService extends BaseService{
+public class BitlaPassengerReportService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BitlaPassengerReportService.class);
 
     @Autowired
@@ -140,7 +139,7 @@ public class BitlaPassengerReportService extends BaseService{
     }
 
     private  void createServiceReports(String date,
-                                      ServiceReport serviceReport, JSONArray passengers) throws ParseException {
+                                       ServiceReport serviceReport, JSONArray passengers) throws ParseException {
         for (Object info: passengers) {
             JSONObject passengerInfo = (JSONObject) info;
             Booking booking = new Booking();

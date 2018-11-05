@@ -7,7 +7,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;

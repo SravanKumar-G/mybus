@@ -57,7 +57,7 @@ public class StaffController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a new staff")
     public ResponseEntity createStaff(HttpServletRequest request,
-                                     @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Staff staff){
+                                      @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Staff staff){
         logger.debug("create vehicle called");
         return new ResponseEntity<>(staffManager.saveStaff(staff), HttpStatus.OK);
     }

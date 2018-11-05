@@ -4,7 +4,7 @@ import com.mybus.SystemProperties;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.PaymentResponse;
-import com.mybus.util.Status;
+import com.mybus.model.Status;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -39,10 +39,6 @@ public class BookingPaymentManagerTest extends AbstractControllerIntegrationTest
 		paymentResponseDAO.save(pr);
 	}
 	
-	@Test
-	public void refundAmount(){
-		DateTime busStartTime = new DateTime(2016,05,25,11,30);
-		paymentManager.refundAmount(busStartTime,100);
-	}
+
 
 }

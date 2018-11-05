@@ -264,8 +264,8 @@ public class BookingMongoDAO {
                 = mongoTemplate.aggregate(agg, Booking.class, Document.class);
         List<Document> result = groupResults.getMappedResults();
         if(!result.isEmpty()) {
-            invoice.setTotalTax(result.get(0).getLong("totalTax"));
-            invoice.setTotalSale(result.get(0).getLong("bookingTotal"));
+            invoice.setTotalTax(result.get(0).getDouble("totalTax"));
+            invoice.setTotalSale(result.get(0).getDouble("bookingTotal"));
         }
         return invoice;
     }

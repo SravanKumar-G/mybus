@@ -39,7 +39,7 @@ public class OperatorAccountController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get one OperatorAccount", response = JSONObject.class)
 	public OperatorAccount getAccount(HttpServletRequest request,
-										@ApiParam(value = "Date of travel") @PathVariable final String id) {
+                                      @ApiParam(value = "Date of travel") @PathVariable final String id) {
 		try{
 			return operatorAccountManager.findOne(id);
 		}catch (Exception e) {
@@ -62,7 +62,7 @@ public class OperatorAccountController {
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Create a new account", response = JSONObject.class)
 	public OperatorAccount createAccount(HttpServletRequest request,
-									  @ApiParam(value = "Date of travel") @RequestBody final OperatorAccount operatorAccount) {
+                                         @ApiParam(value = "Date of travel") @RequestBody final OperatorAccount operatorAccount) {
 		try{
 			return operatorAccountManager.saveAccount(operatorAccount);
 		}catch (Exception e) {

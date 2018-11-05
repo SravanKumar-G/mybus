@@ -5,7 +5,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.ApproveStatus;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.Assert.*;
 
 /**
  * Created by busda001 on 4/29/17.

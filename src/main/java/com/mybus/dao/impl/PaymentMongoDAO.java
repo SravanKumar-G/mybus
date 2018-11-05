@@ -3,15 +3,12 @@ package com.mybus.dao.impl;
 import com.mybus.dao.PaymentDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Payment;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -138,7 +135,7 @@ public class PaymentMongoDAO {
         Query q = getPaymentsQuery(true, pageable);
         long count = mongoTemplate.count(q, Payment.class);
         List<Payment> payments = mongoTemplate.find(q, Payment.class);
-        return new PageImpl<Payment>(payments, pageable, count);
+        return new PageImpl<Payment>(payments);
     }
     public Page<Payment> findNonPendingPayments(Pageable pageable) {
         Query q = getPaymentsQuery(false, pageable);

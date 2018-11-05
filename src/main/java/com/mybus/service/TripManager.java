@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mybus.dao.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

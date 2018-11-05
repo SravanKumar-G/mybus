@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.RoleDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.User;
 import com.mybus.service.SessionManager;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class UserController extends MyBusBaseController{
+public class UserController extends MyBusBaseController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -69,7 +68,7 @@ public class UserController extends MyBusBaseController{
     @RequestMapping(value = "userNames", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get user names ", response = User.class, responseContainer = "List")
     public List<User> getUserNames(HttpServletRequest request,
-                                               @RequestParam(value ="activeOnly", required = false) boolean includeInactive) {
+                                   @RequestParam(value ="activeOnly", required = false) boolean includeInactive) {
         return userManager.getUserNamesAsUserList(includeInactive);
     }
 
@@ -83,7 +82,7 @@ public class UserController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a user")
     public User createUser(HttpServletRequest request,
-                                     @ApiParam(value = "JSON for User to be created") @RequestBody JSONObject userJson){
+                           @ApiParam(value = "JSON for User to be created") @RequestBody JSONObject userJson){
         logger.debug("create user called");
         return userManager.saveUser(new User(userJson));
     }
@@ -91,9 +90,9 @@ public class UserController extends MyBusBaseController{
     @RequestMapping(value = "userEdit/{id}", method = RequestMethod.PUT)
     @ApiOperation(value ="Update user", response = User.class)
     public User updateUser(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the User to be found")
+                           @ApiParam(value = "Id of the User to be found")
                                      @PathVariable final String id,
-                                     @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
+                           @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
         logger.debug("update user called");
         User user = new User(userJson);
         user.setId(id);
@@ -103,7 +102,7 @@ public class UserController extends MyBusBaseController{
     @RequestMapping(value = "user/updatePassword", method = RequestMethod.PUT)
     @ApiOperation(value ="Update user", response = User.class)
     public User updatePassword(HttpServletRequest request,
-                           @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
+                               @ApiParam(value = "User JSON") @RequestBody JSONObject userJson) {
         logger.debug("update user password");
         return userManager.updatePassword(userJson);
     }
@@ -111,7 +110,7 @@ public class UserController extends MyBusBaseController{
     @RequestMapping(value = "userId/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get user with Id", response = User.class)
     public User getUser(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the User to be found") @PathVariable final String id) {
+                        @ApiParam(value = "Id of the User to be found") @PathVariable final String id) {
         logger.debug("get user called");
         return userManager.getUser(id);
     }

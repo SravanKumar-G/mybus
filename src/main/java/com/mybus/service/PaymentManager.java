@@ -189,7 +189,7 @@ public class PaymentManager {
         List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
         long count =  paymentMongoDAO.count(query);
         serviceUtils.fillInUserNames(payments);
-        Page<Payment> page = new PageImpl<>(payments, pageable, count);
+        Page<Payment> page = new PageImpl<>(payments);
         return page;
     }
 

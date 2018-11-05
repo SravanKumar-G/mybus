@@ -8,18 +8,18 @@ import com.mybus.model.BranchOffice;
 import com.mybus.model.Payment;
 import com.mybus.model.PaymentType;
 import com.mybus.model.User;
+import com.mybus.util.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import sun.util.resources.cldr.ebu.CalendarData_ebu_KE;
 
 import java.text.ParseException;
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 /**
  * Created by srinikandula on 3/8/17.
  */

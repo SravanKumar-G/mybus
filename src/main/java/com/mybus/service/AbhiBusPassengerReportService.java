@@ -4,6 +4,7 @@ import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.util.*;
  */
 @Service
 @SessionScope
-public class AbhiBusPassengerReportService extends BaseService{
+public class AbhiBusPassengerReportService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
 
     @Autowired

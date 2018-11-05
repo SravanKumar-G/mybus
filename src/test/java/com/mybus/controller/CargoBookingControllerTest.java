@@ -5,16 +5,14 @@ import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.service.BranchOfficeManager;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.test.util.CargoBookingTestService;
-import com.mybus.util.ServiceUtils;
+import com.mybus.util.ServiceConstants;
 import org.apache.commons.collections.IteratorUtils;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.Assert.*;
 
 /**
  * Created by srinikandula on 12/11/16.

@@ -62,7 +62,7 @@ public class SuppliersController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get supplier by id")
 	public Supplier getById(HttpServletRequest request,
-							@ApiParam(value = "Id of the supplier to be deleted") @PathVariable final String id) {
+                            @ApiParam(value = "Id of the supplier to be deleted") @PathVariable final String id) {
 		LOGGER.debug("get supplier by id");
 		return suppliersManager.findOne(id);
 	}

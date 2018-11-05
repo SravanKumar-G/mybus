@@ -16,12 +16,12 @@ import java.util.List;
 public class BusTicketBookingManager {
 	
 	@Autowired
-	private CommunicationManager CommunicationManager;
+	private com.mybus.service.CommunicationManager CommunicationManager;
 	
 	//@Autowired
 	//private VelocityEngine velocityEngine;
 	
-	public List<BusJourney> blockSeatUpDateBookingSessionInfo(JSONObject json,List<BusJourney> busJourneyList){
+	public List<BusJourney> blockSeatUpDateBookingSessionInfo(JSONObject json, List<BusJourney> busJourneyList){
 		BusJourney busJourney = null;
 		if(json.containsKey("journeyType")){
 			if(JourneyType.TWO_WAY.name().equalsIgnoreCase(json.get("journeyType").toString())){
@@ -34,7 +34,7 @@ public class BusTicketBookingManager {
 		}
 		return busJourneyList;
 	}
-	public BusJourney busJouneyUpdate(JSONObject json,BusJourney busJourney){
+	public BusJourney busJouneyUpdate(JSONObject json, BusJourney busJourney){
 		if(json.containsKey("fare")) {
 			busJourney.setFare(Double.parseDouble(json.get("fare").toString()));
 		}

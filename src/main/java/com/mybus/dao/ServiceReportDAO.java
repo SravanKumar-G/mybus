@@ -4,10 +4,7 @@ import com.mybus.model.ServiceReport;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface ServiceReportDAO extends PagingAndSortingRepository<ServiceReport, String> {

@@ -10,6 +10,7 @@ import com.mybus.dto.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;

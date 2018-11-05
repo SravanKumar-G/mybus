@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class PersonController extends MyBusBaseController{
+public class PersonController extends MyBusBaseController {
 
     @Autowired
     private PersonDAO personDAO;
@@ -44,7 +44,7 @@ public class PersonController extends MyBusBaseController{
     @RequestMapping(value = "person/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ResponseBody
     public Person getPerson(@PathVariable final String id) {
-        Person  person = personDAO.findById(id).get();
+        Person person = personDAO.findById(id).get();
         return person;
     }
 

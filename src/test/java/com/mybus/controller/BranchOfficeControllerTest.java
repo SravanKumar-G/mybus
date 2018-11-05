@@ -155,8 +155,8 @@ public class BranchOfficeControllerTest extends AbstractControllerIntegrationTes
         ResultActions actions = mockMvc.perform(asUser(get("/api/v1/branchOffice/" + branchOffice.getId()), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.email").value(branchOffice.getEmail()));
-        actions.andExpect(jsonPath("$.attributes.cityName").value(city.getName()));
-        actions.andExpect(jsonPath("$.attributes.managerName").value(user.getFullName()));
+        actions.andExpect(jsonPath("$.attrs.cityName").value(city.getName()));
+        actions.andExpect(jsonPath("$.attrs.managerName").value(user.getFullName()));
 
     }
     @Test

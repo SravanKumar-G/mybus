@@ -91,7 +91,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
         user = userDAO.findById(user.getId()).get();
         assertNotNull(user);
         userDAO.delete(user);
-        assertNull(userDAO.findById(user.getId()).get());
+        assertFalse(userDAO.findById(user.getId()).isPresent());
     }
 
     @Test

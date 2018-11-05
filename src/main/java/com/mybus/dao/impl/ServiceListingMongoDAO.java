@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import com.mybus.SystemProperties;
 import com.mybus.model.ServiceListing;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;

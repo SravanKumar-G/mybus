@@ -29,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="ShipmentController", description="ShipmentController management APIs")
-public class CargoBookingController extends MyBusBaseController{
+public class CargoBookingController extends MyBusBaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(CargoBookingController.class);
 
@@ -110,7 +110,7 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipment/search/byLR", method = RequestMethod.GET,produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get the CargoBooking by LRNumber", response = String.class)
     public List<CargoBooking> getBookingByLR(HttpServletRequest request,
-                            @ApiParam(value = "Id of the CargoBooking to be found") @RequestParam final String LRNumber) {
+                                             @ApiParam(value = "Id of the CargoBooking to be found") @RequestParam final String LRNumber) {
         logger.debug("get shipment called");
         return cargoBookingManager.findByLRNumber(LRNumber);
     }
@@ -144,28 +144,28 @@ public class CargoBookingController extends MyBusBaseController{
 
     @RequestMapping(value = "shipment/cancel/{id}", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Cancel CargoBooking", response = CargoBooking.class)
-    public boolean cancelBooking(HttpServletRequest request,@PathVariable final String id ) {
+    public boolean cancelBooking(HttpServletRequest request, @PathVariable final String id ) {
         logger.debug("Cancel cargo booking");
         return cargoBookingManager.cancelCargoBooking(id);
     }
 
     @RequestMapping(value = "shipment/sendSMS/{id}", method = RequestMethod.POST)
     @ApiOperation(value ="Send SMS for cargoBooking")
-    public boolean sendSMS(HttpServletRequest request,@PathVariable final String id ) {
+    public boolean sendSMS(HttpServletRequest request, @PathVariable final String id ) {
         return cargoBookingManager.sendSMSForCargoBooking(id);
     }
 
     @RequestMapping(value = "shipment/assignVehicle/{vehicleId}", method = RequestMethod.POST)
     @ApiOperation(value ="Allot vehicle to cargo booking")
-    public boolean assignVehicle(HttpServletRequest request,@PathVariable(name = "vehicleId")String vehicleId,
+    public boolean assignVehicle(HttpServletRequest request, @PathVariable(name = "vehicleId")String vehicleId,
                                  @RequestBody final List<String> ids ) {
         return cargoBookingManager.assignVehicle(vehicleId, ids);
     }
 
     @RequestMapping(value = "shipment/deliver/{id}", method = RequestMethod.PUT)
     @ApiOperation(value ="Deliver to cargo booking")
-    public CargoBooking deliverCargoBooking(HttpServletRequest request,@PathVariable final String id,
-                                       @RequestBody String deliveryNotes) {
+    public CargoBooking deliverCargoBooking(HttpServletRequest request, @PathVariable final String id,
+                                            @RequestBody String deliveryNotes) {
         return cargoBookingManager.deliverCargoBooking(id, deliveryNotes);
     }
 
@@ -180,7 +180,7 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipment/search/unloading", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get the shipments available for unloading", response = CargoBooking.class, responseContainer = "List")
     public Iterable<CargoBooking> getBookingForUnloading(HttpServletRequest request,
-                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
+                                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
         if(query == null){
             throw new IllegalArgumentException("Query is invalid");
         }
@@ -197,7 +197,7 @@ public class CargoBookingController extends MyBusBaseController{
     @RequestMapping(value = "shipment/search/undelivered", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get the shipments available for delivering", response = CargoBooking.class, responseContainer = "List")
     public Iterable<CargoBooking> getBookingForDelivery(HttpServletRequest request,
-                                                         @RequestBody(required = false) final JSONObject query) throws ParseException {
+                                                        @RequestBody(required = false) final JSONObject query) throws ParseException {
         if(query == null){
             throw new IllegalArgumentException("Query is invalid");
         }

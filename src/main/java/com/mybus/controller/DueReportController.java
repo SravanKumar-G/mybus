@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 
-import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Booking;
@@ -46,7 +45,7 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReports", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get all the due reports for branch offices", response = BranchOfficeDue.class, responseContainer = "List")
     public Iterable<BranchOfficeDue> getAllDueReports(HttpServletRequest request,
-                                         final Pageable pageable) {
+                                                      final Pageable pageable) {
         return dueReportManager.getBranchOfficesDueReports();
     }
 
@@ -54,8 +53,8 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/office/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get branch office due report", response = BranchOfficeDue.class )
     public BranchOfficeDue getBranchDueReport(HttpServletRequest request,
-                               @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
-                                            final Pageable pageable) {
+                                              @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
+                                              final Pageable pageable) {
         return dueReportManager.findOfficeDuesGroupByDate(id);
     }
 
@@ -63,16 +62,16 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/office/all/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get branch office due report", response = List.class )
     public List<Booking> getBranchDueReport(HttpServletRequest request,
-                                              @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id) {
+                                            @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id) {
         return dueReportManager.getBranchOfficeDues(id);
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "dueReport/office/{id}/{date}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Get branch office due report", response = BranchOfficeDue.class )
     public BranchOfficeDue getBranchDueReportByDate(HttpServletRequest request,
-                                              @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
-                                              @PathVariable(value = "date", required = true) String date,
-                                              final Pageable pageable) {
+                                                    @ApiParam(value = "Id of the BranchOffice") @PathVariable final String id,
+                                                    @PathVariable(value = "date", required = true) String date,
+                                                    final Pageable pageable) {
         return dueReportManager.getOfficeDuesByDate(id, date);
     }
 
@@ -80,11 +79,11 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/search", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Search DueReport", response = BranchOfficeDue.class )
     public List<Booking> searchDues(HttpServletRequest request,
-                                 @ApiParam(value = "Start date in yyyy/mm/dd format")
+                                    @ApiParam(value = "Start date in yyyy/mm/dd format")
                                          @RequestParam(value = "startDate", required = true) final String startDate,
-                                 @ApiParam(value = "End date in yyyy/mm/dd format")
+                                    @ApiParam(value = "End date in yyyy/mm/dd format")
                                          @RequestParam(value = "endDate", required = true) final String endDate,
-                                 @RequestParam(value = "branchOfficeId", required = false) final String branchOfficeId)
+                                    @RequestParam(value = "branchOfficeId", required = false) final String branchOfficeId)
             throws ParseException {
         return dueReportManager.searchDues(startDate, endDate, branchOfficeId);
     }
@@ -93,7 +92,7 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/searchByPNR", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Search DueReport", response = BranchOfficeDue.class )
     public Iterable<Booking> searchDuesByPNR(HttpServletRequest request,
-                                    @RequestParam(value = "pnr", required = true) final String pnr){
+                                             @RequestParam(value = "pnr", required = true) final String pnr){
         return dueReportManager.searchDuesByPNR(pnr);
     }
 
@@ -113,7 +112,7 @@ public class DueReportController extends MyBusBaseController{
     @RequestMapping(value = "dueReport/payBookingDues", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value = "Record due payment")
     public List<Booking> recordDuePayments(HttpServletRequest request,
-                                    @ApiParam(value = "Ids of the bookings") @RequestBody final List<String> ids) {
+                                           @ApiParam(value = "Ids of the bookings") @RequestBody final List<String> ids) {
        return bookingManager.payBookingDues(ids);
     }
 

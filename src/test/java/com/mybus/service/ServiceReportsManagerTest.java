@@ -4,6 +4,7 @@ import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.*;
 import com.mybus.model.*;
 import com.mybus.test.util.UserTestService;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;

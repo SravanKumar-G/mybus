@@ -1,7 +1,6 @@
 package com.mybus;
 
 
-import com.mybus.config.CoreAppConfig;
 import com.mybus.util.PropertiesUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
@@ -11,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@ManagedResource
+@Component
 public class SystemProperties {
 	private static final String HOME_DIR_PROPS_FILENAME = ".mybus.properties";
 	private Properties homeDirProperties;

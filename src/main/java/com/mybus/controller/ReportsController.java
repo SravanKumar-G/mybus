@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ReportsController extends MyBusBaseController{
+public class ReportsController extends MyBusBaseController {
 
 	@RequestMapping(value = "/uploadReport", method = RequestMethod.GET)
     public ModelAndView getUploadForm() {

@@ -89,7 +89,7 @@ public class CashTransferController extends MyBusBaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get a cash transfer", response = Payment.class)
     public CashTransfer get(HttpServletRequest request,
-                             @ApiParam(value = "Id of the Payment to be removed") @PathVariable final String id) {
+                            @ApiParam(value = "Id of the Payment to be removed") @PathVariable final String id) {
         logger.debug("get cash transfer called");
         return cashTransferManager.findOne(id);
     }
@@ -97,7 +97,7 @@ public class CashTransferController extends MyBusBaseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     public List<CashTransfer> search(HttpServletRequest request,
-                                      @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+                                     @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return cashTransferManager.search(query, pageable);
     }
 }

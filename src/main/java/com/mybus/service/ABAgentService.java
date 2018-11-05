@@ -15,7 +15,7 @@ import java.util.*;
  * Created by srinikandula on 2/18/17.
  */
 @Service
-public class ABAgentService extends BaseService{
+public class ABAgentService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(ABAgentService.class);
     @Autowired
     private AgentDAO agentDAO;

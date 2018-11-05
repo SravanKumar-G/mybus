@@ -75,7 +75,7 @@ public class BookingTypeManager {
         }
 
     }
-    public boolean hasValidAgent(Booking booking,String provider) {
+    public boolean hasValidAgent(Booking booking, String provider) {
         if(isOnlineBooking(booking, provider)) {
             return true;
         }

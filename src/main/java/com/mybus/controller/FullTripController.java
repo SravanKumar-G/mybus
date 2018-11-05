@@ -2,9 +2,7 @@ package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.model.FullTrip;
-import com.mybus.model.Payment;
 import com.mybus.service.FullTripManager;
-import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -18,9 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
@@ -46,7 +42,7 @@ public class FullTripController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "fullTrips/count", method = RequestMethod.GET)
-    public long getCount(HttpServletRequest request,@RequestBody(required = false) final JSONObject query) throws ParseException {
+    public long getCount(HttpServletRequest request, @RequestBody(required = false) final JSONObject query) throws ParseException {
         return fullTripManager.count(query);
     }
 

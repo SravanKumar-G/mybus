@@ -7,7 +7,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.Agent;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;

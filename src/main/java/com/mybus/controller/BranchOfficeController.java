@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="BranchOfficeController", description="BranchOfficeController management APIs")
-public class BranchOfficeController extends MyBusBaseController{
+public class BranchOfficeController extends MyBusBaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(BranchOfficeController.class);
 
@@ -59,7 +59,7 @@ public class BranchOfficeController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a BranchOffice")
     public BranchOffice create(HttpServletRequest request,
-                        @ApiParam(value = "JSON for BranchOffice to be created") @RequestBody final BranchOffice branchOffice) {
+                               @ApiParam(value = "JSON for BranchOffice to be created") @RequestBody final BranchOffice branchOffice) {
         logger.debug("save BranchOffice called");
         return branchOfficeManager.save(branchOffice);
     }
@@ -69,8 +69,8 @@ public class BranchOfficeController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a BranchOffice")
     public BranchOffice update(HttpServletRequest request,
-                           @ApiParam(value = "Id of the BranchOffice to be found") @PathVariable final String id,
-                           @ApiParam(value = "JSON for BranchOffice to be updated") @RequestBody final BranchOffice branchOffice) {
+                               @ApiParam(value = "Id of the BranchOffice to be found") @PathVariable final String id,
+                               @ApiParam(value = "JSON for BranchOffice to be updated") @RequestBody final BranchOffice branchOffice) {
         logger.debug("update BranchOffice called");
         return branchOfficeManager.update(id, branchOffice);
     }
@@ -78,7 +78,7 @@ public class BranchOfficeController extends MyBusBaseController{
     @RequestMapping(value = "branchOffice/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get the BranchOffice", response = BranchOffice.class)
     public BranchOffice get(HttpServletRequest request,
-                     @ApiParam(value = "Id of the BranchOffice to be found") @PathVariable final String id) {
+                            @ApiParam(value = "Id of the BranchOffice to be found") @PathVariable final String id) {
         logger.debug("get BranchOffice called");
         return branchOfficeManager.findOne(id);
     }

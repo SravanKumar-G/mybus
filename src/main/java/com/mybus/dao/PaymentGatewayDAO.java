@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentGatewayDAO extends PagingAndSortingRepository<PaymentGateway, String> {
     PaymentGateway findByName(String name);
+    PaymentGateway findOneByName(String name);
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingSessionInfo  extends AbstractDocument implements AttributesDocument{
+public class BookingSessionInfo  extends AbstractDocument implements AttributesDocument {
 	
 	@Setter
 	@Getter

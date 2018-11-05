@@ -1,9 +1,7 @@
 package com.mybus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mybus.config.ApplicationDataTestConfig;
-import com.mybus.config.CoreAppConfig;
-import com.mybus.config.WebApplicationConfig;
+import com.mybus.configuration.CoreAppConfig;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.model.Agent;
@@ -12,7 +10,6 @@ import com.mybus.model.BranchOffice;
 import com.mybus.model.User;
 import com.mybus.service.SessionManager;
 import lombok.Getter;
-
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +26,13 @@ import java.util.Calendar;
 import static java.lang.String.format;
 
 
+
 @ActiveProfiles("test")
 @WebAppConfiguration
-@ContextConfiguration(classes = { CoreAppConfig.class, WebApplicationConfig.class, ApplicationDataTestConfig.class })
+@ContextConfiguration(classes = { CoreAppConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractControllerIntegrationTest {
+
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractControllerIntegrationTest.class);
 

@@ -46,7 +46,7 @@ public class ServiceComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombo", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add serviceCombo")
-	public ServiceCombo addServiceCombo(HttpServletRequest request,@RequestBody ServiceCombo serviceCombo) {
+	public ServiceCombo addServiceCombo(HttpServletRequest request, @RequestBody ServiceCombo serviceCombo) {
 		LOGGER.debug("add serviceCombo");
 		return serviceComboManager.save(serviceCombo);
 	}
@@ -54,7 +54,7 @@ public class ServiceComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "serviceCombo", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add serviceCombo")
-	public ServiceCombo updateAmenity(HttpServletRequest request,@RequestBody ServiceCombo serviceCombo) {
+	public ServiceCombo updateAmenity(HttpServletRequest request, @RequestBody ServiceCombo serviceCombo) {
 		LOGGER.debug("update serviceCombo");
 		return serviceComboManager.update(serviceCombo);
 	}
@@ -63,7 +63,7 @@ public class ServiceComboController {
 	@RequestMapping(value = "serviceCombo/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get serviceCombo by id")
 	public ServiceCombo getServiceComboID(HttpServletRequest request,
-			@ApiParam(value = "Id of the serviceCombo") @PathVariable final String id) {
+                                          @ApiParam(value = "Id of the serviceCombo") @PathVariable final String id) {
 		LOGGER.debug("get serviceCombo by id");
 		return serviceComboManager.findOne(id);
 	}

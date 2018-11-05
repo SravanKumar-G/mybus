@@ -1,6 +1,7 @@
 package com.mybus.model;
 
 import lombok.Getter;
+
 public enum ShipmentType {
 
     COUNTERTRANSACTION("CT"),

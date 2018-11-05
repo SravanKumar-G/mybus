@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -122,9 +121,6 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     @Override
     public boolean containsKey(String attributeName) {
         return false;
-    }
-    public static CargoBooking fromJson(String json) {
-        return new Gson().fromJson(json, CargoBooking.class);
     }
 }
 

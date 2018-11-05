@@ -1,6 +1,5 @@
 package com.mybus.controller;
 
-import com.mongodb.BasicDBObject;
 import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.*;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Ticket booking flow controller Using like 
  * get stations, get toStations, get available buses, get buslayout, block ticket,
@@ -31,7 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class BusTicketBookingController extends MyBusBaseController{
+public class BusTicketBookingController extends MyBusBaseController {
 	
 	@Autowired
 	private CityDAO cityDAO;
@@ -52,7 +52,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	private BusTicketBookingManager busTicketBookingManager;
 
 	@Autowired
-	PaymentResponseDAO paymentResponseDAO;
+    PaymentResponseDAO paymentResponseDAO;
 
 	@Autowired
 	private BookingMongoDAO bookingMongoDAO;
@@ -109,7 +109,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 		}
 		return availableTrips;
 	}
-	public List<Trip> availableTrips(String fromCity,String ToCity, String dateOfJourney){
+	public List<Trip> availableTrips(String fromCity, String ToCity, String dateOfJourney){
 		List<Trip> trips = new ArrayList<Trip>();
 		Iterable<BusService> busAllServie =busServiceDAO.findAll();
 		busAllServie.forEach(bs->{
@@ -132,7 +132,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@RequestMapping(value = "busLayout/{layoutId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
 	@ApiOperation(value ="Get the bus Layout JSON", response = Trip.class)
-	public Trip getTripLayout(HttpServletRequest request,@ApiParam(value = "Id of the layout to be found") @PathVariable final String layoutId) {
+	public Trip getTripLayout(HttpServletRequest request, @ApiParam(value = "Id of the layout to be found") @PathVariable final String layoutId) {
 		return tripLayout(layoutId);
 	}
 	
@@ -146,7 +146,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@RequiresAuthorizedUser(value=false)
 	@RequestMapping(value = "blockSeat", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
-	public List<BusJourney> blockSeat(HttpServletRequest request,@RequestBody JSONObject busJourney) {
+	public List<BusJourney> blockSeat(HttpServletRequest request, @RequestBody JSONObject busJourney) {
 		BookingSessionInfo BookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		List<BusJourney> busJourneyList = BookingSessionInfo.getBusJournies();
 		busJourneyList = busTicketBookingManager.blockSeatUpDateBookingSessionInfo(busJourney,busJourneyList);

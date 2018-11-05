@@ -51,7 +51,6 @@ public class Vehicle extends AbstractDocument  {
     private String fitnessNumber;
 
     @RequiresValue
-
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private DateTime fitnessExpiry;
 

@@ -31,7 +31,7 @@ public class InvoiceController {
 	@RequestMapping(value = "invoice/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service form", response = JSONObject.class)
 	public Invoice findBookings(HttpServletRequest request,
-								@RequestBody final JSONObject query) {
+                                @RequestBody final JSONObject query) {
 		try{
 			Invoice invoice = serviceReportsManager.findBookingsInvoice(query);
 			return invoice;

@@ -100,7 +100,7 @@ public class BranchOfficeManager {
             office.getAttributes().put(BranchOffice.CITY_NAME, cityNames.get(office.getCityId()));
             office.getAttributes().put(BranchOffice.MANAGER_NAME, userNames.get(office.getManagerId()));
         });
-        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices, pageable, count(query));
+        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices);
         return page;
     }
 

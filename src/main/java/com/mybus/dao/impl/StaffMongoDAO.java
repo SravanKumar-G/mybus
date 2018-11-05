@@ -1,6 +1,5 @@
 package com.mybus.dao.impl;
 
-import com.mybus.model.Payment;
 import com.mybus.model.Staff;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +46,14 @@ public class StaffMongoDAO {
     }
     public Page<Staff> getStaff(String filter, Pageable pageable){
         Query q = createQuery(filter);
-        long count = count(filter);
-        q.with(pageable);
+        if(pageable != null) {
+            q.with(pageable);
+        }
         List<Staff> staff = mongoTemplate.find(q, Staff.class);
         staff.stream().forEach(s -> {
             s.setNameCode(String.format("%s (%s)", s.getName(), s.getCode()));
         });
-        return new PageImpl<Staff>(staff, pageable, count);
+        return new PageImpl<Staff>(staff);
     }
 
 

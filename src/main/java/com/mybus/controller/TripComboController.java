@@ -49,7 +49,7 @@ public class TripComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "tripCombo", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add tripCombo")
-	public TripCombo add(HttpServletRequest request,@RequestBody TripCombo tripCombo) {
+	public TripCombo add(HttpServletRequest request, @RequestBody TripCombo tripCombo) {
 		LOGGER.debug("add tripCombo");
 		return tripComboDAO.save(tripCombo);
 	}
@@ -57,7 +57,7 @@ public class TripComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "tripCombo", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add tripCombo")
-	public TripCombo update(HttpServletRequest request,@RequestBody TripCombo tripCombo) {
+	public TripCombo update(HttpServletRequest request, @RequestBody TripCombo tripCombo) {
 		LOGGER.debug("update tripCombo");
 		return tripComboManager.update(tripCombo);
 	}
@@ -66,7 +66,7 @@ public class TripComboController {
 	@RequestMapping(value = "tripCombo/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get tripCombo by id")
 	public TripCombo get(HttpServletRequest request,
-			@ApiParam(value = "Id of the tripCombo") @PathVariable final String id) {
+                         @ApiParam(value = "Id of the tripCombo") @PathVariable final String id) {
 		LOGGER.debug("get tripCombo by id");
 		return tripComboDAO.findById(id).get();
 	}

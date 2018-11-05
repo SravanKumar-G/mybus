@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.AbstractDocument;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
@@ -126,7 +125,7 @@ public class ServiceUtils {
         fillInUsername(abstractDocument, abstractDocument.getUpdatedBy(), "updatedBy");
     }
 
-    public void fillInUserNames(AbstractDocument abstractDocument,String fieldName) throws IOException {
+    public void fillInUserNames(AbstractDocument abstractDocument, String fieldName) throws IOException {
         try {
             JSONObject jsonObject = objectMapper.readValue(objectMapper.writeValueAsString(abstractDocument), JSONObject.class);
             if(jsonObject.get(fieldName) != null) {

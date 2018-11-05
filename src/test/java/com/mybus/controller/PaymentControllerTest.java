@@ -122,7 +122,7 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.totalElements").value(5));
 
-        query.put("status", null);
+        query.put("status", "null");
         actions = mockMvc.perform(asUser(post("/api/v1/payments").content(getObjectMapper().writeValueAsBytes(query))
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());

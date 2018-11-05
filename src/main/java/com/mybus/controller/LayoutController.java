@@ -22,7 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value = "LayoutController", description = "Management of the seats of a Bus")
-public class LayoutController extends MyBusBaseController{
+public class LayoutController extends MyBusBaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LayoutController.class);
 
@@ -50,7 +50,7 @@ public class LayoutController extends MyBusBaseController{
 	@RequestMapping(value = "layout", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create a layout", response = Layout.class)
 	public Layout createLayout(HttpServletRequest request,
-			@ApiParam(value = "JSON for Layout to be created") @RequestBody final Layout layout) {
+                               @ApiParam(value = "JSON for Layout to be created") @RequestBody final Layout layout) {
 		logger.debug("post layout called");
 		return layoutManager.saveLayout(layout);
 	}
@@ -58,7 +58,7 @@ public class LayoutController extends MyBusBaseController{
 	@RequestMapping(value = "layout/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get the Layout JSON", response = Layout.class)
 	public Layout getLayout(HttpServletRequest request,
-			@ApiParam(value = "Id of the Layout to be found") @PathVariable final String id) {
+                            @ApiParam(value = "Id of the Layout to be found") @PathVariable final String id) {
 		logger.debug("get layout called");
 		return layoutDAO.findById(id).get();
 	}
@@ -78,7 +78,7 @@ public class LayoutController extends MyBusBaseController{
 	@RequestMapping(value = "layout", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update a layout", response = Layout.class)
 	public Layout updateLayout(HttpServletRequest request,
-			@ApiParam(value = "JSON for layout") @RequestBody final Layout layout) {
+                               @ApiParam(value = "JSON for layout") @RequestBody final Layout layout) {
 		logger.debug("update layout called");
 		return layoutManager.updateLayout(layout);
 	}
@@ -86,7 +86,7 @@ public class LayoutController extends MyBusBaseController{
 	@RequestMapping(value = "layout/default/{layoutType}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get the default Layout JSON", response = Layout.class)
 	public Layout getDefaultLayout(HttpServletRequest request,
-			@ApiParam(value = "default layout for the layoutType") @PathVariable final String layoutType) {
+                                   @ApiParam(value = "default layout for the layoutType") @PathVariable final String layoutType) {
 		logger.debug("get default layout called for input " + layoutType);
 		LayoutType lt = LayoutType.valueOf(layoutType);
 		logger.debug(" layout type : " + layoutType);

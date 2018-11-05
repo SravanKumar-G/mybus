@@ -1,10 +1,9 @@
 package com.mybus.service;
 
-import com.mongodb.BasicDBObject;
 import com.mybus.dao.GSTFilterDAO;
 import com.mybus.dao.impl.GSTFilterMongoDAO;
 import com.mybus.model.GSTFilter;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

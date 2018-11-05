@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
 /**
  * 
  * @author yks-Srinivas
@@ -41,7 +42,7 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value = "Create a Trip")
 	public ResponseEntity createTrip(HttpServletRequest request,
-			@ApiParam(value = "JSON for Trip to be created") @RequestBody final Trip trip){
+                                     @ApiParam(value = "JSON for Trip to be created") @RequestBody final Trip trip){
 		return new ResponseEntity<>(tripManager.createTrip(trip), HttpStatus.OK);
 	}
 
@@ -49,7 +50,7 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value ="Get the trip JSON", response = Trip.class)
 	public Trip getTripByID(HttpServletRequest request,
-			@ApiParam(value = "Id of the trip to be found") @PathVariable final String id) {
+                            @ApiParam(value = "Id of the trip to be found") @PathVariable final String id) {
 		return tripManager.getTripByID(id);
 	}
 
@@ -58,9 +59,9 @@ public class TripController {
 	@ResponseBody
 	@ApiOperation(value ="Get the trips for a route and date", response = Trip.class, responseContainer="List")
 	public List<Trip> findBuses(HttpServletRequest request,
-								@ApiParam(value = "Id of the fromCity") @RequestParam final String fromCityId,
-								@ApiParam(value = "Id of the toCity") @RequestParam final String toCityId,
-								@ApiParam(value = "Date of travel") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") final DateTime travelDate) {
+                                @ApiParam(value = "Id of the fromCity") @RequestParam final String fromCityId,
+                                @ApiParam(value = "Id of the toCity") @RequestParam final String toCityId,
+                                @ApiParam(value = "Date of travel") @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") final DateTime travelDate) {
 		return tripManager.findTrips(fromCityId, toCityId, travelDate);
 	}
 	

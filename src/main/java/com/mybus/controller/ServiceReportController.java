@@ -1,6 +1,5 @@
 package com.mybus.controller;
 
-import com.mongodb.BasicDBObject;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.impl.ServiceReportMongoDAO;
 import com.mybus.exception.BadRequestException;
@@ -8,9 +7,9 @@ import com.mybus.model.Booking;
 import com.mybus.model.ServiceForm;
 import com.mybus.model.ServiceReport;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.ServiceReportsManager;
 import com.mybus.service.SessionManager;
+import com.mybus.util.ServiceConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.bson.Document;
@@ -75,7 +74,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/downloadServices", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Download service details a given service number and date", response = JSONObject.class)
 	public JSONObject getServiceDetailsByNumberAndDate(HttpServletRequest request,
-										@ApiParam(value = "Date of travel") @RequestParam final String travelDate, 
+										@ApiParam(value = "Date of travel") @RequestParam final String travelDate,
 										@ApiParam(value = "Service Number") @RequestParam final String serviceNum) {
 		try{
 			return serviceReportsManager.downloadServiceDetailsByNumberAndDate(serviceNum, travelDate);
@@ -88,7 +87,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/loadReports", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)
 	public Iterable<ServiceReport> loadReports(HttpServletRequest request,
-									  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+                                               @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
 			return serviceReportsManager.getReports(travelDate);
 		}catch (Exception e) {
@@ -100,7 +99,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/refresh", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load reports for a given date", response = JSONObject.class)
 	public Iterable<ServiceReport> refreshReports(HttpServletRequest request,
-											   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
+                                                  @ApiParam(value = "Date of travel") @RequestParam final String travelDate) {
 		try{
 			return serviceReportsManager.refreshReport(ServiceConstants.parseDate(travelDate));
 		}catch (Exception e) {
@@ -132,7 +131,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service report", response = JSONObject.class)
 	public ServiceReport getServiceReport(HttpServletRequest request,
-											   @ApiParam(value = "id")@PathVariable final String id) {
+                                          @ApiParam(value = "id")@PathVariable final String id) {
 		try{
 			ServiceReport report = serviceReportsManager.getReport(id);
 			return report;
@@ -144,7 +143,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceReport/booking/{bookingId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Find Booking by ID", response = JSONObject.class)
 	public Booking getServiceReportBooking(HttpServletRequest request,
-										  @ApiParam(value = "bookingId")@PathVariable final String bookingId) {
+                                           @ApiParam(value = "bookingId")@PathVariable final String bookingId) {
 			Booking booking = serviceReportsManager.getBooking(bookingId);
 			return booking;
 	}
@@ -152,7 +151,7 @@ public class ServiceReportController {
 	@RequestMapping(value = "serviceForm/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Load one service form", response = JSONObject.class)
 	public ServiceForm getServiceForm(HttpServletRequest request,
-										  @ApiParam(value = "id")@PathVariable final String id) {
+                                      @ApiParam(value = "id")@PathVariable final String id) {
 		try{
 			ServiceForm report = serviceReportsManager.getForm(id);
 			return report;

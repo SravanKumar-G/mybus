@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value = "/api/v1/")
 @Api(value="PlanTypeController", description="PlanTypeController management APIs")
-public class PlanTypeController extends MyBusBaseController{
+public class PlanTypeController extends MyBusBaseController {
     private static final Logger logger = LoggerFactory.getLogger(PlanTypeController.class);
 
     @Autowired
@@ -48,7 +48,7 @@ public class PlanTypeController extends MyBusBaseController{
     @ResponseBody
     @ApiOperation(value = "Create a PlanType")
     public PlanType create(HttpServletRequest request,
-                        @ApiParam(value = "JSON for Plan Type to be created") @RequestBody final JSONObject json) {
+                           @ApiParam(value = "JSON for Plan Type to be created") @RequestBody final JSONObject json) {
         logger.debug("save plan type called");
         return planTypeManager.savePlanType(new PlanType(json));
     }
@@ -79,7 +79,7 @@ public class PlanTypeController extends MyBusBaseController{
     @ResponseBody
     @ApiOperation(value = "Get a PlanType")
     public PlanType get(HttpServletRequest request,
-                          @ApiParam(value = "PlanType Id")  @PathVariable final String id) {
+                        @ApiParam(value = "PlanType Id")  @PathVariable final String id) {
         logger.debug("get plan type called");
         return planTypeDAO.findOneById(id);
     }

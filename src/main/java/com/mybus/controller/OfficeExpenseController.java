@@ -4,7 +4,7 @@ import com.mybus.controller.util.ControllerUtils;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.OfficeExpense;
 import com.mybus.service.OfficeExpenseManager;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.simple.JSONObject;
@@ -56,7 +56,7 @@ public class OfficeExpenseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "officeExpenses/day", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Page<OfficeExpense> getPaymentsByDay(HttpServletRequest request,
-                                          @RequestParam(value = "date", required = true)
+                                                @RequestParam(value = "date", required = true)
                                           @ApiParam(value = "Date in yyyy/mm/dd format") String date, final Pageable pageable) {
         return officeExpenseManager.findOfficeExpenseByDate(date, pageable);
     }
@@ -115,7 +115,7 @@ public class OfficeExpenseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "officeExpenses/approveOrReject/{approve}", method = RequestMethod.POST)
     public List<OfficeExpense> approveOrRejectExpenses(HttpServletRequest request, @PathVariable(name = "approve")String approve,
-                                            @RequestBody final List<String> ids)  {
+                                                       @RequestBody final List<String> ids)  {
         return officeExpenseManager.approveOrRejectExpenses(ids, Boolean.valueOf(approve));
     }
 }

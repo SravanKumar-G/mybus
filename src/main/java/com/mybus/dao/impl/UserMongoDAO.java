@@ -2,7 +2,6 @@ package com.mybus.dao.impl;
 
 import com.mongodb.client.result.UpdateResult;
 import com.mybus.model.User;
-import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;

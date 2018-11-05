@@ -1,8 +1,9 @@
 package com.mybus.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mybus.dao.RequiredFieldValidator;
+
 import com.mybus.exception.BadRequestException;
+import com.mybus.login.model.RequiredFieldValidator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;

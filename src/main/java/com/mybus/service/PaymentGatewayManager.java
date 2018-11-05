@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Created by HARIPRASADREDDYGURAM on 5/8/2016.
  */
@@ -26,8 +28,8 @@ public class PaymentGatewayManager {
         //Preconditions.checkNotNull(payGW, "The city can not be null");
         Preconditions.checkNotNull(payGW.getName(), "The payment gateway name can not be null");
        // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
-        PaymentGateway matchingPG = payGWDAO.findByName(payGW.getName());
-        if(matchingPG != null && !payGW.getId().equals(matchingPG.getId())) {
+        PaymentGateway matchingPG = payGWDAO.findOneByName(payGW.getName());
+        if(matchingPG != null && payGW.getId() != null && !payGW.getId().equals(matchingPG.getId())) {
             throw new BadRequestException("A payment gateway already exists with same name");
         }
         return payGWDAO.save(payGW);
@@ -48,10 +50,11 @@ public class PaymentGatewayManager {
         //Preconditions.checkNotNull(payGW, "The city can not be null");
         Preconditions.checkNotNull(Id, "The payment gateway id can not be null");
         // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
-        PaymentGateway paymentGatewayInfo = payGWDAO.findById(Id).get();
-
-        return paymentGatewayInfo;
-
+        Optional<PaymentGateway> paymentGatewayInfo = payGWDAO.findById(Id);
+        if(paymentGatewayInfo.isPresent()){
+            return paymentGatewayInfo.get();
+        }
+        return null;
     }
 
     public Iterable<PaymentGateway>  getAllPaymentGateways() {

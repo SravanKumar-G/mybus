@@ -75,7 +75,7 @@ public class AgentManager {
      * @param pageable
      * @return
      */
-    public Page<Agent> findAgents(String query, boolean showInvalid,Pageable pageable) {
+    public Page<Agent> findAgents(String query, boolean showInvalid, Pageable pageable) {
         long total = (count(query, showInvalid));
         List<Agent> agents = IteratorUtils.toList(agentMongoDAO.findAgents(query, showInvalid, pageable).iterator());
         Map<String, String> namesMap = branchOfficeManager.getNamesMap();

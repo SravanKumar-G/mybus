@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="CityController", description="City and Boarding points management")
-public class CityController extends MyBusBaseController{
+public class CityController extends MyBusBaseController {
     private static final Logger logger = LoggerFactory.getLogger(CityController.class);
 
     @Autowired
@@ -65,7 +65,7 @@ public class CityController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a city")
     public ResponseEntity createCity(HttpServletRequest request,
-                           @ApiParam(value = "JSON for City to be created") @RequestBody final City city){
+                                     @ApiParam(value = "JSON for City to be created") @RequestBody final City city){
         logger.debug("post city called");
         return new ResponseEntity<>(cityManager.saveCity(city), HttpStatus.OK);
     }
@@ -82,8 +82,8 @@ public class CityController extends MyBusBaseController{
     @RequestMapping(value = "city/{id}", method = RequestMethod.PUT)
     @ApiOperation(value ="Update city", response = City.class)
     public ResponseEntity updateCity(HttpServletRequest request,
-                        @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
-                        @ApiParam(value = "City JSON") @RequestBody final City city) {
+                                     @ApiParam(value = "Id of the City to be found") @PathVariable final String id,
+                                     @ApiParam(value = "City JSON") @RequestBody final City city) {
         logger.debug("get city called");
         return new ResponseEntity<>(cityManager.updateCity(city), HttpStatus.OK);
     }
@@ -115,8 +115,8 @@ public class CityController extends MyBusBaseController{
             produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get JSON for a city boardingpoint", response = BoardingPoint.class)
     public BoardingPoint getgCityBoardingpoint(HttpServletRequest request,
-                                                @ApiParam(value = "cityId") @PathVariable final String cityId,
-                                                @ApiParam(value = "BoardingpointId") @PathVariable final String id) {
+                                               @ApiParam(value = "cityId") @PathVariable final String cityId,
+                                               @ApiParam(value = "BoardingpointId") @PathVariable final String id) {
         logger.debug("create boardingpoint called");
         BoardingPoint bp = cityManager.getBoardingPoint(cityId, id);
         Preconditions.checkNotNull(bp, "No boardingpoint found");
@@ -129,8 +129,8 @@ public class CityController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value ="Update a city boarding point", response = City.class)
     public City updateCityBoardingpoint(HttpServletRequest request,
-                @ApiParam(value = "Id of the city to which contains boardingpoint ")@PathVariable final String cityId,
-                @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
+                                        @ApiParam(value = "Id of the city to which contains boardingpoint ")@PathVariable final String cityId,
+                                        @ApiParam(value = "JSON for boardingpoint") @RequestBody final BoardingPoint bp) {
         logger.debug("create boardingpoint called");
         return cityManager.updateBoardingPoint(cityId, bp);
     }
@@ -151,7 +151,7 @@ public class CityController extends MyBusBaseController{
             produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Gets all boarding points for a given city", response = BoardingPoint.class, responseContainer= "List")
     public Iterable<BoardingPoint> getBoardingPoints(HttpServletRequest request,
-                                        @ApiParam(value = "City Id")  @PathVariable final String cityId) {
+                                                     @ApiParam(value = "City Id")  @PathVariable final String cityId) {
         logger.debug("create boardingpoint called");
         return cityManager.getBoardingPoints(cityId);
     }

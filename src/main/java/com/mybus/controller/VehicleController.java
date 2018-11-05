@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class VehicleController extends MyBusBaseController{
+public class VehicleController extends MyBusBaseController {
     private static final Logger logger = LoggerFactory.getLogger(VehicleController.class);
 
     @Autowired
@@ -53,7 +53,7 @@ public class VehicleController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a new vehicle")
     public ResponseEntity createVehicle(HttpServletRequest request,
-                                     @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
+                                        @ApiParam(value = "JSON for Vehicle to be created") @RequestBody final Vehicle vehicle){
         logger.debug("create vehicle called");
         return new ResponseEntity<>(vehicleManager.saveVehicle(vehicle), HttpStatus.OK);
     }

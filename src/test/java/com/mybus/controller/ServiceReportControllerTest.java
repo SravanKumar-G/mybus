@@ -3,24 +3,21 @@ package com.mybus.controller;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.*;
-import com.mybus.service.ServiceConstants;
+import com.mybus.model.Booking;
+import com.mybus.model.ServiceReport;
+import com.mybus.model.ServiceStatus;
+import com.mybus.model.User;
 import com.mybus.service.ServiceReportsManager;
+import com.mybus.util.ServiceConstants;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import static java.lang.String.format;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 

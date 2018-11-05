@@ -9,7 +9,7 @@ import lombok.Setter;
  *
  * entity class
  */
-public class PaymentGateway extends AbstractDocument{
+public class PaymentGateway extends AbstractDocument {
 
 	@Setter
 	@Getter

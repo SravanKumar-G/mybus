@@ -164,7 +164,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city = cityDAO.save(city);
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s", city.getId())), currentUser));
         actions.andExpect(status().isOk());
-        Assert.assertNull(cityDAO.findById(city.getId()));
+        Assert.assertFalse(cityDAO.findById(city.getId()).isPresent());
     }
 
     @Test

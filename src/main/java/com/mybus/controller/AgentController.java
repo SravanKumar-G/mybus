@@ -53,8 +53,8 @@ public class AgentController {
 	@RequestMapping(value = "agent/count", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get Agents count", response = Long.class)
 	public long getCount(HttpServletRequest request, @RequestParam(required = false, value = "query") String query,
-						 @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
-						 final Pageable pageable) {
+                         @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+                         final Pageable pageable) {
 		return agentManager.count(query,showInvalid);
 	}
 
@@ -71,9 +71,9 @@ public class AgentController {
 	@RequestMapping(value = "agents", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get the agents ", response = JSONObject.class)
 	public Page<Agent> getAgents(HttpServletRequest request,
-										@RequestParam(required = false, value = "query") String query,
-										@RequestParam(required = false, value = "showInvalid") boolean showInvalid,
-										 final Pageable pageable) {
+                                 @RequestParam(required = false, value = "query") String query,
+                                 @RequestParam(required = false, value = "showInvalid") boolean showInvalid,
+                                 final Pageable pageable) {
 		return agentManager.findAgents(query, showInvalid, pageable);
 	}
 
@@ -86,7 +86,7 @@ public class AgentController {
 	@RequestMapping(value = "agent/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get agent ", response = JSONObject.class)
 	public Agent getAgent(HttpServletRequest request,
-									@ApiParam(value = "Id of the agent to be found") @PathVariable final String id) {
+                          @ApiParam(value = "Id of the agent to be found") @PathVariable final String id) {
 		return agentManager.getAgent(id);
 	}
 
@@ -95,7 +95,7 @@ public class AgentController {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Save agent")
 	public Agent update(HttpServletRequest request,
-						   @ApiParam(value = "JSON for Agent to be updated") @RequestBody final Agent agent) {
+                        @ApiParam(value = "JSON for Agent to be updated") @RequestBody final Agent agent) {
 		logger.debug("update agent called");
 		return agentManager.save(agent);
 	}

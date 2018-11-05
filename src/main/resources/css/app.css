@@ -43,13 +43,13 @@ pre.tiny-debug {
     right: 5px;
 }
 .arrow.prev {
-    background-image: url("../images/prev.png");
+    background-image: url("../../templates/images/prev.png");
     left: 20px;
     opacity: 0.2;
     transition: all 0.2s linear 0s;
 }
 .arrow.next {
-    background-image: url("../images/next.png");
+    background-image: url("../../templates/images/next.png");
     opacity: 0.2;
     right: 20px;
     transition: all 0.2s linear 0s;

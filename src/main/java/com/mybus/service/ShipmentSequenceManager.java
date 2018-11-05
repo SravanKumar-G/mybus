@@ -6,7 +6,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.PaymentStatus;
 import com.mybus.model.cargo.ShipmentSequence;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
