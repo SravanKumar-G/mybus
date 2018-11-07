@@ -4,53 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
 import com.mybus.interceptors.AuthenticationInterceptor;
 import com.mybus.interceptors.DomainFilterInterceptor;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.ResourceHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
-import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.web.context.request.RequestContextListener;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
-import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-
-import javax.xml.transform.Source;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Executor;
-
-import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 
@@ -79,25 +39,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements AsyncConfig
                 .addPathPatterns("/api/**");
     }
 
-    @Bean
-    public JavaMailSenderImpl getJavaMailSenderImpl(){
-        JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
-        javaMailSenderImpl.setHost("");
-        javaMailSenderImpl.setPort(1);
-        javaMailSenderImpl.setUsername("");
-        javaMailSenderImpl.setPassword("");
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.put("mail.smtp.auth", true);
-        javaMailProperties.put("mail.smtp.starttls.enable", false);
-        javaMailProperties.put("mail.smtp.quitwait", false);
-        javaMailProperties.put("mail.smtp.ssl.trust","");
-        javaMailSenderImpl.setJavaMailProperties(javaMailProperties);
-        return javaMailSenderImpl;
-    }
-    @Bean
-    public RequestContextListener requestContextListener(){
-        return new RequestContextListener();
-    }
 
     /*
 

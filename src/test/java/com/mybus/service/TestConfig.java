@@ -5,7 +5,6 @@ import com.mybus.dao.CityDAO;
 import com.mybus.dao.RoleDAO;
 import com.mybus.dao.RouteDAO;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
