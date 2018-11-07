@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by skandula on 12/30/15.
@@ -40,7 +41,9 @@ public class RouteManager {
     }
     public boolean deleteRoute(String routeId) {
         Preconditions.checkNotNull(routeId);
-        Preconditions.checkNotNull(routeDAO.findById(routeId), "Invalid Route id");
+        if(!routeDAO.findById(routeId).isPresent()) {
+            throw new IllegalArgumentException("Invalid Route id");
+        }
         routeDAO.deleteById(routeId);
         //TODO: check if there is any active services, if found throw an error.
 
@@ -49,11 +52,12 @@ public class RouteManager {
 
     public Route deactiveRoute(String routeId) {
         Preconditions.checkNotNull(routeId);
-        Route route = routeDAO.findById(routeId).get();
-        Preconditions.checkNotNull(route, "Invalid Route id");
-        Preconditions.checkArgument(!route.isActive(), "Route is already inactive");
-        route.setActive(false);
-        return routeDAO.save(route);
+        Optional<Route> route = routeDAO.findById(routeId);
+        if(!route.isPresent()){
+            throw new IllegalArgumentException( "Invalid Route id");
+        }
+        route.get().setActive(false);
+        return routeDAO.save(route.get());
     }
 
     public boolean update(Route route) {
@@ -78,13 +82,17 @@ public class RouteManager {
         Preconditions.checkNotNull(route.getName(), "Route name can not be null");
         Preconditions.checkNotNull(route.getFromCityId(), "Route from city can not be null");
         Preconditions.checkNotNull(route.getToCityId(), "Route to city can not be null");
-        Preconditions.checkNotNull(cityDAO.findById(route.getFromCityId()), "Invalid from city id");
-        Preconditions.checkNotNull(cityDAO.findById(route.getToCityId()), "Invalid to city id");
+        if(!cityDAO.findById(route.getFromCityId()).isPresent()){
+            throw new NullPointerException("Invalid from city id");
+        }
+        if(!cityDAO.findById(route.getToCityId()).isPresent()) {
+            throw new NullPointerException("Invalid to city id");
+        }
         if(StringUtils.isBlank(route.getId()) && routeDAO.findByName(route.getName()) != null) {
             throw new RuntimeException("Route with the same name exits");
         }
         route.getViaCities().stream().forEach(c -> {
-            if(cityDAO.findById(c) == null) {
+            if(!cityDAO.findById(c).isPresent()) {
                 throw new RuntimeException("invalid via city is found in via cities");
             }
         });

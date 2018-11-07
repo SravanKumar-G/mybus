@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 
@@ -152,18 +149,18 @@ public class TripManager {
 		if (fromCityId == null && toCityId == null && travelDate == null) {
 			throw new BadRequestException("Bad query params found");
 		}
-		City fromCity = null;
-		City toCity = null;
+		Optional<City> fromCity = null;
+		Optional<City> toCity = null;
 		if(fromCityId != null) {
-			fromCity = cityDAO.findById(fromCityId).get();
+			fromCity = cityDAO.findById(fromCityId);
 		}
-		if (fromCityId != null && fromCity == null) {
+		if (fromCityId != null && !fromCity.isPresent()) {
 			throw new BadRequestException("Invalid id for fromCityId");
 		}
 		if(toCityId != null) {
-			toCity = cityDAO.findById(toCityId).get();
+			toCity = cityDAO.findById(toCityId);
 		}
-		if (toCityId != null && toCity == null) {
+		if (toCityId != null && !toCity.isPresent()) {
 			throw new BadRequestException("Invalid id for toCityId");
 		}
 

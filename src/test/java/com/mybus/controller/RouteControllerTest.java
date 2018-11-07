@@ -72,8 +72,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
         City fromCity = new City("FromCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
         City toCity = new City("ToCity"+new ObjectId().toString(), "state", true, new ArrayList<>());
 
-        cityManager.saveCity(fromCity);
-        cityManager.saveCity(toCity);
+        fromCity = cityManager.saveCity(fromCity);
+        toCity = cityManager.saveCity(toCity);
         Route route = new Route("TestRoute"+new ObjectId().toString(), fromCity.getId(),
                 toCity.getId(), new LinkedHashSet<>(), true);
         return routeManager.saveRoute(route);
@@ -156,13 +156,8 @@ public class RouteControllerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testDelete() throws Exception {
         Route route = createTestRoute();
-        Route route1 = createTestRoute();
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/route/%s", route.getId())) ,currentUser));
         actions.andExpect(status().isOk());
-        actions.andExpect(jsonPath("$.deleted").value(true));
-        Assert.assertEquals(true, routeDAO.findAll().iterator().hasNext());
-        List<Route> routeList = IteratorUtils.toList(routeDAO.findAll().iterator());
-        Assert.assertEquals(1, routeList.size());
-
+        Assert.assertEquals(false, routeDAO.findAll().iterator().hasNext());
     }
 }

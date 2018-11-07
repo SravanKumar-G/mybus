@@ -1,5 +1,6 @@
 package com.mybus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mybus.annotations.RequiresValue;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -88,6 +89,7 @@ public class CargoBooking extends AbstractDocument implements AttributesDocument
     private List<CargoBookingItem> items;
 
     private int totalArticles;
+    @JsonIgnore
     public String getDescription() {
         if(items == null || items.size() == 0){
             return null;

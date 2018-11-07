@@ -51,4 +51,6 @@ public class CoreAppConfig {
     public AWSCredentialsProvider getAWSCredentialsProvider() {
         return new AWSCredentialsProviderChain(new MyBusAWSCredentialsProvider());
     }
+
+
 }

@@ -57,27 +57,6 @@ public class PaymentGatewayManagerTest extends AbstractControllerIntegrationTest
         return pg;
     }
 
-
-    @Test
-    public void testSavePaymentGateway() throws Exception {
-        PaymentGateway pgData = createPaymentGatewayObject();
-        assertNotNull(payGWManager.getPaymentGateWayById(pgData.getId()));
-        assertNotNull(payGWDAO.findById(pgData.getId()).get());
-        PaymentGateway pg = new PaymentGateway();
-        pg.setPgKey("eCwWELxi1"); //payu  salt
-        pg.setPgAccountID("gtKFFxq"); //payu key
-        pg.setPgRequestUrl("https://test.mayu.in/_payment");
-        pg.setPaymentType("PG1");
-        pg.setName("PAYU");
-        pg = payGWDAO.save(pg);
-        expectedEx.expect(BadRequestException.class);
-        expectedEx.expectMessage("A payment gateway already exists with same name");
-        payGWManager.savePaymentGateway(pg);
-
-    }
-
-
-
     @Test
     public void testDeletePaymentGateway() throws Exception {
         PaymentGateway pgData = createPaymentGatewayObject();
