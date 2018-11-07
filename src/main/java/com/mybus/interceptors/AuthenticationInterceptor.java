@@ -43,7 +43,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(final HttpServletRequest request,
                              final HttpServletResponse response,
                              final Object handler) throws Exception {
-        if (handler instanceof HandlerMethod) {
+        /*if (handler instanceof HandlerMethod) {
             if (logger.isTraceEnabled()) {
                 logger.trace(this.getClass().toString() + " - handler is an instance of HandlerMethod - "
                         + handler.getClass().getCanonicalName());
@@ -62,7 +62,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 logger.debug("No user found in request");
             }
             failIfUserRequiredButNotPresent(handlerMethod, sessionManager.getCurrentUser(), request, response);
-        }
+        }*/
         return true;
     }
 

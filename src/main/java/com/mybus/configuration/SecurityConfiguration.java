@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/**", "/index.html").authenticated().and()
                 .formLogin().loginPage("/login")
-                .defaultSuccessUrl("/home")
+                .defaultSuccessUrl("/index.html")
                 .failureUrl("/login?error")
                 .usernameParameter("username")
                 .passwordParameter("password").and()
@@ -48,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/node_modules/**", "/static/**", "/static/css/**", "/js/**", "/images/**");
+                .antMatchers("/resources/**", "/static/node_modules/**", "/static/**", "/static/css/**", " /static/js/**", "/images/**");
     }
 
 }
