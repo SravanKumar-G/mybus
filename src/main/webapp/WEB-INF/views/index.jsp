@@ -70,6 +70,7 @@
     <script src="js/modules/staffModule.js"></script>
     <script src="js/modules/cargoDashboardModule.js"></script>
     <script src="js/modules/cargoBrachSummaryModule.js"></script>
+    <script src="js/modules/fullTripModule.js"></script>
 
     <script src="js/modules/headerNavBarhomeCtrl.js"></script>
     <script src="js/directives/ng-really.js"></script>
@@ -171,12 +172,12 @@
                     </div>
                 </div>
                 <!-- /.navbar-collapse -->
-            
+
             <!-- /.container-fluid -->
         </nav>
 
-        <div id="wrapper" class="toggled">
-      
+        <div id="wrapper" class="toggled"`>
+
         <div  id="sidebar-wrapper" class="nav-side-menu" ng-controller="MenuBarController">
                     <div class="menu-list">
                         <ul id="menu-content" class="menu-content ">
@@ -260,6 +261,44 @@
                             </li>
                         </ul>
                     </div>
+
+    <!---------OnLoadig PopUp only For Vehice accessing Use-->
+
+                     <div id="myModal" class="modal fade loading-popup" tabindex='-1' ng-if="canAccessModule('vehicles')" ng-init="loadVehicles();">
+                         <div class="modal-dialog custom-modal">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                     <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                     <h4 class="modal-title">Vehicle Remainders</h4>
+                                </div>
+                                <div class="modal-body">
+                                     <table class="table table-bordered table-condensed table-hover">
+                                        <tr>
+                                            <th>Vehicle Number</th>
+                                            <th>Permit Expiry</th>
+                                            <th>Fitness Exipry</th>
+                                            <th>Insurance Exipry</th>
+                                            <th>Auth Exipry</th>
+                                            <th>Pollution Expiry</th>
+                                        </tr>
+                                        <tr ng-repeat = "vehicle in vehicles">
+                                        <td>{{vehicle.regNo}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                                </div>
+                        </div>
+                      </div>
+
                 </div>
         <!-- /#sidebar-wrapper -->
         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle" style="position: relative;top: 65px;z-index: 2;"><i class="fa fa-bars fa-2x toggle-btn"></i> </a>
@@ -284,7 +323,9 @@
         <!-- /#page-content-wrapper -->
 
     </div>
+
     <!-- /#wrapper -->
+
     <script>
     $("#menu-toggle").click(function(e) {
         e.preventDefault();

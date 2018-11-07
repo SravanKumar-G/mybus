@@ -74,6 +74,7 @@ public class FullTripManager {
 
     public FullTrip save(FullTrip fullTrip) {
         fullTrip.validate();
+        fullTrip.setOperatorId(sessionManager.getOperatorId());
         return fullTripsDAO.save(fullTrip);
     }
     public boolean payOffFullTrip(String fullTripId){

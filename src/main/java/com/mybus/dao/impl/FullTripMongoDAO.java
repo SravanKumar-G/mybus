@@ -45,16 +45,18 @@ public class FullTripMongoDAO {
     private Query createQuery(JSONObject query) throws ParseException {
         final Query q = new Query();
         q.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        if(query.containsKey("start")) {
-            q.addCriteria(where("tripDate").gte(
-                    ServiceUtils.parseDate(query.get("start").toString(), false)));
-        }
-        if(query.containsKey("end")) {
-            q.addCriteria(where("tripDate").lte(
-                    ServiceUtils.parseDate(query.get("end").toString(), true)));
-        }
-        if(query.containsKey("userId")) {
-            q.addCriteria(where("createdBy").is(ServiceUtils.parseDate(query.get("userId").toString(), true)));
+        if(query != null){
+            if(query.containsKey("start")) {
+                q.addCriteria(where("tripDate").gte(
+                        ServiceUtils.parseDate(query.get("start").toString(), false)));
+            }
+            if(query.containsKey("end")) {
+                q.addCriteria(where("tripDate").lte(
+                        ServiceUtils.parseDate(query.get("end").toString(), true)));
+            }
+            if(query.containsKey("userId")) {
+                q.addCriteria(where("createdBy").is(ServiceUtils.parseDate(query.get("userId").toString(), true)));
+            }
         }
         return q;
     }

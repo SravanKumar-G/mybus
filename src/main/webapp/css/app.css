@@ -770,3 +770,15 @@ body {
 .loadingSheet .select2-container{
     width: 150px !important;
 }
+.modal-backdrop{
+    z-index: 99;
+}
+.custom-modal{
+    width: 700px;
+    color: #000;
+}
+.custom-modal .modal-body{
+    height: 400px;
+    overflow: auto;
+    color: #000;
+}

@@ -1,0 +1,69 @@
+<div ng-controller="addOrEditFullTripController">
+    <div class="row">
+        <h3>{{title}}</h3>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="control-label ">Trip Date:<span class="data-required">*</span></label>
+            <my-datepicker ng-model="fullTrip.tripDate" ></my-datepicker>
+        </div>
+        <div class="col-sm-3">
+            <label for="from" class="control-label">From:<span class="data-required">*</span></label>
+                <input type="text" class="form-control" name="from" ng-model="fullTrip.from" id="from">
+        </div>
+        <div class="col-sm-3">
+            <label for="to" class="control-label">To:<span class="data-required">*</span></label>
+                <input type="text" class="form-control" name="to" ng-model="fullTrip.to" id="to">
+        </div>
+        <div class="col-sm-3">
+            <label for="contact" class="control-label">Charge</label>
+                <input type="text" class="form-control" name="charge" ng-model="fullTrip.charge">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="control-label">Due:</label>
+            <input type="radio" name="due" ng-value="true" ng-model="fullTrip.due">Yes &nbsp;&nbsp;
+            <input type="radio" name="due" ng-value="false" ng-model="fullTrip.due">No
+
+        </div>
+        <div class="col-sm-3">
+            <label class="control-label">Paid On</label>
+            <my-datepicker ng-model="fullTrip.paidOn"></my-datepicker>
+        </div>
+        <div class="col-sm-3">
+            <label>Paid By</label>
+            <input type="text" class="form-control" name="paidBy" ng-model="fullTrip.paidBy">
+        </div>
+        <div class="col-sm-3">
+            <label for="contact">Contact:<span class="data-required">*</span></label>
+            <input type="text" class="form-control" name="contact" ng-model="fullTrip.contact" id="contact">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Canceled:</label>
+            <input type="radio" name="Canceled" ng-value="true" ng-model="fullTrip.canceled">Yes &nbsp;&nbsp;
+            <input type="radio" name="Canceled" ng-value="false" ng-model="fullTrip.canceled">No
+        </div>
+        <div class="col-sm-3">
+            <label>Canceled On</label>
+            <my-datepicker ng-model="fullTrip.canceledOn"></my-datepicker>
+        </div>
+        <div class="col-sm-3">
+            <label>Canceled By</label>
+            <input type="text" class="form-control" name="canceledBy" ng-model="fullTrip.canceldBy">
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <label>Remarks:</label>
+            <textarea class="form-control" rows="4" ng-model="fullTrip.remarks"></textarea>
+        </div>
+        <div class="col-sm-4" style="padding: 50px;">
+            <button type="submit" class="btn btn-primary" ng-click="fullTripDetails();">Save</button>&nbsp;&nbsp;
+            <button type="submit" class="btn btn-danger" ui-sref="fulltrips">Cancel</button>
+        </div>
+    </div>
+</div>
