@@ -1,9 +1,6 @@
 package com.mybus.dao.impl;
 
-import com.mybus.model.OfficeExpense;
 import com.mybus.model.ServiceExpense;
-import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
 import org.json.simple.JSONObject;
@@ -12,14 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 

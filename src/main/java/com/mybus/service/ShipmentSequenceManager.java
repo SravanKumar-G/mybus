@@ -1,12 +1,12 @@
 package com.mybus.service;
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
 import com.mybus.model.PaymentStatus;
 import com.mybus.model.cargo.ShipmentSequence;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -43,8 +43,8 @@ public class ShipmentSequenceManager {
         updateOp.inc("nextNumber", 1);
         final Query query = new Query();
         query.addCriteria(where("shipmentCode").is(shipmentSequence.getShipmentCode()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
-        if(writeResult.getN() == 1){
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
+        if(writeResult.getModifiedCount() == 1){
             shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentSequence.getShipmentCode());
         } else {
             throw new IllegalStateException("next number failed");

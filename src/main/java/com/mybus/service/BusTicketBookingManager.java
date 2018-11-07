@@ -1,24 +1,27 @@
 package com.mybus.service;
 
-import com.mybus.model.*;
-import org.apache.velocity.app.VelocityEngine;
+import com.mybus.model.BusJourney;
+import com.mybus.model.JourneyType;
+import com.mybus.model.ServiceBoardingPoint;
+import com.mybus.model.ServiceDropingPoint;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service
 public class BusTicketBookingManager {
 	
 	@Autowired
-	private CommunicationManager CommunicationManager;
+	private com.mybus.service.CommunicationManager CommunicationManager;
 	
-	@Autowired
-	private VelocityEngine velocityEngine; 
+	//@Autowired
+	//private VelocityEngine velocityEngine;
 	
-	public List<BusJourney> blockSeatUpDateBookingSessionInfo(JSONObject json,List<BusJourney> busJourneyList){
+	public List<BusJourney> blockSeatUpDateBookingSessionInfo(JSONObject json, List<BusJourney> busJourneyList){
 		BusJourney busJourney = null;
 		if(json.containsKey("journeyType")){
 			if(JourneyType.TWO_WAY.name().equalsIgnoreCase(json.get("journeyType").toString())){
@@ -31,7 +34,7 @@ public class BusTicketBookingManager {
 		}
 		return busJourneyList;
 	}
-	public BusJourney busJouneyUpdate(JSONObject json,BusJourney busJourney){
+	public BusJourney busJouneyUpdate(JSONObject json, BusJourney busJourney){
 		if(json.containsKey("fare")) {
 			busJourney.setFare(Double.parseDouble(json.get("fare").toString()));
 		}
@@ -56,8 +59,9 @@ public class BusTicketBookingManager {
 		return busJourney;
 	}
 	public void ComplateSeatBooking(){
-		sendEticket();
+		//sendEticket();
 	}
+	/*
 	public void sendEticket(){
 		Map<String,Object> mailMap=new Hashtable<String, Object>();
 		String mailBody = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,"velocity/eticket.html",mailMap);
@@ -69,5 +73,5 @@ public class BusTicketBookingManager {
 				.bcc(Collections.<String> emptyList())
 				.build();
 		CommunicationManager.sendMail(emailData,null);
-	}
+	} */
 }

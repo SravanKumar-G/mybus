@@ -38,7 +38,7 @@ public class SuppliersManager {
 	public Supplier upate(Supplier supplier){
 		Preconditions.checkNotNull(supplier, "The Supplier can not be null");
 		Preconditions.checkNotNull(supplier.getId(), "The Supplier id can not be null");
-		Supplier a = supplierDAO.findOne(supplier.getId());
+		Supplier a = supplierDAO.findById(supplier.getId()).get();
 		try {
 			a.merge(supplier);
 			supplierDAO.save(a);
@@ -51,7 +51,7 @@ public class SuppliersManager {
 
 	public boolean delete(String id){
 		Preconditions.checkNotNull(id, "The Supplier id can not be null");
-		supplierDAO.delete(id);
+		supplierDAO.deleteById(id);
 		return true;
 	}
 	public void deleteAll() {
@@ -63,6 +63,6 @@ public class SuppliersManager {
 	}
 
 	public Supplier findOne(String id) {
-		return supplierDAO.findOne(id);
+		return supplierDAO.findById(id).get();
 	}
 }

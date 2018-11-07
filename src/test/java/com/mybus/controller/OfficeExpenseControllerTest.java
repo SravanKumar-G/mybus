@@ -5,7 +5,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.ApproveStatus;
 import com.mybus.model.OfficeExpense;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.Assert.*;
 
 /**
  * Created by busda001 on 4/29/17.
@@ -137,7 +137,6 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
                 rejetids.add(officeExpense.getId());
             } else{
                 ids.add(officeExpense.getId());
-
             }
             officeExpenseDAO.save(officeExpense);
         }
@@ -147,19 +146,19 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
 
         actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
                 .content(getObjectMapper().writeValueAsBytes(ids)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isInternalServerError());
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
 
         actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
                 .content(getObjectMapper().writeValueAsBytes(rejetids)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
     }
 

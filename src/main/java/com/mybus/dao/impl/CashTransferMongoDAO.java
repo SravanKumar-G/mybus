@@ -1,7 +1,6 @@
 package com.mybus.dao.impl;
 
 import com.mybus.model.CashTransfer;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.service.UserManager;
 import com.mybus.util.ServiceUtils;

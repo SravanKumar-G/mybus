@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -68,6 +67,10 @@ public class User extends AbstractDocument implements AttributesDocument{
     private double amountToBeCollected;
 
     private Set<String> accessibleModules;
+
+    public User(String userName) {
+        this.setUserName(userName);
+    }
 
     public User(JSONObject json){
         if(json.containsKey("id")) {

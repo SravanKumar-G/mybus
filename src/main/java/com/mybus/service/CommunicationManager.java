@@ -1,20 +1,6 @@
 package com.mybus.service;
 
-import com.lowagie.text.DocumentException;
-import com.mybus.model.EmailData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author yks-Srinivas
@@ -22,10 +8,9 @@ import java.io.OutputStream;
 
 @Service
 public class CommunicationManager {
-	
-	@Autowired
-	JavaMailSenderImpl JavaMailSenderImpl;
 
+
+	/*
 	public void sendMail(final EmailData emailData,final ByteArrayOutputStream attachmentAsByteArrResource) {  
 		if(null != emailData){
 			MimeMessagePreparator mailMsg = mimeMessagePreparator(emailData,attachmentAsByteArrResource);
@@ -81,5 +66,5 @@ public class CommunicationManager {
 	public String sendSMS(final String to,final String  body){
 		return null;
 	}
-	
+	*/
 }

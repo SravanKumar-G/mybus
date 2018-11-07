@@ -1,9 +1,7 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.WriteResult;
-import com.mybus.dao.AgentDAO;
-import com.mybus.dao.BookingDAO;
+import com.google.common.base.Preconditions;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
@@ -12,7 +10,7 @@ import com.mybus.model.BranchOffice;
 import com.mybus.model.Invoice;
 import com.mybus.service.BookingTypeManager;
 import com.mybus.service.SessionManager;
-import org.scribe.utils.Preconditions;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +81,7 @@ public class BookingMongoDAO {
     public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
         long start = System.currentTimeMillis();
         Preconditions.checkNotNull(agent, "Agent not found");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+        BranchOffice branchOffice = branchOfficeDAO.findById(agent.getBranchOfficeId()).get();
         Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
         final Query query = new Query();
         query.addCriteria(where("bookedBy").is(agent.getUsername()));
@@ -125,13 +123,13 @@ public class BookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").is(bookingId));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
-        if(writeResult.getN() != 1) {
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
+        if(writeResult.getModifiedCount() != 1) {
             return false;
         }
         return true;
     }
-    public List<BasicDBObject> getBookingDueTotalsByService(String branchOfficeId){
+    public List<Document> getBookingDueTotalsByService(String branchOfficeId){
         //db.booking.aggregate([{ $match: { 'due': true } },{$group:{_id:"$serviceNumber",total:{$sum:"$netAmt"}}}])
         /*
         Aggregation agg = newAggregation(
@@ -155,13 +153,13 @@ public class BookingMongoDAO {
                 group("serviceNumber").sum("netAmt").as("totalDue"),
                 sort(Sort.Direction.DESC, "totalDue"));
 
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
-        List<BasicDBObject> result = groupResults.getMappedResults();
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, Document.class);
+        List<Document> result = groupResults.getMappedResults();
         return result;
     }
 
-    public Page<BasicDBObject> getBookingCountsByPhone(Pageable pageable){
+    public Page<Document> getBookingCountsByPhone(Pageable pageable){
         /**
          * db.booking.aggregate(
          [
@@ -185,16 +183,21 @@ public class BookingMongoDAO {
                 sort(Sort.Direction.DESC, "totalBookings"),
                 skip((long)pageable.getPageNumber() * pageable.getPageSize()),
                 limit(pageable.getPageSize()));
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
-        List<BasicDBObject> result = groupResults.getMappedResults();
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, Document.class);
+        List<Document> result = groupResults.getMappedResults();
         return new PageImpl<>(result, pageable, total);
     }
 
     public long getTotalDistinctPhoneNumbers() {
-        return mongoTemplate.getCollection("booking").distinct("phoneNo").size();
+        Aggregation agg = newAggregation(
+                group("phoneNo").count().as("total"));
+
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, Document.class);
+        return 0;
     }
-    public List<BasicDBObject> getDueBookingByAgents(String branchOfficeId){
+    public List<Document> getDueBookingByAgents(String branchOfficeId){
         List<Criteria> match = new ArrayList<>();
         Criteria criteria = new Criteria();
         if(branchOfficeId != null) {
@@ -205,6 +208,7 @@ public class BookingMongoDAO {
         }
         match.add(where("due").is(true));
         match.add(where("operatorId").is(sessionManager.getOperatorId()));
+        match.add(where("formId").exists(true));
         match.add(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         Aggregation agg = newAggregation(
@@ -212,9 +216,9 @@ public class BookingMongoDAO {
                 group("bookedBy").sum("netAmt").as("totalDue"),
                 sort(Sort.Direction.DESC, "totalDue"));
 
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
-        List<BasicDBObject> result = groupResults.getMappedResults();
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, Document.class);
+        List<Document> result = groupResults.getMappedResults();
         return result;
     }
 
@@ -256,9 +260,9 @@ public class BookingMongoDAO {
          Aggregation agg = newAggregation(
                 match(criteria),
                 group().sum("netAmt").as("bookingTotal").sum("serviceTax").as("totalTax"));
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
-        List<BasicDBObject> result = groupResults.getMappedResults();
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, Document.class);
+        List<Document> result = groupResults.getMappedResults();
         if(!result.isEmpty()) {
             invoice.setTotalTax(result.get(0).getDouble("totalTax"));
             invoice.setTotalSale(result.get(0).getDouble("bookingTotal"));

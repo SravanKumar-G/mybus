@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class VehicleExpensesController extends MyBusBaseController{
+public class VehicleExpensesController extends MyBusBaseController {
     @Autowired
     private PaymentMongoDAO paymentMongoDAO;
 

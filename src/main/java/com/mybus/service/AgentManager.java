@@ -7,7 +7,7 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dto.AgentNameDTO;
 import com.mybus.model.Agent;
 import com.mybus.model.BranchOffice;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -45,9 +45,9 @@ public class AgentManager {
     private SessionManager sessionManager;
 
     public Agent getAgent(String agentId) {
-        Agent agent = agentDAO.findOne(agentId);
+        Agent agent = agentDAO.findById(agentId).get();
         if(agent.getBranchOfficeId() != null) {
-            BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+            BranchOffice branchOffice = branchOfficeDAO.findById(agent.getBranchOfficeId()).get();
             if(branchOffice != null) {
                 agent.getAttributes().put(BranchOffice.KEY_NAME, branchOffice.getName());
             }
@@ -75,7 +75,7 @@ public class AgentManager {
      * @param pageable
      * @return
      */
-    public Page<Agent> findAgents(String query, boolean showInvalid,Pageable pageable) {
+    public Page<Agent> findAgents(String query, boolean showInvalid, Pageable pageable) {
         long total = (count(query, showInvalid));
         List<Agent> agents = IteratorUtils.toList(agentMongoDAO.findAgents(query, showInvalid, pageable).iterator());
         Map<String, String> namesMap = branchOfficeManager.getNamesMap();

@@ -1,6 +1,5 @@
 package com.mybus.service;
 
-import com.google.gson.JsonObject;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.ServiceReportDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
@@ -8,8 +7,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.Agent;
 import com.mybus.model.Booking;
 import com.mybus.model.ServiceReport;
-import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONArray;
+import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +57,7 @@ public class BookingManager {
     }
 
     public boolean payBookingDue(String bookingId) {
-        Booking booking = bookingDAO.findOne(bookingId);
+        Booking booking = bookingDAO.findById(bookingId).get();
         return payBooking(bookingId, booking);
     }
 
@@ -97,7 +95,7 @@ public class BookingManager {
             List<Booking> invalidBookings = IteratorUtils.toList(
                     bookingDAO.findByIdAndHasValidAgent(serviceId, false).iterator());
             if(invalidBookings.size() == 0) {
-                ServiceReport serviceReport = serviceReportDAO.findOne(serviceId);
+                ServiceReport serviceReport = serviceReportDAO.findById(serviceId).get();
                 if(serviceReport.isInvalid()) {
                     serviceReport.setInvalid(false);
                     serviceReportDAO.save(serviceReport);

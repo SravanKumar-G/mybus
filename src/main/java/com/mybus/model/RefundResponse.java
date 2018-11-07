@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.mybus.util.Status;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

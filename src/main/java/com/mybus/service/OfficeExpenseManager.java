@@ -7,7 +7,7 @@ import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public class OfficeExpenseManager {
         List<OfficeExpense> officeExpenses = new ArrayList<>();
         User currentUser = sessionManager.getCurrentUser();
         ids.stream().forEach(id -> {
-            OfficeExpense officeExpense = officeExpenseDAO.findOne(id);
+            OfficeExpense officeExpense = officeExpenseDAO.findById(id).get();
             if(officeExpense.getStatus() != null){
                 throw new BadRequestException("OfficeExpense has invalid status");
             }
@@ -103,7 +103,7 @@ public class OfficeExpenseManager {
     }
 
     public void delete(String id) {
-        OfficeExpense officeExpense = officeExpenseDAO.findOne(id);
+        OfficeExpense officeExpense = officeExpenseDAO.findById(id).get();
         if(officeExpense != null && officeExpense.getStatus() != null) {
             throw new BadRequestException("officeExpense can not be deleted");
         }
@@ -137,7 +137,7 @@ public class OfficeExpenseManager {
     }
 
     public OfficeExpense findOne(String id) {
-        OfficeExpense payment = officeExpenseDAO.findOne(id);
+        OfficeExpense payment = officeExpenseDAO.findById(id).get();
         if(payment == null) {
             throw new BadRequestException("No Payment found");
         }

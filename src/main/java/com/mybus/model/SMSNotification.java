@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.simple.JSONObject;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.CollectionTable;
 
 /**
  * Created by skandula on 5/7/16.

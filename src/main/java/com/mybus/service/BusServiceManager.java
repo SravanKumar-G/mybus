@@ -49,8 +49,8 @@ public class BusServiceManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Deleting Service :[{}]" + id);
 		}
-		if (busServiceDAO.findOne(id) != null) {
-			busServiceDAO.delete(id);
+		if (busServiceDAO.findById(id).isPresent()) {
+			busServiceDAO.deleteById(id);
 		} else {
 			throw new RuntimeException("Unknown service id");
 		}
@@ -64,7 +64,7 @@ public class BusServiceManager {
 		}
 		BusService busServiceUpdated = null;
 		try {
-			if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busServiceDAO.findOne(busService.getId()).getStatus())){
+			if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busServiceDAO.findById(busService.getId()).get().getStatus())){
 				busService.setId(null);
 				busServiceUpdated = busServiceMongoDAO.save(busService);
 			}else{
@@ -90,8 +90,8 @@ public class BusServiceManager {
 		Preconditions.checkNotNull(busService.getServiceNumber(), "The bus service number can not be null");
 		Preconditions.checkNotNull(busService.getPhoneEnquiry(), "The bus service enquiry phone can not be null");
 		Preconditions.checkNotNull(busService.getLayoutId(), "The bus service layout can not be null");
-		Preconditions.checkNotNull(layoutDAO.findOne(busService.getLayoutId()), "Invalid layout id");
-		Preconditions.checkNotNull(routeDAO.findOne(busService.getRouteId()), "Invalid route id");
+		Preconditions.checkNotNull(layoutDAO.findById(busService.getLayoutId()).get(), "Invalid layout id");
+		Preconditions.checkNotNull(routeDAO.findById(busService.getRouteId()).get(), "Invalid route id");
 		Preconditions.checkNotNull(busService.getSchedule().getStartDate(), "The bus service start date can not be null");
 		Preconditions.checkNotNull(busService.getSchedule().getEndDate(), "The bus service end date not be null");
 		if(busService.getSchedule().getStartDate().isAfter(busService.getSchedule().getEndDate())){
@@ -110,7 +110,7 @@ public class BusServiceManager {
 
 		//update
 		if (busService.getId() != null ){
-			BusService service = busServiceDAO.findOne(busService.getId());
+			BusService service = busServiceDAO.findById(busService.getId()).get();
 			Preconditions.checkNotNull(service, "Service not found for update");
 			BusService servicebyName = busServiceDAO.findOneByServiceName(service.getServiceName());
 			if(!service.getId().equals(servicebyName.getId())){
@@ -125,7 +125,7 @@ public class BusServiceManager {
 	}
 
 	public BusService publishBusService(String id){
-		BusService busService = busServiceDAO.findOne(id);
+		BusService busService = busServiceDAO.findById(id).get();
 		Preconditions.checkNotNull(busService, "We don't have this bus service");
 		if(BusServicePublishStatus.PUBLISHED.name().equalsIgnoreCase(busService.getStatus())){
 			throw new RuntimeException("This bus service already published");
@@ -141,15 +141,15 @@ public class BusServiceManager {
 		if (service.getRouteId() == null) {
 			return service;
 		}
-		Route route = routeDAO.findOne(service.getRouteId());
+		Route route = routeDAO.findById(service.getRouteId()).get();
 		Preconditions.checkNotNull(route, "Invalid route found");
 		Preconditions.checkArgument(route.isActive(), format("Route %s is not active", route.getName()));
-		City fromCity = cityDAO.findOne(route.getFromCityId());
+		City fromCity = cityDAO.findById(route.getFromCityId()).get();
 		Preconditions.checkNotNull(fromCity, "From City not found");
 		Preconditions.checkArgument(fromCity.isActive(), format("FromCity %s is not active", fromCity.getName()));
 		service.addBoardingPoints(fromCity.getBoardingPoints().stream()
 				.filter(bp -> bp.isActive()).collect(Collectors.toList()));
-		City toCity = cityDAO.findOne(route.getToCityId());
+		City toCity = cityDAO.findById(route.getToCityId()).get();
 		Preconditions.checkNotNull(toCity, "ToCity not found");
 		Preconditions.checkArgument(toCity.isActive(), format("ToCity %s is not active", toCity.getName()));
 
@@ -163,7 +163,7 @@ public class BusServiceManager {
 		sfList.add(new ServiceFare(route.getFromCityId(), route.getToCityId(), true));
 
 		for(String cityID:route.getViaCities()) {
-			viaCity = cityDAO.findOne(cityID);
+			viaCity = cityDAO.findById(cityID).get();
 			if(viaCity.isActive()) {
 				sfList.add(new ServiceFare(route.getFromCityId(), viaCity.getId(), false));
 				sfList.add(new ServiceFare(viaCity.getId(), route.getToCityId(), false));

@@ -1,5 +1,6 @@
 package com.mybus.service;
 
+import com.mybus.configuration.CoreAppConfig;
 import com.mybus.controller.AbstractControllerIntegrationTest;
 import com.mybus.dao.RoleDAO;
 import com.mybus.model.Role;
@@ -10,7 +11,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +25,10 @@ import java.util.Set;
 /**
  * Created by CrazyNaveen on 4/27/16.
  */
-public class RoleManagerTest extends AbstractControllerIntegrationTest{
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { TestConfig.class})
+@WebAppConfiguration
+public class RoleManagerTest{
 
 
     @Autowired
@@ -59,9 +67,9 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
     @Test
     public void testSaveRole() throws Exception {
         Role role = createRole();
-        Role duplicateRole = createRole();
-        roleDAO.save(role);
-        assertNotNull(roleDAO.findOne(role.getId()));
+        Role duplicateRole = new Role();
+        duplicateRole.setName("test");
+        assertTrue(roleDAO.findById(role.getId()).isPresent());
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("Role already exists with the same name");
         roleManager.saveRole(duplicateRole);
@@ -85,8 +93,8 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Role role = createRole();
         assertNotNull(role);
         assertNotNull(role.getId());
-        roleDAO.delete(role);
-        assertNull(roleDAO.findOne(role.getId()));
+        roleDAO.deleteById(role.getId());
+        assertTrue(!roleDAO.findById(role.getId()).isPresent());
     }
 
     @Test
@@ -94,8 +102,8 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Role role = createRole();
         assertNotNull(role);
         assertNotNull(role.getId());
-        roleDAO.findOne(role.getId());
-        assertNotNull(roleDAO.findOne(role.getId()));
+        roleDAO.findById(role.getId());
+        assertNotNull(roleDAO.findById(role.getId()));
     }
 
     @Test

@@ -1,9 +1,8 @@
 package com.mybus.service;
 
-
-import com.mashape.unirest.http.Unirest;
-import com.mybus.SystemProperties;
-import com.mybus.model.*;
+import com.mybus.model.Agent;
+import com.mybus.model.Booking;
+import com.mybus.model.OperatorAccount;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;

@@ -1,6 +1,5 @@
 package com.mybus.service;
 
-import com.google.common.collect.Lists;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -8,6 +7,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,14 +18,13 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by srinikandula on 2/18/17.
  */
 @Service
-public class BitlaPassengerReportService extends BaseService{
+public class BitlaPassengerReportService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BitlaPassengerReportService.class);
 
     @Autowired
@@ -69,7 +68,7 @@ public class BitlaPassengerReportService extends BaseService{
                     (new ServiceReportStatus(ServiceConstants.parseDate(date), ReportDownloadStatus.DOWNLOADING));
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             String key = loginBitlaBus();
-            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
             String url = String.format(operatorAccount.getApiURL()+"/api/get_passenger_details/%s.json?api_key=%s", date, key);
 
             //String url =  "http://jagan.jagantravels.com/api/get_passenger_details/2018-04-06.json?api_key=84FEZH5KE3KWAKIQDIZ6R7Q3KWZZT7RW";
@@ -126,7 +125,7 @@ public class BitlaPassengerReportService extends BaseService{
     }
 
     private String loginBitlaBus() throws UnirestException {
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
 
         /*HttpResponse<JsonNode> postResponse = Unirest.post("http://jagan.jagantravels.com/api/login.json").field("login","jagan.srini")
                 .field("password","1234qwer").asJson(); */
@@ -140,7 +139,7 @@ public class BitlaPassengerReportService extends BaseService{
     }
 
     private  void createServiceReports(String date,
-                                      ServiceReport serviceReport, JSONArray passengers) throws ParseException {
+                                       ServiceReport serviceReport, JSONArray passengers) throws ParseException {
         for (Object info: passengers) {
             JSONObject passengerInfo = (JSONObject) info;
             Booking booking = new Booking();

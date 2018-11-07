@@ -7,7 +7,7 @@ import com.mybus.dao.impl.UserMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,7 +178,7 @@ public class PaymentManager {
     }
 
     public void delete(String paymentId) {
-        Payment payment = paymentDAO.findOne(paymentId);
+        Payment payment = paymentDAO.findById(paymentId).get();
         if(payment.getStatus() != null) {
             throw new BadRequestException("Payment can not be deleted");
         }
@@ -189,7 +189,7 @@ public class PaymentManager {
         List<Payment> payments = IteratorUtils.toList(paymentMongoDAO.find(query, pageable).iterator());
         long count =  paymentMongoDAO.count(query);
         serviceUtils.fillInUserNames(payments);
-        Page<Payment> page = new PageImpl<>(payments, pageable, count);
+        Page<Payment> page = new PageImpl<>(payments);
         return page;
     }
 
@@ -229,7 +229,7 @@ public class PaymentManager {
         List<Payment> payments = new ArrayList<>();
         User currentUser = sessionManager.getCurrentUser();
         ids.stream().forEach(id -> {
-            Payment payment = paymentDAO.findOne(id);
+            Payment payment = paymentDAO.findById(id).get();
             if(payment.getStatus() != null){
                 throw new BadRequestException("payment has invalid status");
             }

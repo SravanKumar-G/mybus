@@ -1,9 +1,7 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.model.Amenity;
 import com.mybus.model.CollectionZone;
-import com.mybus.service.AmenitiesManager;
 import com.mybus.service.CollectionZoneManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +45,7 @@ public class CollectionZoneController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add collectionZone")
-	public CollectionZone addAmenity(HttpServletRequest request,@RequestBody CollectionZone collectionZone) {
+	public CollectionZone addAmenity(HttpServletRequest request, @RequestBody CollectionZone collectionZone) {
 		LOGGER.debug("add collectionZone");
 		return collectionZoneManager.save(collectionZone);
 	}
@@ -55,7 +53,7 @@ public class CollectionZoneController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "save collectionZone")
-	public CollectionZone updateCollectionZone(HttpServletRequest request,@RequestBody CollectionZone collectionZone) {
+	public CollectionZone updateCollectionZone(HttpServletRequest request, @RequestBody CollectionZone collectionZone) {
 		LOGGER.debug("Save collectionZone");
 		return collectionZoneManager.upateCollectionZone(collectionZone);
 	}
@@ -64,7 +62,7 @@ public class CollectionZoneController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get collectionZone by id")
 	public CollectionZone getCollectionZoneByID(HttpServletRequest request,
-			@ApiParam(value = "Id of the amenity to be deleted") @PathVariable final String id) {
+                                                @ApiParam(value = "Id of the amenity to be deleted") @PathVariable final String id) {
 		LOGGER.debug("get collectionZone by id");
 		return collectionZoneManager.getById(id);
 	}

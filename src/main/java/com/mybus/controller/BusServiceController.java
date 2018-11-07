@@ -46,7 +46,7 @@ public class BusServiceController extends MyBusBaseController{
 	@RequestMapping(value = "service", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Create a bus service", response = BusService.class)
 	public ResponseEntity createService(HttpServletRequest request,
-			@ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
+                                        @ApiParam(value = "JSON for BusService to be created") @RequestBody final BusService busService) {
 		logger.debug("post bus service called");
 		return new ResponseEntity<>(busServiceManager.saveBusService(busService), HttpStatus.OK);
 	}
@@ -54,9 +54,9 @@ public class BusServiceController extends MyBusBaseController{
 	@RequestMapping(value = "service/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "Get the BusService JSON", response = BusService.class)
 	public BusService getService(HttpServletRequest request,
-			@ApiParam(value = "Id of the BusService to be found") @PathVariable final String id) {
+                                 @ApiParam(value = "Id of the BusService to be found") @PathVariable final String id) {
 		logger.debug("get bus service called");
-		return busServiceDAO.findOne(id);
+		return busServiceDAO.findById(id).get();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -74,7 +74,7 @@ public class BusServiceController extends MyBusBaseController{
 	@RequestMapping(value = "service", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update a BusService", response = BusService.class)
 	public BusService updateService(HttpServletRequest request,
-			@ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
+                                    @ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
 		logger.debug("update BusService called");
 		return busServiceManager.updateBusService(service);
 	}
@@ -82,8 +82,8 @@ public class BusServiceController extends MyBusBaseController{
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "publish/{id}" ,method = RequestMethod.GET)
 	@ApiOperation(value="service publish")
-	public BusService pubulishBusService(HttpServletRequest request, 
-			@ApiParam(value = "id of the bus service to be publish ") @PathVariable final String id){
+	public BusService pubulishBusService(HttpServletRequest request,
+                                         @ApiParam(value = "id of the bus service to be publish ") @PathVariable final String id){
 		logger.debug("publish bus service id :{}",id);
 		//TODO: This will become asyncrounous call
 		tripManager.publishService(id);
@@ -93,8 +93,8 @@ public class BusServiceController extends MyBusBaseController{
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "update/serviceConfig" ,method = RequestMethod.PUT , produces = ControllerUtils.JSON_UTF8, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value="Update Service configuration after selecting/changing the route on it")
-	public BusService updateServiceConfiguration(HttpServletRequest request, 
-			@ApiParam(value = "bus service Configuration") @RequestBody final BusService service){
+	public BusService updateServiceConfiguration(HttpServletRequest request,
+                                                 @ApiParam(value = "bus service Configuration") @RequestBody final BusService service){
 		return busServiceManager.updateRouteConfiguration(service);
 	}
 
@@ -103,7 +103,7 @@ public class BusServiceController extends MyBusBaseController{
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update amenities for services", response = BusService.class)
 	public BusService updateServiceAmenities(HttpServletRequest request,
-									@ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
+                                             @ApiParam(value = "JSON for BusService") @RequestBody final BusService service) {
 		logger.debug("update BusService called");
 		return busServiceManager.updateBusService(service);
 	}

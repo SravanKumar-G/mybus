@@ -1,8 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.ServiceExpenseDAO;
-import com.mybus.model.OfficeExpense;
 import com.mybus.model.ServiceExpense;
 import com.mybus.service.ServiceExpenseManager;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +31,7 @@ public class ServiceExpenseController {
 	@RequestMapping(value = "byDate", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public List<ServiceExpense> getAll(HttpServletRequest request,
-									   @ApiParam(value = "Date of travel") @RequestParam final String travelDate) throws ParseException {
+                                       @ApiParam(value = "Date of travel") @RequestParam final String travelDate) throws ParseException {
 		return serviceExpenseManager.getServiceExpenses(travelDate);
 	}
 
@@ -41,14 +39,14 @@ public class ServiceExpenseController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	public List<ServiceExpense> search(HttpServletRequest request,
-									  @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+                                       @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
 		return serviceExpenseManager.findServiceExpenses(query, pageable);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public ServiceExpense get(HttpServletRequest request,
-									   @ApiParam(value = "Expense id") @PathVariable final String id) throws ParseException {
+                              @ApiParam(value = "Expense id") @PathVariable final String id) throws ParseException {
 		return serviceExpenseManager.getServiceExpense(id);
 	}
 
@@ -65,7 +63,7 @@ public class ServiceExpenseController {
 	@RequestMapping(value = "/", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value ="Get expenses for services", response = JSONObject.class)
 	public ServiceExpense getAll(HttpServletRequest request,
-								 @RequestBody final ServiceExpense serviceExpense) throws ParseException {
+                                 @RequestBody final ServiceExpense serviceExpense) throws ParseException {
 		return serviceExpenseManager.save(serviceExpense);
 	}
 

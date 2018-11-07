@@ -1,6 +1,6 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.model.BranchOffice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,7 +23,7 @@ public class BranchOfficeMongoDAO {
         updateOp.inc("cashBalance", cashBalance);
         final Query query = new Query();
         query.addCriteria(where("_id").is(officeId));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, BranchOffice.class);
-        return writeResult.getN() == 1;
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, BranchOffice.class);
+        return writeResult.getModifiedCount() == 1;
     }
 }

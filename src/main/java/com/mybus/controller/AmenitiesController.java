@@ -51,7 +51,7 @@ public class AmenitiesController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "amenity", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add amenity")
-	public Amenity addAmenity(HttpServletRequest request,@RequestBody Amenity amenity) {
+	public Amenity addAmenity(HttpServletRequest request, @RequestBody Amenity amenity) {
 		LOGGER.debug("add amenity");
 		return amenitiesManager.save(amenity);
 	}
@@ -59,7 +59,7 @@ public class AmenitiesController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "amenity", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add amenity")
-	public Amenity updateAmenity(HttpServletRequest request,@RequestBody Amenity amenity) {
+	public Amenity updateAmenity(HttpServletRequest request, @RequestBody Amenity amenity) {
 		LOGGER.debug("add amenity");
 		return amenitiesManager.upateAmenity(amenity);
 	}
@@ -68,7 +68,7 @@ public class AmenitiesController {
 	@RequestMapping(value = "amenity/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get amenity by id")
 	public Amenity getAmenityByID(HttpServletRequest request,
-			@ApiParam(value = "Id of the amenity to be deleted") @PathVariable final String id) {
+                                  @ApiParam(value = "Id of the amenity to be deleted") @PathVariable final String id) {
 		LOGGER.debug("get amenity by id");
 		return amenitiesManager.getAmenityById(id);
 	}

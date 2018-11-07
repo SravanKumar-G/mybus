@@ -48,10 +48,10 @@ public class BookingPaymentController {
 							produces = ControllerUtils.JSON_UTF8,
 							consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Initiate booking")//@RequestBody JSONObject busJourney
-	public BookingPayment initiateBooking(HttpServletRequest request,@RequestBody JSONObject  paymentJson) {
+	public BookingPayment initiateBooking(HttpServletRequest request, @RequestBody JSONObject  paymentJson) {
 		LOGGER.info("Got request to payment process");
 		BookingPayment payment = new BookingPayment(paymentJson);
-		BookingSessionInfo bookingSessionInfo = bookingSessionManager.getBookingSessionInfo(); 
+		BookingSessionInfo bookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		payment.setAmount((float)bookingSessionInfo.getFinalFare());
 		payment.setFirstName(((PassengerInfo)payment.getPassengerInfoOneWay().get(0)).getName());
 		if(payment.getPaymentType().equalsIgnoreCase("EBS")){
@@ -74,9 +74,9 @@ public class BookingPaymentController {
 	@ResponseBody
 	@ApiOperation(value = "Refund BookingPayment request")
 	public RefundResponse refundProcessToPaymentGateways(HttpServletRequest request,
-			@RequestParam("pID") String pID,
-			@RequestParam("refundAmount") double refundAmount,
-			@RequestParam("disc") String disc) {
+                                                         @RequestParam("pID") String pID,
+                                                         @RequestParam("refundAmount") double refundAmount,
+                                                         @RequestParam("disc") String disc) {
 		return paymentManager.refundProcessToPaymentGateways(pID,refundAmount,disc);
     }
 	

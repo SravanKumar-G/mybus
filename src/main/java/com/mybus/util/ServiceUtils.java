@@ -1,14 +1,11 @@
 package com.mybus.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.dao.UserDAO;
 import com.mybus.model.AbstractDocument;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.Tika;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -128,7 +125,7 @@ public class ServiceUtils {
         fillInUsername(abstractDocument, abstractDocument.getUpdatedBy(), "updatedBy");
     }
 
-    public void fillInUserNames(AbstractDocument abstractDocument,String fieldName) throws IOException {
+    public void fillInUserNames(AbstractDocument abstractDocument, String fieldName) throws IOException {
         try {
             JSONObject jsonObject = objectMapper.readValue(objectMapper.writeValueAsString(abstractDocument), JSONObject.class);
             if(jsonObject.get(fieldName) != null) {
@@ -143,7 +140,7 @@ public class ServiceUtils {
     private void fillInUsername(AbstractDocument abstractDocument, String userId, String attributeName) {
         if(userId != null) {
             if(userNames.get(userId) == null) {
-                User user = userDAO.findOne(userId);
+                User user = userDAO.findById(userId).get();
                 if(user != null) {
                     userNames.put(userId, user.getFullName());
                 } else {

@@ -14,14 +14,21 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.*;
 
 /**
  * Created by skandula on 12/30/15.
  */
-public class RouteManagerTest extends AbstractControllerIntegrationTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { TestConfig.class})
+@WebAppConfiguration
+public class RouteManagerTest {
     @Autowired
     private RouteDAO routeDAO;
 
@@ -107,7 +114,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testDeactivateRoute() {
-        expectedEx.expect(NullPointerException.class);
+        expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Invalid Route id");
         routeManager.deactiveRoute("123");
         Route route = routeManager.saveRoute(routeTestService.createTestRoute());
@@ -123,7 +130,7 @@ public class RouteManagerTest extends AbstractControllerIntegrationTest {
 
     @Test
     public void testDeleteRoute() {
-        expectedEx.expect(NullPointerException.class);
+        expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Invalid Route id");
         routeManager.deleteRoute("123");
         Route route = routeManager.saveRoute(routeTestService.createTestRoute());

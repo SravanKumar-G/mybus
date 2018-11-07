@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * Created by skandula on 5/7/16.
  */

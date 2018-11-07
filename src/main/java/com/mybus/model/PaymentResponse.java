@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.mybus.util.Status;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;

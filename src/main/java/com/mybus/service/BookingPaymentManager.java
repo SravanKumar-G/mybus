@@ -1,16 +1,15 @@
 package com.mybus.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybus.SystemProperties;
 import com.mybus.dao.BookingPaymentDAO;
 import com.mybus.dao.BookingSessionInfoDAO;
 import com.mybus.dao.PaymentResponseDAO;
 import com.mybus.model.*;
 import com.mybus.util.Constants;
-import com.mybus.util.Status;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -27,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+
 /**
  * 
  * @author yks-Srinivas
@@ -44,7 +44,7 @@ public class BookingPaymentManager {
 	private BookingPaymentDAO bookingPaymentDAO;
 	
 	@Autowired
-	PaymentResponseDAO paymentResponseDAO;
+    PaymentResponseDAO paymentResponseDAO;
 	
 	@Autowired
 	private BookingSessionManager bookingSessionManager;
@@ -135,7 +135,7 @@ public class BookingPaymentManager {
 		return payment;
 	}
 	
-	public PaymentResponse paymentResponseFromEBS(Map<String, String> map,String _id) {
+	public PaymentResponse paymentResponseFromEBS(Map<String, String> map, String _id) {
 		
 		PaymentResponse paymentResponse = new PaymentResponse();
 		paymentResponse.setId(_id);
@@ -168,7 +168,7 @@ public class BookingPaymentManager {
 		return paymentResponse;
 	}
 	
-	public PaymentResponse paymentResponseFromPayu(Map<String, String> map,String id) {
+	public PaymentResponse paymentResponseFromPayu(Map<String, String> map, String id) {
 		
 		PaymentResponse paymentResponse = new PaymentResponse();
 		paymentResponse.setId(id);
@@ -208,9 +208,9 @@ public class BookingPaymentManager {
 	 * @param disc
 	 * @return
 	 */
-	public RefundResponse refundProcessToPaymentGateways(String pID,double refundAmount,String disc) {
+	public RefundResponse refundProcessToPaymentGateways(String pID, double refundAmount, String disc) {
 		
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(pID);
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(pID).get();
 		RefundResponse refundResponse = new RefundResponse();
 		refundResponse.setRefundAmount(refundAmount);
 		refundResponse.setDisc(disc);
@@ -230,7 +230,7 @@ public class BookingPaymentManager {
 				wr.write("key=gtKFFx&command=cancel_refund_transaction&hash="+ hashCal("SHA-512",hashSequence) +"&var1="+ refundAmount +"&var2="+ uniqueId +"&var3="+refundAmount);
 				LOGGER.info("PAYU Refund request ::"+hashSequence);
 				wr.flush();
-				java.io.BufferedReader rd = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+				BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				String line = null;
 				StringBuilder rowResonse = new StringBuilder();
 				while ((line = rd.readLine()) != null) {
@@ -406,7 +406,7 @@ public class BookingPaymentManager {
 
 	public boolean update(PaymentResponse paymentResponse) {
         
-        PaymentResponse pr = paymentResponseDAO.findOne(paymentResponse.getId());
+        PaymentResponse pr = paymentResponseDAO.findById(paymentResponse.getId()).get();
         try {
         	paymentResponse.setPaymentUserInfoId(pr.getPaymentUserInfoId());
         	pr.merge(paymentResponse);
@@ -439,7 +439,7 @@ public class BookingPaymentManager {
 	    LOGGER.info("refundAmount"+refundAmount);
 	    return refundAmount;
 	}
-	public double refundCalculation(double seatFare,double refundInPercentage){
+	private double refundCalculation(double seatFare,double refundInPercentage){
 		double refundAmount = 0.0;
 		if(!(refundInPercentage==0)){
 			double pgCharges= Double.parseDouble(systemProperties.getProperty("pgCharges"));
@@ -452,7 +452,7 @@ public class BookingPaymentManager {
 		List<CancellationPolicy> cancellationPolicyList = null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			cancellationPolicyList = mapper.readValue(cancellationPolicyJsonString, new TypeReference<List<CancellationPolicy>>(){});
+			cancellationPolicyList = mapper.readValue(cancellationPolicyJsonString, new TypeReference(){});
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

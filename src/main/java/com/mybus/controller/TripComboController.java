@@ -1,11 +1,8 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.ServiceComboDAO;
 import com.mybus.dao.TripComboDAO;
-import com.mybus.model.ServiceCombo;
 import com.mybus.model.TripCombo;
-import com.mybus.service.ServiceComboManager;
 import com.mybus.service.TripComboManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +49,7 @@ public class TripComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "tripCombo", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add tripCombo")
-	public TripCombo add(HttpServletRequest request,@RequestBody TripCombo tripCombo) {
+	public TripCombo add(HttpServletRequest request, @RequestBody TripCombo tripCombo) {
 		LOGGER.debug("add tripCombo");
 		return tripComboDAO.save(tripCombo);
 	}
@@ -60,7 +57,7 @@ public class TripComboController {
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "tripCombo", method = RequestMethod.PUT, produces = ControllerUtils.JSON_UTF8)
 	@ApiOperation(value = "add tripCombo")
-	public TripCombo update(HttpServletRequest request,@RequestBody TripCombo tripCombo) {
+	public TripCombo update(HttpServletRequest request, @RequestBody TripCombo tripCombo) {
 		LOGGER.debug("update tripCombo");
 		return tripComboManager.update(tripCombo);
 	}
@@ -69,9 +66,9 @@ public class TripComboController {
 	@RequestMapping(value = "tripCombo/{id}", method = RequestMethod.GET)
 	@ApiOperation(value ="get tripCombo by id")
 	public TripCombo get(HttpServletRequest request,
-			@ApiParam(value = "Id of the tripCombo") @PathVariable final String id) {
+                         @ApiParam(value = "Id of the tripCombo") @PathVariable final String id) {
 		LOGGER.debug("get tripCombo by id");
-		return tripComboDAO.findOne(id);
+		return tripComboDAO.findById(id).get();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -80,6 +77,6 @@ public class TripComboController {
 	public void delete(HttpServletRequest request,
 			@ApiParam(value = "Id of the tripCombo to be deleted") @PathVariable final String id) {
 		LOGGER.debug("delete tripCombo called");
-		tripComboDAO.delete(id);
+		tripComboDAO.deleteById(id);
 	}
 }

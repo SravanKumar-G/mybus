@@ -7,7 +7,7 @@ import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.BoardingPoint;
 import com.mybus.model.City;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,8 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting city:[{}]" + id);
         }
-        if (cityDAO.findOne(id) != null) {
-            cityDAO.delete(id);
+        if (cityDAO.findById(id).isPresent()) {
+            cityDAO.deleteById(id);
         } else {
             throw new RuntimeException("Unknown city id");
         }
@@ -102,7 +102,7 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Adding boarding point to city with id" + cityId);
         }
-        if (cityDAO.findOne(cityId) == null) {
+        if (!cityDAO.findById(cityId).isPresent()) {
             throw new BadRequestException("Unknown city id");
         }
         return cityMongoDAO.addBoardingPoint(cityId, bp);
@@ -114,7 +114,7 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Updating boarding point:[{}] to city:[{}]", bp.getId(), cityId);
         }
-        City city = cityDAO.findOne(cityId);
+        City city = cityDAO.findById(cityId).get();
         cityMongoDAO.validateBoardingPoint(bp, city.getBoardingPoints());
         city.getBoardingPoints().stream().filter(b -> b.getId().equals(bp.getId())).forEach(b -> {
             try {
@@ -134,7 +134,7 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting boarding point:[{}] from city:[{}]", id, cityId);
         }
-        City city = cityDAO.findOne(cityId);
+        City city = cityDAO.findById(cityId).get();
         Preconditions.checkNotNull(city, "No city found with id:[{}]", cityId);
         if(city.getBoardingPoints().stream().filter(b -> b.getId().equals(id)).count() == 1) {
             city.setBoardingPoints(city.getBoardingPoints().stream()
@@ -151,7 +151,7 @@ public class CityManager {
         if (logger.isDebugEnabled()) {
             logger.debug("searching for boarding point:[{}] from city:[{}]", id, cityId);
         }
-        City city = cityDAO.findOne(cityId);
+        City city = cityDAO.findById(cityId).get();
         Optional<BoardingPoint> bp = city.getBoardingPoints().stream().filter(b -> b.getId().equals(id)).findFirst();
         if (bp.isPresent()) {
             return bp.get();
@@ -181,13 +181,13 @@ public class CityManager {
     public void deleteAll() {
         cityDAO.deleteAll();
     }
-    
+
     public Iterable<BoardingPoint> getBoardingPoints(String cityId) {
         Preconditions.checkNotNull(cityId, "The city id can not be null");
         if (logger.isDebugEnabled()) {
             logger.debug("getting boarding points for city:[{}] ", cityId);
         }
-        City city = cityDAO.findOne(cityId);
+        City city = cityDAO.findById(cityId).get();
         return city.getBoardingPoints();
     }
 }

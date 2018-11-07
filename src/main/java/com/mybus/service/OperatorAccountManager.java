@@ -48,14 +48,14 @@ public class OperatorAccountManager {
         if(id == null){
             throw new BadRequestException("Invalid ID used for search");
         }
-        return operatorAccountDAO.findOne(id);
+        return operatorAccountDAO.findById(id).get();
    }
 
    public void deleteAccount(String id){
        if(id == null){
            throw new BadRequestException("Invalid ID used for delete");
        }
-       operatorAccountDAO.delete(id);
+       operatorAccountDAO.deleteById(id);
    }
 
    public Iterable<OperatorAccount> findAccounts(){

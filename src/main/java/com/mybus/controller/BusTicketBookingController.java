@@ -1,6 +1,5 @@
 package com.mybus.controller;
 
-import com.mongodb.BasicDBObject;
 import com.mybus.annotations.RequiresAuthorizedUser;
 import com.mybus.controller.util.ControllerUtils;
 import com.mybus.dao.*;
@@ -12,6 +11,7 @@ import com.mybus.service.BookingSessionManager;
 import com.mybus.service.BusTicketBookingManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Ticket booking flow controller Using like 
  * get stations, get toStations, get available buses, get buslayout, block ticket,
@@ -30,7 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/")
-public class BusTicketBookingController extends MyBusBaseController{
+public class BusTicketBookingController extends MyBusBaseController {
 	
 	@Autowired
 	private CityDAO cityDAO;
@@ -51,7 +52,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	private BusTicketBookingManager busTicketBookingManager;
 
 	@Autowired
-	PaymentResponseDAO paymentResponseDAO;
+    PaymentResponseDAO paymentResponseDAO;
 
 	@Autowired
 	private BookingMongoDAO bookingMongoDAO;
@@ -108,7 +109,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 		}
 		return availableTrips;
 	}
-	public List<Trip> availableTrips(String fromCity,String ToCity, String dateOfJourney){
+	public List<Trip> availableTrips(String fromCity, String ToCity, String dateOfJourney){
 		List<Trip> trips = new ArrayList<Trip>();
 		Iterable<BusService> busAllServie =busServiceDAO.findAll();
 		busAllServie.forEach(bs->{
@@ -131,13 +132,13 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@RequestMapping(value = "busLayout/{layoutId}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
 	@ApiOperation(value ="Get the bus Layout JSON", response = Trip.class)
-	public Trip getTripLayout(HttpServletRequest request,@ApiParam(value = "Id of the layout to be found") @PathVariable final String layoutId) {
+	public Trip getTripLayout(HttpServletRequest request, @ApiParam(value = "Id of the layout to be found") @PathVariable final String layoutId) {
 		return tripLayout(layoutId);
 	}
 	
 	public Trip tripLayout(String layoutId){
 		Trip t = new Trip();
-		Layout layout = layoutDAO.findOne(layoutId);
+		Layout layout = layoutDAO.findById(layoutId).get();
 		t.setRows(layout.getRows());
 		return t; 
 	}
@@ -145,7 +146,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@RequiresAuthorizedUser(value=false)
 	@RequestMapping(value = "blockSeat", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
 	@ResponseBody
-	public List<BusJourney> blockSeat(HttpServletRequest request,@RequestBody JSONObject busJourney) {
+	public List<BusJourney> blockSeat(HttpServletRequest request, @RequestBody JSONObject busJourney) {
 		BookingSessionInfo BookingSessionInfo = bookingSessionManager.getBookingSessionInfo();
 		List<BusJourney> busJourneyList = BookingSessionInfo.getBusJournies();
 		busJourneyList = busTicketBookingManager.blockSeatUpDateBookingSessionInfo(busJourney,busJourneyList);
@@ -177,7 +178,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@ApiOperation(value = "booked ticket payment")
 	public PaymentResponse getPaymentInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(bookingSessionManager.getBookingSessionInfo().getBookingId()).get();
 		return paymentResponse;
     }
 	
@@ -188,15 +189,15 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@ApiOperation(value = "booked ticket passenger info request")
 	public BookingPayment getPassingerInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
-		return bookingPaymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(bookingSessionManager.getBookingSessionInfo().getBookingId()).get();
+		return bookingPaymentDAO.findById(paymentResponse.getPaymentUserInfoId()).get();
     }
 
 
 	@ResponseStatus(value = HttpStatus.OK)
 	@RequestMapping(value = "getBookingCounts", method = RequestMethod.GET)
 	@ApiOperation(value = "booked ticket passenger info request")
-    public Page<BasicDBObject> getBookingCounts(HttpServletRequest request, Pageable pageable) {
+    public Page<Document> getBookingCounts(HttpServletRequest request, Pageable pageable) {
 		return bookingMongoDAO.getBookingCountsByPhone(pageable);
 	}
 

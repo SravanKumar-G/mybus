@@ -1,7 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.RouteDAO;
 import com.mybus.model.Route;
 import com.mybus.service.RouteManager;
 import io.swagger.annotations.Api;
@@ -11,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/")
 @Api(value="RouteController", description="RouteController management APIs")
-public class RouteController extends MyBusBaseController{
+public class RouteController extends MyBusBaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -52,7 +50,7 @@ public class RouteController extends MyBusBaseController{
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create a Route")
     public Route create(HttpServletRequest request,
-                           @ApiParam(value = "JSON for Route to be created") @RequestBody final Route route) {
+                        @ApiParam(value = "JSON for Route to be created") @RequestBody final Route route) {
         logger.debug("save route called");
         return routeManager.saveRoute(route);
     }
@@ -60,7 +58,7 @@ public class RouteController extends MyBusBaseController{
     @RequestMapping(value = "route/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     @ApiOperation(value ="Get the Route JSON", response = Route.class)
     public Route get(HttpServletRequest request,
-                        @ApiParam(value = "Id of the Route to be found") @PathVariable final String id) {
+                     @ApiParam(value = "Id of the Route to be found") @PathVariable final String id) {
         logger.debug("get city called");
         return routeManager.findOne(id);
     }

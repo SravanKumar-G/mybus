@@ -1,6 +1,6 @@
 package com.mybus.dao.impl;
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.BusServiceDAO;
 import com.mybus.model.BusService;
 import com.mybus.service.SessionManager;
@@ -35,7 +35,7 @@ public class BusServiceMongoDAO {
 	}
 
 	public BusService update(BusService busService) throws Exception {
-		BusService dbCopy = busServiceDAO.findOne(busService.getId());
+		BusService dbCopy = busServiceDAO.findById(busService.getId()).get();
 		dbCopy.merge(busService);
 		return busServiceDAO.save(dbCopy);
 	}
@@ -67,8 +67,8 @@ public class BusServiceMongoDAO {
 			updateOp.set("amenityIds", jsonObject.get("amenityIds"));
 			final Query query = new Query();
 			query.addCriteria(where("_id").is(jsonObject.get("serviceId")));
-			WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, BusService.class);
-			if(writeResult.getN() != 1) {
+			UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, BusService.class);
+			if(writeResult.getModifiedCount() != 1) {
 				return false;
 			}
 		}

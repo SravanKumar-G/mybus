@@ -1,8 +1,8 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
+import com.mybus.util.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

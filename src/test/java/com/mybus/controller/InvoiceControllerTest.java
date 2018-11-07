@@ -2,14 +2,11 @@ package com.mybus.controller;
 
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.UserDAO;
-import com.mybus.model.Booking;
-import com.mybus.model.Payment;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,7 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Calendar;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

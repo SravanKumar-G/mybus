@@ -1,6 +1,5 @@
 package com.mybus.model;
 
-import com.google.gson.Gson;
 import com.mybus.annotations.RequiresValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +38,6 @@ public class FullTrip extends AbstractDocument implements AttributesDocument{
     private String remarks;
     public boolean containsKey(String attributeName) {
         return false;
-    }
-    public static FullTrip fromJson(String json) {
-        return new Gson().fromJson(json, FullTrip.class);
     }
 }
 

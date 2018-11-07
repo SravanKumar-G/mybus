@@ -1,7 +1,6 @@
 package com.mybus.service;
 
 import com.google.common.base.Preconditions;
-import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.MongoQueryDAO;
@@ -9,8 +8,7 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.City;
 import com.mybus.model.User;
-import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +75,7 @@ public class BranchOfficeManager {
 
     public BranchOffice update(String branchOfficeId, BranchOffice branchOffice) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
-        BranchOffice branchOfficeCopy = branchOfficeDAO.findOne(branchOfficeId);
+        BranchOffice branchOfficeCopy = branchOfficeDAO.findById(branchOfficeId).get();
         Preconditions.checkNotNull(branchOfficeCopy, "No branchOffice found with id");
         try {
             branchOfficeCopy.merge(branchOffice, false);
@@ -102,7 +100,7 @@ public class BranchOfficeManager {
             office.getAttributes().put(BranchOffice.CITY_NAME, cityNames.get(office.getCityId()));
             office.getAttributes().put(BranchOffice.MANAGER_NAME, userNames.get(office.getManagerId()));
         });
-        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices, pageable, count(query));
+        Page<BranchOffice> page = new PageImpl<BranchOffice>(branchOffices);
         return page;
     }
 
@@ -111,7 +109,7 @@ public class BranchOfficeManager {
     }
     public void delete(String branchOfficeId) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
+        BranchOffice branchOffice = branchOfficeDAO.findById(branchOfficeId).get();
         Preconditions.checkNotNull(branchOffice, "No branchOffice found with id");
         branchOfficeDAO.delete(branchOffice);
     }

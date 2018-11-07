@@ -1,12 +1,6 @@
 package com.mybus.service;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.Upload;
 import com.mybus.SystemProperties;
-import com.mybus.util.AmazonAWSHelper;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Service
 public class FileUploadManager {
@@ -32,7 +25,6 @@ public class FileUploadManager {
     @Autowired
     private SystemProperties props;
 
-    private static final Tika tika = new Tika();
 
     /**
      * Saves a multipart file to a temp file, and returns it.
@@ -63,8 +55,8 @@ public class FileUploadManager {
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         return tempFile;
     }
-    private static String detectContentTypeFromFilename(final String filename) {
+  /*  private static String detectContentTypeFromFilename(final String filename) {
         return tika.detect(filename);
-    }
+    }*/
 
 }

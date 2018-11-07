@@ -1,12 +1,11 @@
 package com.mybus.service;
 
-import com.mybus.SystemProperties;
 import com.mybus.dao.*;
 import com.mybus.dao.impl.ServiceComboMongoDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.*;
  */
 @Service
 @SessionScope
-public class AbhiBusPassengerReportService extends BaseService{
+public class AbhiBusPassengerReportService extends BaseService {
     private static final Logger logger = LoggerFactory.getLogger(AbhiBusPassengerReportService.class);
 
     @Autowired
@@ -59,7 +58,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading reports for date:" + date);
-        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
+        initAbhibus(operatorAccountDAO.findById(sessionManager.getOperatorId()).get());
         Date journeyDate = ServiceConstants.parseDate(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -124,7 +123,7 @@ public class AbhiBusPassengerReportService extends BaseService{
 
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceIds, String date) throws Exception{
         logger.info("downloading service details for date:" + date +" serviceIds "+ serviceIds);
-        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
+        initAbhibus(operatorAccountDAO.findById(sessionManager.getOperatorId()).get());
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         inputParam.put("serviceids", serviceIds.trim());

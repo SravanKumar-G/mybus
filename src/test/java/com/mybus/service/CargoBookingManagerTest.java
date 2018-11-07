@@ -10,10 +10,10 @@ import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
 import com.mybus.test.util.CargoBookingTestService;
+import com.mybus.util.ServiceConstants;
 import org.apache.commons.collections.IteratorUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by srinikandula on 12/10/16.
@@ -148,9 +148,9 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         vehicle.setRegNo("AP27TU1234");
         vehicle = vehicleDAO.save(vehicle);
         assertTrue(shipmentManager.assignVehicle(vehicle.getId(), ids));
-        shipment = cargoBookingDAO.findOne(shipment.getId());
-        shipment1 = cargoBookingDAO.findOne(shipment1.getId());
-        shipment2 = cargoBookingDAO.findOne(shipment2.getId());
+        shipment = cargoBookingDAO.findById(shipment.getId()).get();
+        shipment1 = cargoBookingDAO.findById(shipment1.getId()).get();
+        shipment2 = cargoBookingDAO.findById(shipment2.getId()).get();
 
         assertEquals(shipment.getVehicleId(), vehicle.getId());
         assertEquals(shipment1.getVehicleId(), vehicle.getId());

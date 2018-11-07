@@ -1,8 +1,6 @@
 package com.mybus.controller;
 
 import com.mybus.controller.util.ControllerUtils;
-import com.mybus.dao.impl.PaymentMongoDAO;
-import com.mybus.model.OfficeExpense;
 import com.mybus.model.Payment;
 import com.mybus.service.PaymentManager;
 import io.swagger.annotations.ApiOperation;
@@ -56,7 +54,7 @@ public class PaymentController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payments/count", method = RequestMethod.GET)
-    public long getCount(HttpServletRequest request,@RequestParam(value = "pending", required = true) boolean pendingPayments) {
+    public long getCount(HttpServletRequest request, @RequestParam(value = "pending", required = true) boolean pendingPayments) {
         return paymentManager.getPaymentsCount(pendingPayments);
     }
     
@@ -88,7 +86,7 @@ public class PaymentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payment/search", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8)
     public List<Payment> search(HttpServletRequest request,
-                                      @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
+                                @RequestBody final JSONObject query, final Pageable pageable) throws Exception {
         return paymentManager.search(query, pageable);
     }
 
@@ -107,7 +105,7 @@ public class PaymentController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "payment/approveOrReject/{approve}", method = RequestMethod.POST)
     public List<Payment> approveOrRejectExpenses(HttpServletRequest request, @PathVariable(name = "approve")String approve,
-                                                       @RequestBody final List<String> ids)  {
+                                                 @RequestBody final List<String> ids)  {
         return paymentManager.approveOrRejectExpenses(ids, Boolean.valueOf(approve));
     }
 

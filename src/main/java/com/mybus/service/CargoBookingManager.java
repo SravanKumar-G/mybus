@@ -3,11 +3,14 @@ package com.mybus.service;
 import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mybus.dao.*;
+import com.mybus.dao.CargoBookingDAO;
+import com.mybus.dao.RequiredFieldValidator;
 import com.mybus.dao.impl.CargoBookingMongoDAO;
 import com.mybus.dto.*;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.*;
 import com.mybus.model.cargo.ShipmentSequence;
+import com.mybus.util.ServiceConstants;
 import com.mybus.util.ServiceUtils;
 import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
@@ -159,7 +162,7 @@ public class CargoBookingManager {
      */
 
     private void updateOnAccountBalance(String supplierId, double balance, boolean isPaymentTransaction) {
-        Supplier supplier = supplierDAO.findOne(supplierId);
+        Supplier supplier = supplierDAO.findById(supplierId).get();
         if(supplier == null) {
             throw new BadRequestException("Invalid supplier on OnAccount shipment");
         }
@@ -185,7 +188,7 @@ public class CargoBookingManager {
 
     public CargoBooking updateShipment(String shipmentId, CargoBooking shipment) {
         Preconditions.checkNotNull(shipmentId, "ShipmentId can not be null");
-        CargoBooking shipmentCopy = cargoBookingDAO.findOne(shipmentId);
+        CargoBooking shipmentCopy = cargoBookingDAO.findById(shipmentId).get();
         Preconditions.checkNotNull(shipmentCopy, "No CargoBooking found with id");
         try {
             shipmentCopy.merge(shipment, false);
@@ -225,7 +228,7 @@ public class CargoBookingManager {
 
     public void delete(String shipmentId) {
         Preconditions.checkNotNull(shipmentId, "ShipmentId can not be null");
-        CargoBooking shipment = cargoBookingDAO.findOne(shipmentId);
+        CargoBooking shipment = cargoBookingDAO.findById(shipmentId).get();
         Preconditions.checkNotNull(shipment, "No CargoBooking found with id");
         cargoBookingDAO.delete(shipment);
     }
@@ -238,8 +241,8 @@ public class CargoBookingManager {
      * Module to populate details in to Cargo Shipment. The details would be like branchOfficeNames, createdBy etc..
      */
     private void loadShipmentDetails(CargoBooking cargoBooking){
-        BranchOffice fromBranchOffice = branchOfficeDAO.findOne(cargoBooking.getFromBranchId());
-        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
+        BranchOffice fromBranchOffice = branchOfficeDAO.findById(cargoBooking.getFromBranchId()).get();
+        BranchOffice toBranchOffice = branchOfficeDAO.findById(cargoBooking.getToBranchId()).get();
         if(lrTypes == null){
             lrTypes = shipmentSequenceManager.getShipmentNamesMap();
         }
@@ -266,11 +269,11 @@ public class CargoBookingManager {
      * @param cargoBooking
      */
     private void sendBookingConfirmationSMS(CargoBooking cargoBooking){
-        BranchOffice fromBranchOffice = branchOfficeDAO.findOne(cargoBooking.getFromBranchId());
-        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
+        BranchOffice fromBranchOffice = branchOfficeDAO.findById(cargoBooking.getFromBranchId()).get();
+        BranchOffice toBranchOffice = branchOfficeDAO.findById(cargoBooking.getToBranchId()).get();
         String cargoServiceName = "Cargo Services";
         if(sessionManager.getOperatorId() != null) {
-            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
             cargoServiceName = operatorAccount.getCargoServiceName();
         }
         String message ="A parcel is booked with LR# "+cargoBooking.getShipmentNumber()+"" +
@@ -288,10 +291,10 @@ public class CargoBookingManager {
     }
 
     private void sendBookingArrivalNotification(CargoBooking cargoBooking){
-        BranchOffice toBranchOffice = branchOfficeDAO.findOne(cargoBooking.getToBranchId());
+        BranchOffice toBranchOffice = branchOfficeDAO.findById(cargoBooking.getToBranchId()).get();
         String cargoServiceName = "Cargo Services";
         if(sessionManager.getOperatorId() != null) {
-            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
             cargoServiceName = operatorAccount.getCargoServiceName();
         }
         String message = String.format("A parcel with LR# %s From:%s(Ph:%s) " +
@@ -310,7 +313,7 @@ public class CargoBookingManager {
      * @return
      */
     public boolean cancelCargoBooking(String id) {
-        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        CargoBooking cargoBooking = cargoBookingDAO.findById(id).get();
 
         if(cargoBooking == null) {
             throw new BadRequestException("Invalid CargoBooking Id");
@@ -366,7 +369,7 @@ public class CargoBookingManager {
      * @return
      */
     public boolean sendSMSForCargoBooking(String id) {
-        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        CargoBooking cargoBooking = cargoBookingDAO.findById(id).get();
         if(cargoBooking != null) {
             sendBookingConfirmationSMS(cargoBooking);
         } else {
@@ -392,7 +395,7 @@ public class CargoBookingManager {
      * @return
      */
     public CargoBooking deliverCargoBooking(String id, String deliveryNotes) {
-        CargoBooking cargoBooking = cargoBookingDAO.findOne(id);
+        CargoBooking cargoBooking = cargoBookingDAO.findById(id).get();
 
         if(cargoBooking == null){
             throw new IllegalArgumentException("Invalid cargo booking being delivered.");

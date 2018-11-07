@@ -7,7 +7,7 @@ import com.mybus.dao.UserDAO;
 import com.mybus.model.Booking;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.User;
-import com.mybus.service.ServiceConstants;
+import com.mybus.util.ServiceConstants;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -104,7 +104,7 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(currentUser.getAmountToBePaid(), 1500, 0.0);
     }
 

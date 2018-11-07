@@ -5,13 +5,11 @@ import com.mybus.dao.RoleDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.impl.MongoQueryDAO;
 import com.mybus.dao.impl.UserMongoDAO;
-import com.mybus.exception.BadRequestException;
 import com.mybus.model.BranchOffice;
 import com.mybus.model.Role;
 import com.mybus.model.User;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.json.simple.JSONObject;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,13 +51,13 @@ public class UserManager {
     public User findByUserName(String userName) {
         User user = userDAO.findOneByUserName(userName);
         if(user.getRole() != null){
-            Role role = roleDAO.findOne(user.getRole());
+            Role role = roleDAO.findById(user.getRole()).get();
             user.setAccessibleModules(role.getMenus());
         }
         return user;
     }
     public User findOne(String userId) {
-        return userDAO.findOne(userId);
+        return userDAO.findById(userId).get();
     }
     public User saveUser(User user){
         user.validate();
@@ -79,7 +78,7 @@ public class UserManager {
     public User updateUser(User user) {
         Preconditions.checkNotNull(user, "The user can not be null");
         Preconditions.checkNotNull(user.getId(), "Unknown user for update");
-        User loadedUser = userDAO.findOne(user.getId());
+        User loadedUser = userDAO.findById(user.getId()).get();
         loadedUser.setUserName(user.getUserName());
         loadedUser.setFirstName(user.getFirstName());
         loadedUser.setLastName(user.getLastName());
@@ -100,8 +99,8 @@ public class UserManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting user:[{}]" + userId);
         }
-        if (userDAO.findOne(userId) != null) {
-            userDAO.delete(userId);
+        if (userDAO.findById(userId).isPresent()) {
+            userDAO.deleteById(userId);
         } else {
             throw new RuntimeException("Unknown user id");
         }
@@ -110,7 +109,10 @@ public class UserManager {
 
     public User getUser(String id){
         Preconditions.checkNotNull(id,"UserId cannot be Null");
-        User user = userDAO.findOne(id);
+        if(id.equalsIgnoreCase("anonymousUser")) {
+            return userDAO.save(new User("anonymousUser"));
+        }
+        User user = userDAO.findById(id).get();
         if(user == null){
             throw new RuntimeException("User does not exist with that Id");
         }

@@ -1,8 +1,7 @@
 package com.mybus.dao.impl;
 
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.VehicleDAO;
@@ -13,6 +12,7 @@ import com.mybus.dto.UserDeliverySummary;
 import com.mybus.model.*;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
+import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -63,7 +63,7 @@ public class CargoBookingMongoDAO {
      * @return
      */
     public boolean assignVehicles(List<String> ids, String vehicleId, String operatorId) {
-        Vehicle vehicle = vehicleDAO.findOne(vehicleId);
+        Vehicle vehicle = vehicleDAO.findById(vehicleId).get();
         Update updateOp = new Update();
         updateOp.set("vehicleId", vehicleId);
         updateOp.set("cargoTransitStatus", CargoTransitStatus.INTRANSIT);
@@ -74,8 +74,8 @@ public class CargoBookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").in(ids));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(operatorId));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
-        return writeResult.getN() == ids.size();
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getModifiedCount() == ids.size();
     }
 
     public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
@@ -165,21 +165,21 @@ public class CargoBookingMongoDAO {
                 group("paymentType").sum("totalCharge").as("totalCharge").count().as("totalCount"),
                 sort(Sort.Direction.DESC, "totalCharge"));
 
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
-        List<BasicDBObject> results = groupResults.getMappedResults();
-        for(BasicDBObject result: results){
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, Document.class);
+        List<Document> results = groupResults.getMappedResults();
+        for(Document result: results){
             BranchCargoBookingsSummary bookingsSummary = new BranchCargoBookingsSummary();
             bookingsSummary.setBranchOfficeId(branchOfficeId);
             if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.PAID.toString())){
-                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setPaidBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInteger("totalCount"));
             } else if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
-                bookingsSummary.setTopayBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setTopayBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setTopayBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setTopayBookingsCount(result.getInteger("totalCount"));
             } else if(result.get("_id").toString().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
-                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setPaidBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInteger("totalCount"));
             }
             branchwiseCargoBookingSummary.getBranchCargoBookings().add(bookingsSummary);
         }
@@ -200,25 +200,25 @@ public class CargoBookingMongoDAO {
         match.add(Criteria.where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
         criteria.andOperator(match.toArray(new Criteria[match.size()]));
         Aggregation agg = newAggregation(
-                match(criteria),
+                //match(criteria),
                 group("paymentType", "fromBranchId").sum("totalCharge").as("totalCharge").count().as("totalCount"),
                 sort(Sort.Direction.DESC, "totalCharge"));
 
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
-        List<BasicDBObject> results = groupResults.getMappedResults();
-        for(BasicDBObject result: results){
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, Document.class);
+        List<Document> results = groupResults.getMappedResults();
+        for(Document result: results){
             BranchCargoBookingsSummary bookingsSummary = new BranchCargoBookingsSummary();
             bookingsSummary.setBranchOfficeId(result.get("fromBranchId").toString());
             if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.PAID.toString())){
-                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setPaidBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInteger("totalCount"));
             } else if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.TOPAY.toString())){
-                bookingsSummary.setTopayBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setTopayBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setTopayBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setTopayBookingsCount(result.getInteger("totalCount"));
             } else if(result.get("paymentType").toString().equalsIgnoreCase(PaymentStatus.ONACCOUNT.toString())){
-                bookingsSummary.setPaidBookingsTotal(result.getDouble("totalCharge"));
-                bookingsSummary.setPaidBookingsCount(result.getInt("totalCount"));
+                bookingsSummary.setPaidBookingsTotal(result.getLong("totalCharge"));
+                bookingsSummary.setPaidBookingsCount(result.getInteger("totalCount"));
             }
             branchwiseCargoBookingSummary.getBranchCargoBookings().add(bookingsSummary);
         }
@@ -276,8 +276,8 @@ public class CargoBookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").in(bookingIds));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
-        return writeResult.getN() == bookingIds.size();
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getModifiedCount() == bookingIds.size();
     }
 
     public List<CargoBooking> findUndeliveredShipments(JSONObject query) throws ParseException {
@@ -333,12 +333,12 @@ public class CargoBookingMongoDAO {
         Aggregation agg = newAggregation(
                 match(criteria),
                 group(CargoBooking.DELIVERED_BY).sum("totalCharge").as("totalCharge"));
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, Document.class);
         BranchDeliverySummary deliverySummary = new BranchDeliverySummary();
         deliverySummary.setBranchId(branchId);
         double total = 0;
-        for(BasicDBObject object: groupResults){
+        for(Document object: groupResults){
             UserDeliverySummary userDeliverySummary = new UserDeliverySummary();
             userDeliverySummary.setUserName(object.get("_id").toString());
             userDeliverySummary.setTotal(Double.parseDouble(object.get("totalCharge").toString()));
@@ -361,10 +361,10 @@ public class CargoBookingMongoDAO {
         Aggregation agg = newAggregation(
                 match(criteria),
                 group(CargoBooking.DELIVERED_BY).sum("totalCharge").as("totalCharge"));
-        AggregationResults<BasicDBObject> groupResults
-                = mongoTemplate.aggregate(agg, CargoBooking.class, BasicDBObject.class);
+        AggregationResults<Document> groupResults
+                = mongoTemplate.aggregate(agg, CargoBooking.class, Document.class);
         double total = 0;
-        for(BasicDBObject object: groupResults){
+        for(Document object: groupResults){
             if(object.get("_id").toString().equalsIgnoreCase(userName)){
                 total = Double.parseDouble(object.get("totalCharge").toString());
             }

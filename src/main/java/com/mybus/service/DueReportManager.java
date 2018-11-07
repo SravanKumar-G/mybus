@@ -1,14 +1,15 @@
 package com.mybus.service;
 
 import com.google.common.collect.Lists;
-import com.mongodb.BasicDBObject;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.impl.AgentMongoDAO;
 import com.mybus.dao.impl.BookingMongoDAO;
 import com.mybus.model.*;
+import com.mybus.util.ServiceConstants;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +158,7 @@ public class DueReportManager {
         return getBranchOfficeDueReport(office, true, jDate);
     }
 
-    public List<BasicDBObject> getOfficeDuesByService() {
+    public List<Document> getOfficeDuesByService() {
         User currentUser = sessionManager.getCurrentUser();
         if(currentUser != null && !currentUser.isAdmin()) {
             return bookingMongoDAO.getBookingDueTotalsByService(currentUser.getBranchOfficeId());
@@ -180,7 +181,7 @@ public class DueReportManager {
         return bookingMongoDAO.findAgentDues(agentName);
     }
 
-    public List<BasicDBObject> getBookingDuesGroupByAgent() {
+    public List<Document> getBookingDuesGroupByAgent() {
         User currentUser = sessionManager.getCurrentUser();
         if(currentUser != null && !currentUser.isAdmin()) {
             return bookingMongoDAO.getDueBookingByAgents(currentUser.getBranchOfficeId());

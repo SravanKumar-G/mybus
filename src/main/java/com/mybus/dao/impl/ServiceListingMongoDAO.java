@@ -1,15 +1,10 @@
 package com.mybus.dao.impl;
 
-import com.mybus.SystemProperties;
 import com.mybus.model.ServiceListing;
-import com.mybus.model.ServiceReport;
-import com.mybus.service.ServiceConstants;
 import com.mybus.service.SessionManager;
 import com.mybus.util.ServiceUtils;
-import org.apache.commons.collections.IteratorUtils;
-import org.json.simple.JSONObject;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -20,8 +15,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**

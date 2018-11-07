@@ -1,7 +1,6 @@
 package com.mybus.model.cargo;
 
 import com.mybus.model.AbstractDocument;
-import com.mybus.model.ShipmentType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ShipmentSequence extends AbstractDocument{
+public class ShipmentSequence extends AbstractDocument {
     public static String PAID_TYPE = "P";
     public static String TOPAY_TYPE = "TP";
     public static String ON_ACCOUNT = "OA";

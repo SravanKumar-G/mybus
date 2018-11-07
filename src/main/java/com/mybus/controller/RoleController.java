@@ -62,8 +62,8 @@ public class RoleController extends MyBusBaseController {
     @RequestMapping(value = "role/{id}", method = RequestMethod.PUT)
     @ApiOperation(value ="Update role", response = Role.class)
     public ResponseEntity<Role> updateRole(HttpServletRequest request,
-                                     @ApiParam(value = "Id of the Role to be found") @PathVariable final String id,
-                                     @ApiParam(value = "Role JSON") @RequestBody final Role role) {
+                                           @ApiParam(value = "Id of the Role to be found") @PathVariable final String id,
+                                           @ApiParam(value = "Role JSON") @RequestBody final Role role) {
         logger.debug("update role called");
         return new ResponseEntity<>(roleManager.updateRole(role), HttpStatus.OK);
     }
@@ -82,20 +82,20 @@ public class RoleController extends MyBusBaseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "role/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Role getRole(HttpServletRequest request, @PathVariable final String id) {
-        Role  role = (Role)roleDAO.findOne(id);
+        Role role = (Role)roleDAO.findById(id).get();
         return role;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "roleByName/{name}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Role getRoleByName(HttpServletRequest request, @PathVariable final String name) {
-        Role  role = roleDAO.findOneByName(name);
+        Role role = roleDAO.findOneByName(name);
         return role;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "manageRole", method = RequestMethod.PUT)
-    public boolean updateManagingRoles(HttpServletRequest request,@ApiParam(value = "JSON for Role to be created") @RequestBody Role role){
+    public boolean updateManagingRoles(HttpServletRequest request, @ApiParam(value = "JSON for Role to be created") @RequestBody Role role){
     	roleManager.updateRole(role);
     	return true;
     }

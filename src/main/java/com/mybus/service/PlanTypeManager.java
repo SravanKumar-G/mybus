@@ -25,7 +25,7 @@ public class PlanTypeManager {
     public PlanType updatePlanType(PlanType planType){
         validatePlanType(planType);
         Preconditions.checkNotNull(planType.getId(), "The plan id can not be null");
-        PlanType loadedPlanType = planTypeDAO.findOne(planType.getId());
+        PlanType loadedPlanType = planTypeDAO.findOneById(planType.getId());
         Preconditions.checkNotNull(loadedPlanType, "Unknown plantype is attempted in update");
         try {
             loadedPlanType.merge(planType);
@@ -41,8 +41,8 @@ public class PlanTypeManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting PlanType:[{}]" + id);
         }
-        if (planTypeDAO.findOne(id) != null) {
-            planTypeDAO.delete(id);
+        if (planTypeDAO.findOneById(id) != null) {
+            planTypeDAO.deleteById(id);
         } else {
             throw new RuntimeException("Unknown PlanType id");
         }

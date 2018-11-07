@@ -51,12 +51,12 @@ public class AmenitiesManager {
 	
 	public Amenity getAmenityById(String amenityID){
 		Preconditions.checkNotNull(amenityID, "The Amenity id can not be null");
-		return amenityDAO.findOne(amenityID);
+		return amenityDAO.findById(amenityID).get();
 	}
 	
 	public boolean deleteAmenity(String amenityID){
 		Preconditions.checkNotNull(amenityID, "The Amenity id can not be null");
-		amenityDAO.delete(amenityID); 
+		amenityDAO.deleteById(amenityID);
 		return true;
 	}
 	public void deleteAll() {

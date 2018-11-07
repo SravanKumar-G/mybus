@@ -1,16 +1,12 @@
 package com.mybus.model;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.joda.time.DateTime;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @ToString
 @ApiModel(value = "TripReport")
