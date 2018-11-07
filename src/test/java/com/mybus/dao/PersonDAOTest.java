@@ -41,7 +41,7 @@ public class PersonDAOTest  extends AbstractControllerIntegrationTest {
         person.setPhone(7433454);
         personDAO.save(person);
         Assert.assertTrue(person.getId() != null);
-        Person loadedPerson = personDAO.findOne(person.getId());
+        Person loadedPerson = personDAO.findById(person.getId()).get();
         Assert.assertEquals(person.getName(), loadedPerson.getName());
         Assert.assertEquals(person.getAge(), loadedPerson.getAge());
         Assert.assertEquals(person.getPhone(), loadedPerson.getPhone());
@@ -76,7 +76,7 @@ public class PersonDAOTest  extends AbstractControllerIntegrationTest {
         personDAO.save(p);
 
         //delete person with id
-        personDAO.delete("123");
+        personDAO.deleteById("123");
         Iterable<Person> persons = personDAO.findAll();
         Iterator<Person> itr = persons.iterator();
         int i =0;
@@ -87,7 +87,7 @@ public class PersonDAOTest  extends AbstractControllerIntegrationTest {
         Assert.assertEquals(1, i);
 
         //try with existing id
-        personDAO.delete(p.getId());
+        personDAO.deleteById(p.getId());
         persons = personDAO.findAll();
         itr = persons.iterator();
         i = 0;

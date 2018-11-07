@@ -81,7 +81,7 @@ public class PlanTypeController extends MyBusBaseController{
     public PlanType get(HttpServletRequest request,
                           @ApiParam(value = "PlanType Id")  @PathVariable final String id) {
         logger.debug("get plan type called");
-        return planTypeDAO.findOne(id);
+        return planTypeDAO.findOneById(id);
     }
 
 }

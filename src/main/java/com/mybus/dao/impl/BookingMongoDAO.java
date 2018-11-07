@@ -2,6 +2,7 @@ package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.AgentDAO;
 import com.mybus.dao.BookingDAO;
 import com.mybus.dao.BranchOfficeDAO;
@@ -83,7 +84,7 @@ public class BookingMongoDAO {
     public List<Booking> findReturnTicketDuesForAgent(Agent agent ) {
         long start = System.currentTimeMillis();
         Preconditions.checkNotNull(agent, "Agent not found");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+        BranchOffice branchOffice = branchOfficeDAO.findById(agent.getBranchOfficeId()).get();
         Preconditions.checkNotNull(branchOffice, "Branchoffice not found");
         final Query query = new Query();
         query.addCriteria(where("bookedBy").is(agent.getUsername()));
@@ -125,8 +126,8 @@ public class BookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").is(bookingId));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
-        if(writeResult.getN() != 1) {
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Booking.class);
+        if(writeResult.getModifiedCount() != 1) {
             return false;
         }
         return true;
@@ -192,7 +193,12 @@ public class BookingMongoDAO {
     }
 
     public long getTotalDistinctPhoneNumbers() {
-        return mongoTemplate.getCollection("booking").distinct("phoneNo").size();
+        Aggregation agg = newAggregation(
+                group("phoneNo").count().as("total"));
+
+        AggregationResults<BasicDBObject> groupResults
+                = mongoTemplate.aggregate(agg, Booking.class, BasicDBObject.class);
+        return 0;
     }
     public List<BasicDBObject> getDueBookingByAgents(String branchOfficeId){
         List<Criteria> match = new ArrayList<>();

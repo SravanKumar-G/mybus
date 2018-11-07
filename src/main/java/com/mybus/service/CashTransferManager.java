@@ -53,11 +53,11 @@ public class CashTransferManager {
         if(cashTransfer.getStatus() != null && cashTransfer.getStatus().equals(CashTransfer.STATUS_APPROVED)) {
             Payment income = new Payment();
             income.setOperatorId(sessionManager.getOperatorId());
-            income.setBranchOfficeId(userDAO.findOne(cashTransfer.getToUserId()).getBranchOfficeId());
+            income.setBranchOfficeId(userDAO.findById(cashTransfer.getToUserId()).get().getBranchOfficeId());
             income.setAmount(cashTransfer.getAmount());
             income.setType(PaymentType.INCOME);
             income.setStatus(Payment.STATUS_AUTO);
-            income.setDescription(Payment.CASH_TRANSFER+ " recieved from "+ userDAO.findOne(cashTransfer.getFromUserId()).getFullName());
+            income.setDescription(Payment.CASH_TRANSFER+ " recieved from "+ userDAO.findById(cashTransfer.getFromUserId()).get().getFullName());
             income.setDate(new Date());
             paymentDAO.save(income);
             Payment expense = paymentDAO.findByCashTransferRef(cashTransfer.getId());
@@ -70,7 +70,7 @@ public class CashTransferManager {
     }
 
     public CashTransfer get(String id) {
-        return cashTransferDAO.findOne(id);
+        return cashTransferDAO.findById(id).get();
     }
 
     public CashTransfer save(CashTransfer cashTransfer){
@@ -82,7 +82,7 @@ public class CashTransferManager {
         expense.setType(PaymentType.EXPENSE);
         expense.setStatus(Payment.STATUS_PENDING);
         expense.setCashTransferRef(cashTransfer.getId());
-        expense.setDescription(Payment.CASH_TRANSFER+ " sent to "+ userDAO.findOne(cashTransfer.getToUserId()).getFullName());
+        expense.setDescription(Payment.CASH_TRANSFER+ " sent to "+ userDAO.findById(cashTransfer.getToUserId()).get().getFullName());
         expense.setDate(new Date());
         paymentDAO.save(expense);
         return cashTransfer;
@@ -91,7 +91,7 @@ public class CashTransferManager {
         return cashTransferDAO.save(cashTransfer);
     }
     public void delete(String id){
-        cashTransferDAO.delete(id);
+        cashTransferDAO.deleteById(id);
     }
 
     public CashTransfer findOne(String id) {

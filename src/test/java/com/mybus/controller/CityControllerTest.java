@@ -164,7 +164,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         city = cityDAO.save(city);
         ResultActions actions = mockMvc.perform(asUser(delete(format("/api/v1/city/%s", city.getId())), currentUser));
         actions.andExpect(status().isOk());
-        Assert.assertNull(cityDAO.findOne(city.getId()));
+        Assert.assertNull(cityDAO.findById(city.getId()));
     }
 
     @Test
@@ -199,7 +199,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.boardingPoints").exists());
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
-        City savedCity = cityDAO.findOne(city.getId());
+        City savedCity = cityDAO.findById(city.getId()).get();
         Assert.assertEquals(2, savedCity.getBoardingPoints().size());
         for(BoardingPoint b : savedCity.getBoardingPoints()) {
             Assert.assertNotNull(b.getId());
@@ -273,7 +273,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         actions.andExpect(jsonPath("$.boardingPoints").exists());
         actions.andExpect(jsonPath("$.boardingPoints").isArray());
         actions.andExpect(jsonPath("$.boardingPoints[0].name").value(bp.getName()));
-        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+        Assert.assertNotNull(cityDAO.findById(city.getId()).get());
     }
 
     @Test
@@ -287,8 +287,8 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 bp.getId())), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.name").value(bp.getName()));
-        Assert.assertNotNull(cityDAO.findOne(city.getId()));
-        Assert.assertEquals(1, cityDAO.findOne(city.getId()).getBoardingPoints().size());
+        Assert.assertNotNull(cityDAO.findById(city.getId()).get());
+        Assert.assertEquals(1, cityDAO.findById(city.getId()).get().getBoardingPoints().size());
         actions = mockMvc.perform(asUser(get(format("/api/v1/city/%s/boardingpoint/%s", city.getId(),
                 "1234")), currentUser));
         actions.andExpect(status().isBadRequest());
@@ -316,7 +316,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
                 , bp.getId())), currentUser));
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.boardingPoints").isEmpty());
-        Assert.assertNotNull(cityDAO.findOne(city.getId()));
+        Assert.assertNotNull(cityDAO.findById(city.getId()).get());
     }
 
     @Test
@@ -328,7 +328,7 @@ public class CityControllerTest extends AbstractControllerIntegrationTest{
         ResultActions actions = mockMvc.perform(asUser(put(format("/api/v1/city/%s", city.getId()))
                 .content(getObjectMapper().writeValueAsBytes(city)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        City savedCity = cityDAO.findOne(city.getId());
+        City savedCity = cityDAO.findById(city.getId()).get();
         Assert.assertNotNull(savedCity);
         Assert.assertFalse(savedCity.isActive());
         Assert.assertEquals(city.getName(), savedCity.getName());

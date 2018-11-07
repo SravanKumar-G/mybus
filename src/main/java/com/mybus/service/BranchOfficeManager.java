@@ -77,7 +77,7 @@ public class BranchOfficeManager {
 
     public BranchOffice update(String branchOfficeId, BranchOffice branchOffice) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
-        BranchOffice branchOfficeCopy = branchOfficeDAO.findOne(branchOfficeId);
+        BranchOffice branchOfficeCopy = branchOfficeDAO.findById(branchOfficeId).get();
         Preconditions.checkNotNull(branchOfficeCopy, "No branchOffice found with id");
         try {
             branchOfficeCopy.merge(branchOffice, false);
@@ -111,7 +111,7 @@ public class BranchOfficeManager {
     }
     public void delete(String branchOfficeId) {
         Preconditions.checkNotNull(branchOfficeId, "branchOfficeId can not be null");
-        BranchOffice branchOffice = branchOfficeDAO.findOne(branchOfficeId);
+        BranchOffice branchOffice = branchOfficeDAO.findById(branchOfficeId).get();
         Preconditions.checkNotNull(branchOffice, "No branchOffice found with id");
         branchOfficeDAO.delete(branchOffice);
     }

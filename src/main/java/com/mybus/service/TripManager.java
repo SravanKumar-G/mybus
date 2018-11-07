@@ -55,7 +55,7 @@ public class TripManager {
 	}
 
 	public Trip getTripByID(String tripID) {
-		return tripDAO.findOne(tripID);
+		return tripDAO.findById(tripID).get();
 	}
 
 	/*
@@ -63,11 +63,11 @@ public class TripManager {
 	 * have to make this asynchronus call
 	 */
 	public void publishService(String serviceId) {
-		BusService busService = busServiceDAO.findOne(serviceId);
+		BusService busService = busServiceDAO.findById(serviceId).get();
 		Preconditions.checkNotNull(serviceId, "Service Id can't be null");
 		Set<DateTime> tripDates = getTripDates(busService);
-		Layout layout = layoutDAO.findOne(busService.getLayoutId());
-		Route route = routeDAO.findOne(busService.getRouteId());
+		Layout layout = layoutDAO.findById(busService.getLayoutId()).get();
+		Route route = routeDAO.findById(busService.getRouteId()).get();
 
 		List<ServiceFare> serviceFares = busService.getServiceFares();
 		tripDates.forEach(tripDate -> {
@@ -85,7 +85,7 @@ public class TripManager {
 				trip.setToCityId(serviceFare.getDestinationCityId());
 				trip.setTripFare(serviceFare.getFare());
 				trip.setFromCityId(serviceFare.getSourceCityId());
-				List<BoardingPoint> boardingPoints = cityDAO.findOne(serviceFare.getSourceCityId())
+				List<BoardingPoint> boardingPoints = cityDAO.findById(serviceFare.getSourceCityId()).get()
 																.getBoardingPoints();
 				Set<ServiceBoardingPoint> serviceBps = new HashSet<>();
 				boardingPoints.forEach(bp -> {
@@ -93,7 +93,7 @@ public class TripManager {
 				});
 				trip.setBoardingPoints(serviceBps);
 
-				Set<BoardingPoint> droppingPoints = cityDAO.findOne(serviceFare.getDestinationCityId())
+				Set<BoardingPoint> droppingPoints = cityDAO.findById(serviceFare.getDestinationCityId()).get()
 																.getDroppingPoints();
 				Set<ServiceDropingPoint> serviceDps = new HashSet<>();
 				droppingPoints.forEach(dp -> {
@@ -155,13 +155,13 @@ public class TripManager {
 		City fromCity = null;
 		City toCity = null;
 		if(fromCityId != null) {
-			fromCity = cityDAO.findOne(fromCityId);
+			fromCity = cityDAO.findById(fromCityId).get();
 		}
 		if (fromCityId != null && fromCity == null) {
 			throw new BadRequestException("Invalid id for fromCityId");
 		}
 		if(toCityId != null) {
-			toCity = cityDAO.findOne(toCityId);
+			toCity = cityDAO.findById(toCityId).get();
 		}
 		if (toCityId != null && toCity == null) {
 			throw new BadRequestException("Invalid id for toCityId");

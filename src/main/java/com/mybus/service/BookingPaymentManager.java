@@ -210,7 +210,7 @@ public class BookingPaymentManager {
 	 */
 	public RefundResponse refundProcessToPaymentGateways(String pID,double refundAmount,String disc) {
 		
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(pID);
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(pID).get();
 		RefundResponse refundResponse = new RefundResponse();
 		refundResponse.setRefundAmount(refundAmount);
 		refundResponse.setDisc(disc);
@@ -406,7 +406,7 @@ public class BookingPaymentManager {
 
 	public boolean update(PaymentResponse paymentResponse) {
         
-        PaymentResponse pr = paymentResponseDAO.findOne(paymentResponse.getId());
+        PaymentResponse pr = paymentResponseDAO.findById(paymentResponse.getId()).get();
         try {
         	paymentResponse.setPaymentUserInfoId(pr.getPaymentUserInfoId());
         	pr.merge(paymentResponse);

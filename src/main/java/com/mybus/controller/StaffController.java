@@ -49,7 +49,7 @@ public class StaffController extends MyBusBaseController{
     public Staff getVehicle(HttpServletRequest request,
                             @ApiParam(value = "Id of the Vehicle Staff to be found") @PathVariable final String id) {
         logger.debug("get staff called");
-        return staffDAO.findOne(id);
+        return staffDAO.findById(id).get();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

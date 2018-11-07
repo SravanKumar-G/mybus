@@ -3,9 +3,7 @@ package com.mybus.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.mongodb.Mongo;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
+import com.mongodb.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +12,7 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -41,14 +40,16 @@ public abstract class AbstractApplicationDataConfig extends AbstractMongoConfigu
     }
 
     @Override
-    public final Mongo mongo() throws Exception {
+    public MongoClient mongoClient() {
         List<ServerAddress> servers = new ArrayList<>(MAX_NODES_IN_REPLICA_SET);
         String hostProp = getMongoSystemProperties().getProperty("mongo.host");
         String portProp = getMongoSystemProperties().getProperty("mongo.port");
         if (!StringUtils.isBlank(hostProp) || StringUtils.isBlank(portProp)) {
-            servers.add(new ServerAddress(hostProp, Integer.valueOf(portProp)));
+            return new MongoClient(Collections.singletonList(new ServerAddress(hostProp, Integer.parseInt(portProp))),
+                    Collections.singletonList(MongoCredential.createCredential("","mybus", null)));
         }
-        logger.info("Configuring mongo connection...");
+        return null;
+        /*logger.info("Configuring mongo connection...");
 
         for (int i = 0; i < MAX_NODES_IN_REPLICA_SET; i++) {
             String hostPropertyName = format("mongo.%d.host", i);
@@ -69,7 +70,7 @@ public abstract class AbstractApplicationDataConfig extends AbstractMongoConfigu
         Mongo mongo = new Mongo(servers);
         mongo.setWriteConcern(WriteConcern.SAFE);
 
-        return mongo;
+        return mongo;*/
     }
 
 

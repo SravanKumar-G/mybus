@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.PaymentGatewayDAO;
 import com.mybus.model.City;
 import com.mybus.model.PaymentGateway;
@@ -41,7 +42,7 @@ public class PaymentGatewayMongoDAO {
 
         final Query query = new Query();
         query.addCriteria(where("_id").is(payGW.getId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, City.class);
-        return writeResult.getN() == 1;
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, City.class);
+        return writeResult.getModifiedCount() == 1;
     }
 }

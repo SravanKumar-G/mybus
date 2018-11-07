@@ -138,7 +138,7 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
                 .content(getObjectMapper().writeValueAsBytes(payment1)).contentType(MediaType.APPLICATION_JSON),
                 currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(1000, currentUser.getAmountToBePaid(), 0.0);
 
         payment2.setStatus(Payment.STATUS_APPROVED);
@@ -147,7 +147,7 @@ public class PaymentControllerTest  extends AbstractControllerIntegrationTest {
                         .content(getObjectMapper().writeValueAsBytes(payment2)).contentType(MediaType.APPLICATION_JSON),
                 currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(-1000, currentUser.getAmountToBePaid(), 0.0);
     }
 }

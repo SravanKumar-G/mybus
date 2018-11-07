@@ -104,7 +104,7 @@ public class DueReportControllerTest extends AbstractControllerIntegrationTest {
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(currentUser.getAmountToBePaid(), 1500, 0.0);
     }
 

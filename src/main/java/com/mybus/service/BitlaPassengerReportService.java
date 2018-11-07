@@ -69,7 +69,7 @@ public class BitlaPassengerReportService extends BaseService{
                     (new ServiceReportStatus(ServiceConstants.parseDate(date), ReportDownloadStatus.DOWNLOADING));
             serviceReportStatus.setOperatorId(sessionManager.getOperatorId());
             String key = loginBitlaBus();
-            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
             String url = String.format(operatorAccount.getApiURL()+"/api/get_passenger_details/%s.json?api_key=%s", date, key);
 
             //String url =  "http://jagan.jagantravels.com/api/get_passenger_details/2018-04-06.json?api_key=84FEZH5KE3KWAKIQDIZ6R7Q3KWZZT7RW";
@@ -126,7 +126,7 @@ public class BitlaPassengerReportService extends BaseService{
     }
 
     private String loginBitlaBus() throws UnirestException {
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
 
         /*HttpResponse<JsonNode> postResponse = Unirest.post("http://jagan.jagantravels.com/api/login.json").field("login","jagan.srini")
                 .field("password","1234qwer").asJson(); */

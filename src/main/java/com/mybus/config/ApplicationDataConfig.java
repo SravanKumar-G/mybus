@@ -1,5 +1,6 @@
 package com.mybus.config;
 
+import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,6 @@ public class ApplicationDataConfig extends AbstractApplicationDataConfig {
 	
     @Autowired
     private Environment mongoProperties;
-    
-    @Autowired 
-    private CoreAppConfig config;
 
     @Bean
     @Override
@@ -36,5 +34,10 @@ public class ApplicationDataConfig extends AbstractApplicationDataConfig {
     @Override
     String getHomeDirPropertiesFilename() {
         return HOME_DIR_PROPS_FILENAME;
+    }
+
+    @Override
+    public MongoClient mongoClient() {
+        return null;
     }
 }

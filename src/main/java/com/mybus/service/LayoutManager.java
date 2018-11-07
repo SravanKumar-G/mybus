@@ -44,7 +44,7 @@ public class LayoutManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Deleting layout :[{}]" + id);
 		}
-		if (layoutDAO.findOne(id) != null) {
+		if (layoutDAO.findById(id).isPresent()) {
 			layoutDAO.delete(id);
 		} else {
 			throw new RuntimeException("Unknown layout id");

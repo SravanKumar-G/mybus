@@ -232,7 +232,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(2,userList1.size());
-        User newUser = userDAO.findOne(responseJSON.get("id").toString());
+        User newUser = userDAO.findById(responseJSON.get("id").toString()).get();
         assertEquals(true, newUser.isActive());
     }
 
@@ -261,7 +261,7 @@ public class UserControllerTest extends AbstractControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON), currentUser));
         userList1 = IteratorUtils.toList(userDAO.findAll().iterator());
         Assert.assertEquals(2,userList1.size());
-        newUser = userDAO.findOne(newUser.getId());
+        newUser = userDAO.findById(newUser.getId()).get();
         assertEquals("MANAGER", newUser.getRole());
     }
 }

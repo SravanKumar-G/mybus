@@ -74,7 +74,7 @@ public class PaymentGatewayManagerTest extends AbstractControllerIntegrationTest
         pg.setPaymentType("PG");
         pg.setName("PAYU");
         payGWDAO.save(pg);
-        Assert.assertNotNull(payGWDAO.findOne(pg.getId()));
+        Assert.assertNotNull(payGWDAO.findById(pg.getId()).get());
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("A payment gateway already exists with same name");
         payGWManager.savePaymentGateway(pg);

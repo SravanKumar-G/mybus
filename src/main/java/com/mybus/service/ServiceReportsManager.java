@@ -93,7 +93,7 @@ public class ServiceReportsManager {
     }
 
     public JSONObject downloadReports(String date) {
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");
         }
@@ -118,7 +118,7 @@ public class ServiceReportsManager {
     }
     
     public JSONObject downloadServiceDetailsByNumberAndDate(String serviceNumber, String date) throws Exception {
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");
         }
@@ -142,7 +142,7 @@ public class ServiceReportsManager {
     }
 
     public ServiceReport getReport(String id) {
-        ServiceReport report = serviceReportDAO.findOne(id);
+        ServiceReport report = serviceReportDAO.findById(id).get();
         List<Booking> bookings = IteratorUtils.toList(bookingDAO.findByServiceReportId(report.getId()).iterator());
         //set the original cost for the old bookings
         if(report.getStatus() == null) {
@@ -213,14 +213,14 @@ public class ServiceReportsManager {
         ServiceForm serviceForm = new ServiceForm();
         serviceForm.setOperatorId(sessionManager.getOperatorId());
         serviceReport.setNetCashIncome(0);
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(serviceReport.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(serviceReport.getOperatorId()).get();
         String providerType = operatorAccount.getProviderType();
         //need to set this for update balance of the submitted user but not the verified user
         serviceForm.setSubmittedBy(serviceReport.getSubmittedBy());
         serviceForm.setServiceReportId(serviceReport.getId());
         serviceForm.setServiceNumber(serviceReport.getServiceNumber());
         serviceForm.setServiceName(serviceReport.getServiceName());
-        ServiceReport savedReport = serviceReportDAO.findOne(serviceReport.getId());
+        ServiceReport savedReport = serviceReportDAO.findById(serviceReport.getId()).get();
         if(savedReport.getStatus() != null && savedReport.getStatus().equals(ServiceStatus.SUBMITTED)) {
             throw new BadRequestException("Oops, looks like the report has been already submitted");
         }
@@ -309,8 +309,8 @@ public class ServiceReportsManager {
             serviceReport.getExpenses().stream().forEach(expense -> {
                 expense.setFormId(savedForm.getId());
             });
-            paymentDAO.save(serviceReport.getExpenses());
-            bookingDAO.save(serviceForm.getBookings());
+            paymentDAO.saveAll(serviceReport.getExpenses());
+            bookingDAO.saveAll(serviceForm.getBookings());
             serviceReport.getAttributes().put(ServiceReport.SUBMITTED_ID, savedForm.getId());
         }
         //clear the bookings from service report
@@ -327,12 +327,12 @@ public class ServiceReportsManager {
         serviceReport.setStatus(ServiceStatus.REQUIRE_VERIFICATION);
         //incase if any service booking added in the frontend
         serviceReport.getBookings().stream().forEach(booking -> booking.setServiceReportId(serviceReport.getId()));
-        bookingDAO.save(serviceReport.getBookings());
+        bookingDAO.saveAll(serviceReport.getBookings());
         //save the expenses, reload them when the service report is re-loaded
         serviceReport.getExpenses().stream().forEach(expense -> {
             expense.setServiceReportId(serviceReport.getId());
         });
-        paymentDAO.save(serviceReport.getExpenses());
+        paymentDAO.saveAll(serviceReport.getExpenses());
         return serviceReportDAO.save(serviceReport);
     }
     private void processBooking(Map<String, List<String>> seatBookings, Booking consolidation, Booking booking,
@@ -357,7 +357,7 @@ public class ServiceReportsManager {
     }
 
     public ServiceForm getForm(String id) {
-        ServiceForm serviceForm = serviceFormDAO.findOne(id);
+        ServiceForm serviceForm = serviceFormDAO.findById(id).get();
         Iterable<Booking> bookings = bookingDAO.findByFormId(serviceForm.getId());
         /*
         //load the service expense
@@ -370,7 +370,7 @@ public class ServiceReportsManager {
         //serviceForm.setNetIncome(roundUp(serviceForm.getNetIncome()));
         serviceForm.setExpenses(IteratorUtils.toList(paymentDAO.findByFormId(id).iterator()));
         serviceForm.setBookings(IteratorUtils.toList(bookings.iterator()));
-        ServiceReport serviceReport = serviceReportDAO.findOne(serviceForm.getServiceReportId());
+        ServiceReport serviceReport = serviceReportDAO.findById(serviceForm.getServiceReportId()).get();
         serviceForm.setStaff(serviceReport.getStaff());
         if(serviceForm.getSubmittedBy() != null) {
             serviceForm.getAttributes().put("submittedBy", userManager.getUser(serviceForm.getSubmittedBy()).getFullName());
@@ -390,7 +390,7 @@ public class ServiceReportsManager {
         serviceReports.forEach(serviceReport -> {
             if (serviceReport.getAttributes().containsKey(ServiceReport.SUBMITTED_ID)) {
                 String formId = serviceReport.getAttributes().get(ServiceReport.SUBMITTED_ID);
-                ServiceForm serviceForm = serviceFormDAO.findOne(formId);
+                ServiceForm serviceForm = serviceFormDAO.findById(formId).get();
                 paymentManager.createPayment(serviceForm, true);
                 serviceFormDAO.delete(serviceForm);
                 bookingDAO.deleteByFormId(formId);
@@ -403,7 +403,7 @@ public class ServiceReportsManager {
     }
 
     public Iterable<ServiceReport> refreshReport(Date date) throws ParseException {
-        OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+        OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");
         }
@@ -422,7 +422,7 @@ public class ServiceReportsManager {
     }
 
     public Booking getBooking(String bookingId) {
-        return bookingDAO.findOne(bookingId);
+        return bookingDAO.findById(bookingId).get();
     }
 
     public Invoice findBookingsInvoice(JSONObject query) {

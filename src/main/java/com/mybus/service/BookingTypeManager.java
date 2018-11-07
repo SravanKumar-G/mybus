@@ -41,7 +41,7 @@ public class BookingTypeManager {
 
     public boolean isRedbusBooking(Booking booking, String providerType) {
         if(operatorAccount == null && sessionManager.getOperatorId() != null) {
-            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         }
         if(booking.getBookedBy() == null) {
             return false;
@@ -56,7 +56,7 @@ public class BookingTypeManager {
 
     public boolean isOnlineBooking(Booking booking, String providerType) {
         if(operatorAccount == null && sessionManager.getOperatorId() != null) {
-            operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         }
         if(providerType.equalsIgnoreCase(OperatorAccount.Bitlabus)){
             if(booking.getBookingType() == null) {
@@ -94,7 +94,7 @@ public class BookingTypeManager {
         Agent agent = agentDAO.findByUsername(booking.getBookedBy());
         if(agent != null) {
             if(agent.getBranchOfficeId() != null) {
-                BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+                BranchOffice branchOffice = branchOfficeDAO.findById(agent.getBranchOfficeId()).get();
                 if(branchOffice != null) {
                     return agent;
                 }

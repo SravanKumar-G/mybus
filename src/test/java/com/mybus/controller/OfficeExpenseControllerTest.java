@@ -137,7 +137,6 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
                 rejetids.add(officeExpense.getId());
             } else{
                 ids.add(officeExpense.getId());
-
             }
             officeExpenseDAO.save(officeExpense);
         }
@@ -147,19 +146,19 @@ public class OfficeExpenseControllerTest extends AbstractControllerIntegrationTe
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$").isArray());
         actions.andExpect(jsonPath("$", Matchers.hasSize(5)));
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
 
         actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
                 .content(getObjectMapper().writeValueAsBytes(ids)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isInternalServerError());
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
 
         actions = mockMvc.perform(asUser(post("/api/v1/officeExpenses/approveOrReject/false")
                 .content(getObjectMapper().writeValueAsBytes(rejetids)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        testUser = userDAO.findOne(testUser.getId());
+        testUser = userDAO.findById(testUser.getId()).get();
         assertEquals(-500, testUser.getAmountToBePaid(), 0.0);
     }
 

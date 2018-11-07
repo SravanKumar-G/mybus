@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Created by skandula on 12/13/15.
  */
@@ -22,7 +24,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     private UserDAO userDAO;
 
     @Override
-    public String getCurrentAuditor() {
+    public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -31,10 +33,10 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
         String username = null;
         if (authentication.getPrincipal() instanceof String) {
             username = String.valueOf(authentication.getPrincipal());
-            return username;
+            return Optional.of(username);
         } else {
             username = ((UserDetails) ((UsernamePasswordAuthenticationToken) authentication).getPrincipal()).getUsername();
         }
-        return userDAO.findOneByUserName(username).getId();
+        return Optional.of(userDAO.findOneByUserName(username).getId());
     }
 }

@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.model.User;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +28,17 @@ public class UserMongoDAO {
         updateOp.inc("amountToBePaid", cashBalance);
         final Query query = new Query();
         query.addCriteria(where("_id").is(userId));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
-        return writeResult.getN() == 1;
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
+        return writeResult.getModifiedCount() == 1;
     }
-
 
     public boolean updatePassword(String userName, String password) {
         Update updateOp = new Update();
         updateOp.set("password", password);
         final Query query = new Query();
         query.addCriteria(where("userName").is(userName));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
-        return writeResult.getN() == 1;
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, User.class);
+        return writeResult.getModifiedCount() == 1;
     }
 
     public Map<String, List<User>> getUsersByBranchOffices() {

@@ -143,7 +143,7 @@ public class ServiceUtils {
     private void fillInUsername(AbstractDocument abstractDocument, String userId, String attributeName) {
         if(userId != null) {
             if(userNames.get(userId) == null) {
-                User user = userDAO.findOne(userId);
+                User user = userDAO.findById(userId).get();
                 if(user != null) {
                     userNames.put(userId, user.getFullName());
                 } else {

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -36,6 +37,9 @@ public class GSTFilterMongoDAO {
     }
 
     public List<String> getGSTFilterServiceNumbers(){
-        return mongoTemplate.getCollection("GSTFilter").distinct("serviceNumber");
+        return new ArrayList<>();
+
+        //FIXDISCTINCT
+        //return mongoTemplate.getCollection("GSTFilter").distinct("serviceNumber");
     }
 }

@@ -148,9 +148,9 @@ public class CargoBookingManagerTest extends AbstractControllerIntegrationTest {
         vehicle.setRegNo("AP27TU1234");
         vehicle = vehicleDAO.save(vehicle);
         assertTrue(shipmentManager.assignVehicle(vehicle.getId(), ids));
-        shipment = cargoBookingDAO.findOne(shipment.getId());
-        shipment1 = cargoBookingDAO.findOne(shipment1.getId());
-        shipment2 = cargoBookingDAO.findOne(shipment2.getId());
+        shipment = cargoBookingDAO.findById(shipment.getId()).get();
+        shipment1 = cargoBookingDAO.findById(shipment1.getId()).get();
+        shipment2 = cargoBookingDAO.findById(shipment2.getId()).get();
 
         assertEquals(shipment.getVehicleId(), vehicle.getId());
         assertEquals(shipment1.getVehicleId(), vehicle.getId());

@@ -52,13 +52,13 @@ public class UserManager {
     public User findByUserName(String userName) {
         User user = userDAO.findOneByUserName(userName);
         if(user.getRole() != null){
-            Role role = roleDAO.findOne(user.getRole());
+            Role role = roleDAO.findById(user.getRole()).get();
             user.setAccessibleModules(role.getMenus());
         }
         return user;
     }
     public User findOne(String userId) {
-        return userDAO.findOne(userId);
+        return userDAO.findById(userId).get();
     }
     public User saveUser(User user){
         user.validate();
@@ -79,7 +79,7 @@ public class UserManager {
     public User updateUser(User user) {
         Preconditions.checkNotNull(user, "The user can not be null");
         Preconditions.checkNotNull(user.getId(), "Unknown user for update");
-        User loadedUser = userDAO.findOne(user.getId());
+        User loadedUser = userDAO.findById(user.getId()).get();
         loadedUser.setUserName(user.getUserName());
         loadedUser.setFirstName(user.getFirstName());
         loadedUser.setLastName(user.getLastName());
@@ -100,8 +100,8 @@ public class UserManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting user:[{}]" + userId);
         }
-        if (userDAO.findOne(userId) != null) {
-            userDAO.delete(userId);
+        if (userDAO.findById(userId).isPresent()) {
+            userDAO.deleteById(userId);
         } else {
             throw new RuntimeException("Unknown user id");
         }
@@ -110,7 +110,7 @@ public class UserManager {
 
     public User getUser(String id){
         Preconditions.checkNotNull(id,"UserId cannot be Null");
-        User user = userDAO.findOne(id);
+        User user = userDAO.findById(id).get();
         if(user == null){
             throw new RuntimeException("User does not exist with that Id");
         }

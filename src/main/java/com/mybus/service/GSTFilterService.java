@@ -41,7 +41,7 @@ public class GSTFilterService {
     }
     public Iterable<GSTFilter> saveGSTFilters(List<GSTFilter> filters) {
         filters.stream().forEach(filter -> {
-            GSTFilter gstFilter = gstFilterDAO.findOne(filter.getId());
+            GSTFilter gstFilter = gstFilterDAO.findById(filter.getId()).get();
             gstFilter.setHasGST(filter.isHasGST());
             gstFilterDAO.save(gstFilter);
         });

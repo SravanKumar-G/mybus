@@ -60,7 +60,7 @@ public class LayoutController extends MyBusBaseController{
 	public Layout getLayout(HttpServletRequest request,
 			@ApiParam(value = "Id of the Layout to be found") @PathVariable final String id) {
 		logger.debug("get layout called");
-		return layoutDAO.findOne(id);
+		return layoutDAO.findById(id).get();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)

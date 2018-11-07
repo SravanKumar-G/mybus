@@ -71,7 +71,7 @@ public class TripComboController {
 	public TripCombo get(HttpServletRequest request,
 			@ApiParam(value = "Id of the tripCombo") @PathVariable final String id) {
 		LOGGER.debug("get tripCombo by id");
-		return tripComboDAO.findOne(id);
+		return tripComboDAO.findById(id).get();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)
@@ -80,6 +80,6 @@ public class TripComboController {
 	public void delete(HttpServletRequest request,
 			@ApiParam(value = "Id of the tripCombo to be deleted") @PathVariable final String id) {
 		LOGGER.debug("delete tripCombo called");
-		tripComboDAO.delete(id);
+		tripComboDAO.deleteById(id);
 	}
 }

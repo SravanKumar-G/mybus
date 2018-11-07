@@ -48,7 +48,7 @@ public class PaymentGatewayManager {
         //Preconditions.checkNotNull(payGW, "The city can not be null");
         Preconditions.checkNotNull(Id, "The payment gateway id can not be null");
         // Preconditions.checkNotNull(payGW.getPgAccountID(), "The city State can not be null");
-        PaymentGateway paymentGatewayInfo = payGWDAO.findOne(Id);
+        PaymentGateway paymentGatewayInfo = payGWDAO.findById(Id).get();
 
         return paymentGatewayInfo;
 
@@ -74,8 +74,8 @@ public class PaymentGatewayManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting paymentGateway:[{}]" + id);
         }
-        if (payGWDAO.findOne(id) != null) {
-            payGWDAO.delete(id);
+        if (payGWDAO.findById(id).isPresent()) {
+            payGWDAO.deleteById(id);
         } else {
             throw new RuntimeException("Unknown city id");
         }

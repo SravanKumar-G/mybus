@@ -27,7 +27,7 @@ public class TripComboManager {
         if(tripCombo.getId() == null) {
             throw new BadRequestException("ComboId can not be null");
         }
-        TripCombo savedCombo = tripComboDAO.findOne(tripCombo.getId());
+        TripCombo savedCombo = tripComboDAO.findById(tripCombo.getId()).get();
         try {
             savedCombo.merge(tripCombo);
             return tripComboDAO.save(savedCombo);

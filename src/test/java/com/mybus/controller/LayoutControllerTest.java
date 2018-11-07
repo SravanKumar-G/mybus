@@ -145,7 +145,7 @@ public class LayoutControllerTest extends AbstractControllerIntegrationTest {
 				currentUser));
 		actions.andExpect(status().isOk());
 		actions.andExpect(jsonPath("$.deleted").value(true));
-		Assert.assertNull(layoutDAO.findOne(layoutSaved.getId()));
+		Assert.assertNull(layoutDAO.findById(layoutSaved.getId()).get());
 	}
 
 	@Test

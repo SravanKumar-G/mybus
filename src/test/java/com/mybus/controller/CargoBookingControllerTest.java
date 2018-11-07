@@ -260,7 +260,7 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
     }
 
@@ -285,13 +285,13 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
 
         //test cancel
         actions = mockMvc.perform(asUser(put("/api/v1/shipment/cancel/"+shipments.get(0).getId()), currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(0.0, currentUser.getAmountToBePaid(), 0.0);
     }
 
@@ -318,13 +318,13 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions.andExpect(jsonPath("$.toBranchId").value(shipment.getToBranchId()));
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
         //pay ToPay booking
         actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+shipments.get(0).getId()).content(
                 "Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
 
         //deliver booking which is already delivered
@@ -353,18 +353,18 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         CargoBooking cargoBooking = getObjectMapper().readValue(actions.andReturn().getResponse().getContentAsString(), CargoBooking.class);
         List<CargoBooking> shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(0, currentUser.getAmountToBePaid(), 0.0);
-        supplier = supplierDAO.findOne(supplier.getId());
+        supplier = supplierDAO.findById(supplier.getId()).get();
         assertEquals(supplier.getToBeCollected(), 150, 0.0);
 
         //pay OnAccount booking
         actions = mockMvc.perform(asUser(put("/api/v1/shipment/deliver/"+cargoBooking.getId())
                 .content("Delivered by Srini".getBytes()).contentType(MediaType.TEXT_PLAIN_VALUE), currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
-        supplier = supplierDAO.findOne(supplier.getId());
+        supplier = supplierDAO.findById(supplier.getId()).get();
         assertEquals(supplier.getToBeCollected(), 0, 0.0);
 
         //test cancel
@@ -372,14 +372,14 @@ public class CargoBookingControllerTest extends AbstractControllerIntegrationTes
         actions = mockMvc.perform(asUser(post("/api/v1/shipment").content(getObjectMapper()
                 .writeValueAsBytes(shipment)).contentType(MediaType.APPLICATION_JSON), currentUser));
         actions.andExpect(status().isOk());
-        supplier = supplierDAO.findOne(supplier.getId());
+        supplier = supplierDAO.findById(supplier.getId()).get();
         assertEquals(supplier.getToBeCollected(), 150, 0.0);
         shipments = IteratorUtils.toList(cargoBookingDAO.findAll().iterator());
         assertEquals(1, shipments.size(), 0.0);
         actions = mockMvc.perform(asUser(put("/api/v1/shipment/cancel/"+shipments.get(0).getId()), currentUser));
         actions.andExpect(status().isOk());
-        currentUser = userDAO.findOne(currentUser.getId());
-        supplier = supplierDAO.findOne(supplier.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
+        supplier = supplierDAO.findById(supplier.getId()).get();
         assertEquals(0, supplier.getToBeCollected(),0.0);
         assertEquals(150, currentUser.getAmountToBePaid(), 0.0);
     }

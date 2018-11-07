@@ -45,7 +45,7 @@ public class ServiceListingManager {
      * @throws Exception
      */
     public Iterable<ServiceListing> getServiceListings(String date) throws Exception {
-         OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+         OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
         if(operatorAccount == null){
             throw new BadRequestException("No Operator found");
         }

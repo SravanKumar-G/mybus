@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCursor;
 import com.mybus.SystemProperties;
 import com.mybus.model.ServiceReport;
 import com.mybus.service.ServiceConstants;
@@ -127,6 +128,12 @@ public class ServiceReportMongoDAO {
         return groupResults.getMappedResults();
     }
     public List<String> getDistinctCities() {
-        return mongoTemplate.getCollection("serviceReport").distinct("source");
+        MongoCursor<String> c =
+                mongoTemplate.getCollection("serviceReport").distinct("source", String.class).iterator();
+        List<String> cityNames = new ArrayList<>();
+        while (c.hasNext()){
+            cityNames.add(c.next());
+        }
+        return cityNames;
     }
 }

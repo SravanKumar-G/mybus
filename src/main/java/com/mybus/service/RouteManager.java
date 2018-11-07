@@ -43,8 +43,8 @@ public class RouteManager {
     }
     public boolean deleteRoute(String routeId) {
         Preconditions.checkNotNull(routeId);
-        Preconditions.checkNotNull(routeDAO.findOne(routeId), "Invalid Route id");
-        routeDAO.delete(routeId);
+        Preconditions.checkNotNull(routeDAO.findById(routeId), "Invalid Route id");
+        routeDAO.deleteById(routeId);
         //TODO: check if there is any active services, if found throw an error.
 
         return true;
@@ -52,7 +52,7 @@ public class RouteManager {
 
     public Route deactiveRoute(String routeId) {
         Preconditions.checkNotNull(routeId);
-        Route route = routeDAO.findOne(routeId);
+        Route route = routeDAO.findById(routeId).get();
         Preconditions.checkNotNull(route, "Invalid Route id");
         Preconditions.checkArgument(!route.isActive(), "Route is already inactive");
         route.setActive(false);
@@ -61,7 +61,7 @@ public class RouteManager {
 
     public boolean update(Route route) {
         validateRoute(route);
-        Route r = routeDAO.findOne(route.getId());
+        Route r = routeDAO.findById(route.getId()).get();
         Preconditions.checkNotNull(route, "No route found to update");
         try {
             r.merge(route);
@@ -81,13 +81,13 @@ public class RouteManager {
         Preconditions.checkNotNull(route.getName(), "Route name can not be null");
         Preconditions.checkNotNull(route.getFromCityId(), "Route from city can not be null");
         Preconditions.checkNotNull(route.getToCityId(), "Route to city can not be null");
-        Preconditions.checkNotNull(cityDAO.findOne(route.getFromCityId()), "Invalid from city id");
-        Preconditions.checkNotNull(cityDAO.findOne(route.getToCityId()), "Invalid to city id");
+        Preconditions.checkNotNull(cityDAO.findById(route.getFromCityId()), "Invalid from city id");
+        Preconditions.checkNotNull(cityDAO.findById(route.getToCityId()), "Invalid to city id");
         if(StringUtils.isBlank(route.getId()) && routeDAO.findByName(route.getName()) != null) {
             throw new RuntimeException("Route with the same name exits");
         }
         route.getViaCities().stream().forEach(c -> {
-            if(cityDAO.findOne(c) == null) {
+            if(cityDAO.findById(c) == null) {
                 throw new RuntimeException("invalid via city is found in via cities");
             }
         });

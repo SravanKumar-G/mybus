@@ -60,7 +60,7 @@ public class RoleManager {
             throw new RuntimeException("cannot update role with the same name");
         }else {
             try {
-                loadedRole = roleDAO.findOne(role.getId());
+                loadedRole = roleDAO.findById(role.getId()).get();
                 loadedRole.merge(role);
             } catch (Exception e) {
                 logger.error("Error merging role", e);
@@ -76,8 +76,8 @@ public class RoleManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting role:[{}]" + roleId);
         }
-        if (roleDAO.findOne(roleId) != null) {
-            roleDAO.delete(roleId);
+        if (roleDAO.findById(roleId).isPresent()) {
+            roleDAO.deleteById(roleId);
         } else {
             throw new RuntimeException("Unknown role id");
         }
@@ -87,9 +87,26 @@ public class RoleManager {
 
     public Role getRole(String roleId){
         Preconditions.checkNotNull(roleId, "The role id can not be null");
-        Role role =  roleDAO.findOne(roleId);
+        Role role =  roleDAO.findById(roleId).get();
         return role;
     }
 
+    
+    public Role updateManagingRoles(Role role){
+    	Preconditions.checkNotNull(role, "The role can not be null");
+    	Preconditions.checkNotNull(role.getId(), "The role id not be null");
+    	Preconditions.checkNotNull(role.getName(), "The role can not be null");
+    	Role roleFromDB = roleDAO.findById(role.getId()).get();
+    	if(roleFromDB.getName().equalsIgnoreCase(role.getName())) {
+    		try {
+				roleFromDB.merge(role);
+			} catch (Exception e) {
+				 throw new BadRequestException("Error merging role info",e);
+			}
+    	}else {
+    		 throw new BadRequestException(" role info is invalid");
+    	}
+    	return roleDAO.save(roleFromDB);
+    }
 
 }

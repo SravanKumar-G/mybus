@@ -28,7 +28,7 @@ public class ABAgentService extends BaseService{
 
     public void downloadAgents() throws Exception{
         logger.info("downloading agents data:" );
-        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
+        initAbhibus(operatorAccountDAO.findById(sessionManager.getOperatorId()).get());
         Collection<Agent> agents = new ArrayList<>();
         Vector params = new Vector();
         Object infos[] = (Object[]) xmlRpcClient.execute("index.agentdetails", params);
@@ -71,7 +71,7 @@ public class ABAgentService extends BaseService{
                 agents.add(agent);
             }
         }
-        agentDAO.save(agents);
+        agentDAO.saveAll(agents);
     }
     public static void main(String args[]) {
         try {

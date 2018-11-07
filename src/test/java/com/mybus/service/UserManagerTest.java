@@ -60,7 +60,7 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
         User duplicate = new User("fname", "lname", "uname", "pwd", "e@email.com", 1234567, "add1", "add2",
                 "city", "state", "ADMIN", "plan3");
         userDAO.save(user);
-        assertNotNull(userDAO.findOne(user.getId()));
+        assertNotNull(userDAO.findById(user.getId()).get());
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("A user already exists with username");
         userManager.saveUser(duplicate);
@@ -88,17 +88,17 @@ public class UserManagerTest  extends AbstractControllerIntegrationTest {
     public void testDeleteUser() throws Exception {
         User user = UserTestService.createNew();
         userDAO.save(user);
-        user = userDAO.findOne(user.getId());
+        user = userDAO.findById(user.getId()).get();
         assertNotNull(user);
         userDAO.delete(user);
-        assertNull(userDAO.findOne(user.getId()));
+        assertNull(userDAO.findById(user.getId()).get());
     }
 
     @Test
     public void testGetUser() throws Exception{
         User user = UserTestService.createNew();
         userDAO.save(user);
-        user = userDAO.findOne(user.getId());
+        user = userDAO.findById(user.getId()).get();
         assertNotNull(user);
         List<User> userList = IteratorUtils.toList(userDAO.findAll().iterator());
         assertEquals(1, userList.size());

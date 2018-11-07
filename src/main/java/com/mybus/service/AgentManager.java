@@ -45,9 +45,9 @@ public class AgentManager {
     private SessionManager sessionManager;
 
     public Agent getAgent(String agentId) {
-        Agent agent = agentDAO.findOne(agentId);
+        Agent agent = agentDAO.findById(agentId).get();
         if(agent.getBranchOfficeId() != null) {
-            BranchOffice branchOffice = branchOfficeDAO.findOne(agent.getBranchOfficeId());
+            BranchOffice branchOffice = branchOfficeDAO.findById(agent.getBranchOfficeId()).get();
             if(branchOffice != null) {
                 agent.getAttributes().put(BranchOffice.KEY_NAME, branchOffice.getName());
             }

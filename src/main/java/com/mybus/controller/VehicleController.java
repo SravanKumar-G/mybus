@@ -46,7 +46,7 @@ public class VehicleController extends MyBusBaseController{
     public Vehicle getVehicle(HttpServletRequest request,
                               @ApiParam(value = "Id of the Vehicle to be found") @PathVariable final String id) {
         logger.debug("get vehicle called");
-        return vehicleDAO.findOne(id);
+        return vehicleDAO.findById(id).get();
     }
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "vehicle", method = RequestMethod.POST, produces = ControllerUtils.JSON_UTF8,

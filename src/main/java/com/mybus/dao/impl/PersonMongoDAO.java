@@ -1,6 +1,7 @@
 package com.mybus.dao.impl;
 
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.model.Person;
 import com.mybus.service.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public class PersonMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").is(person.getId()));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Person.class);
-        return writeResult.getN() == 1;
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, Person.class);
+        return writeResult.getModifiedCount() == 1;
     }
 
 }

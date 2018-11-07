@@ -137,7 +137,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	
 	public Trip tripLayout(String layoutId){
 		Trip t = new Trip();
-		Layout layout = layoutDAO.findOne(layoutId);
+		Layout layout = layoutDAO.findById(layoutId).get();
 		t.setRows(layout.getRows());
 		return t; 
 	}
@@ -177,7 +177,7 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@ApiOperation(value = "booked ticket payment")
 	public PaymentResponse getPaymentInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(bookingSessionManager.getBookingSessionInfo().getBookingId()).get();
 		return paymentResponse;
     }
 	
@@ -188,8 +188,8 @@ public class BusTicketBookingController extends MyBusBaseController{
 	@ApiOperation(value = "booked ticket passenger info request")
 	public BookingPayment getPassingerInfo(HttpServletRequest request) {
 		bookingSessionManager.getBookingSessionInfo();
-		PaymentResponse paymentResponse = paymentResponseDAO.findOne(bookingSessionManager.getBookingSessionInfo().getBookingId());
-		return bookingPaymentDAO.findOne(paymentResponse.getPaymentUserInfoId());
+		PaymentResponse paymentResponse = paymentResponseDAO.findById(bookingSessionManager.getBookingSessionInfo().getBookingId()).get();
+		return bookingPaymentDAO.findById(paymentResponse.getPaymentUserInfoId()).get();
     }
 
 

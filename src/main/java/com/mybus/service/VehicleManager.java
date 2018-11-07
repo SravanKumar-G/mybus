@@ -33,7 +33,7 @@ public class VehicleManager {
 
     public Vehicle updateVehicle(Vehicle vehicle) {
         Preconditions.checkNotNull(vehicle.getId(), "Unknown vehicle id");
-        Vehicle loadedVehicle = vehicleDAO.findOne(vehicle.getId());
+        Vehicle loadedVehicle = vehicleDAO.findById(vehicle.getId()).get();
         try {
             loadedVehicle.merge(vehicle);
         }catch (Exception e) {
@@ -48,8 +48,8 @@ public class VehicleManager {
         if (logger.isDebugEnabled()) {
             logger.debug("Deleting vehicle:[{}]" + vehicleId);
         }
-        if (vehicleDAO.findOne(vehicleId) != null) {
-            vehicleDAO.delete(vehicleId);
+        if (vehicleDAO.findById(vehicleId).isPresent()) {
+            vehicleDAO.deleteById(vehicleId);
         } else {
             throw new RuntimeException("Unknown user id");
         }

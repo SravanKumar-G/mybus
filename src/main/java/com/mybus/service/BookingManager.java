@@ -59,7 +59,7 @@ public class BookingManager {
     }
 
     public boolean payBookingDue(String bookingId) {
-        Booking booking = bookingDAO.findOne(bookingId);
+        Booking booking = bookingDAO.findById(bookingId).get();
         return payBooking(bookingId, booking);
     }
 
@@ -97,7 +97,7 @@ public class BookingManager {
             List<Booking> invalidBookings = IteratorUtils.toList(
                     bookingDAO.findByIdAndHasValidAgent(serviceId, false).iterator());
             if(invalidBookings.size() == 0) {
-                ServiceReport serviceReport = serviceReportDAO.findOne(serviceId);
+                ServiceReport serviceReport = serviceReportDAO.findById(serviceId).get();
                 if(serviceReport.isInvalid()) {
                     serviceReport.setInvalid(false);
                     serviceReportDAO.save(serviceReport);

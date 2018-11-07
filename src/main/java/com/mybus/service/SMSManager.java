@@ -45,7 +45,7 @@ public class SMSManager {
             if(sessionManager.getOperatorId() == null) {
                 return;
             }
-            OperatorAccount operatorAccount = operatorAccountDAO.findOne(sessionManager.getOperatorId());
+            OperatorAccount operatorAccount = operatorAccountDAO.findById(sessionManager.getOperatorId()).get();
             if(operatorAccount.getSmsSenderName() == null) {
                 logger.error("SMS sender name is missing");
                 throw new IllegalArgumentException("SMS sender name is missing in Operator Account");

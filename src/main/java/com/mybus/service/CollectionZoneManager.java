@@ -51,12 +51,12 @@ public class CollectionZoneManager {
 	
 	public CollectionZone getById(String id){
 		Preconditions.checkNotNull(id, "The Amenity id can not be null");
-		return collectionZoneDAO.findOne(id);
+		return collectionZoneDAO.findById(id).get();
 	}
 	
 	public boolean deleteCollectionZone(String id){
 		Preconditions.checkNotNull(id, "The Amenity id can not be null");
-		collectionZoneDAO.delete(id);
+		collectionZoneDAO.deleteById(id);
 		return true;
 	}
 	public void deleteAll() {

@@ -59,7 +59,7 @@ public class AbhiBusPassengerReportService extends BaseService{
      */
     public Iterable<ServiceListing> getActiveServicesByDate(String date) throws Exception{
         logger.info("loading reports for date:" + date);
-        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
+        initAbhibus(operatorAccountDAO.findById(sessionManager.getOperatorId()).get());
         Date journeyDate = ServiceConstants.parseDate(date);
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
@@ -124,7 +124,7 @@ public class AbhiBusPassengerReportService extends BaseService{
 
     public List<ServiceReport> getServiceDetailsByNumberAndDate(String serviceIds, String date) throws Exception{
         logger.info("downloading service details for date:" + date +" serviceIds "+ serviceIds);
-        initAbhibus(operatorAccountDAO.findOne(sessionManager.getOperatorId()));
+        initAbhibus(operatorAccountDAO.findById(sessionManager.getOperatorId()).get());
         HashMap<Object, Object> inputParam = new HashMap<Object, Object>();
         inputParam.put("jdate", date);
         inputParam.put("serviceids", serviceIds.trim());

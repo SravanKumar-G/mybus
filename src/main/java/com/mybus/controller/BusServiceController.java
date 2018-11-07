@@ -56,7 +56,7 @@ public class BusServiceController extends MyBusBaseController{
 	public BusService getService(HttpServletRequest request,
 			@ApiParam(value = "Id of the BusService to be found") @PathVariable final String id) {
 		logger.debug("get bus service called");
-		return busServiceDAO.findOne(id);
+		return busServiceDAO.findById(id).get();
 	}
 
 	@ResponseStatus(value = HttpStatus.OK)

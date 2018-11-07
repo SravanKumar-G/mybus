@@ -85,7 +85,7 @@ public class PaymentManagerTest extends AbstractControllerIntegrationTest {
         payment2.setCreatedBy(currentUser.getId());
         paymentManager.updatePayment(payment1);
         paymentManager.updatePayment(payment2);
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(4000, currentUser.getAmountToBePaid(), 0.0);
 
     }

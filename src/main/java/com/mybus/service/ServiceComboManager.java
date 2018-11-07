@@ -43,7 +43,7 @@ public class ServiceComboManager {
         if(serviceCombo.getId() == null) {
             throw new BadRequestException("ComboId can not be null");
         }
-        ServiceCombo savedCombo = serviceComboDAO.findOne(serviceCombo.getId());
+        ServiceCombo savedCombo = serviceComboDAO.findById(serviceCombo.getId()).get();
         try {
             savedCombo.merge(serviceCombo);
             return serviceComboDAO.save(savedCombo);
@@ -77,6 +77,6 @@ public class ServiceComboManager {
     }
 
     public void delete(String id) {
-        serviceComboDAO.delete(id);
+        serviceComboDAO.deleteById(id);
     }
 }

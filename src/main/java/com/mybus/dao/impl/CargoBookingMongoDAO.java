@@ -3,6 +3,7 @@ package com.mybus.dao.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.BranchOfficeDAO;
 import com.mybus.dao.UserDAO;
 import com.mybus.dao.VehicleDAO;
@@ -63,7 +64,7 @@ public class CargoBookingMongoDAO {
      * @return
      */
     public boolean assignVehicles(List<String> ids, String vehicleId, String operatorId) {
-        Vehicle vehicle = vehicleDAO.findOne(vehicleId);
+        Vehicle vehicle = vehicleDAO.findById(vehicleId).get();
         Update updateOp = new Update();
         updateOp.set("vehicleId", vehicleId);
         updateOp.set("cargoTransitStatus", CargoTransitStatus.INTRANSIT);
@@ -74,8 +75,8 @@ public class CargoBookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").in(ids));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(operatorId));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
-        return writeResult.getN() == ids.size();
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getModifiedCount() == ids.size();
     }
 
     public List<CargoBooking> findShipments(JSONObject query, final Pageable pageable) throws ParseException {
@@ -276,8 +277,8 @@ public class CargoBookingMongoDAO {
         final Query query = new Query();
         query.addCriteria(where("_id").in(bookingIds));
         query.addCriteria(where(SessionManager.OPERATOR_ID).is(sessionManager.getOperatorId()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
-        return writeResult.getN() == bookingIds.size();
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, CargoBooking.class);
+        return writeResult.getModifiedCount() == bookingIds.size();
     }
 
     public List<CargoBooking> findUndeliveredShipments(JSONObject query) throws ParseException {

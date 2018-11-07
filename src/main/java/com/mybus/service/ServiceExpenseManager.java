@@ -61,7 +61,7 @@ public class ServiceExpenseManager {
     }
 
     public ServiceExpense getServiceExpense(String id) {
-        return loadServiceInfo(serviceExpenseDAO.findOne(id));
+        return loadServiceInfo(serviceExpenseDAO.findById(id).get());
     }
     /**
      * Load the information from servicereport
@@ -82,7 +82,7 @@ public class ServiceExpenseManager {
             serviceExpense.getAttributes().put("VehicleNumber", serviceListing.getVehicleRegNumber());
         }
         if(serviceExpense.getFillingStationId() != null) {
-            Supplier fillingStation = fillingStationDAO.findOne(serviceExpense.getFillingStationId());
+            Supplier fillingStation = fillingStationDAO.findById(serviceExpense.getFillingStationId()).get();
             serviceExpense.getAttributes().put("fillingStation", fillingStation.getName());
         }
         return serviceExpense;
@@ -122,7 +122,7 @@ public class ServiceExpenseManager {
      */
     public void updateFromServiceReport(ServiceExpense serviceExpense) {
         if(serviceExpense != null) {
-            ServiceExpense savedExpense = serviceExpenseDAO.findOne(serviceExpense.getId());
+            ServiceExpense savedExpense = serviceExpenseDAO.findById(serviceExpense.getId()).get();
             savedExpense.setFuelQuantity(serviceExpense.getFuelQuantity());
             savedExpense.setFuelRate(serviceExpense.getFuelRate());
             savedExpense.setFuelCost(serviceExpense.getFuelCost());
@@ -151,6 +151,6 @@ public class ServiceExpenseManager {
         if(id == null){
             throw new BadRequestException("Invalid id");
         }
-        serviceExpenseDAO.delete(id);
+        serviceExpenseDAO.deleteById(id);
     }
 }

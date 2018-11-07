@@ -55,7 +55,7 @@ public class BookingManagerTest extends AbstractControllerIntegrationTest {
         bookings.stream().forEach(booking -> {
             assertNotNull(booking.getPaidOn());
         });
-        currentUser = userDAO.findOne(currentUser.getId());
+        currentUser = userDAO.findById(currentUser.getId()).get();
         assertEquals(currentUser.getAmountToBePaid(), 2000, 0.0);
     }
 }

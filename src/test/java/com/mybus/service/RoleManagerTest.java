@@ -61,7 +61,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Role role = createRole();
         Role duplicateRole = createRole();
         roleDAO.save(role);
-        assertNotNull(roleDAO.findOne(role.getId()));
+        assertNotNull(roleDAO.findById(role.getId()));
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("Role already exists with the same name");
         roleManager.saveRole(duplicateRole);
@@ -86,7 +86,7 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         assertNotNull(role);
         assertNotNull(role.getId());
         roleDAO.delete(role);
-        assertNull(roleDAO.findOne(role.getId()));
+        assertNull(roleDAO.findById(role.getId()));
     }
 
     @Test
@@ -94,8 +94,8 @@ public class RoleManagerTest extends AbstractControllerIntegrationTest{
         Role role = createRole();
         assertNotNull(role);
         assertNotNull(role.getId());
-        roleDAO.findOne(role.getId());
-        assertNotNull(roleDAO.findOne(role.getId()));
+        roleDAO.findById(role.getId());
+        assertNotNull(roleDAO.findById(role.getId()));
     }
 
     @Test

@@ -15,15 +15,12 @@ public class LayoutMongoDAO {
 	@Autowired
 	private LayoutDAO layoutDAO;
 
-	@Autowired
-	private SessionManager sessionManager;
-
 	public Layout save(Layout layout) {
 		return layoutDAO.save(layout);
 	}
 
 	public Layout update(Layout layout) throws Exception {
-		Layout dbCopy = layoutDAO.findOne(layout.getId());
+		Layout dbCopy = layoutDAO.findById(layout.getId()).get();
 		dbCopy.merge(layout);
 		return layoutDAO.save(dbCopy);
 	}

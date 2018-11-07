@@ -82,7 +82,7 @@ public class RoleController extends MyBusBaseController {
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(value = "role/{id}", method = RequestMethod.GET, produces = ControllerUtils.JSON_UTF8)
     public Role getRole(HttpServletRequest request, @PathVariable final String id) {
-        Role  role = (Role)roleDAO.findOne(id);
+        Role  role = (Role)roleDAO.findById(id).get();
         return role;
     }
 

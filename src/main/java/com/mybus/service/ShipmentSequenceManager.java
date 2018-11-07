@@ -1,6 +1,7 @@
 package com.mybus.service;
 
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.mybus.dao.cargo.ShipmentSequenceDAO;
 import com.mybus.exception.BadRequestException;
 import com.mybus.model.CargoBooking;
@@ -43,8 +44,8 @@ public class ShipmentSequenceManager {
         updateOp.inc("nextNumber", 1);
         final Query query = new Query();
         query.addCriteria(where("shipmentCode").is(shipmentSequence.getShipmentCode()));
-        WriteResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
-        if(writeResult.getN() == 1){
+        UpdateResult writeResult =  mongoTemplate.updateMulti(query, updateOp, ShipmentSequence.class);
+        if(writeResult.getModifiedCount() == 1){
             shipmentSequence = shipmentSequenceDAO.findByShipmentCode(shipmentSequence.getShipmentCode());
         } else {
             throw new IllegalStateException("next number failed");
